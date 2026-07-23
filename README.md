@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PortaWerk — Handwerker-Plattform (Frontend)
 
-## Getting Started
+Diskrete Jobvermittlung fürs Handwerk. Next.js 14 (App Router) · TypeScript · Tailwind v4 · framer-motion.
 
-First, run the development server:
+> Fokus: **funktionale Struktur & Workflow**. Design-System (Navy `#1A1A2E` / Gold `#E8A838`, Playfair Display + Inter) ist etabliert; Backend wird separat implementiert (siehe `../backend`).
+
+## Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # Produktions-Build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Seiten (Routen)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Route            | Inhalt                                                              |
+| ---------------- | ------------------------------------------------------------------ |
+| `/`              | Landing Page (Hero, Stellen, Ablauf, Prämie, Für Betriebe, Footer) |
+| `/login`         | Login (E-Mail + Passwort, „Angemeldet bleiben")                    |
+| `/registrieren`  | 5-Schritt-Registrierung (siehe unten)                              |
+| `/verify-email`  | Ziel des E-Mail-Verifikations-Links                                |
+| `/dashboard`     | Nach Login — Profil + Feature-Platzhalter (Auth-Guard)             |
+| `/rechtliches`   | Datenschutz, Nutzungsbedingungen, Impressum, Cookies (Anker-IDs)   |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Registrierungs-Flow (`/registrieren`)
 
-## Learn More
+1. **Umfrage** — 5 optionale Fragen, überspringbar (`steps/Step1Survey.tsx`)
+2. **Kontaktdaten** — Name, E-Mail, Telefon + Client-Validierung (`Step2Contact.tsx`)
+3. **Verifizierung** — E-Mail-Link **und** SMS-Code, beide Pflicht (`Step3Verify.tsx`)
+4. **KI-Profilfragen** — dynamisch geladen, adaptive Folgefragen (`Step4AiQuestions.tsx`)
+5. **Abschluss** — rechtliche Zustimmung (2 Pflicht-Checkboxen) → Profil erstellen (`Step5Legal.tsx`)
+   → Erfolgsseite (`StepSuccess.tsx`)
 
-To learn more about Next.js, take a look at the following resources:
+State über alle Schritte: `context/RegistrationContext.tsx` (mit `localStorage`-Persistenz gegen Reload-Verlust).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architektur
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+├── context/            AuthContext · RegistrationContext
+├── components/         ui.tsx (Primitives) · QuestionComponent · OtpInput
+│                       ProgressBar · VerificationStatus · LegalConsent
+│                       Navbar · Hero · JobsPreview · HowItWorks · … (Landing)
+├── registrieren/       page.tsx · RegisterFlow.tsx · steps/*
+├── login/ · dashboard/ · verify-email/ · rechtliches/
+lib/
+├── types.ts            zentrale Typen
+├── api.ts              API-Client (ApiResult<T>, mappt REST-Endpunkte)
+├── db.ts               Mock-Backend (Stubs mit künstlicher Latenz)
+├── aiService.ts        KI-Profilfragen (Mock, dynamisch)
+├── legal.ts            Rechtstexte (Platzhalter)
+└── constants.ts        Gewerke · Bundesländer · Umfrage-Fragen
+```
 
-## Deploy on Vercel
+## Mock-Backend / DEV-Codes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Alle Netzwerkaufrufe sind simuliert (`lib/db.ts`, `lib/aiService.ts`):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **SMS-Code:** `123456` (`DEV_PHONE_CODE`)
+- **E-Mail-Verifikation:** Button „Bestätigung simulieren" **oder** `/verify-email` öffnen (synchronisiert per `localStorage`-Event mit dem Registrierungs-Tab)
+- **Login:** beliebige E-Mail + Passwort (min. 4 Zeichen)
+
+Geplante Endpunkte (in `lib/api.ts` gespiegelt): `POST /api/auth/register`, `/login`,
+`/send-email-verification`, `GET /api/auth/verify-email`, `POST /api/auth/send-phone-code`,
+`/verify-phone`, `GET /api/ai/profile-questions`, `POST /api/ai/answer-questions`,
+`GET /api/legal/terms`, `POST /api/auth/complete-registration`.
+
+> ⚠️ **Rechtstexte** unter `/rechtliches` sind Platzhalter und müssen anwaltlich geprüft werden.

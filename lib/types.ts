@@ -43,9 +43,10 @@ export type AnswerValue = string | string[] | number;
 /** Map von Frage-ID → Antwortwert. */
 export type AnswerMap = Record<string, AnswerValue>;
 
-/** Kontaktdaten aus Schritt 2. */
+/** Kontaktdaten aus Schritt 2 (Backend erwartet Vor- und Nachname getrennt). */
 export interface ContactData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
 }
@@ -64,9 +65,13 @@ export interface LegalConsent {
 
 /** Vollständiger Registrierungs-Datensatz, der über alle Schritte hinweg gesammelt wird. */
 export interface RegistrationData {
+  /** JWT der Registrierungs-Sitzung (von POST /auth/registration/start). */
+  draftToken: string | null;
   surveyAnswers: AnswerMap;
   surveySkipped: boolean;
   contact: ContactData;
+  /** Passwort — wird NICHT in localStorage persistiert (Sicherheit). */
+  password: string;
   verification: VerificationState;
   aiAnswers: AnswerMap;
   legal: LegalConsent;

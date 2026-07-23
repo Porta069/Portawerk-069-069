@@ -218,7 +218,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-2 mt-6 text-[11px]" style={{ color: "rgba(107,114,128,0.7)" }}>
             <Lock className="w-3 h-3 flex-shrink-0" style={{ color: "#E8A838" }} />
-            DEV: beliebige E-Mail + Passwort (min. 4 Zeichen)
+            Melde dich mit den bei der Registrierung gewählten Daten an.
           </div>
 
           <p className="mt-8 text-sm text-center" style={{ color: "#6B7280" }}>

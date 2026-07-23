@@ -1,35 +1,78 @@
 "use client";
 
 // ─── Dashboard (nach Login) ───────────────────────────────────────────────────
+// Validiert das JWT über GET /auth/me und zeigt die echten Kontodaten.
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Hammer,
   LogOut,
-  MapPin,
-  Award,
-  Briefcase,
-  Clock,
+  Mail,
+  Phone,
+  User as UserIcon,
+  CalendarClock,
+  ShieldCheck,
   Search,
   UserCog,
   Bell,
   Loader2,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
+import { api } from "@/lib/api";
+
+function fmtDate(iso: string | null): string {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleDateString("de-DE", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return "—";
+  }
+}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, hydrated, logout } = useAuth();
+  const { user, token, hydrated, logout, setUser } = useAuth();
+  const [checking, setChecking] = useState(true);
 
-  // Auth-Guard
+  // Auth-Guard + Token gegen /auth/me validieren
   useEffect(() => {
-    if (hydrated && !user) router.replace("/login");
-  }, [hydrated, user, router]);
+    if (!hydrated) return;
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+    let active = true;
+    api.me(token).then((res) => {
+      if (!active) return;
+      if (res.ok) {
+        setUser(res.data);
+        setChecking(false);
+      } else {
+        // Token ungültig/abgelaufen → abmelden
+        logout();
+        router.replace("/login");
+      }
+    });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, token]);
 
-  if (!hydrated || !user) {
+  const handleLogout = async () => {
+    if (token) await api.logout(token);
+    logout();
+    router.push("/");
+  };
+
+  if (!hydrated || checking || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#F8F7F4" }}>
         <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
@@ -37,14 +80,11 @@ export default function DashboardPage() {
     );
   }
 
-  const p = user.profile ?? {};
-  const firstName = user.fullName.split(" ")[0];
-
   const profileItems = [
-    { icon: Briefcase, label: "Gewerke", value: p.gewerke?.length ? p.gewerke.join(", ") : "—" },
-    { icon: Clock, label: "Erfahrung", value: p.erfahrungJahre != null ? `${p.erfahrungJahre} Jahre` : "—" },
-    { icon: MapPin, label: "Region", value: p.region || "—" },
-    { icon: Award, label: "Qualifikationen", value: p.zertifikate?.length ? p.zertifikate.join(", ") : "—" },
+    { icon: UserIcon, label: "Name", value: `${user.firstName} ${user.lastName}`.trim() || "—" },
+    { icon: Mail, label: "E-Mail", value: user.email },
+    { icon: Phone, label: "Telefon", value: user.phone || "—" },
+    { icon: CalendarClock, label: "Mitglied seit", value: fmtDate(user.createdAt) },
   ];
 
   const features = [
@@ -55,7 +95,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F8F7F4", fontFamily: "var(--font-sans)" }}>
-      {/* ── Navbar ── */}
+      {/* Navbar */}
       <div className="bg-primary">
         <div className="max-w-6xl mx-auto px-6 lg:px-12 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
@@ -67,10 +107,7 @@ export default function DashboardPage() {
             </span>
           </Link>
           <button
-            onClick={() => {
-              logout();
-              router.push("/");
-            }}
+            onClick={handleLogout}
             className="flex items-center gap-2 text-sm transition-colors duration-200"
             style={{ color: "rgba(255,255,255,0.5)" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
@@ -82,7 +119,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="bg-primary pb-16">
         <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-8">
           <span className="flex items-center gap-3 text-accent text-[10px] font-semibold tracking-[0.22em] uppercase mb-4">
@@ -96,7 +133,7 @@ export default function DashboardPage() {
             className="text-white font-bold"
             style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4vw, 3rem)" }}
           >
-            Willkommen, {firstName}.
+            Willkommen, {user.firstName || "zurück"}.
           </motion.h1>
           <p className="text-white/45 text-base mt-3 max-w-lg leading-relaxed">
             Dein Profil ist aktiv. Sobald passende Betriebe gefunden sind, erscheinen
@@ -105,9 +142,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Inhalt ── */}
+      {/* Inhalt */}
       <div className="max-w-6xl mx-auto px-6 lg:px-12 -mt-8 pb-20">
-        {/* Profilkarte */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -117,13 +153,14 @@ export default function DashboardPage() {
         >
           <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #E5E7EB" }}>
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
-              Dein Handwerker-Profil
+              Dein Konto
             </p>
             <span
-              className="text-[11px] font-semibold px-2.5 py-1"
+              className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1"
               style={{ background: "rgba(34,197,94,0.10)", color: "#16A34A", border: "1px solid rgba(34,197,94,0.3)" }}
             >
-              Aktiv
+              <ShieldCheck className="w-3 h-3" />
+              {user.status === "ACTIVE" ? "Aktiv" : user.status}
             </span>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x" style={{ borderColor: "#F3F4F6" }}>
@@ -137,14 +174,13 @@ export default function DashboardPage() {
                       {item.label}
                     </span>
                   </div>
-                  <p className="text-sm font-medium text-primary leading-snug">{item.value}</p>
+                  <p className="text-sm font-medium text-primary leading-snug break-all">{item.value}</p>
                 </div>
               );
             })}
           </div>
         </motion.div>
 
-        {/* Feature-Platzhalter */}
         <div className="grid md:grid-cols-3 gap-5">
           {features.map((f, i) => {
             const Icon = f.icon;

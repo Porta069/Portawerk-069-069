@@ -9,7 +9,7 @@ import { useRegistration } from "@/app/context/RegistrationContext";
 
 export default function StepSuccess() {
   const { data, reset } = useRegistration();
-  const firstName = data.contact.fullName.trim().split(" ")[0] || "Handwerker:in";
+  const firstName = data.contact.firstName.trim() || "Handwerker:in";
 
   return (
     <div className="flex flex-col items-center text-center py-14 max-w-lg mx-auto">

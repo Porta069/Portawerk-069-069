@@ -41,9 +41,11 @@ const STEP_ORDER: RegStep[] = [
 const STORAGE_KEY = "portawerk_registration_v1";
 
 const EMPTY: RegistrationData = {
+  draftToken: null,
   surveyAnswers: {},
   surveySkipped: false,
-  contact: { fullName: "", email: "", phone: "" },
+  contact: { firstName: "", lastName: "", email: "", phone: "" },
+  password: "",
   verification: { emailVerified: false, phoneVerified: false },
   aiAnswers: {},
   legal: { privacyAccepted: false, termsAccepted: false },
@@ -58,9 +60,11 @@ interface RegistrationContextValue {
   goTo: (step: RegStep) => void;
   next: () => void;
   back: () => void;
+  setDraftToken: (token: string) => void;
   setSurveyAnswer: (id: string, value: AnswerValue) => void;
   skipSurvey: () => void;
   setContact: (patch: Partial<ContactData>) => void;
+  setPassword: (pw: string) => void;
   setVerification: (patch: Partial<VerificationState>) => void;
   setAiAnswer: (id: string, value: AnswerValue) => void;
   setAiAnswers: (patch: AnswerMap) => void;
@@ -103,7 +107,10 @@ export function RegistrationProvider({
   useEffect(() => {
     if (!hydrated || skipPersist.current) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, data }));
+      // Passwort niemals persistieren (Sicherheit) — nur im Speicher halten.
+      const { password: _pw, ...safe } = data;
+      void _pw;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, data: safe }));
     } catch {
       /* ignore quota errors */
     }
@@ -123,6 +130,14 @@ export function RegistrationProvider({
       const i = STEP_ORDER.indexOf(cur);
       return STEP_ORDER[Math.max(i - 1, 0)];
     });
+  }, []);
+
+  const setDraftToken = useCallback((token: string) => {
+    setData((d) => ({ ...d, draftToken: token }));
+  }, []);
+
+  const setPassword = useCallback((pw: string) => {
+    setData((d) => ({ ...d, password: pw }));
   }, []);
 
   const setSurveyAnswer = useCallback((id: string, value: AnswerValue) => {
@@ -179,9 +194,11 @@ export function RegistrationProvider({
     goTo,
     next,
     back,
+    setDraftToken,
     setSurveyAnswer,
     skipSurvey,
     setContact,
+    setPassword,
     setVerification,
     setAiAnswer,
     setAiAnswers,

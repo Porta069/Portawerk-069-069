@@ -11,7 +11,7 @@ import LegalConsentBox from "@/app/components/LegalConsent";
 import { SectionLabel, PrimaryButton } from "@/app/components/ui";
 
 export default function Step5Legal() {
-  const { data, setLegal, next } = useRegistration();
+  const { data, setLegal, next, setDraftToken } = useRegistration();
   const { login } = useAuth();
 
   const [loading, setLoading] = useState(false);
@@ -21,16 +21,42 @@ export default function Step5Legal() {
 
   const handleComplete = async () => {
     if (!canComplete) return;
+
+    // Passwort geht bei Reload verloren (nicht persistiert) — dann zurück zu Schritt 2.
+    if (data.password.length < 10) {
+      setError(
+        "Dein Passwort fehlt (nach einem Neuladen wird es aus Sicherheitsgründen nicht gespeichert). Bitte gehe zu Schritt 2 (Kontaktdaten) zurück und gib es erneut ein."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
+
+    // Sicherstellen, dass eine gültige Registrierungs-Sitzung existiert.
+    let draftToken = data.draftToken;
+    if (!draftToken) {
+      const started = await api.startRegistration();
+      if (!started.ok) {
+        setLoading(false);
+        setError(started.error);
+        return;
+      }
+      draftToken = started.data.draftToken;
+      setDraftToken(draftToken);
+    }
+
     const res = await api.completeRegistration({
-      contact: data.contact,
-      surveyAnswers: data.surveyAnswers,
-      aiAnswers: data.aiAnswers,
+      draftToken,
+      firstName: data.contact.firstName.trim(),
+      lastName: data.contact.lastName.trim(),
+      email: data.contact.email.trim(),
+      phone: data.contact.phone.trim(),
+      password: data.password,
     });
     setLoading(false);
     if (res.ok) {
-      login(res.data); // "Session" setzen → Dashboard verfügbar
+      login(res.data); // JWT-Session setzen → Dashboard verfügbar
       next(); // → success
     } else {
       setError(res.error);

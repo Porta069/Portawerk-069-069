@@ -8,7 +8,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Loader2, RotateCcw, Sparkles, AlertCircle } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
-import { getProfileQuestions, getFollowUpQuestions, submitAiAnswers } from "@/lib/aiService";
+import { getProfileQuestions, getFollowUpQuestions } from "@/lib/aiService";
+import { api } from "@/lib/api";
 import QuestionComponent from "@/app/components/QuestionComponent";
 import { SectionLabel, PrimaryButton } from "@/app/components/ui";
 import type { Question, AnswerValue } from "@/lib/types";
@@ -68,7 +69,10 @@ export default function Step4AiQuestions() {
       setFollowUpAdded(true);
     }
 
-    await submitAiAnswers(data.aiAnswers);
+    // KI-Antworten opak als Wizard-Step 4 speichern (blockiert bei Fehler nicht).
+    if (data.draftToken) {
+      await api.saveStep(data.draftToken, 4, { aiAnswers: data.aiAnswers });
+    }
     setBusy(false);
     next();
   };

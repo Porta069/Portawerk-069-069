@@ -3,10 +3,12 @@
 // ─── Registrierungs-Shell ─────────────────────────────────────────────────────
 // Navbar + Fortschritt + dunkler Kopfbereich + animierter Schrittinhalt.
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hammer, ArrowLeft, Loader2 } from "lucide-react";
 import { useRegistration, type RegStep } from "@/app/context/RegistrationContext";
+import { api } from "@/lib/api";
 import { ProgressBar, StepIndicators, type StepDef } from "@/app/components/ProgressBar";
 
 import Step1Survey from "./steps/Step1Survey";
@@ -52,7 +54,18 @@ const HEAD: Record<RegStep, { h: string; s: string }> = {
 const CONTENT_STEPS = 5; // survey…legal
 
 export default function RegisterFlow() {
-  const { step, stepIndex, hydrated, back } = useRegistration();
+  const { step, stepIndex, hydrated, back, data, setDraftToken } = useRegistration();
+  const startingRef = useRef(false);
+
+  // Registrierungs-Sitzung (draftToken) einmalig starten, sobald hydratisiert.
+  useEffect(() => {
+    if (!hydrated || data.draftToken || startingRef.current) return;
+    startingRef.current = true;
+    api.startRegistration().then((res) => {
+      if (res.ok) setDraftToken(res.data.draftToken);
+      else startingRef.current = false; // erlaubt späteren Retry
+    });
+  }, [hydrated, data.draftToken, setDraftToken]);
 
   if (!hydrated) {
     return (

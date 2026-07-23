@@ -1,8 +1,9 @@
 "use client";
 
 // ─── Auth-State ───────────────────────────────────────────────────────────────
-// Hält den angemeldeten Nutzer und persistiert die "Session" in localStorage.
-// Ersetzt später ein echtes JWT / Cookie-Session-Handling (Backend).
+// Hält den angemeldeten Nutzer (PublicUser) + das JWT (accessToken) und
+// persistiert die Session in localStorage. Das Backend gibt den Token im
+// Response-Body zurück, daher localStorage (Standard für Token-in-Body-APIs).
 
 import {
   createContext,
@@ -11,45 +12,69 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import type { User } from "@/lib/types";
+import type { AuthSession, PublicUser } from "@/lib/api";
 
-const STORAGE_KEY = "portawerk_user_v1";
+const STORAGE_KEY = "portawerk_session_v1";
 
 interface AuthContextValue {
-  user: User | null;
+  user: PublicUser | null;
+  token: string | null;
   isAuthenticated: boolean;
   hydrated: boolean;
-  login: (user: User) => void;
+  login: (session: AuthSession) => void;
+  setUser: (user: PublicUser) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUserState] = useState<PublicUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setUser(JSON.parse(raw) as User);
+      if (raw) {
+        const s = JSON.parse(raw) as { user: PublicUser; token: string };
+        setUserState(s.user);
+        setToken(s.token);
+      }
     } catch {
       /* ignore */
     }
     setHydrated(true);
   }, []);
 
-  const login = useCallback((u: User) => {
-    setUser(u);
+  const login = useCallback((session: AuthSession) => {
+    setUserState(session.user);
+    setToken(session.accessToken);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ user: session.user, token: session.accessToken })
+      );
     } catch {
       /* ignore */
     }
   }, []);
 
+  const setUser = useCallback((u: PublicUser) => {
+    setUserState(u);
+    setToken((t) => {
+      try {
+        if (t) localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: u, token: t }));
+      } catch {
+        /* ignore */
+      }
+      return t;
+    });
+  }, []);
+
   const logout = useCallback(() => {
-    setUser(null);
+    setUserState(null);
+    setToken(null);
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -59,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, hydrated, login, logout }}
+      value={{ user, token, isAuthenticated: !!user && !!token, hydrated, login, setUser, logout }}
     >
       {children}
     </AuthContext.Provider>

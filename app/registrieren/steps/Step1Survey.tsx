@@ -5,6 +5,7 @@
 import { ArrowRight, SkipForward } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
 import { SURVEY_QUESTIONS } from "@/lib/constants";
+import { api } from "@/lib/api";
 import QuestionComponent from "@/app/components/QuestionComponent";
 import { PrimaryButton, GhostButton, SectionLabel } from "@/app/components/ui";
 
@@ -12,6 +13,13 @@ export default function Step1Survey() {
   const { data, setSurveyAnswer, skipSurvey, next } = useRegistration();
 
   const answered = Object.keys(data.surveyAnswers).length;
+
+  // Umfrage-Daten opak als Wizard-Step 1 speichern (Fehler blockieren nicht).
+  const persist = async (payload: Record<string, unknown>) => {
+    if (data.draftToken) {
+      await api.saveStep(data.draftToken, 1, payload);
+    }
+  };
 
   return (
     <>
@@ -47,13 +55,19 @@ export default function Step1Survey() {
           <GhostButton
             onClick={() => {
               skipSurvey();
+              void persist({ skipped: true });
               next();
             }}
           >
             <SkipForward className="w-4 h-4" />
             Überspringen
           </GhostButton>
-          <PrimaryButton onClick={next}>
+          <PrimaryButton
+            onClick={() => {
+              void persist({ skipped: false, answers: data.surveyAnswers });
+              next();
+            }}
+          >
             Weiter
             <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
           </PrimaryButton>

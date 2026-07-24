@@ -1,68 +1,51 @@
 "use client";
 
-// ─── Dashboard (nach Login) ───────────────────────────────────────────────────
-// Validiert das JWT über GET /auth/me und zeigt die echten Kontodaten.
+// ─── Firmen-Dashboard ─────────────────────────────────────────────────────────
+// Nur für EMPLOYER-Konten. Validiert das JWT über /auth/me und prüft die Rolle.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Hammer,
+  Building2,
   LogOut,
-  Mail,
-  Phone,
-  User as UserIcon,
-  CalendarClock,
-  ShieldCheck,
+  Users,
   Search,
-  UserCog,
-  Bell,
+  FileText,
+  Handshake,
+  Mail,
   Loader2,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { api } from "@/lib/api";
 
-function fmtDate(iso: string | null): string {
-  if (!iso) return "—";
-  try {
-    return new Date(iso).toLocaleDateString("de-DE", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  } catch {
-    return "—";
-  }
-}
-
-export default function DashboardPage() {
+export default function UnternehmenDashboardPage() {
   const router = useRouter();
   const { user, token, hydrated, logout, setUser } = useAuth();
   const [checking, setChecking] = useState(true);
 
-  // Auth-Guard + Token gegen /auth/me validieren
   useEffect(() => {
     if (!hydrated) return;
     if (!token) {
-      router.replace("/login");
+      router.replace("/unternehmen/login");
       return;
     }
     let active = true;
     api.me(token).then((res) => {
       if (!active) return;
-      if (res.ok) {
-        if (res.data.role === "EMPLOYER") {
-          router.replace("/unternehmen/dashboard");
-          return;
-        }
-        setUser(res.data);
-        setChecking(false);
-      } else {
-        // Token ungültig/abgelaufen → abmelden
+      if (!res.ok) {
         logout();
-        router.replace("/login");
+        router.replace("/unternehmen/login");
+        return;
       }
+      if (res.data.role !== "EMPLOYER") {
+        // Bewerber gehören ins normale Dashboard.
+        router.replace("/dashboard");
+        return;
+      }
+      setUser(res.data);
+      setChecking(false);
     });
     return () => {
       active = false;
@@ -84,17 +67,11 @@ export default function DashboardPage() {
     );
   }
 
-  const profileItems = [
-    { icon: UserIcon, label: "Name", value: `${user.firstName} ${user.lastName}`.trim() || "—" },
-    { icon: Mail, label: "E-Mail", value: user.email },
-    { icon: Phone, label: "Telefon", value: user.phone || "—" },
-    { icon: CalendarClock, label: "Mitglied seit", value: fmtDate(user.createdAt) },
-  ];
-
   const features = [
-    { icon: Search, title: "Passende Jobs", desc: "Stellen, die zu deinem Profil passen — bald verfügbar." },
-    { icon: Bell, title: "Vermittlungsanfragen", desc: "Betriebe, die dich kontaktieren möchten." },
-    { icon: UserCog, title: "Profil bearbeiten", desc: "Gewerke, Erfahrung & Verfügbarkeit anpassen." },
+    { icon: Search, title: "Fachkräfte suchen", desc: "Vorselektierte Handwerker:innen nach Gewerk & Region finden." },
+    { icon: Users, title: "Kandidaten-Pool", desc: "Für dich freigeschaltete Profile einsehen." },
+    { icon: Handshake, title: "Anfragen stellen", desc: "Passende Fachkräfte kontaktieren — diskret über uns." },
+    { icon: FileText, title: "Vertrag & Abrechnung", desc: "Deine Konditionen und Rechnungen im Blick." },
   ];
 
   return (
@@ -104,10 +81,10 @@ export default function DashboardPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-12 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
+              <Building2 className="w-4 h-4 text-primary" strokeWidth={2} />
             </div>
             <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-              PortaWerk
+              PortaWerk <span className="text-accent">Business</span>
             </span>
           </Link>
           <button
@@ -128,7 +105,7 @@ export default function DashboardPage() {
         <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-8">
           <span className="flex items-center gap-3 text-accent text-[10px] font-semibold tracking-[0.22em] uppercase mb-4">
             <span className="w-8 h-[2px] bg-accent" />
-            Dein Dashboard
+            Firmen-Bereich
           </span>
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
@@ -137,11 +114,11 @@ export default function DashboardPage() {
             className="text-white font-bold"
             style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4vw, 3rem)" }}
           >
-            Willkommen, {user.firstName || "zurück"}.
+            Willkommen, {user.companyName || `${user.firstName} ${user.lastName}`.trim()}.
           </motion.h1>
           <p className="text-white/45 text-base mt-3 max-w-lg leading-relaxed">
-            Dein Profil ist aktiv. Sobald passende Betriebe gefunden sind, erscheinen
-            sie hier — wir melden uns zusätzlich persönlich.
+            Dein Firmenzugang ist aktiv. Hier findest du bald passende Fachkräfte
+            und kannst Anfragen stellen.
           </p>
         </div>
       </div>
@@ -152,62 +129,28 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white mb-6"
+          className="bg-white mb-6 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           style={{ border: "1px solid #E5E7EB" }}
         >
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #E5E7EB" }}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
-              Dein Konto
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-1" style={{ color: "rgba(26,26,46,0.4)" }}>
+              Firmenkonto
             </p>
-            <span
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1"
-              style={{ background: "rgba(34,197,94,0.10)", color: "#16A34A", border: "1px solid rgba(34,197,94,0.3)" }}
-            >
-              <ShieldCheck className="w-3 h-3" />
-              {user.status === "ACTIVE" ? "Aktiv" : user.status}
-            </span>
+            <p className="text-primary font-semibold">{user.companyName || "—"}</p>
+            <p className="text-sm mt-0.5 flex items-center gap-1.5" style={{ color: "#6B7280" }}>
+              <Mail className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+              {user.email}
+            </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x" style={{ borderColor: "#F3F4F6" }}>
-            {profileItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className="px-6 py-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em]" style={{ color: "rgba(26,26,46,0.4)" }}>
-                      {item.label}
-                    </span>
-                  </div>
-                  <p className="text-sm font-medium text-primary leading-snug break-all">{item.value}</p>
-                </div>
-              );
-            })}
-          </div>
+          <span
+            className="self-start inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1"
+            style={{ background: "rgba(34,197,94,0.10)", color: "#16A34A", border: "1px solid rgba(34,197,94,0.3)" }}
+          >
+            Partnerbetrieb
+          </span>
         </motion.div>
 
-        {/* CTA: Unterlagen hochladen */}
-        <Link
-          href="/unterlagen"
-          className="group flex items-center justify-between gap-4 px-6 py-5 mb-6 transition-colors"
-          style={{ background: "#1A1A2E" }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center" style={{ background: "#E8A838" }}>
-              <UserCog className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-white font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-                Unterlagen hochladen
-              </p>
-              <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Lebenslauf, Foto & Zeugnisse einreichen — erhöht deine Vermittlungschancen.
-              </p>
-            </div>
-          </div>
-          <span className="text-accent text-sm font-semibold group-hover:translate-x-1 transition-transform">→</span>
-        </Link>
-
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-2 gap-5">
           {features.map((f, i) => {
             const Icon = f.icon;
             return (

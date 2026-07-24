@@ -60,6 +60,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/unternehmen/login" className="text-white/45 text-sm hover:text-white transition-colors duration-200">
+                  Firmen-Login
+                </Link>
+              </li>
+              <li>
                 <Link href="/registrieren" className="text-accent text-sm hover:text-amber-300 transition-colors duration-200">
                   Jetzt registrieren
                 </Link>

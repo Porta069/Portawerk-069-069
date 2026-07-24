@@ -10,12 +10,16 @@ export type ApiResult<T> =
   | { ok: false; error: string; status?: number };
 
 // ── Backend-Typen (spiegeln PublicUser / AuthSession / WizardProgress) ──
+export type UserRole = "APPLICANT" | "EMPLOYER";
+
 export interface PublicUser {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
+  role: UserRole;
+  companyName: string | null;
   status: string;
   createdAt: string;
   lastLoginAt: string | null;
@@ -177,11 +181,37 @@ export const api = {
     });
   },
 
-  /** POST /otp/verify */
+  /** POST /otp/verify — liefert bei Erfolg einen verificationToken. */
   verifyOtp(channel: OtpChannel, contact: string, code: string) {
-    return request<unknown>("/otp/verify", {
-      method: "POST",
-      body: { channel, contact, code },
-    });
+    return request<{ verified: boolean; verificationToken: string; tokenExpiresAt: string }>(
+      "/otp/verify",
+      { method: "POST", body: { channel, contact, code } }
+    );
+  },
+
+  /**
+   * POST /applications — Bewerbung mit Datei-Uploads (multipart/form-data).
+   * FormData muss enthalten: Textfelder + Dateien (cv/photo/qualifications) +
+   * verificationToken (aus /otp/verify) + consent.
+   */
+  async submitApplication(form: FormData): Promise<ApiResult<{ id: string }>> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/applications`, {
+        method: "POST",
+        body: form, // Content-Type setzt der Browser inkl. boundary selbst
+      });
+      const text = await res.text();
+      const json = text ? JSON.parse(text) : null;
+      if (!res.ok) {
+        const raw = extractMessage(json) ?? `Fehler (${res.status})`;
+        return { ok: false, error: translate(raw), status: res.status };
+      }
+      return { ok: true, data: json as { id: string } };
+    } catch {
+      return {
+        ok: false,
+        error: "Verbindung zum Server fehlgeschlagen. Bitte erneut versuchen.",
+      };
+    }
   },
 };

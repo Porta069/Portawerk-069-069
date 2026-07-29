@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Hammer, ExternalLink } from "lucide-react";
 
 const NAV = [
-  { href: "#wie-es-funktioniert", label: "Wie es funktioniert" },
-  { href: "#praemie", label: "200€ Prämie" },
-  { href: "#betriebe", label: "Für Betriebe" },
+  { href: "/", label: "Für Handwerker" },
+  { href: "/arbeitgeber", label: "Für Arbeitgeber" },
+  { href: "/empfehlen", label: "Empfehlen & verdienen" },
 ];
 
 const LEGAL = [
@@ -46,12 +46,12 @@ export default function Footer() {
             <ul className="space-y-3.5">
               {NAV.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-white/45 text-sm hover:text-white transition-colors duration-200"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li>

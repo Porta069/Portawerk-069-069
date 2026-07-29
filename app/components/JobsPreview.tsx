@@ -449,7 +449,7 @@ export default function JobsPreview() {
                         key={trade.gewerk}
                         href={`/registrieren?gewerk=${encodeURIComponent(trade.gewerk)}`}
                         aria-label={`Als ${trade.label} bewerben`}
-                        className="group relative aspect-square overflow-hidden bg-primary/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        className="group relative aspect-square overflow-hidden rounded-[1.75rem] bg-primary/5 shadow-sm hover:shadow-lg transition-shadow duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                       >
                         <Image
                           src={trade.img}

@@ -40,21 +40,26 @@ export default function ForBusinesses() {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 text-center"
       >
-        <span className="inline-flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-6">
-          <span className="w-8 h-[2px] bg-accent" />
-          Für Handwerksbetriebe
-          <span className="w-8 h-[2px] bg-accent" />
-        </span>
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <span className="w-10 h-[2px] bg-accent" />
+          <span className="text-accent text-xs font-semibold tracking-[0.22em] uppercase">
+            Sie sind Arbeitgeber?
+          </span>
+          <span className="w-10 h-[2px] bg-accent" />
+        </div>
 
         <h2
-          className="text-white font-bold text-3xl md:text-4xl leading-tight mb-4"
-          style={{ fontFamily: "var(--font-display)" }}
+          className="text-white font-bold leading-[1.05] mb-5 break-words hyphens-auto"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(2.4rem, 6.5vw, 4rem)",
+          }}
         >
-          Personal finden, das bleibt.
+          Für Handwerksbetriebe
         </h2>
-        <p className="text-white/60 text-base leading-relaxed max-w-xl mx-auto mb-12">
-          Wir übernehmen die Vorauswahl — Sie{" "}
-          <span className="text-white font-medium">zahlen nur, wenn es klappt</span>.
+        <p className="text-white/70 text-lg leading-relaxed max-w-xl mx-auto mb-12">
+          Personal finden, das bleibt — Sie{" "}
+          <span className="text-white font-semibold">zahlen nur, wenn es klappt</span>.
         </p>
 
         {/* 3 kompakte Vorteile */}

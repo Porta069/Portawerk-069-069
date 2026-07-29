@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Camera, ArrowRight } from "lucide-react";
+import { Hammer, ArrowRight } from "lucide-react";
 
 // Echte, handgeprüfte Handwerks-Fotografie (Quelle: Pexels, freie Lizenz).
 // Jedes Bild ist klickbar und startet die Registrierung mit vorausgewähltem Gewerk.
@@ -69,8 +69,9 @@ export default function TradeGallery() {
             So sieht dein Handwerk aus
           </h2>
           <p className="text-muted text-lg leading-relaxed">
-            Keine gestellten Hochglanz-Models, keine KI-Bilder. Echte Arbeit, echtes
-            Werkzeug — so, wie du sie jeden Tag machst. Klick auf dein Gewerk und leg los.
+            Ob auf der Baustelle, in der Werkstatt oder beim Kunden vor Ort — hier
+            findest du Betriebe, die zu deinem Gewerk passen. Such dir deins aus und
+            leg los.
           </p>
         </motion.div>
 
@@ -125,7 +126,7 @@ export default function TradeGallery() {
           ))}
         </div>
 
-        {/* Ehrlicher Authentizitäts-Hinweis */}
+        {/* Auffangen: Gewerk nicht dabei? */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -133,10 +134,13 @@ export default function TradeGallery() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex items-center gap-2.5 mt-8 text-muted text-sm"
         >
-          <Camera className="w-4 h-4 text-accent flex-shrink-0" strokeWidth={1.75} />
+          <Hammer className="w-4 h-4 text-accent flex-shrink-0" strokeWidth={1.75} />
           <span>
-            Echte Handwerks-Fotografie —{" "}
-            <span className="text-primary font-medium">keine KI, keine Stock-Klischees</span>.
+            Dein Gewerk ist nicht dabei?{" "}
+            <Link href="/registrieren" className="text-primary font-medium underline underline-offset-2 hover:text-accent transition-colors">
+              Wir vermitteln in allen Handwerksberufen
+            </Link>
+            .
           </span>
         </motion.div>
       </div>

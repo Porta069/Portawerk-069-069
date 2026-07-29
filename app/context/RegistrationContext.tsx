@@ -20,6 +20,7 @@ import type {
   RegistrationData,
   VerificationState,
 } from "@/lib/types";
+import { GEWERKE } from "@/lib/constants";
 
 export type RegStep =
   | "survey"
@@ -86,6 +87,7 @@ export function RegistrationProvider({
 
   // ── Rehydrate from localStorage on mount ──
   useEffect(() => {
+    let base: RegistrationData = EMPTY;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
@@ -93,13 +95,33 @@ export function RegistrationProvider({
           step?: RegStep;
           data?: RegistrationData;
         };
-        if (parsed.data) setData({ ...EMPTY, ...parsed.data });
+        if (parsed.data) base = { ...EMPTY, ...parsed.data };
         // Erfolgsschritt nie wiederherstellen — sonst hängt man im "Fertig".
         if (parsed.step && parsed.step !== "success") setStep(parsed.step);
       }
     } catch {
       /* ignore corrupt storage */
     }
+
+    // ── Gewerk aus der Startseite vorbelegen (?gewerk=…) ──
+    // Ermöglicht die Micro-Conversion im Hero: ein Klick wählt schon ein Gewerk.
+    try {
+      const param = new URLSearchParams(window.location.search).get("gewerk");
+      if (param && GEWERKE.includes(param)) {
+        const existing = base.aiAnswers.ai_gewerke;
+        const alreadySet = Array.isArray(existing) && existing.length > 0;
+        if (!alreadySet) {
+          base = {
+            ...base,
+            aiAnswers: { ...base.aiAnswers, ai_gewerke: [param] },
+          };
+        }
+      }
+    } catch {
+      /* ignore — Vorbelegung ist rein optional */
+    }
+
+    setData(base);
     setHydrated(true);
   }, []);
 

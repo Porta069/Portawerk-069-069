@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const LINKS = [
   { href: "#wie-es-funktioniert", label: "Wie es funktioniert" },
   { href: "#praemie", label: "200€ Prämie" },
+  { href: "#faq", label: "Fragen" },
   { href: "#betriebe", label: "Für Betriebe" },
 ];
 

@@ -27,7 +27,7 @@ export default function BonusSection() {
                 className="absolute font-black text-primary/[0.06] leading-none"
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(7rem, 20vw, 13rem)",
+                  fontSize: "clamp(8rem, 23vw, 15rem)",
                   top: "6px",
                   left: "6px",
                 }}
@@ -39,7 +39,7 @@ export default function BonusSection() {
                 className="relative font-black text-accent leading-none"
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(7rem, 20vw, 13rem)",
+                  fontSize: "clamp(8rem, 23vw, 15rem)",
                 }}
               >
                 200€

@@ -181,16 +181,12 @@ export default function JobsPreview() {
 
         {/* Job Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {jobs.map((job, i) => {
+          {jobs.map((job) => {
             const Icon = job.icon;
             return (
-              <motion.article
+              <article
                 key={job.title}
-                initial={{ y: 48, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="group bg-white border border-border hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="group bg-white border border-border hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 flex flex-col"
               >
                 {/* Gold-Akzent oben */}
                 <div className="h-1 w-full bg-accent" />
@@ -272,7 +268,7 @@ export default function JobsPreview() {
                   <span>Registrieren &amp; matchen lassen</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </Link>
-              </motion.article>
+              </article>
             );
           })}
         </div>

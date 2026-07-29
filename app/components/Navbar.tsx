@@ -39,25 +39,27 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-7">
             {LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-white/60 hover:text-white text-sm transition-colors duration-200 tracking-wide"
+                className="text-white/60 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
               >
                 {link.label}
               </a>
             ))}
+            {/* Trenner zwischen Navigation und Konto-Aktionen */}
+            <span className="w-px h-5 bg-white/15" />
             <Link
               href="/login"
-              className="text-white/60 hover:text-white text-sm transition-colors duration-200 tracking-wide"
+              className="text-white/60 hover:text-white text-sm transition-colors duration-200"
             >
               Login
             </Link>
             <Link
               href="/registrieren"
-              className="bg-accent text-primary text-sm font-semibold px-5 py-2.5 hover:bg-amber-400 transition-colors duration-200"
+              className="bg-accent text-primary text-sm font-semibold px-5 py-2.5 hover:bg-amber-400 transition-colors duration-200 whitespace-nowrap"
             >
               Jetzt registrieren
             </Link>
@@ -65,7 +67,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-white p-1"
+            className="lg:hidden text-white p-1"
             aria-label="Menü öffnen"
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -80,7 +82,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden bg-[#1A1A2E] border-t border-white/10 overflow-hidden"
+            className="lg:hidden bg-[#1A1A2E] border-t border-white/10 overflow-hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-5">
               {LINKS.map((link) => (

@@ -31,21 +31,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glanz-Sweep für Haupt-CTAs — periodischer Schimmer mit Pause */
+/* Glanz-Sweep für Haupt-CTAs — gleichmäßiger Durchlauf, Glanz läuft komplett raus */
 @keyframes shimmer {
   0% {
-    transform: translateX(-220%) skewX(-16deg);
-  }
-  55% {
-    transform: translateX(340%) skewX(-16deg);
+    transform: translateX(-260%) skewX(-16deg);
   }
   100% {
-    transform: translateX(340%) skewX(-16deg);
+    transform: translateX(680%) skewX(-16deg);
   }
 }
 
 .shimmer-glint {
-  animation: shimmer 3.4s ease-in-out infinite;
+  animation: shimmer 2.9s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

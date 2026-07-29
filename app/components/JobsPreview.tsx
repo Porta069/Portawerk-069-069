@@ -60,31 +60,43 @@ const popularRoles = [
   "Dachdecker",
 ];
 
-// Alle abgedeckten Gewerke — vollständige Liste (auf Klick).
-const allRoles = [
-  "Elektriker / Elektroniker",
-  "Elektroniker Energietechnik",
-  "Anlagenmechaniker SHK",
-  "Installateur / Klempner",
-  "Heizungsbauer",
-  "Maler & Lackierer",
-  "Tischler / Schreiner",
-  "Zimmerer",
-  "Maurer",
-  "Betonbauer",
-  "Dachdecker",
-  "Fliesenleger",
-  "Metallbauer / Schlosser",
-  "KFZ-Mechatroniker",
-  "Trockenbauer",
-  "Stuckateur",
-  "Gerüstbauer",
-  "Estrichleger",
-  "Garten- & Landschaftsbau",
-  "Bodenleger",
-  "Feinwerkmechaniker",
-  "Bauhelfer",
+// Alle Gewerke — nach Fachbereich gruppiert (übersichtliche Spalten-Ansicht).
+const gewerkeGruppen = [
+  {
+    category: "Elektro & Energietechnik",
+    roles: ["Elektriker / Elektroniker", "Elektroniker Energietechnik"],
+  },
+  {
+    category: "Sanitär · Heizung · Klima",
+    roles: ["Anlagenmechaniker SHK", "Installateur / Klempner", "Heizungsbauer"],
+  },
+  {
+    category: "Holz & Ausbau",
+    roles: ["Tischler / Schreiner", "Zimmerer", "Trockenbauer", "Bodenleger"],
+  },
+  {
+    category: "Maler & Oberfläche",
+    roles: ["Maler & Lackierer", "Stuckateur", "Fliesenleger", "Estrichleger"],
+  },
+  {
+    category: "Rohbau & Außen",
+    roles: [
+      "Maurer",
+      "Betonbauer",
+      "Dachdecker",
+      "Gerüstbauer",
+      "Garten- & Landschaftsbau",
+      "Bauhelfer",
+    ],
+  },
+  {
+    category: "Metall & Mechanik",
+    roles: ["Metallbauer / Schlosser", "Feinwerkmechaniker", "KFZ-Mechatroniker"],
+  },
 ];
+
+// Flache Gesamtliste (für die Suche) — abgeleitet, damit nichts auseinanderläuft.
+const allRoles = gewerkeGruppen.flatMap((g) => g.roles);
 
 export default function JobsPreview() {
   const router = useRouter();
@@ -93,8 +105,6 @@ export default function JobsPreview() {
   const q = query.trim().toLowerCase();
 
   const matches = q ? allRoles.filter((role) => role.toLowerCase().includes(q)) : [];
-  // Was angezeigt wird: Suchtreffer > alle (aufgeklappt) > beliebte (Standard).
-  const visibleRoles = q ? matches : showAll ? allRoles : popularRoles;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -313,19 +323,95 @@ export default function JobsPreview() {
               </button>
             </form>
 
-            {/* Ergebnisse / beliebte Gewerke */}
-            <div className="mt-9 max-w-3xl mx-auto">
-              {visibleRoles.length > 0 ? (
-                <>
+            {/* Ergebnisse / Gewerke */}
+            <div className="mt-9">
+              {q ? (
+                // ── Suche aktiv: Treffer als Chips ──
+                matches.length > 0 ? (
+                  <div className="max-w-3xl mx-auto">
+                    <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-5">
+                      {matches.length} Treffer
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-2.5">
+                      {matches.map((role) => (
+                        <Link
+                          key={role}
+                          href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
+                          className="group inline-flex items-center gap-2 text-sm text-primary/80 border border-border px-4 py-2.5 hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+                        >
+                          {role}
+                          <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-2">
+                    <p className="text-muted text-base mb-4">
+                      Kein Treffer für{" "}
+                      <span className="text-primary font-medium">{query}</span> — aber
+                      keine Sorge, wir vermitteln in{" "}
+                      <span className="text-primary font-medium">
+                        allen Handwerksberufen
+                      </span>
+                      .
+                    </p>
+                    <Link
+                      href="/registrieren"
+                      className="group inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-6 py-3 hover:bg-accent hover:text-primary transition-colors duration-200"
+                    >
+                      Trotzdem kostenlos registrieren
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                )
+              ) : showAll ? (
+                // ── Alle Gewerke: nach Fachbereich in Spalten gelistet ──
+                <div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-9 max-w-4xl mx-auto text-left">
+                    {gewerkeGruppen.map((group) => (
+                      <div key={group.category}>
+                        <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+                          <span className="w-1.5 h-1.5 bg-accent flex-shrink-0" />
+                          <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary">
+                            {group.category}
+                          </h4>
+                        </div>
+                        <ul className="flex flex-col gap-2">
+                          {group.roles.map((role) => (
+                            <li key={role}>
+                              <Link
+                                href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
+                                className="group inline-flex items-center gap-1.5 text-sm text-primary/75 hover:text-accent transition-colors duration-200"
+                              >
+                                {role}
+                                <ArrowRight className="w-3 h-3 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-center mt-10">
+                    <button
+                      type="button"
+                      onClick={() => setShowAll(false)}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                    >
+                      Weniger anzeigen
+                      <ChevronDown className="w-4 h-4 rotate-180" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // ── Standard: beliebte Gewerke als Chips ──
+                <div className="max-w-3xl mx-auto">
                   <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-5">
-                    {q
-                      ? `${matches.length} ${matches.length === 1 ? "Treffer" : "Treffer"}`
-                      : showAll
-                        ? "Alle Gewerke"
-                        : "Beliebte Gewerke"}
+                    Beliebte Gewerke
                   </p>
                   <div className="flex flex-wrap justify-center gap-2.5">
-                    {visibleRoles.map((role) => (
+                    {popularRoles.map((role) => (
                       <Link
                         key={role}
                         href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
@@ -336,38 +422,16 @@ export default function JobsPreview() {
                       </Link>
                     ))}
                   </div>
-
-                  {/* Alle anzeigen / weniger — nur ohne aktive Suche */}
-                  {!q && (
-                    <div className="text-center mt-7">
-                      <button
-                        type="button"
-                        onClick={() => setShowAll((v) => !v)}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
-                      >
-                        {showAll ? "Weniger anzeigen" : "Alle 40+ Gewerke anzeigen"}
-                        <ChevronDown
-                          className={`w-4 h-4 transition-transform duration-200 ${showAll ? "rotate-180" : ""}`}
-                        />
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-center py-2">
-                  <p className="text-muted text-base mb-4">
-                    Kein Treffer für{" "}
-                    <span className="text-primary font-medium">{query}</span> — aber
-                    keine Sorge, wir vermitteln in{" "}
-                    <span className="text-primary font-medium">allen Handwerksberufen</span>.
-                  </p>
-                  <Link
-                    href="/registrieren"
-                    className="group inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-6 py-3 hover:bg-accent hover:text-primary transition-colors duration-200"
-                  >
-                    Trotzdem kostenlos registrieren
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                  <div className="text-center mt-7">
+                    <button
+                      type="button"
+                      onClick={() => setShowAll(true)}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                    >
+                      Alle 40+ Gewerke anzeigen
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

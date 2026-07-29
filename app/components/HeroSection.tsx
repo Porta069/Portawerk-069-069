@@ -72,7 +72,7 @@ export default function HeroSection() {
             className="text-primary text-lg font-medium mb-9"
           >
             Und <span className="text-accent font-black">200&nbsp;€ Belohnung</span>, wenn
-            du wieder im Handwerk durchstartest.
+            du über uns deinen neuen Job gefunden hast.
           </motion.p>
 
           {/* DER klare Registrieren-Button */}

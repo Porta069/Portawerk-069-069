@@ -12,8 +12,10 @@ import {
   EyeOff,
   Search,
   Check,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const jobs = [
   {
@@ -48,7 +50,17 @@ const jobs = [
   },
 ];
 
-// Alle abgedeckten Gewerke — als Tag-Wolke
+// Beliebteste Gewerke — standardmäßig als schnelle Auswahl (aufgeräumt).
+const popularRoles = [
+  "Elektriker / Elektroniker",
+  "Anlagenmechaniker SHK",
+  "Maler & Lackierer",
+  "Tischler / Schreiner",
+  "Maurer",
+  "Dachdecker",
+];
+
+// Alle abgedeckten Gewerke — vollständige Liste (auf Klick).
 const allRoles = [
   "Elektriker / Elektroniker",
   "Elektroniker Energietechnik",
@@ -75,11 +87,27 @@ const allRoles = [
 ];
 
 export default function JobsPreview() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
   const q = query.trim().toLowerCase();
-  const filteredRoles = q
-    ? allRoles.filter((role) => role.toLowerCase().includes(q))
-    : allRoles;
+
+  const matches = q ? allRoles.filter((role) => role.toLowerCase().includes(q)) : [];
+  // Was angezeigt wird: Suchtreffer > alle (aufgeklappt) > beliebte (Standard).
+  const visibleRoles = q ? matches : showAll ? allRoles : popularRoles;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const term = query.trim();
+    if (!term) {
+      router.push("/registrieren");
+      return;
+    }
+    const match = allRoles.find((r) => r.toLowerCase().includes(term.toLowerCase()));
+    router.push(
+      match ? `/registrieren?gewerk=${encodeURIComponent(match)}` : "/registrieren",
+    );
+  };
 
   return (
     <section className="py-28 bg-surface" id="stellen">
@@ -222,94 +250,128 @@ export default function JobsPreview() {
           </span>
         </motion.div>
 
-        {/* Such deinen Traumberuf — mit Live-Suche */}
+        {/* Such deinen Traumberuf — aufgeräumte, professionelle Suche */}
         <motion.div
-          initial={{ y: 24 }}
-          whileInView={{ y: 0 }}
+          initial={{ y: 24, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="border border-border bg-white p-6 sm:p-8 mb-10"
+          className="bg-white border border-border shadow-[0_24px_60px_-30px_rgba(26,26,46,0.3)] mb-10"
         >
-          <div className="mb-6 max-w-xl">
-            <h3
-              className="text-primary font-bold text-2xl sm:text-3xl mb-2 leading-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              Such deinen Traumberuf
-            </h3>
-            <p className="text-muted text-sm sm:text-base">
-              Über 40 Gewerke im Handwerk — tipp deinen Beruf ein und schau, ob wir
-              die passende Stelle für dich haben.
-            </p>
-          </div>
+          {/* Gold-Akzent oben (Konsistenz zu den Job-Karten) */}
+          <div className="h-1 w-full bg-accent" />
 
-          {/* Suchfeld */}
-          <div className="relative mb-6 max-w-xl">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted pointer-events-none"
-              strokeWidth={2}
-            />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Gewerk oder Beruf eingeben, z. B. Elektriker …"
-              aria-label="Gewerk oder Beruf suchen"
-              className="w-full pl-11 pr-10 py-3.5 text-sm sm:text-base text-primary border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 transition-colors"
-              style={{ background: "var(--color-surface)" }}
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                aria-label="Suche zurücksetzen"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary text-lg leading-none px-1"
+          <div className="px-6 sm:px-10 lg:px-14 py-12">
+            {/* Überschrift, zentriert */}
+            <div className="text-center max-w-xl mx-auto mb-8">
+              <h3
+                className="text-primary font-bold text-3xl sm:text-4xl mb-3 leading-tight"
+                style={{ fontFamily: "var(--font-display)" }}
               >
-                ×
-              </button>
-            )}
-          </div>
+                Such deinen Traumberuf
+              </h3>
+              <p className="text-muted text-base">
+                Über 40 Gewerke im Handwerk — tipp deinen Beruf ein und finde deine Stelle.
+              </p>
+            </div>
 
-          {/* Ergebnisse */}
-          {filteredRoles.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {filteredRoles.map((role) => (
-                <Link
-                  key={role}
-                  href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
-                  className="group inline-flex items-center gap-1.5 text-xs sm:text-sm text-primary/70 border border-border px-3 py-1.5 hover:border-accent hover:text-primary transition-colors duration-200"
-                >
-                  {role}
-                  <ArrowRight className="w-3 h-3 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-0 text-accent transition-all duration-200" />
-                </Link>
-              ))}
-              {!q && (
-                <Link
-                  href="/registrieren"
-                  className="group inline-flex items-center gap-1.5 text-xs sm:text-sm text-accent border border-accent/40 px-3 py-1.5 font-medium hover:bg-accent hover:text-primary hover:border-accent transition-colors duration-200"
-                >
-                  + viele weitere
-                  <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" />
-                </Link>
+            {/* Hochwertige Suchleiste mit Button */}
+            <form
+              onSubmit={handleSearch}
+              className="flex items-stretch max-w-2xl mx-auto border border-border bg-white transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 shadow-[0_12px_28px_-18px_rgba(26,26,46,0.4)]"
+            >
+              <div className="relative flex-1 flex items-center">
+                <Search
+                  className="absolute left-5 w-5 h-5 text-muted pointer-events-none"
+                  strokeWidth={2}
+                />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Gewerk oder Beruf, z. B. Elektriker …"
+                  aria-label="Gewerk oder Beruf suchen"
+                  className="w-full h-14 sm:h-16 pl-14 pr-9 text-base text-primary bg-transparent focus:outline-none"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery("")}
+                    aria-label="Suche zurücksetzen"
+                    className="absolute right-3 text-muted hover:text-primary text-xl leading-none px-1"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="shrink-0 h-14 sm:h-16 px-6 sm:px-9 bg-accent text-primary font-semibold text-base hover:bg-amber-400 transition-colors inline-flex items-center gap-2"
+              >
+                <Search className="w-[18px] h-[18px] sm:hidden" strokeWidth={2.5} />
+                <span className="hidden sm:inline">Suchen</span>
+              </button>
+            </form>
+
+            {/* Ergebnisse / beliebte Gewerke */}
+            <div className="mt-9 max-w-3xl mx-auto">
+              {visibleRoles.length > 0 ? (
+                <>
+                  <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-5">
+                    {q
+                      ? `${matches.length} ${matches.length === 1 ? "Treffer" : "Treffer"}`
+                      : showAll
+                        ? "Alle Gewerke"
+                        : "Beliebte Gewerke"}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2.5">
+                    {visibleRoles.map((role) => (
+                      <Link
+                        key={role}
+                        href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
+                        className="group inline-flex items-center gap-2 text-sm text-primary/80 border border-border px-4 py-2.5 hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+                      >
+                        {role}
+                        <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Alle anzeigen / weniger — nur ohne aktive Suche */}
+                  {!q && (
+                    <div className="text-center mt-7">
+                      <button
+                        type="button"
+                        onClick={() => setShowAll((v) => !v)}
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                      >
+                        {showAll ? "Weniger anzeigen" : "Alle 40+ Gewerke anzeigen"}
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-200 ${showAll ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-2">
+                  <p className="text-muted text-base mb-4">
+                    Kein Treffer für{" "}
+                    <span className="text-primary font-medium">{query}</span> — aber
+                    keine Sorge, wir vermitteln in{" "}
+                    <span className="text-primary font-medium">allen Handwerksberufen</span>.
+                  </p>
+                  <Link
+                    href="/registrieren"
+                    className="group inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-6 py-3 hover:bg-accent hover:text-primary transition-colors duration-200"
+                  >
+                    Trotzdem kostenlos registrieren
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               )}
             </div>
-          ) : (
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-1">
-              <p className="text-muted text-sm">
-                Kein Treffer für{" "}
-                <span className="text-primary font-medium">{query}</span> — aber wir
-                vermitteln in{" "}
-                <span className="text-primary font-medium">allen Handwerksberufen</span>.
-              </p>
-              <Link
-                href="/registrieren"
-                className="group inline-flex items-center gap-2 text-accent text-sm font-semibold hover:gap-3 transition-all duration-200 whitespace-nowrap"
-              >
-                Trotzdem registrieren
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          )}
+          </div>
         </motion.div>
 
         {/* Bottom CTA */}

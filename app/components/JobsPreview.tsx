@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Lock,
@@ -10,6 +11,7 @@ import {
   PaintBucket,
   ArrowRight,
   EyeOff,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -76,6 +78,12 @@ function RedactedBar({ width = "60%" }: { width?: string }) {
 }
 
 export default function JobsPreview() {
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const filteredRoles = q
+    ? allRoles.filter((role) => role.toLowerCase().includes(q))
+    : allRoles;
+
   return (
     <section className="py-28 bg-surface" id="stellen">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -194,30 +202,90 @@ export default function JobsPreview() {
           })}
         </div>
 
-        {/* Alle Gewerke — Tag-Wolke */}
+        {/* Such deinen Traumberuf — mit Live-Suche */}
         <motion.div
           initial={{ y: 24 }}
           whileInView={{ y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="border border-border bg-white p-6 mb-10"
+          className="border border-border bg-white p-6 sm:p-8 mb-10"
         >
-          <p className="text-[10px] text-muted uppercase tracking-wider font-medium mb-4">
-            Alle inkludierten Gewerke
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {allRoles.map((role) => (
-              <span
-                key={role}
-                className="inline-block text-xs text-primary/70 border border-border px-3 py-1.5 hover:border-accent hover:text-primary transition-colors duration-200"
-              >
-                {role}
-              </span>
-            ))}
-            <span className="inline-block text-xs text-accent border border-accent/40 px-3 py-1.5 font-medium">
-              + viele weitere
-            </span>
+          <div className="mb-6 max-w-xl">
+            <h3
+              className="text-primary font-bold text-2xl sm:text-3xl mb-2 leading-tight"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Such deinen Traumberuf
+            </h3>
+            <p className="text-muted text-sm sm:text-base">
+              Über 40 Gewerke im Handwerk — tipp deinen Beruf ein und schau, ob wir
+              die passende Stelle für dich haben.
+            </p>
           </div>
+
+          {/* Suchfeld */}
+          <div className="relative mb-6 max-w-xl">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted pointer-events-none"
+              strokeWidth={2}
+            />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Gewerk oder Beruf eingeben, z. B. Elektriker …"
+              aria-label="Gewerk oder Beruf suchen"
+              className="w-full pl-11 pr-10 py-3.5 text-sm sm:text-base text-primary border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 transition-colors"
+              style={{ background: "var(--color-surface)" }}
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Suche zurücksetzen"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary text-lg leading-none px-1"
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          {/* Ergebnisse */}
+          {filteredRoles.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {filteredRoles.map((role) => (
+                <Link
+                  key={role}
+                  href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
+                  className="group inline-flex items-center gap-1.5 text-xs sm:text-sm text-primary/70 border border-border px-3 py-1.5 hover:border-accent hover:text-primary transition-colors duration-200"
+                >
+                  {role}
+                  <ArrowRight className="w-3 h-3 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-0 text-accent transition-all duration-200" />
+                </Link>
+              ))}
+              {!q && (
+                <span className="inline-block text-xs sm:text-sm text-accent border border-accent/40 px-3 py-1.5 font-medium">
+                  + viele weitere
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-1">
+              <p className="text-muted text-sm">
+                Kein Treffer für{" "}
+                <span className="text-primary font-medium">{query}</span> — aber wir
+                vermitteln in{" "}
+                <span className="text-primary font-medium">allen Handwerksberufen</span>.
+              </p>
+              <Link
+                href="/registrieren"
+                className="group inline-flex items-center gap-2 text-accent text-sm font-semibold hover:gap-3 transition-all duration-200 whitespace-nowrap"
+              >
+                Trotzdem registrieren
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          )}
         </motion.div>
 
         {/* Bottom CTA */}

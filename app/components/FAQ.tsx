@@ -28,14 +28,6 @@ const FAQS: { q: string; a: string }[] = [
     q: "Bin ich zu irgendetwas verpflichtet?",
     a: "Überhaupt nicht. Du bekommst passende Angebote und sagst bei jedem einzeln Ja oder Nein. Kein Vertrag, keine Kosten, keine versteckten Haken.",
   },
-  {
-    q: "Für welche Gewerke ist das gedacht?",
-    a: "Für alle: Elektrik, Heizung/SHK, Maler, Tischler, Maurer, Dachdecker, Metallbau, Fliesenleger und viele mehr. Wenn du im Handwerk arbeitest, bist du richtig.",
-  },
-  {
-    q: "Was passiert mit meinen Daten?",
-    a: "Deine Daten werden verschlüsselt gespeichert und ausschließlich intern genutzt. Sie werden niemals ohne deine ausdrückliche Zustimmung an einen Betrieb weitergegeben.",
-  },
 ];
 
 export default function FAQ() {

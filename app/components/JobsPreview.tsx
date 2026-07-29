@@ -264,9 +264,13 @@ export default function JobsPreview() {
                 </Link>
               ))}
               {!q && (
-                <span className="inline-block text-xs sm:text-sm text-accent border border-accent/40 px-3 py-1.5 font-medium">
+                <Link
+                  href="/registrieren"
+                  className="group inline-flex items-center gap-1.5 text-xs sm:text-sm text-accent border border-accent/40 px-3 py-1.5 font-medium hover:bg-accent hover:text-primary hover:border-accent transition-colors duration-200"
+                >
                   + viele weitere
-                </span>
+                  <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </Link>
               )}
             </div>
           ) : (

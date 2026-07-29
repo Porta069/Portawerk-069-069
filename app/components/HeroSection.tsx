@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 // Kurze Vertrauens-Punkte direkt unter dem CTA.
-const TRUST = ["100 % kostenlos", "Lebenslauf gratis dazu", "200 € Startprämie"];
+const TRUST = ["100 % kostenlos", "Lebenslauf gratis dazu", "Ohne Bewerbungsstress"];
 
 export default function HeroSection() {
   return (
@@ -63,6 +63,32 @@ export default function HeroSection() {
             <span className="text-primary font-semibold">Lebenslauf erstellen wir kostenlos</span>.
             Kein Aufwand, kein Risiko.
           </motion.p>
+
+          {/* Markantes 200-€-Belohnungs-Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-flex items-stretch mb-9 shadow-[0_12px_30px_-12px_rgba(232,168,56,0.75)]"
+          >
+            <div className="flex items-center bg-accent px-5 py-3">
+              <span
+                className="text-primary font-black leading-none whitespace-nowrap"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(2rem, 5.5vw, 2.9rem)",
+                }}
+              >
+                200&nbsp;€
+              </span>
+            </div>
+            <div className="flex items-center bg-white border border-l-0 border-accent/40 px-4 py-2.5">
+              <span className="text-primary text-sm font-semibold leading-snug">
+                Belohnung, wenn du wieder
+                <br className="hidden sm:block" /> im Handwerk durchstartest
+              </span>
+            </div>
+          </motion.div>
 
           {/* DER klare Registrieren-Button */}
           <motion.div

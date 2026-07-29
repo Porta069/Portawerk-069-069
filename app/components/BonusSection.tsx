@@ -21,13 +21,13 @@ export default function BonusSection() {
               Deine Belohnung
             </span>
 
-            <div className="relative select-none mb-6">
+            <div className="relative select-none mb-6 -ml-1 lg:-ml-3">
               {/* Shadow layer */}
               <span
                 className="absolute font-black text-primary/[0.06] leading-none"
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(8rem, 23vw, 15rem)",
+                  fontSize: "clamp(6.5rem, 17vw, 12rem)",
                   top: "6px",
                   left: "6px",
                 }}
@@ -39,7 +39,7 @@ export default function BonusSection() {
                 className="relative font-black text-accent leading-none"
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(8rem, 23vw, 15rem)",
+                  fontSize: "clamp(6.5rem, 17vw, 12rem)",
                 }}
               >
                 200€

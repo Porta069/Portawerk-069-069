@@ -17,14 +17,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PortaWerk — Handwerker-Jobs, diskret vermittelt",
+  title: "PortaWerk — Handwerker-Jobs finden, ohne dich zu bewerben",
   description:
-    "Die Jobbörse fürs Handwerk. Elektriker, Installateure, Maler, Tischler & mehr — vorselektiert werden statt Bewerbungen schreiben. Diskret, kostenlos, persönlich.",
+    "Kostenlose Jobvermittlung fürs Handwerk: Wir suchen die Jobs für dich, die Betriebe bewerben sich bei dir. Lebenslauf gratis, diskret & anonym, 200 € Startprämie. Elektriker, SHK, Maler, Tischler & mehr.",
   keywords: [
     "Handwerker Jobs",
+    "Job im Handwerk",
+    "Jobvermittlung Handwerk",
+    "Handwerk Jobs ohne Bewerbung",
+    "kostenloser Lebenslauf Handwerker",
     "Elektriker Job",
-    "Installateur Job",
+    "Installateur SHK Job",
     "Maler Job",
+    "Tischler Job",
     "Handwerk Stellenangebote",
     "PortaWerk",
   ],

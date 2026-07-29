@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 // Kurze Vertrauens-Punkte direkt unter dem CTA.
-const TRUST = ["100 % kostenlos", "Diskret & anonym", "200 € Startprämie"];
+const TRUST = ["100 % kostenlos", "Lebenslauf gratis dazu", "200 € Startprämie"];
 
 export default function HeroSection() {
   return (
@@ -33,7 +33,7 @@ export default function HeroSection() {
           >
             <span className="w-9 h-[2px] bg-accent" />
             <span className="text-accent text-xs font-semibold tracking-[0.2em] uppercase">
-              Jobvermittlung fürs Handwerk
+              Kostenlose Jobvermittlung fürs Handwerk
             </span>
           </motion.div>
 
@@ -47,9 +47,9 @@ export default function HeroSection() {
               fontSize: "clamp(2.4rem, 5.2vw, 4rem)",
             }}
           >
-            Finde deinen nächsten
+            Dein Job im Handwerk
             <br />
-            Job im Handwerk.
+            <span className="text-accent">findet dich.</span>
           </motion.h1>
 
           <motion.p
@@ -58,8 +58,10 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
             className="text-muted text-lg leading-relaxed mb-9 max-w-md"
           >
-            Kein Bewerbungsstress, kein Lebenslauf. Sag uns, was du kannst — wir finden
-            den Betrieb, der zu dir passt. Ganz ohne Risiko.
+            Du suchst nicht — <span className="text-primary font-semibold">wir suchen für dich</span>.
+            Die Betriebe bewerben sich bei dir, und deinen{" "}
+            <span className="text-primary font-semibold">Lebenslauf erstellen wir kostenlos</span>.
+            Kein Aufwand, kein Risiko.
           </motion.p>
 
           {/* DER klare Registrieren-Button */}

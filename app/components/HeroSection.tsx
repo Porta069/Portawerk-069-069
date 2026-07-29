@@ -72,10 +72,17 @@ export default function HeroSection() {
           >
             <Link
               href="/registrieren"
-              className="group inline-flex items-center justify-center gap-3 bg-accent text-primary font-bold px-9 py-5 text-lg shadow-[0_10px_30px_-8px_rgba(232,168,56,0.6)] hover:bg-amber-400 hover:shadow-[0_14px_36px_-8px_rgba(232,168,56,0.7)] transition-all duration-200"
+              className="group relative overflow-hidden inline-flex items-center justify-center gap-3 bg-accent text-primary font-bold px-9 py-5 text-lg shadow-[0_10px_30px_-8px_rgba(232,168,56,0.6)] hover:bg-amber-400 hover:shadow-[0_14px_36px_-8px_rgba(232,168,56,0.7)] transition-all duration-200"
             >
-              Jetzt kostenlos registrieren
-              <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+              <span className="relative z-10 inline-flex items-center gap-3">
+                Jetzt kostenlos registrieren
+                <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+              </span>
+              {/* Glanz-Sweep */}
+              <span
+                aria-hidden="true"
+                className="shimmer-glint pointer-events-none absolute top-0 left-0 z-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/60 to-transparent"
+              />
             </Link>
             <p className="text-muted text-sm mt-3 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500" style={{ animation: "pulse 2s infinite" }} />

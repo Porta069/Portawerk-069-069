@@ -1,42 +1,49 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Camera } from "lucide-react";
+import { Camera, ArrowRight } from "lucide-react";
 
 // Echte, handgeprüfte Handwerks-Fotografie (Quelle: Pexels, freie Lizenz).
-// Bewusst KEINE Menschen als benannte "Kunden" ausgegeben — nur echte Arbeitsszenen,
-// die die Gewerke authentisch zeigen, ohne eine falsche Behauptung aufzustellen.
-const PHOTOS: { src: string; trade: string; alt: string }[] = [
+// Jedes Bild ist klickbar und startet die Registrierung mit vorausgewähltem Gewerk.
+// `value` = exakter GEWERKE-Wert aus lib/constants (für die Vorbelegung im Funnel).
+const PHOTOS: { src: string; trade: string; value: string; alt: string }[] = [
   {
     src: "/images/elektriker-werkstatt.jpg",
-    trade: "Elektrotechnik",
-    alt: "Erfahrener Elektriker repariert konzentriert ein Gerät in seiner Werkstatt",
+    trade: "Elektriker",
+    value: "Elektriker / Elektroniker",
+    alt: "Elektriker bei der Arbeit an einem Gerät in der Werkstatt",
   },
   {
     src: "/images/shk-heizung.jpg",
-    trade: "SHK · Heizung",
-    alt: "Monteur montiert mit Rohrzange und Arbeitshandschuhen einen Heizkörper",
+    trade: "Heizung & Sanitär",
+    value: "Installateur / Klempner (SHK)",
+    alt: "Monteur montiert einen Heizkörper",
   },
   {
     src: "/images/tischler-hobel.jpg",
     trade: "Tischler",
-    alt: "Tischler bearbeitet ein Werkstück mit dem Handhobel in der Holzwerkstatt",
+    value: "Tischler / Schreiner",
+    alt: "Tischler bearbeitet ein Werkstück mit dem Handhobel",
   },
   {
     src: "/images/maler-leiter.jpg",
-    trade: "Maler · Ausbau",
-    alt: "Maler auf der Leiter klebt vor dem Streichen die Deckenkante ab",
+    trade: "Maler",
+    value: "Maler & Lackierer",
+    alt: "Maler streicht eine Wand von der Leiter aus",
   },
   {
     src: "/images/metallbau-schweisser.jpg",
-    trade: "Metallbau",
-    alt: "Metallbauer schweißt mit Schutzschild an einem Werkstück, Funken sprühen",
+    trade: "Metallbauer",
+    value: "Metallbauer / Schlosser",
+    alt: "Metallbauer beim Schweißen",
   },
   {
     src: "/images/maurer-ziegel.jpg",
-    trade: "Maurer · Bau",
-    alt: "Maurer setzt mit Kelle und Mörtel einen roten Ziegel entlang der Maurerschnur",
+    trade: "Maurer",
+    value: "Maurer / Betonbauer",
+    alt: "Maurer setzt einen Ziegel mit der Kelle",
   },
 ];
 
@@ -63,14 +70,13 @@ export default function TradeGallery() {
           </h2>
           <p className="text-muted text-lg leading-relaxed">
             Keine gestellten Hochglanz-Models, keine KI-Bilder. Echte Arbeit, echtes
-            Werkzeug — so, wie du sie jeden Tag machst. Für dein Gewerk ist der
-            passende Betrieb dabei.
+            Werkzeug — so, wie du sie jeden Tag machst. Klick auf dein Gewerk und leg los.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           {PHOTOS.map((photo, i) => (
-            <motion.figure
+            <motion.div
               key={photo.src}
               initial={{ y: 28, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -80,34 +86,46 @@ export default function TradeGallery() {
                 delay: (i % 3) * 0.08,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="group relative aspect-[4/5] overflow-hidden bg-primary/5"
             >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                sizes="(max-width: 768px) 50vw, 33vw"
-                className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
-              />
-              {/* Lesbarkeits-Verlauf für das Label */}
-              <div
-                className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(26,26,46,0.72) 0%, transparent 100%)",
-                }}
-              />
-              <figcaption className="absolute bottom-0 left-0 flex items-center gap-2 px-4 py-3.5">
-                <span className="w-5 h-[2px] bg-accent" />
-                <span className="text-white text-sm font-semibold tracking-wide">
-                  {photo.trade}
-                </span>
-              </figcaption>
-            </motion.figure>
+              <Link
+                href={`/registrieren?gewerk=${encodeURIComponent(photo.value)}`}
+                aria-label={`Als ${photo.trade} bewerben`}
+                className="group relative block aspect-[4/5] overflow-hidden bg-primary/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
+                />
+                {/* Lesbarkeits-Verlauf */}
+                <div
+                  className="absolute inset-0 pointer-events-none transition-opacity duration-300 group-hover:opacity-90"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(26,26,46,0.78) 0%, rgba(26,26,46,0.15) 42%, transparent 68%)",
+                  }}
+                />
+                {/* Label + Hover-CTA */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between gap-2">
+                  <span
+                    className="text-white text-base md:text-lg font-semibold"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {photo.trade}
+                  </span>
+                  <span className="flex items-center gap-1 text-accent text-xs font-semibold opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    Bewerben
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
 
-        {/* Ehrlicher Authentizitäts-Hinweis — trifft genau den Nerv der Zielgruppe */}
+        {/* Ehrlicher Authentizitäts-Hinweis */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

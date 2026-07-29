@@ -99,10 +99,17 @@ export default function HowItWorks() {
         >
           <Link
             href="/registrieren"
-            className="group inline-flex items-center gap-3 bg-accent text-primary font-bold px-10 py-6 text-xl hover:bg-amber-400 transition-colors duration-200 shadow-[0_12px_32px_-10px_rgba(232,168,56,0.6)]"
+            className="group relative overflow-hidden inline-flex items-center gap-3 bg-accent text-primary font-bold px-9 py-5 text-lg transition-shadow duration-300 shadow-[0_10px_28px_-10px_rgba(232,168,56,0.55)] hover:shadow-[0_16px_36px_-10px_rgba(26,26,46,0.45)]"
           >
-            Jetzt kostenlos starten
-            <ArrowRight className="w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" />
+            <span className="relative z-10 inline-flex items-center gap-3 transition-colors duration-300 group-hover:text-white">
+              Jetzt kostenlos starten
+              <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+            {/* Navy-Füllung steigt von unten auf */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 z-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
+            />
           </Link>
         </motion.div>
       </div>

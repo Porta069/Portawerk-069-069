@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Lock,
   MapPin,
   Clock,
   Zap,
@@ -12,6 +11,7 @@ import {
   ArrowRight,
   EyeOff,
   Search,
+  Check,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -22,7 +22,9 @@ const jobs = [
     category: "Elektro & Energietechnik",
     city: "München",
     schedule: "Vollzeit",
-    payDisplay: "3.000 – 3.800 €",
+    pay: "3.000 – 3.800 €",
+    perks: ["Unbefristet", "Firmenwagen"],
+    tag: "Stark gefragt",
   },
   {
     title: "Anlagenmechaniker SHK",
@@ -30,15 +32,19 @@ const jobs = [
     category: "Sanitär · Heizung · Klima",
     city: "Hamburg",
     schedule: "Vollzeit",
-    payDisplay: "2.900 – 3.600 €",
+    pay: "2.900 – 3.600 €",
+    perks: ["Weiterbildung", "30 Tage Urlaub"],
+    tag: "Neu",
   },
   {
-    title: "Maler & Lackierer (m/w/d)",
+    title: "Maler & Lackierer",
     icon: PaintBucket,
     category: "Ausbau & Oberfläche",
     city: "Berlin",
     schedule: "Voll- oder Teilzeit",
-    payDisplay: "2.600 – 3.200 €",
+    pay: "2.600 – 3.200 €",
+    perks: ["Gutes Team", "Flexible Zeiten"],
+    tag: "Neu",
   },
 ];
 
@@ -68,15 +74,6 @@ const allRoles = [
   "Bauhelfer",
 ];
 
-function RedactedBar({ width = "60%" }: { width?: string }) {
-  return (
-    <span
-      className="inline-block h-3 rounded-sm bg-gradient-to-r from-muted/25 to-muted/15"
-      style={{ width }}
-    />
-  );
-}
-
 export default function JobsPreview() {
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
@@ -93,114 +90,137 @@ export default function JobsPreview() {
           whileInView={{ y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-16"
+          className="mb-14 max-w-2xl"
         >
           <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
             <span className="w-8 h-[2px] bg-accent" />
-            Aktuelle Stellen
+            Offene Stellen
           </span>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <h2
-                className="text-primary font-bold leading-tight text-4xl md:text-5xl mb-3"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                Für alle Gewerke
-                <br />
-                im Handwerk
-              </h2>
-              <p className="text-muted text-base">
-                Elektrik, SHK, Ausbau, Bau, Metall — und alles dazwischen.
-              </p>
-            </div>
-            <div className="flex items-center gap-2.5 border border-border bg-white px-4 py-3 self-start md:self-auto">
-              <EyeOff className="w-4 h-4 text-accent flex-shrink-0" strokeWidth={2} />
-              <p className="text-primary/70 text-sm">
-                Kein Betrieb sieht deine
-                <br className="hidden sm:block" />
-                Daten ohne dein OK
-              </p>
-            </div>
-          </div>
+          <h2
+            className="text-primary font-bold leading-tight text-4xl md:text-5xl mb-4"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Jobs, die auf dich warten
+          </h2>
+          <p className="text-muted text-lg leading-relaxed">
+            Ein Vorgeschmack auf das, was im Handwerk gerade gesucht wird. Registrier
+            dich kostenlos — dann melden sich die passenden Betriebe{" "}
+            <span className="text-primary font-medium">direkt bei dir</span>.
+          </p>
         </motion.div>
 
         {/* Job Cards */}
-        <div className="grid md:grid-cols-3 gap-5 mb-10">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           {jobs.map((job, i) => {
             const Icon = job.icon;
             return (
-              <motion.div
+              <motion.article
                 key={job.title}
-                initial={{ y: 48 }}
-                whileInView={{ y: 0 }}
+                initial={{ y: 48, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="group bg-white border border-border hover:border-accent/40 transition-colors duration-300 overflow-hidden flex flex-col"
+                className="group bg-white border border-border hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col"
               >
-                <div
-                  className="px-5 py-4 flex items-center justify-between border-b border-border"
-                  style={{ background: "var(--color-accent-soft)" }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-accent flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4 h-4 text-primary" strokeWidth={1.75} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-muted uppercase tracking-wider">
-                        {job.category}
-                      </p>
-                      <h3
-                        className="text-primary font-semibold text-base leading-tight"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
-                        {job.title}
-                      </h3>
-                    </div>
-                  </div>
-                  <Lock className="w-3.5 h-3.5 text-muted/50 flex-shrink-0" />
-                </div>
+                {/* Gold-Akzent oben */}
+                <div className="h-1 w-full bg-accent" />
 
-                <div className="p-5 flex-1 flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-3.5 h-3.5 text-accent flex-shrink-0" />
-                    <div className="flex flex-col gap-1 min-w-0">
-                      <span className="text-primary text-sm font-medium">{job.city}</span>
-                      <RedactedBar width="55%" />
+                <div className="p-6 flex flex-col gap-5 flex-1">
+                  {/* Icon-Kachel + Tag */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div
+                      className="w-12 h-12 flex items-center justify-center flex-shrink-0"
+                      style={{ background: "var(--color-accent-soft)" }}
+                    >
+                      <Icon className="w-6 h-6 text-accent" strokeWidth={1.75} />
                     </div>
+                    <span
+                      className="text-[11px] font-semibold uppercase tracking-wider text-accent px-2.5 py-1"
+                      style={{ background: "var(--color-accent-soft)" }}
+                    >
+                      {job.tag}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-3.5 h-3.5 text-accent flex-shrink-0" />
-                    <span className="text-muted text-sm">{job.schedule}</span>
+                  {/* Titel + Kategorie */}
+                  <div>
+                    <p className="text-[10px] text-muted uppercase tracking-wider mb-1.5">
+                      {job.category}
+                    </p>
+                    <h3
+                      className="text-primary font-bold text-xl leading-snug"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {job.title}
+                    </h3>
                   </div>
 
-                  <div className="mt-auto pt-4 border-t border-border">
-                    <p className="text-[10px] text-muted uppercase tracking-wider mb-2">
+                  {/* Ort + Zeit */}
+                  <div className="flex flex-wrap gap-x-5 gap-y-2">
+                    <span className="inline-flex items-center gap-2 text-primary/80 text-sm">
+                      <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                      {job.city}
+                    </span>
+                    <span className="inline-flex items-center gap-2 text-primary/80 text-sm">
+                      <Clock className="w-4 h-4 text-accent flex-shrink-0" />
+                      {job.schedule}
+                    </span>
+                  </div>
+
+                  {/* Gehalt — sichtbar als Hook */}
+                  <div className="p-4" style={{ background: "var(--color-surface)" }}>
+                    <p className="text-[10px] text-muted uppercase tracking-wider mb-1">
                       Monatsgehalt (Brutto)
                     </p>
-                    <div className="flex items-center gap-3">
+                    <p
+                      className="text-2xl font-bold text-primary"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {job.pay}
+                    </p>
+                  </div>
+
+                  {/* Perks */}
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    {job.perks.map((perk) => (
                       <span
-                        className="font-bold text-xl text-primary select-none"
-                        style={{ fontFamily: "var(--font-display)", filter: "blur(7px)" }}
+                        key={perk}
+                        className="inline-flex items-center gap-1.5 text-xs text-primary/70 border border-border px-2.5 py-1"
                       >
-                        {job.payDisplay}
+                        <Check className="w-3 h-3 text-accent flex-shrink-0" strokeWidth={3} />
+                        {perk}
                       </span>
-                      <Lock className="w-3 h-3 text-muted/40" />
-                    </div>
+                    ))}
                   </div>
                 </div>
 
+                {/* Footer-CTA */}
                 <Link
                   href="/registrieren"
-                  className="flex items-center justify-between px-5 py-3.5 bg-primary text-white text-sm font-medium group-hover:bg-accent group-hover:text-primary transition-colors duration-300"
+                  className="flex items-center justify-between px-6 py-4 bg-primary text-white text-sm font-semibold group-hover:bg-accent group-hover:text-primary transition-colors duration-300"
                 >
-                  <span>Jetzt registrieren</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Registrieren &amp; matchen lassen</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </Link>
-              </motion.div>
+              </motion.article>
             );
           })}
         </div>
+
+        {/* Diskret-Hinweis (ruhig, klar) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center justify-center gap-2.5 mb-14 text-muted text-sm text-center"
+        >
+          <EyeOff className="w-4 h-4 text-accent flex-shrink-0" strokeWidth={2} />
+          <span>
+            Diskret: Der Betrieb sieht deinen Namen erst, wenn{" "}
+            <span className="text-primary font-medium">du zustimmst</span>.
+          </span>
+        </motion.div>
 
         {/* Such deinen Traumberuf — mit Live-Suche */}
         <motion.div

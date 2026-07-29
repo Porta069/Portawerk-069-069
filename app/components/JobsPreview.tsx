@@ -5,9 +5,6 @@ import { motion } from "framer-motion";
 import {
   MapPin,
   Clock,
-  Zap,
-  Wrench,
-  PaintBucket,
   ArrowRight,
   EyeOff,
   Search,
@@ -21,7 +18,7 @@ import { useRouter } from "next/navigation";
 const jobs = [
   {
     title: "Elektriker / Elektroniker",
-    icon: Zap,
+    img: "/images/elektriker-werkstatt.jpg",
     category: "Elektro & Energietechnik",
     city: "München",
     schedule: "Vollzeit",
@@ -31,7 +28,7 @@ const jobs = [
   },
   {
     title: "Anlagenmechaniker SHK",
-    icon: Wrench,
+    img: "/images/shk-heizung.jpg",
     category: "Sanitär · Heizung · Klima",
     city: "Hamburg",
     schedule: "Vollzeit",
@@ -41,7 +38,7 @@ const jobs = [
   },
   {
     title: "Maler & Lackierer",
-    icon: PaintBucket,
+    img: "/images/maler-leiter.jpg",
     category: "Ausbau & Oberfläche",
     city: "Berlin",
     schedule: "Voll- oder Teilzeit",
@@ -181,96 +178,95 @@ export default function JobsPreview() {
 
         {/* Job Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {jobs.map((job) => {
-            const Icon = job.icon;
-            return (
-              <article
-                key={job.title}
-                className="group bg-white border border-border hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 flex flex-col"
-              >
-                {/* Gold-Akzent oben */}
-                <div className="h-1 w-full bg-accent" />
+          {jobs.map((job) => (
+            <article
+              key={job.title}
+              className="group bg-white border border-border rounded-2xl overflow-hidden hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 flex flex-col"
+            >
+              {/* Banner-Bild mit Tag */}
+              <div className="relative h-36 w-full overflow-hidden">
+                <Image
+                  src={job.img}
+                  alt={job.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: "linear-gradient(to top, rgba(20,20,32,0.35) 0%, transparent 55%)" }}
+                />
+                <span className="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider text-primary bg-accent px-3 py-1 rounded-full">
+                  {job.tag}
+                </span>
+              </div>
 
-                <div className="p-6 flex flex-col gap-5 flex-1">
-                  {/* Icon-Kachel + Tag */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div
-                      className="w-12 h-12 flex items-center justify-center flex-shrink-0"
-                      style={{ background: "var(--color-accent-soft)" }}
-                    >
-                      <Icon className="w-6 h-6 text-accent" strokeWidth={1.75} />
-                    </div>
-                    <span
-                      className="text-[11px] font-semibold uppercase tracking-wider text-accent px-2.5 py-1"
-                      style={{ background: "var(--color-accent-soft)" }}
-                    >
-                      {job.tag}
-                    </span>
-                  </div>
-
-                  {/* Titel + Kategorie */}
-                  <div>
-                    <p className="text-[10px] text-muted uppercase tracking-wider mb-1.5">
-                      {job.category}
-                    </p>
-                    <h3
-                      className="text-primary font-bold text-xl leading-snug"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      {job.title}
-                    </h3>
-                  </div>
-
-                  {/* Ort + Zeit */}
-                  <div className="flex flex-wrap gap-x-5 gap-y-2">
-                    <span className="inline-flex items-center gap-2 text-primary/80 text-sm">
-                      <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
-                      {job.city}
-                    </span>
-                    <span className="inline-flex items-center gap-2 text-primary/80 text-sm">
-                      <Clock className="w-4 h-4 text-accent flex-shrink-0" />
-                      {job.schedule}
-                    </span>
-                  </div>
-
-                  {/* Gehalt — sichtbar als Hook */}
-                  <div className="p-4" style={{ background: "var(--color-surface)" }}>
-                    <p className="text-[10px] text-muted uppercase tracking-wider mb-1">
-                      Monatsgehalt (Brutto)
-                    </p>
-                    <p
-                      className="text-2xl font-bold text-primary"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      {job.pay}
-                    </p>
-                  </div>
-
-                  {/* Perks */}
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {job.perks.map((perk) => (
-                      <span
-                        key={perk}
-                        className="inline-flex items-center gap-1.5 text-xs text-primary/70 border border-border px-2.5 py-1"
-                      >
-                        <Check className="w-3 h-3 text-accent flex-shrink-0" strokeWidth={3} />
-                        {perk}
-                      </span>
-                    ))}
-                  </div>
+              <div className="p-6 flex flex-col gap-4 flex-1">
+                {/* Titel + Kategorie */}
+                <div>
+                  <p className="text-[10px] text-muted uppercase tracking-wider mb-1.5">
+                    {job.category}
+                  </p>
+                  <h3
+                    className="text-primary font-bold text-xl leading-snug"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {job.title}
+                  </h3>
                 </div>
 
-                {/* Footer-CTA */}
+                {/* Ort + Zeit */}
+                <div className="flex flex-wrap gap-x-5 gap-y-2">
+                  <span className="inline-flex items-center gap-2 text-primary/80 text-sm">
+                    <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                    {job.city}
+                  </span>
+                  <span className="inline-flex items-center gap-2 text-primary/80 text-sm">
+                    <Clock className="w-4 h-4 text-accent flex-shrink-0" />
+                    {job.schedule}
+                  </span>
+                </div>
+
+                {/* Gehalt — sichtbar als Hook */}
+                <div className="rounded-xl p-4" style={{ background: "var(--color-surface)" }}>
+                  <p className="text-[10px] text-muted uppercase tracking-wider mb-1">
+                    Monatsgehalt (Brutto)
+                  </p>
+                  <p className="text-2xl font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
+                    {job.pay}
+                  </p>
+                </div>
+
+                {/* Perks */}
+                <div className="flex flex-wrap gap-2">
+                  {job.perks.map((perk) => (
+                    <span
+                      key={perk}
+                      className="inline-flex items-center gap-1.5 text-xs text-primary/70 border border-border rounded-full px-3 py-1"
+                    >
+                      <Check className="w-3 h-3 text-accent flex-shrink-0" strokeWidth={3} />
+                      {perk}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Pill-CTA */}
                 <Link
                   href="/registrieren"
-                  className="flex items-center justify-between px-6 py-4 bg-primary text-white text-sm font-semibold group-hover:bg-accent group-hover:text-primary transition-colors duration-300"
+                  className="mt-auto group/btn relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full bg-primary text-white text-sm font-semibold py-3.5 transition-colors duration-300"
                 >
-                  <span>Registrieren &amp; matchen lassen</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                  <span className="relative z-10 inline-flex items-center gap-2 transition-colors duration-300 group-hover/btn:text-primary">
+                    Jetzt registrieren
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 z-0 bg-accent translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out"
+                  />
                 </Link>
-              </article>
-            );
-          })}
+              </div>
+            </article>
+          ))}
         </div>
 
         {/* Diskret-Hinweis (ruhig, klar) */}

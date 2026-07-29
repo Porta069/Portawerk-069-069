@@ -36,14 +36,14 @@ export default function HowItWorks() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 text-center max-w-2xl mx-auto"
         >
-          <span className="inline-flex items-center justify-center gap-3 text-accent text-sm font-semibold tracking-[0.2em] uppercase mb-5">
+          <span className="inline-flex items-center justify-center gap-3 text-accent text-xs font-semibold tracking-[0.2em] uppercase mb-5">
             <span className="w-8 h-[2px] bg-accent" />
             Der Prozess
             <span className="w-8 h-[2px] bg-accent" />
           </span>
           <h2
-            className="text-primary font-bold leading-[1.05]"
-            style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.6rem, 6vw, 4.5rem)" }}
+            className="text-primary font-bold leading-tight text-4xl md:text-5xl"
+            style={{ fontFamily: "var(--font-display)" }}
           >
             So einfach funktioniert&apos;s
           </h2>
@@ -99,7 +99,7 @@ export default function HowItWorks() {
         >
           <Link
             href="/registrieren"
-            className="group relative overflow-hidden inline-flex items-center gap-3 bg-accent text-primary font-bold px-9 py-5 text-lg transition-shadow duration-300 shadow-[0_10px_28px_-10px_rgba(232,168,56,0.55)] hover:shadow-[0_16px_36px_-10px_rgba(26,26,46,0.45)]"
+            className="group relative overflow-hidden inline-flex items-center gap-3 rounded-full bg-accent text-primary font-bold px-9 py-5 text-lg transition-shadow duration-300 shadow-[0_10px_28px_-10px_rgba(232,168,56,0.55)] hover:shadow-[0_16px_36px_-10px_rgba(26,26,46,0.45)]"
           >
             <span className="relative z-10 inline-flex items-center gap-3 transition-colors duration-300 group-hover:text-white">
               Jetzt kostenlos starten

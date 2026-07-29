@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const jobs = [
@@ -50,14 +51,45 @@ const jobs = [
   },
 ];
 
-// Beliebteste Gewerke — standardmäßig als schnelle Auswahl (aufgeräumt).
-const popularRoles = [
-  "Elektriker / Elektroniker",
-  "Anlagenmechaniker SHK",
-  "Maler & Lackierer",
-  "Tischler / Schreiner",
-  "Maurer",
-  "Dachdecker",
+// Beliebteste Gewerke — mit echtem Foto (kompakte Kachel), gewerk = exakter
+// GEWERKE-Wert aus lib/constants für die Vorbelegung im Funnel.
+const popularTrades = [
+  {
+    label: "Elektriker",
+    gewerk: "Elektriker / Elektroniker",
+    img: "/images/elektriker-werkstatt.jpg",
+    alt: "Elektriker bei der Arbeit in der Werkstatt",
+  },
+  {
+    label: "Heizung & Sanitär",
+    gewerk: "Installateur / Klempner (SHK)",
+    img: "/images/shk-heizung.jpg",
+    alt: "Monteur montiert einen Heizkörper",
+  },
+  {
+    label: "Tischler",
+    gewerk: "Tischler / Schreiner",
+    img: "/images/tischler-hobel.jpg",
+    alt: "Tischler bearbeitet Holz mit dem Handhobel",
+  },
+  {
+    label: "Maler",
+    gewerk: "Maler & Lackierer",
+    img: "/images/maler-leiter.jpg",
+    alt: "Maler streicht eine Wand von der Leiter",
+  },
+  {
+    label: "Metallbauer",
+    gewerk: "Metallbauer / Schlosser",
+    img: "/images/metallbau-schweisser.jpg",
+    alt: "Metallbauer beim Schweißen",
+  },
+  {
+    label: "Maurer",
+    gewerk: "Maurer / Betonbauer",
+    img: "/images/maurer-ziegel.jpg",
+    alt: "Maurer setzt einen Ziegel mit der Kelle",
+  },
 ];
 
 // Alle Gewerke — nach Fachbereich gruppiert (übersichtliche Spalten-Ansicht).
@@ -281,7 +313,8 @@ export default function JobsPreview() {
                 Such deinen Traumberuf
               </h3>
               <p className="text-muted text-base">
-                Über 40 Gewerke im Handwerk — tipp deinen Beruf ein und finde deine Stelle.
+                Über 40 Gewerke im Handwerk — wähl unten dein Gewerk oder tipp es ein.
+                Für jedes finden wir deine Stelle.
               </p>
             </div>
 
@@ -405,20 +438,39 @@ export default function JobsPreview() {
                   </div>
                 </div>
               ) : (
-                // ── Standard: beliebte Gewerke als Chips ──
-                <div className="max-w-3xl mx-auto">
+                // ── Standard: beliebte Gewerke als kompakte Foto-Kacheln ──
+                <div className="max-w-4xl mx-auto">
                   <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-5">
                     Beliebte Gewerke
                   </p>
-                  <div className="flex flex-wrap justify-center gap-2.5">
-                    {popularRoles.map((role) => (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {popularTrades.map((trade) => (
                       <Link
-                        key={role}
-                        href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
-                        className="group inline-flex items-center gap-2 text-sm text-primary/80 border border-border px-4 py-2.5 hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+                        key={trade.gewerk}
+                        href={`/registrieren?gewerk=${encodeURIComponent(trade.gewerk)}`}
+                        aria-label={`Als ${trade.label} bewerben`}
+                        className="group relative aspect-square overflow-hidden bg-primary/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                       >
-                        {role}
-                        <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                        <Image
+                          src={trade.img}
+                          alt={trade.alt}
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                        />
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              "linear-gradient(to top, rgba(20,20,32,0.88) 0%, rgba(20,20,32,0.15) 55%, transparent 100%)",
+                          }}
+                        />
+                        <div className="absolute inset-x-0 bottom-0 p-2.5 flex items-center justify-between gap-1">
+                          <span className="text-white text-xs sm:text-sm font-semibold leading-tight">
+                            {trade.label}
+                          </span>
+                          <ArrowRight className="w-3.5 h-3.5 text-accent opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 flex-shrink-0" />
+                        </div>
                       </Link>
                     ))}
                   </div>

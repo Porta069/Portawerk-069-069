@@ -23,6 +23,7 @@ const testimonials: Stimme[] = [
     initials: "TM",
     role: "Elektriker · 6 Jahre dabei",
     city: "München",
+    img: "/images/thomas.jpg",
   },
   {
     quote:
@@ -31,6 +32,7 @@ const testimonials: Stimme[] = [
     initials: "KB",
     role: "Anlagenmechaniker SHK",
     city: "Hamburg",
+    img: "/images/kevin.jpg",
   },
   {
     quote:
@@ -39,6 +41,7 @@ const testimonials: Stimme[] = [
     initials: "AR",
     role: "Maler & Lackierer",
     city: "Berlin",
+    img: "/images/andreas.jpg",
   },
 ];
 

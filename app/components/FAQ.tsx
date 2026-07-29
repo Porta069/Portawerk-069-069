@@ -21,8 +21,8 @@ const FAQS: { q: string; a: string }[] = [
     a: "Nein. Du beantwortest ein paar einfache Fragen zu deinem Gewerk, deiner Erfahrung und deiner Region. Das dauert rund 3 Minuten — mehr brauchen wir nicht.",
   },
   {
-    q: "Wann und wie bekomme ich die 200 €?",
-    a: "Sobald du 8 Wochen fest im neuen Betrieb bist, überweisen wir dir 200 € direkt auf dein Konto. Kein Gutschein, kein Kleingedrucktes — einfach als Dankeschön fürs Durchstarten.",
+    q: "Wann bekomme ich die 200 € Belohnung?",
+    a: "Sobald du die Einführungsphase bestehst — also die ersten 8 Wochen im neuen Betrieb — überweisen wir dir 200 € direkt auf dein Konto. Kein Gutschein, kein Kleingedrucktes, einfach als Belohnung fürs Durchstarten.",
   },
   {
     q: "Bin ich zu irgendetwas verpflichtet?",

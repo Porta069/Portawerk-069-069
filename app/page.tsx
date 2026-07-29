@@ -3,6 +3,7 @@ import HeroSection from "./components/HeroSection";
 import JobsPreview from "./components/JobsPreview";
 import HowItWorks from "./components/HowItWorks";
 import BonusSection from "./components/BonusSection";
+import Testimonials from "./components/Testimonials";
 import ForBusinesses from "./components/ForBusinesses";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
@@ -16,6 +17,7 @@ export default function Home() {
       <JobsPreview />
       <HowItWorks />
       <BonusSection />
+      <Testimonials />
       <ForBusinesses />
       <FAQ />
       <Footer />

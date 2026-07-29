@@ -18,7 +18,7 @@ export default function BonusSection() {
           >
             <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-8">
               <span className="w-8 h-[2px] bg-accent" />
-              Startprämie
+              Deine Belohnung
             </span>
 
             <div className="relative select-none mb-6">
@@ -47,8 +47,9 @@ export default function BonusSection() {
             </div>
 
             <p className="text-primary/55 text-lg leading-relaxed max-w-sm mb-6">
-              Direkt auf dein Konto — kein Gutschein, kein Voucher,
-              keine versteckten Bedingungen außer 8 Wochen Arbeit.
+              Bestehst du die <span className="text-primary font-semibold">Einführungsphase (8 Wochen)</span>{" "}
+              im neuen Betrieb, zahlen wir dir 200 € direkt aufs Konto — als Belohnung.
+              Kein Gutschein, kein Kleingedrucktes.
             </p>
             {/* Social proof */}
             <div className="flex items-center gap-3">
@@ -78,14 +79,14 @@ export default function BonusSection() {
                 className="text-primary font-bold text-3xl md:text-4xl leading-tight mb-5"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Als Dankeschön für
+                Einführungsphase bestehen —
                 <br />
-                deinen neuen Start
+                200 € Belohnung
               </h2>
               <p className="text-muted text-base leading-relaxed">
                 Ein neuer Job erfordert Mut — gerade im Handwerk, wo man dem
-                eigenen Betrieb oft lange die Treue hält. Wir belohnen jeden, der
-                über PortaWerk eine Stelle findet und dabei bleibt.
+                eigenen Betrieb oft lange die Treue hält. Wer über PortaWerk startet
+                und die ersten 8 Wochen durchzieht, bekommt von uns 200 € als Belohnung.
               </p>
             </div>
 
@@ -93,8 +94,8 @@ export default function BonusSection() {
               {[
                 {
                   icon: CalendarDays,
-                  title: "Nach 8 Wochen aktiver Beschäftigung",
-                  desc: "Sobald dein Arbeitgeber die 8 Wochen bestätigt, wird die Prämie automatisch ausgelöst.",
+                  title: "Einführungsphase bestehen (8 Wochen)",
+                  desc: "Sobald dein Arbeitgeber die ersten 8 Wochen bestätigt, wird deine 200 €-Belohnung automatisch ausgelöst.",
                 },
                 {
                   icon: Banknote,

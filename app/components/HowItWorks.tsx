@@ -21,9 +21,9 @@ const steps = [
   {
     number: "03",
     icon: BadgeCheck,
-    title: "Als Dankeschön: 200€",
+    title: "200 € Belohnung",
     description:
-      "Nach 8 Wochen aktiver Beschäftigung überweisen wir 200€ direkt auf dein Konto — als Dankeschön für den Mut, einen neuen Schritt zu wagen.",
+      "Bestehst du die Einführungsphase (8 Wochen im neuen Betrieb), zahlen wir dir 200 € direkt aufs Konto — als Belohnung dafür, dass du den Schritt gewagt hast.",
   },
 ];
 
@@ -54,7 +54,7 @@ export default function HowItWorks() {
         </motion.div>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-12 md:gap-8 relative mb-20">
+        <div className="grid md:grid-cols-3 gap-12 md:gap-8 relative">
           <div className="hidden md:block absolute top-[2.25rem] left-[calc(16.666%+2rem)] right-[calc(16.666%+2rem)] h-px bg-border" />
 
           {steps.map((step, i) => {
@@ -104,79 +104,6 @@ export default function HowItWorks() {
             );
           })}
         </div>
-
-        {/* Echte Stimmen — mit Vorname & Gesicht, Nachname bleibt privat */}
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="flex items-center gap-3 mb-8">
-            <span className="w-8 h-[2px] bg-accent" />
-            <span className="text-muted text-xs font-medium tracking-[0.14em] uppercase">
-              Was andere Handwerker sagen
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                quote: "Ich hab mich nie getraut, was Neues zu suchen, solange ich noch angestellt war. Hier hat mein Chef nichts davon mitbekommen.",
-                name: "Thomas",
-                initials: "TM",
-                role: "Elektriker · 6 Jahre dabei",
-                city: "München",
-              },
-              {
-                quote: "Zum ersten Mal musste ich mich nicht verkaufen. Die haben mich vorgestellt, ich hab nur Ja oder Nein gesagt. So einfach.",
-                name: "Kevin",
-                initials: "KB",
-                role: "Anlagenmechaniker SHK",
-                city: "Hamburg",
-              },
-              {
-                quote: "Die 200 € kamen pünktlich nach 8 Wochen aufs Konto. Kein Kleingedrucktes, kein Nachhaken. Passt.",
-                name: "Andreas",
-                initials: "AR",
-                role: "Maler & Lackierer",
-                city: "Berlin",
-              },
-            ].map((t) => (
-              <div
-                key={t.name}
-                className="p-6 border border-border flex flex-col"
-                style={{ background: "var(--color-surface)" }}
-              >
-                <p className="text-primary/80 text-[15px] leading-relaxed mb-6">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 mt-auto">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: "var(--color-accent-soft)" }}
-                  >
-                    <span className="text-[13px] font-bold" style={{ color: "#B47B18" }}>
-                      {t.initials}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-primary text-sm font-semibold">
-                      {t.name} <span className="text-muted font-normal">· {t.city}</span>
-                    </p>
-                    <p className="text-muted text-xs">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-muted text-xs mt-5 flex items-center gap-2">
-            <span className="text-accent">•</span>
-            Nachname und Betrieb bleiben privat — Diskretion ist bei uns Prinzip, nicht Ausnahme.
-          </p>
-        </motion.div>
-
       </div>
     </section>
   );

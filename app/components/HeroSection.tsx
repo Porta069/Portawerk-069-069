@@ -1,12 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Lock } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-// Kurze Vertrauens-Punkte direkt unter dem CTA.
-const TRUST = ["100 % kostenlos", "Lebenslauf gratis dazu", "Ohne Bewerbungsstress"];
+// Kompakte Vertrauens-Zeile unter dem CTA (200 € hervorgehoben).
+const TRUST: { label: string; accent?: boolean }[] = [
+  { label: "100 % kostenlos" },
+  { label: "Lebenslauf gratis" },
+  { label: "200 € Belohnung", accent: true },
+];
 
 export default function HeroSection() {
   return (
@@ -58,21 +62,8 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
             className="text-muted text-lg leading-relaxed mb-9 max-w-md"
           >
-            Du suchst nicht — <span className="text-primary font-semibold">wir suchen für dich</span>.
-            Die Betriebe bewerben sich bei dir, und deinen{" "}
-            <span className="text-primary font-semibold">Lebenslauf erstellen wir kostenlos</span>.
-            Kein Aufwand, kein Risiko.
-          </motion.p>
-
-          {/* 200-€-Belohnung — als kräftiger Schriftzug */}
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="text-primary text-lg font-medium mb-9"
-          >
-            Und <span className="text-accent font-black">200&nbsp;€ Belohnung</span>, wenn
-            du über uns deinen neuen Job gefunden hast.
+            Die <span className="text-primary font-semibold">Betriebe bewerben sich bei dir</span>{" "}
+            — kostenlos, ohne Bewerbung.
           </motion.p>
 
           {/* DER klare Registrieren-Button */}
@@ -101,32 +92,24 @@ export default function HeroSection() {
             </p>
           </motion.div>
 
-          {/* Vertrauens-Punkte */}
+          {/* Kompakte Vertrauens-Zeile inkl. 200 € */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap gap-x-6 gap-y-2 mt-9 pt-7 border-t border-border"
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-8"
           >
             {TRUST.map((t) => (
-              <span key={t} className="inline-flex items-center gap-2 text-primary/80 text-sm font-medium">
+              <span
+                key={t.label}
+                className={`inline-flex items-center gap-2 text-sm ${
+                  t.accent ? "text-accent font-bold" : "text-primary/80 font-medium"
+                }`}
+              >
                 <Check className="w-4 h-4 text-accent" strokeWidth={2.5} />
-                {t}
+                {t.label}
               </span>
             ))}
-          </motion.div>
-
-          {/* Diskretion — die größte Angst nehmen */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex items-center gap-2.5 mt-5 text-muted text-sm"
-          >
-            <Lock className="w-3.5 h-3.5 text-accent flex-shrink-0" strokeWidth={2} />
-            <span>
-              Dein Name bleibt geheim, bis <span className="text-primary font-medium">du grünes Licht gibst</span>.
-            </span>
           </motion.div>
         </div>
       </div>

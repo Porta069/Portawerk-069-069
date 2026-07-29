@@ -30,7 +30,7 @@ const STEP_DEFS: StepDef[] = [
 const HEAD: Record<RegStep, { h: string; s: string }> = {
   survey: {
     h: "Erzähl uns kurz von dir",
-    s: "Fünf schnelle Fragen — komplett freiwillig. Sie helfen uns, dich passgenau zu vermitteln.",
+    s: "Ein paar schnelle Fragen — komplett freiwillig. Sie helfen uns, dich passgenau zu vermitteln.",
   },
   contact: {
     h: "Deine Kontaktdaten",

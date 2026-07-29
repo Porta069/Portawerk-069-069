@@ -75,25 +75,4 @@ export const SURVEY_QUESTIONS: Question[] = [
       { value: "umzug", label: "Umzug für den richtigen Job" },
     ],
   },
-  {
-    id: "survey_wechsel",
-    type: "radio",
-    prompt: "Wie aktiv suchst du gerade?",
-    options: [
-      { value: "aktiv", label: "Aktiv – ich will wechseln" },
-      { value: "offen", label: "Offen für Angebote" },
-      { value: "passiv", label: "Nur unverbindlich schauen" },
-    ],
-  },
-  {
-    id: "survey_start",
-    type: "radio",
-    prompt: "Ab wann könntest du starten?",
-    options: [
-      { value: "sofort", label: "Sofort" },
-      { value: "1monat", label: "In ~1 Monat" },
-      { value: "3monate", label: "In 2–3 Monaten" },
-      { value: "spaeter", label: "Später / unklar" },
-    ],
-  },
 ];

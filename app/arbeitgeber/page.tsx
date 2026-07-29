@@ -4,9 +4,19 @@ import Footer from "../components/Footer";
 import ArbeitgeberContent from "../components/ArbeitgeberContent";
 
 export const metadata: Metadata = {
-  title: "Für Handwerksbetriebe — Personal finden | PortaWerk",
+  title: "Handwerker & Fachkräfte finden für Ihren Betrieb | PortaWerk",
   description:
-    "Vorgeprüfte Handwerker für Ihren Betrieb. Sie zahlen nur, wenn es klappt — keine Vorabkosten, keine Agenturgebühren. Diskret & schnell besetzen.",
+    "Qualifizierte Handwerker für Ihren Betrieb: Elektriker, SHK-Spezialisten, Maler & mehr — vorgeprüft und passgenau. Sie zahlen nur bei erfolgreicher Einstellung. Keine Vorabkosten, Rückerstattung bei Nichtantritt. Jetzt kostenlos anfragen.",
+  keywords: [
+    "Handwerker finden",
+    "Fachkräfte für Handwerksbetriebe",
+    "Personalvermittlung Handwerk",
+    "Elektriker einstellen",
+    "SHK Fachkräfte finden",
+    "Handwerker Personalvermittlung erfolgsbasiert",
+    "Mitarbeiter Handwerk finden",
+    "PortaWerk für Arbeitgeber",
+  ],
 };
 
 export default function ArbeitgeberPage() {

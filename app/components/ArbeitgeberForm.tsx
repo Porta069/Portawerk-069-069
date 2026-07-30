@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 
 const FACHKRAEFTE = [
@@ -39,12 +39,37 @@ const inputBase =
   "w-full rounded-xl border border-border bg-white px-4 py-3 text-primary text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 transition-colors placeholder:text-muted/70";
 const labelBase = "block text-primary text-sm font-medium mb-1.5";
 
-export default function ArbeitgeberForm() {
+export default function ArbeitgeberForm({
+  options,
+  presetFachkraft,
+  shimmerSignal = 0,
+}: {
+  options?: string[];
+  presetFachkraft?: string;
+  shimmerSignal?: number;
+} = {}) {
   const [f, setF] = useState<Fields>(EMPTY);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [shimmering, setShimmering] = useState(false);
+
+  const opts = options && options.length > 0 ? options : FACHKRAEFTE;
+
+  // Ausgewählte Fachkraft aus der Sektion ins Formular übernehmen.
+  useEffect(() => {
+    if (presetFachkraft) setF((p) => ({ ...p, fachkraft: presetFachkraft }));
+  }, [presetFachkraft]);
+
+  // Einmaliger Glanz-Effekt, sobald eine Fachkraft ausgewählt wurde.
+  useEffect(() => {
+    if (shimmerSignal > 0) {
+      setShimmering(true);
+      const t = setTimeout(() => setShimmering(false), 1200);
+      return () => clearTimeout(t);
+    }
+  }, [shimmerSignal]);
 
   const set = (key: keyof Fields) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -157,11 +182,19 @@ export default function ArbeitgeberForm() {
         </div>
         <div className="sm:col-span-2">
           <label className={labelBase} htmlFor="fachkraft">Welche Fachkraft suchen Sie?</label>
-          <select id="fachkraft" className={inputBase} value={f.fachkraft} onChange={set("fachkraft")}>
-            {FACHKRAEFTE.map((g) => (
-              <option key={g} value={g}>{g}</option>
-            ))}
-          </select>
+          <div className="relative rounded-xl overflow-hidden">
+            <select id="fachkraft" className={inputBase} value={f.fachkraft} onChange={set("fachkraft")}>
+              {opts.map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+            {shimmering && (
+              <span
+                aria-hidden="true"
+                className="shimmer-once pointer-events-none absolute top-0 left-0 z-10 h-full w-1/3 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+              />
+            )}
+          </div>
         </div>
         <div className="sm:col-span-2">
           <label className={labelBase} htmlFor="nachricht">Nachricht <span className="text-muted font-normal">(optional)</span></label>

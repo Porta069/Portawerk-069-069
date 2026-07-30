@@ -45,8 +45,14 @@ body {
   animation: shimmer 2.9s linear infinite;
 }
 
+/* Einmaliger Glanz-Sweep (z. B. wenn ein Feld hervorgehoben wird) */
+.shimmer-once {
+  animation: shimmer 1.1s ease-out 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .shimmer-glint {
+  .shimmer-glint,
+  .shimmer-once {
     animation: none;
   }
 }

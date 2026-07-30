@@ -14,6 +14,7 @@ import {
   Check,
   Plus,
   Search,
+  ChevronDown,
 } from "lucide-react";
 import ArbeitgeberForm from "./ArbeitgeberForm";
 
@@ -38,6 +39,16 @@ const fachkraefte = [
   "KFZ-Mechatroniker", "Gerüstbauer", "und viele mehr",
 ];
 
+// Beliebte Fachkräfte als Foto-Kacheln (value = exakte Select-Option im Formular).
+const popularTiles = [
+  { label: "Elektriker", value: "Elektriker / Elektroniker", img: "/images/elektriker-werkstatt.jpg", alt: "Elektriker bei der Arbeit" },
+  { label: "Heizung & Sanitär", value: "Anlagenmechaniker SHK", img: "/images/shk-heizung.jpg", alt: "Monteur montiert einen Heizkörper" },
+  { label: "Tischler", value: "Tischler / Schreiner", img: "/images/tischler-hobel.jpg", alt: "Tischler am Werkstück" },
+  { label: "Maler", value: "Maler & Lackierer", img: "/images/maler-leiter.jpg", alt: "Maler auf der Leiter" },
+  { label: "Metallbauer", value: "Metallbauer / Schlosser", img: "/images/metallbau-schweisser.jpg", alt: "Metallbauer beim Schweißen" },
+  { label: "Maurer", value: "Maurer / Betonbauer", img: "/images/maurer-ziegel.jpg", alt: "Maurer setzt einen Ziegel" },
+];
+
 const faqs = [
   {
     q: "Was kostet mich die Vermittlung?",
@@ -60,10 +71,30 @@ const faqs = [
 export default function ArbeitgeberContent() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [fachQuery, setFachQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
+  const [selectedFach, setSelectedFach] = useState("");
+  const [shimmerSignal, setShimmerSignal] = useState(0);
+
+  const gewerkeOptions = fachkraefte.filter((g) => g !== "und viele mehr");
   const fq = fachQuery.trim().toLowerCase();
-  const visibleFach = fq
-    ? fachkraefte.filter((g) => g !== "und viele mehr" && g.toLowerCase().includes(fq))
-    : fachkraefte;
+  const matches = fq ? gewerkeOptions.filter((g) => g.toLowerCase().includes(fq)) : [];
+
+  const scrollToForm = () =>
+    document.getElementById("anfrage")?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  const selectFach = (value: string) => {
+    setSelectedFach(value);
+    setShimmerSignal((n) => n + 1);
+    scrollToForm();
+  };
+
+  const handleFachSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const term = fachQuery.trim().toLowerCase();
+    const match = term ? gewerkeOptions.find((g) => g.toLowerCase().includes(term)) : null;
+    if (match) selectFach(match);
+    else scrollToForm();
+  };
 
   return (
     <>
@@ -163,7 +194,11 @@ export default function ArbeitgeberContent() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="scroll-mt-28"
           >
-            <ArbeitgeberForm />
+            <ArbeitgeberForm
+              options={gewerkeOptions}
+              presetFachkraft={selectedFach}
+              shimmerSignal={shimmerSignal}
+            />
           </motion.div>
         </div>
       </section>
@@ -306,62 +341,164 @@ export default function ArbeitgeberContent() {
         </div>
       </section>
 
-      {/* ── Welche Fachkräfte ── */}
-      <section className="py-24" style={{ background: "var(--color-accent-soft)" }}>
-        <div className="max-w-5xl mx-auto px-6 lg:px-12 text-center">
-          <motion.h2
+      {/* ── Welche Fachkräfte — im Stil der Handwerker-Suche ── */}
+      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+        <div className="max-w-6xl mx-auto px-6 lg:px-12">
+          <motion.div
             initial={{ y: 24, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-primary font-bold text-4xl md:text-5xl leading-tight mb-4"
-            style={{ fontFamily: "var(--font-display)" }}
+            className="bg-white border border-border rounded-2xl shadow-[0_24px_60px_-30px_rgba(26,26,46,0.3)] overflow-hidden"
           >
-            Welche Fachkräfte Sie bei uns finden
-          </motion.h2>
-          <p className="text-muted text-lg mb-8 max-w-2xl mx-auto">
-            Qualifizierte Handwerker aus ganz Deutschland — über alle Gewerke hinweg.
-          </p>
+            <div className="h-1 w-full bg-accent" />
+            <div className="px-6 sm:px-10 lg:px-14 py-12">
+              <div className="text-center max-w-xl mx-auto mb-8">
+                <h2 className="text-primary font-bold text-3xl sm:text-4xl mb-3 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+                  Welche Fachkräfte Sie finden
+                </h2>
+                <p className="text-muted text-base">
+                  Wählen Sie unten aus oder suchen Sie direkt — Ihre Auswahl landet
+                  gleich im Anfrage-Formular.
+                </p>
+              </div>
 
-          {/* Suchleiste */}
-          <div className="max-w-xl mx-auto mb-10">
-            <div className="relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted pointer-events-none" strokeWidth={2} />
-              <input
-                type="text"
-                value={fachQuery}
-                onChange={(e) => setFachQuery(e.target.value)}
-                placeholder="Fachkraft suchen, z. B. Elektriker …"
-                aria-label="Fachkraft suchen"
-                className="w-full rounded-full border border-border bg-white h-14 pl-14 pr-5 text-primary text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 transition-colors shadow-[0_12px_30px_-20px_rgba(26,26,46,0.4)]"
-              />
-            </div>
-          </div>
-
-          {visibleFach.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-3">
-              {visibleFach.map((g) => (
-                <a
-                  key={g}
-                  href="#anfrage"
-                  className="rounded-full bg-white border border-border px-5 py-2.5 text-primary text-sm font-medium hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+              {/* Suchleiste + Button */}
+              <form
+                onSubmit={handleFachSearch}
+                className="flex items-stretch max-w-2xl mx-auto border border-border bg-white transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 shadow-[0_12px_28px_-18px_rgba(26,26,46,0.4)]"
+              >
+                <div className="relative flex-1 flex items-center">
+                  <Search className="absolute left-5 w-5 h-5 text-muted pointer-events-none" strokeWidth={2} />
+                  <input
+                    type="text"
+                    value={fachQuery}
+                    onChange={(e) => setFachQuery(e.target.value)}
+                    placeholder="Gewerk oder Beruf, z. B. Elektriker …"
+                    aria-label="Fachkraft suchen"
+                    className="w-full h-14 sm:h-16 pl-14 pr-4 text-base text-primary bg-transparent focus:outline-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="shrink-0 h-14 sm:h-16 px-6 sm:px-9 bg-accent text-primary font-semibold text-base hover:bg-amber-400 transition-colors inline-flex items-center gap-2"
                 >
-                  {g}
-                </a>
-              ))}
+                  <Search className="w-[18px] h-[18px] sm:hidden" strokeWidth={2.5} />
+                  <span className="hidden sm:inline">Suchen</span>
+                </button>
+              </form>
+
+              {/* Ergebnisse / Kacheln */}
+              <div className="mt-9">
+                {fq ? (
+                  matches.length > 0 ? (
+                    <div className="max-w-3xl mx-auto">
+                      <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-5">
+                        {matches.length} Treffer
+                      </p>
+                      <div className="flex flex-wrap justify-center gap-2.5">
+                        {matches.map((g) => (
+                          <button
+                            type="button"
+                            key={g}
+                            onClick={() => selectFach(g)}
+                            className="group inline-flex items-center gap-2 text-sm text-primary/80 border border-border rounded-full px-4 py-2.5 hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+                          >
+                            {g}
+                            <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-2">
+                      <p className="text-muted text-base mb-4">
+                        Kein Treffer für{" "}
+                        <span className="text-primary font-medium">{fachQuery}</span> —
+                        wir vermitteln in allen Gewerken.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={scrollToForm}
+                        className="group inline-flex items-center gap-2 rounded-full bg-primary text-white text-sm font-semibold px-6 py-3 hover:bg-accent hover:text-primary transition-colors duration-200"
+                      >
+                        Trotzdem anfragen
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                  )
+                ) : showAll ? (
+                  <div>
+                    <div className="flex flex-wrap justify-center gap-2.5 max-w-3xl mx-auto">
+                      {gewerkeOptions.map((g) => (
+                        <button
+                          type="button"
+                          key={g}
+                          onClick={() => selectFach(g)}
+                          className="group inline-flex items-center gap-2 text-sm text-primary/80 border border-border rounded-full px-4 py-2.5 hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+                        >
+                          {g}
+                          <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-center mt-7">
+                      <button
+                        type="button"
+                        onClick={() => setShowAll(false)}
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                      >
+                        Weniger anzeigen
+                        <ChevronDown className="w-4 h-4 rotate-180" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="max-w-4xl mx-auto">
+                    <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-5">
+                      Beliebte Fachkräfte
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                      {popularTiles.map((t) => (
+                        <button
+                          type="button"
+                          key={t.value}
+                          onClick={() => selectFach(t.value)}
+                          aria-label={`${t.label} auswählen`}
+                          className="group relative aspect-square overflow-hidden rounded-2xl bg-primary/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                        >
+                          <Image
+                            src={t.img}
+                            alt={t.alt}
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                            className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                          />
+                          <div
+                            className="absolute inset-0"
+                            style={{ background: "linear-gradient(to top, rgba(20,20,32,0.88) 0%, rgba(20,20,32,0.15) 55%, transparent 100%)" }}
+                          />
+                          <span className="absolute inset-x-0 bottom-0 p-2.5 text-left text-white text-xs sm:text-sm font-semibold leading-tight">
+                            {t.label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-center mt-7">
+                      <button
+                        type="button"
+                        onClick={() => setShowAll(true)}
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                      >
+                        Alle Fachkräfte anzeigen
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          ) : (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <p className="text-muted">
-                Kein Treffer für{" "}
-                <span className="text-primary font-medium">{fachQuery}</span> — wir
-                vermitteln in allen Gewerken.
-              </p>
-              <a href="#anfrage" className="text-accent font-semibold hover:text-amber-600 transition-colors whitespace-nowrap">
-                Jetzt anfragen →
-              </a>
-            </div>
-          )}
+          </motion.div>
         </div>
       </section>
 

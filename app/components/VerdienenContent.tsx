@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowRight, Link2, Share2, Wallet, Users, HardHat, Check, Plus } from "lucide-react";
 import AffiliateGenerator from "./AffiliateGenerator";
 import AffiliateRechner from "./AffiliateRechner";
+import Visitenkarte from "./Visitenkarte";
 
 const steps = [
   { icon: Link2, title: "Link holen", desc: "Namen eingeben — dein persönlicher Link ist sofort da." },
@@ -182,8 +183,41 @@ export default function VerdienenContent() {
         </div>
       </section>
 
+      {/* ── Online-Visitenkarte ── */}
+      <section className="py-24 bg-white" id="visitenkarte">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-12 max-w-xl"
+          >
+            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
+              <span className="w-8 h-[2px] bg-accent" />
+              Deine Online-Visitenkarte
+            </span>
+            <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight mb-3" style={{ fontFamily: "var(--font-display)" }}>
+              Ein Bild — einfach weiterschicken
+            </h2>
+            <p className="text-muted text-lg">
+              Lade deine persönliche Karte herunter und schick sie an Handwerker, die
+              einen Job suchen. Dein Link ist schon drauf.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Visitenkarte />
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Für wen ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24" style={{ background: "var(--color-surface)" }}>
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}
@@ -223,7 +257,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+      <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}

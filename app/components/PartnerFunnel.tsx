@@ -10,7 +10,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Hammer, ArrowLeft, ArrowRight, Loader2, Check, Copy, Share2,
-  Sparkles, Lock, Phone, User, Mail, RefreshCw,
+  Sparkles, Lock, Phone, User, Mail, RefreshCw, LayoutDashboard,
 } from "lucide-react";
 import { ProgressBar, StepIndicators, type StepDef } from "./ProgressBar";
 import OtpInput from "./OtpInput";
@@ -337,12 +337,12 @@ export default function PartnerFunnel() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link href="/verdienen/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-accent text-primary font-bold px-6 py-3 text-sm hover:bg-amber-400 transition-colors">
+                    <LayoutDashboard className="w-4 h-4" /> Zum Dashboard
+                  </Link>
                   <button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-white font-semibold px-6 py-3 text-sm hover:bg-accent hover:text-primary transition-colors">
                     <Share2 className="w-4 h-4" /> Per WhatsApp teilen
                   </button>
-                  <Link href="/verdienen" className="inline-flex items-center justify-center gap-2 rounded-full border border-border text-primary font-semibold px-6 py-3 text-sm hover:border-accent transition-colors">
-                    Fertig
-                  </Link>
                 </div>
               </div>
             )}

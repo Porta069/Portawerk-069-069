@@ -13,14 +13,15 @@ import {
   Users,
   Check,
   Plus,
+  Search,
 } from "lucide-react";
 import ArbeitgeberForm from "./ArbeitgeberForm";
 
 const vorteile = [
-  { icon: BadgeEuro, title: "Nur bei Erfolg zahlen", desc: "Keine Vorabkosten, keine monatlichen Gebühren. Zahlung erst nach erfolgreicher Probezeit." },
-  { icon: UserCheck, title: "Vorgeprüfte Fachkräfte", desc: "Wir prüfen jedes Profil vorab — passende Handwerker statt Massenbewerbungen und No-Shows." },
-  { icon: ShieldCheck, title: "Diskreter Prozess", desc: "Kein öffentliches Inserat. Ihre Suche bleibt intern, bis Sie einer Vorstellung zustimmen." },
-  { icon: Clock, title: "Schnelle Besetzung", desc: "Durch unseren aktiven Kandidatenpool oft erste passende Profile in wenigen Tagen." },
+  { icon: BadgeEuro, title: "Nur bei Erfolg zahlen", desc: "Keine Vorabkosten — Zahlung erst nach der Probezeit." },
+  { icon: UserCheck, title: "Vorgeprüfte Fachkräfte", desc: "Geprüfte Profile statt Bewerbungsflut." },
+  { icon: ShieldCheck, title: "Diskreter Prozess", desc: "Ihre Suche bleibt intern — kein Inserat." },
+  { icon: Clock, title: "Schnelle Besetzung", desc: "Erste passende Profile oft in wenigen Tagen." },
 ];
 
 const steps = [
@@ -58,6 +59,11 @@ const faqs = [
 
 export default function ArbeitgeberContent() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [fachQuery, setFachQuery] = useState("");
+  const fq = fachQuery.trim().toLowerCase();
+  const visibleFach = fq
+    ? fachkraefte.filter((g) => g !== "und viele mehr" && g.toLowerCase().includes(fq))
+    : fachkraefte;
 
   return (
     <>
@@ -127,6 +133,26 @@ export default function ArbeitgeberContent() {
                 </li>
               ))}
             </motion.ul>
+
+            {/* Führungskraft, die aufs Formular zeigt */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden lg:block relative mt-12 w-[85%]"
+            >
+              <div
+                className="absolute -inset-5 rounded-3xl pointer-events-none"
+                style={{ background: "radial-gradient(circle at 65% 50%, rgba(232,168,56,0.18) 0%, transparent 70%)" }}
+              />
+              <Image
+                src="/images/arbeitgeber-chef.jpg"
+                alt="Handwerks-Meister zeigt auf das Anfrage-Formular"
+                width={440}
+                height={293}
+                className="relative rounded-2xl w-full object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.5)]"
+              />
+            </motion.div>
           </div>
 
           {/* Formular */}
@@ -204,7 +230,7 @@ export default function ArbeitgeberContent() {
               Warum Betriebe auf uns setzen
             </h2>
           </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid sm:grid-cols-2 gap-6">
             {vorteile.map((b, i) => {
               const Icon = b.icon;
               return (
@@ -214,13 +240,18 @@ export default function ArbeitgeberContent() {
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="bg-white rounded-2xl border border-border p-6 hover:border-accent hover:shadow-[0_18px_40px_-24px_rgba(26,26,46,0.28)] hover:-translate-y-1 transition-all duration-300"
+                  className="group bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(26,26,46,0.38)] hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: "var(--color-accent-soft)" }}>
-                    <Icon className="w-6 h-6 text-accent" strokeWidth={1.75} />
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+                    style={{ background: "var(--color-accent-soft)" }}
+                  >
+                    <Icon className="w-8 h-8 text-accent" strokeWidth={1.6} />
                   </div>
-                  <h3 className="text-primary font-bold text-lg mb-2" style={{ fontFamily: "var(--font-display)" }}>{b.title}</h3>
-                  <p className="text-muted text-sm leading-relaxed">{b.desc}</p>
+                  <div>
+                    <h3 className="text-primary font-bold text-2xl mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>{b.title}</h3>
+                    <p className="text-muted text-base md:text-lg leading-relaxed">{b.desc}</p>
+                  </div>
                 </motion.div>
               );
             })}
@@ -288,24 +319,49 @@ export default function ArbeitgeberContent() {
           >
             Welche Fachkräfte Sie bei uns finden
           </motion.h2>
-          <p className="text-muted text-lg mb-10 max-w-2xl mx-auto">
+          <p className="text-muted text-lg mb-8 max-w-2xl mx-auto">
             Qualifizierte Handwerker aus ganz Deutschland — über alle Gewerke hinweg.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {fachkraefte.map((g, i) => (
-              <motion.a
-                key={g}
-                href="#anfrage"
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: (i % 8) * 0.04 }}
-                className="rounded-full bg-white border border-border px-5 py-2.5 text-primary text-sm font-medium hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
-              >
-                {g}
-              </motion.a>
-            ))}
+
+          {/* Suchleiste */}
+          <div className="max-w-xl mx-auto mb-10">
+            <div className="relative">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted pointer-events-none" strokeWidth={2} />
+              <input
+                type="text"
+                value={fachQuery}
+                onChange={(e) => setFachQuery(e.target.value)}
+                placeholder="Fachkraft suchen, z. B. Elektriker …"
+                aria-label="Fachkraft suchen"
+                className="w-full rounded-full border border-border bg-white h-14 pl-14 pr-5 text-primary text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 transition-colors shadow-[0_12px_30px_-20px_rgba(26,26,46,0.4)]"
+              />
+            </div>
           </div>
+
+          {visibleFach.length > 0 ? (
+            <div className="flex flex-wrap justify-center gap-3">
+              {visibleFach.map((g) => (
+                <a
+                  key={g}
+                  href="#anfrage"
+                  className="rounded-full bg-white border border-border px-5 py-2.5 text-primary text-sm font-medium hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
+                >
+                  {g}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <p className="text-muted">
+                Kein Treffer für{" "}
+                <span className="text-primary font-medium">{fachQuery}</span> — wir
+                vermitteln in allen Gewerken.
+              </p>
+              <a href="#anfrage" className="text-accent font-semibold hover:text-amber-600 transition-colors whitespace-nowrap">
+                Jetzt anfragen →
+              </a>
+            </div>
+          )}
         </div>
       </section>
 

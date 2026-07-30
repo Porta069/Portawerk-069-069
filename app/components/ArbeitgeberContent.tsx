@@ -247,100 +247,6 @@ export default function ArbeitgeberContent() {
         </div>
       </section>
 
-      {/* ── Ihre Vorteile ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-14 max-w-xl"
-          >
-            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
-              <span className="w-8 h-[2px] bg-accent" />
-              Ihre Vorteile
-            </span>
-            <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-              Warum Betriebe auf uns setzen
-            </h2>
-          </motion.div>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {vorteile.map((b, i) => {
-              const Icon = b.icon;
-              return (
-                <motion.div
-                  key={b.title}
-                  initial={{ y: 24, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="group bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(26,26,46,0.38)] hover:-translate-y-1 transition-all duration-300"
-                >
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
-                    style={{ background: "var(--color-accent-soft)" }}
-                  >
-                    <Icon className="w-8 h-8 text-accent" strokeWidth={1.6} />
-                  </div>
-                  <div>
-                    <h3 className="text-primary font-bold text-2xl mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>{b.title}</h3>
-                    <p className="text-muted text-base md:text-lg leading-relaxed">{b.desc}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── So läuft's ── */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-14 max-w-xl"
-          >
-            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
-              <span className="w-8 h-[2px] bg-accent" />
-              So läuft&apos;s
-            </span>
-            <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-              In drei Schritten zur Fachkraft
-            </h2>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {steps.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <motion.div
-                  key={s.title}
-                  initial={{ y: 24, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex flex-col gap-5 p-8 rounded-2xl" style={{ background: "var(--color-surface)" }}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-7 h-7 text-accent" strokeWidth={1.6} />
-                    </div>
-                    <span className="text-accent font-black text-4xl leading-none" style={{ fontFamily: "var(--font-display)" }}>
-                      {i + 1}
-                    </span>
-                  </div>
-                  <h3 className="text-primary font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>{s.title}</h3>
-                  <p className="text-muted text-base leading-relaxed">{s.desc}</p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* ── Welche Fachkräfte — im Stil der Handwerker-Suche ── */}
       <section className="py-24" style={{ background: "var(--color-surface)" }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
@@ -499,6 +405,100 @@ export default function ArbeitgeberContent() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ── So läuft's ── */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-14 max-w-xl"
+          >
+            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
+              <span className="w-8 h-[2px] bg-accent" />
+              So läuft&apos;s
+            </span>
+            <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+              In drei Schritten zur Fachkraft
+            </h2>
+          </motion.div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {steps.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <motion.div
+                  key={s.title}
+                  initial={{ y: 24, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col gap-5 p-8 rounded-2xl" style={{ background: "var(--color-surface)" }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-7 h-7 text-accent" strokeWidth={1.6} />
+                    </div>
+                    <span className="text-accent font-black text-4xl leading-none" style={{ fontFamily: "var(--font-display)" }}>
+                      {i + 1}
+                    </span>
+                  </div>
+                  <h3 className="text-primary font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>{s.title}</h3>
+                  <p className="text-muted text-base leading-relaxed">{s.desc}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Ihre Vorteile ── */}
+      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-14 max-w-xl"
+          >
+            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
+              <span className="w-8 h-[2px] bg-accent" />
+              Ihre Vorteile
+            </span>
+            <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+              Warum Betriebe auf uns setzen
+            </h2>
+          </motion.div>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {vorteile.map((b, i) => {
+              const Icon = b.icon;
+              return (
+                <motion.div
+                  key={b.title}
+                  initial={{ y: 24, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  className="group bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(26,26,46,0.38)] hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+                    style={{ background: "var(--color-accent-soft)" }}
+                  >
+                    <Icon className="w-8 h-8 text-accent" strokeWidth={1.6} />
+                  </div>
+                  <div>
+                    <h3 className="text-primary font-bold text-2xl mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>{b.title}</h3>
+                    <p className="text-muted text-base md:text-lg leading-relaxed">{b.desc}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 

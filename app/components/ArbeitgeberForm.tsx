@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ArrowRight, CheckCircle2, Loader2, ChevronDown } from "lucide-react";
 
 const FACHKRAEFTE = [
   "Elektriker / Elektroniker",
@@ -54,6 +54,8 @@ export default function ArbeitgeberForm({
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [shimmering, setShimmering] = useState(false);
+  const [ddOpen, setDdOpen] = useState(false);
+  const ddRef = useRef<HTMLDivElement>(null);
 
   const opts = options && options.length > 0 ? options : FACHKRAEFTE;
 
@@ -62,14 +64,27 @@ export default function ArbeitgeberForm({
     if (presetFachkraft) setF((p) => ({ ...p, fachkraft: presetFachkraft }));
   }, [presetFachkraft]);
 
-  // Einmaliger Glanz-Effekt, sobald eine Fachkraft ausgewählt wurde.
+  // Einmaliger Glanz-Effekt — etwas verzögert und langsam.
   useEffect(() => {
     if (shimmerSignal > 0) {
-      setShimmering(true);
-      const t = setTimeout(() => setShimmering(false), 1200);
-      return () => clearTimeout(t);
+      const start = setTimeout(() => setShimmering(true), 480);
+      const stop = setTimeout(() => setShimmering(false), 480 + 2100);
+      return () => {
+        clearTimeout(start);
+        clearTimeout(stop);
+      };
     }
   }, [shimmerSignal]);
+
+  // Dropdown bei Klick außerhalb schließen.
+  useEffect(() => {
+    if (!ddOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (ddRef.current && !ddRef.current.contains(e.target as Node)) setDdOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [ddOpen]);
 
   const set = (key: keyof Fields) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -181,18 +196,68 @@ export default function ArbeitgeberForm({
           <input id="telefon" type="tel" className={inputBase} value={f.telefon} onChange={set("telefon")} placeholder="+49 …" />
         </div>
         <div className="sm:col-span-2">
-          <label className={labelBase} htmlFor="fachkraft">Welche Fachkraft suchen Sie?</label>
-          <div className="relative rounded-xl overflow-hidden">
-            <select id="fachkraft" className={inputBase} value={f.fachkraft} onChange={set("fachkraft")}>
-              {opts.map((g) => (
-                <option key={g} value={g}>{g}</option>
-              ))}
-            </select>
-            {shimmering && (
-              <span
-                aria-hidden="true"
-                className="shimmer-once pointer-events-none absolute top-0 left-0 z-10 h-full w-1/3 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
-              />
+          <label className={labelBase} htmlFor="fachkraft-trigger">Welche Fachkraft suchen Sie?</label>
+          <div className="relative" ref={ddRef}>
+            {/* Trigger */}
+            <div className="relative rounded-xl overflow-hidden">
+              <button
+                id="fachkraft-trigger"
+                type="button"
+                onClick={() => setDdOpen((o) => !o)}
+                aria-haspopup="listbox"
+                aria-expanded={ddOpen}
+                className={`w-full flex items-center justify-between gap-2 rounded-xl border bg-white px-4 py-3 text-primary text-sm text-left transition-colors focus:outline-none focus:ring-2 focus:ring-accent/25 ${
+                  ddOpen ? "border-accent" : "border-border hover:border-accent/60"
+                }`}
+              >
+                <span>{f.fachkraft}</span>
+                <ChevronDown
+                  className={`w-4 h-4 text-muted flex-shrink-0 transition-transform duration-200 ${ddOpen ? "rotate-180 text-accent" : ""}`}
+                  strokeWidth={2}
+                />
+              </button>
+              {shimmering && (
+                <span
+                  aria-hidden="true"
+                  className="shimmer-once pointer-events-none absolute top-0 left-0 z-10 h-full w-1/3 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+                  style={{ animationDuration: "1.9s" }}
+                />
+              )}
+            </div>
+
+            {/* Optionen */}
+            {ddOpen && (
+              <ul
+                role="listbox"
+                className="absolute z-30 top-full mt-2 w-full max-h-64 overflow-auto rounded-xl border border-border bg-white shadow-[0_18px_44px_-20px_rgba(26,26,46,0.4)] py-1"
+              >
+                {opts.map((g) => {
+                  const active = g === f.fachkraft;
+                  return (
+                    <li key={g} role="option" aria-selected={active}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setF((p) => ({ ...p, fachkraft: g }));
+                          setDdOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                          active ? "text-accent font-semibold" : "text-primary hover:text-primary"
+                        }`}
+                        style={active ? { background: "var(--color-accent-soft)" } : undefined}
+                        onMouseEnter={(e) => {
+                          if (!active) e.currentTarget.style.background = "var(--color-surface)";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!active) e.currentTarget.style.background = "";
+                        }}
+                      >
+                        {g}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
           </div>
         </div>

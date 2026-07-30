@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { ArrowRight, Link2, Share2, Wallet, Users, HardHat, Check } from "lucide-react";
+import { ArrowRight, Link2, Share2, Wallet, Users, HardHat, Check, Plus } from "lucide-react";
 import AffiliateGenerator from "./AffiliateGenerator";
 import AffiliateRechner from "./AffiliateRechner";
 
@@ -20,6 +21,7 @@ const faqs = [
 ];
 
 export default function VerdienenContent() {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   return (
     <>
       {/* ── Hero: Affiliate-Funktion ganz oben + Geld ── */}
@@ -126,19 +128,25 @@ export default function VerdienenContent() {
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex flex-col gap-5 p-8 rounded-2xl"
-                  style={{ background: "var(--color-surface)" }}
+                  className="group relative overflow-hidden rounded-3xl bg-primary p-8 hover:-translate-y-2 transition-all duration-300 shadow-[0_20px_44px_-24px_rgba(26,26,46,0.5)] hover:shadow-[0_30px_60px_-22px_rgba(232,168,56,0.5)]"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-7 h-7 text-accent" strokeWidth={1.6} />
+                  <span
+                    className="absolute -top-6 right-1 font-black text-white/[0.06] leading-none select-none pointer-events-none"
+                    style={{ fontFamily: "var(--font-display)", fontSize: "9rem" }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div
+                    className="absolute -inset-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    style={{ background: "radial-gradient(circle at 70% 0%, rgba(232,168,56,0.2) 0%, transparent 60%)" }}
+                  />
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+                      <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
                     </div>
-                    <span className="text-accent font-black text-4xl leading-none" style={{ fontFamily: "var(--font-display)" }}>
-                      {i + 1}
-                    </span>
+                    <h3 className="text-white font-bold text-2xl mb-2.5" style={{ fontFamily: "var(--font-display)" }}>{s.title}</h3>
+                    <p className="text-white/55 text-base leading-relaxed">{s.desc}</p>
                   </div>
-                  <h3 className="text-primary font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>{s.title}</h3>
-                  <p className="text-muted text-base leading-relaxed">{s.desc}</p>
                 </motion.div>
               );
             })}
@@ -157,7 +165,7 @@ export default function VerdienenContent() {
             className="text-center mb-10 max-w-xl mx-auto"
           >
             <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight mb-3" style={{ fontFamily: "var(--font-display)" }}>
-              Was kannst du verdienen?
+              Was kannst DU <span className="text-accent">verdienen</span>?
             </h2>
             <p className="text-muted text-lg">
               Stell ein, wie viele Deals du machst — und sieh sofort, was dabei rauskommt.
@@ -187,20 +195,27 @@ export default function VerdienenContent() {
           >
             Für wen ist das?
           </motion.h2>
-          <div className="grid sm:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-6">
             {[
               { icon: HardHat, title: "Für Handwerker", desc: "Empfiehl Kollegen aus deinem Gewerk und verdien nebenbei." },
               { icon: Users, title: "Für alle anderen", desc: "Kein Handwerker? Egal. Wer Leute kennt, kann verdienen." },
-            ].map((c) => {
+            ].map((c, i) => {
               const Icon = c.icon;
               return (
-                <div key={c.title} className="border border-border rounded-2xl p-7" style={{ background: "var(--color-surface)" }}>
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ background: "var(--color-accent-soft)" }}>
-                    <Icon className="w-5 h-5 text-accent" strokeWidth={1.75} />
+                <motion.div
+                  key={c.title}
+                  initial={{ y: 24, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  className="group rounded-3xl border border-border bg-white p-8 sm:p-10 hover:border-accent hover:-translate-y-1.5 hover:shadow-[0_26px_54px_-28px_rgba(232,168,56,0.5)] transition-all duration-300"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+                    <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
                   </div>
-                  <h3 className="text-primary font-bold text-xl mb-2" style={{ fontFamily: "var(--font-display)" }}>{c.title}</h3>
-                  <p className="text-muted text-base leading-relaxed">{c.desc}</p>
-                </div>
+                  <h3 className="text-primary font-bold text-2xl mb-2.5" style={{ fontFamily: "var(--font-display)" }}>{c.title}</h3>
+                  <p className="text-muted text-base md:text-lg leading-relaxed">{c.desc}</p>
+                </motion.div>
               );
             })}
           </div>
@@ -221,12 +236,30 @@ export default function VerdienenContent() {
             Häufige Fragen
           </motion.h2>
           <div className="flex flex-col">
-            {faqs.map((f) => (
-              <div key={f.q} className="border-t border-border last:border-b py-6">
-                <h3 className="text-primary font-semibold text-lg mb-2">{f.q}</h3>
-                <p className="text-muted text-base leading-relaxed">{f.a}</p>
-              </div>
-            ))}
+            {faqs.map((f, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div key={f.q} className="border-t border-border last:border-b">
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    className="w-full flex items-center justify-between gap-4 py-6 text-left group"
+                  >
+                    <span className={`text-lg font-semibold transition-colors ${isOpen ? "text-primary" : "text-primary/80 group-hover:text-primary"}`}>
+                      {f.q}
+                    </span>
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: isOpen ? "var(--color-accent)" : "var(--color-accent-soft)" }}>
+                      <Plus className={`w-4 h-4 transition-transform duration-300 ${isOpen ? "rotate-45 text-primary" : "text-accent"}`} strokeWidth={2.5} />
+                    </span>
+                  </button>
+                  <div className="grid transition-all duration-300 ease-out" style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}>
+                    <div className="overflow-hidden">
+                      <p className="text-muted text-base leading-relaxed pb-6 max-w-2xl">{f.a}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const AUDIENCES = [
   { href: "/", label: "Für Handwerker" },
   { href: "/arbeitgeber", label: "Für Arbeitgeber" },
-  { href: "/verdienen", label: "Verdienen" },
+  { href: "/verdienen", label: "Verdiene durch Empfehlungen" },
 ];
 
 // Kontextabhängige Konto-Aktionen je Zielgruppe.

@@ -68,7 +68,7 @@ export default function ArbeitgeberForm({
   useEffect(() => {
     if (shimmerSignal > 0) {
       const start = setTimeout(() => setShimmering(true), 480);
-      const stop = setTimeout(() => setShimmering(false), 480 + 3350 + 200);
+      const stop = setTimeout(() => setShimmering(false), 480 + 2400 + 200);
       return () => {
         clearTimeout(start);
         clearTimeout(stop);

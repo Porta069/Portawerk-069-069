@@ -6,7 +6,7 @@ import { Hammer, ExternalLink } from "lucide-react";
 const NAV = [
   { href: "/", label: "Für Handwerker" },
   { href: "/arbeitgeber", label: "Für Arbeitgeber" },
-  { href: "/empfehlen", label: "Empfehlen & verdienen" },
+  { href: "/verdienen", label: "Verdienen" },
 ];
 
 const LEGAL = [

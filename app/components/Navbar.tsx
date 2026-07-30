@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const AUDIENCES = [
   { href: "/", label: "Für Handwerker" },
   { href: "/arbeitgeber", label: "Für Arbeitgeber" },
-  { href: "/empfehlen", label: "Empfehlen & verdienen" },
+  { href: "/verdienen", label: "Verdienen" },
 ];
 
 // Kontextabhängige Konto-Aktionen je Zielgruppe.
@@ -22,8 +22,8 @@ function ctaFor(pathname: string) {
       href: "mailto:kontakt@portawerk.de",
     };
   }
-  if (pathname.startsWith("/empfehlen")) {
-    return { login: "/login", label: "Partner werden", href: "/empfehlen#partner" };
+  if (pathname.startsWith("/verdienen")) {
+    return { login: "/login", label: "Link erstellen", href: "/verdienen#link" };
   }
   return { login: "/login", label: "Jetzt registrieren", href: "/registrieren" };
 }

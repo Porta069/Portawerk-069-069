@@ -7,9 +7,9 @@ import AffiliateGenerator from "./AffiliateGenerator";
 import AffiliateRechner from "./AffiliateRechner";
 
 const steps = [
-  { icon: Link2, title: "Link holen", desc: "Nummer eingeben, Wunsch-Link wählen — in 30 Sekunden fertig." },
-  { icon: Share2, title: "Teilen", desc: "Schick ihn an Freunde, Familie oder Kollegen — per WhatsApp, überall." },
-  { icon: Wallet, title: "Verdienen", desc: "Findet jemand über deinen Link einen Job, kassierst du deine Prämie." },
+  { icon: Link2, title: "Link holen", desc: "Namen eingeben — dein persönlicher Link ist sofort da." },
+  { icon: Share2, title: "Teilen", desc: "Schick ihn an Freunde, Familie oder Kollegen. Per WhatsApp, überall." },
+  { icon: Wallet, title: "100 € kassieren", desc: "Findet jemand über dich einen Job, bekommst du 100 €." },
 ];
 
 const faqs = [
@@ -22,17 +22,31 @@ const faqs = [
 export default function VerdienenContent() {
   return (
     <>
-      {/* ── Hero: Geld im Vordergrund ── */}
-      <section className="relative bg-primary pt-32 pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-10 items-center">
+      {/* ── Hero: Affiliate-Funktion ganz oben + Geld ── */}
+      <section className="relative bg-primary overflow-hidden">
+        {/* Geld-Bild, blendet in den Hero */}
+        <div className="absolute inset-y-0 right-0 w-full lg:w-1/2 pointer-events-none">
+          <Image
+            src="/images/geld.jpg"
+            alt="Euro-Geldscheine"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+          />
+          {/* Verlauf: verschmilzt mit dem Navy-Hero */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to right, #1A1A2E 0%, rgba(26,26,46,0.55) 32%, rgba(26,26,46,0.15) 70%, rgba(26,26,46,0.35) 100%)",
+            }}
+          />
+          {/* auf Mobile stärker abdunkeln für Lesbarkeit */}
+          <div className="lg:hidden absolute inset-0 bg-primary/75" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-32 pb-20 lg:pt-40 lg:pb-28 grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -46,70 +60,46 @@ export default function VerdienenContent() {
               </span>
             </motion.div>
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
-              className="text-white font-bold leading-[1.04] mb-6"
+              className="text-white font-bold leading-[1.03] mb-5"
               style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.6rem, 6.5vw, 4.6rem)" }}
             >
-              Empfehle Handwerker.
+              Empfehle.
               <br />
-              <span className="text-accent">Verdiene mit.</span>
+              <span className="text-accent">Verdiene.</span>
             </motion.h1>
             <motion.p
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
-              className="text-white/65 text-lg leading-relaxed max-w-md mb-8"
+              className="text-white/70 text-lg leading-relaxed max-w-md mb-8"
             >
-              Kennst du jemanden, der einen Job im Handwerk sucht? Teil deinen Link —
-              findet er über uns eine Stelle, kassierst du eine{" "}
-              <span className="text-white font-semibold">feste Prämie</span>.
+              Erstell deinen Link, teil ihn — und kassier{" "}
+              <span className="text-white font-semibold">100 € für jede Vermittlung</span>.
+              Kostenlos, ohne Risiko.
             </motion.p>
+
+            {/* DER Generator — ganz oben */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              id="link"
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col sm:flex-row gap-4 sm:items-center"
+              transition={{ duration: 0.8, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-md scroll-mt-28"
             >
-              <a
-                href="#link"
-                className="group inline-flex items-center justify-center gap-3 rounded-full bg-accent text-primary font-bold px-9 py-4 text-lg hover:bg-amber-400 transition-colors duration-200"
-              >
-                Link erstellen
-                <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
-              </a>
-              <a href="#rechner" className="text-white/70 hover:text-white text-sm font-medium transition-colors">
-                Verdienst berechnen →
-              </a>
+              <AffiliateGenerator />
             </motion.div>
           </div>
 
-          {/* Freigestelltes Geld, verschmilzt mit dem Hero */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, rotate: -10 }}
-            animate={{ opacity: 1, scale: 1, rotate: -6 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="relative justify-self-center lg:justify-self-end w-[70%] sm:w-[55%] lg:w-[85%]"
-          >
-            <div
-              className="absolute inset-0 -m-10 pointer-events-none"
-              style={{ background: "radial-gradient(circle at 50% 50%, rgba(232,168,56,0.30) 0%, transparent 62%)" }}
-            />
-            <Image
-              src="/images/geld.png"
-              alt="Bündel Euro-Geldscheine"
-              width={485}
-              height={452}
-              priority
-              className="relative w-full h-auto drop-shadow-[0_28px_50px_rgba(0,0,0,0.5)]"
-            />
-          </motion.div>
+          {/* rechte Spalte bleibt für das Geld-Bild frei (absolut positioniert) */}
+          <div className="hidden lg:block" aria-hidden />
         </div>
       </section>
 
       {/* ── So funktioniert's ── */}
-      <section className="py-24 bg-white" id="ablauf">
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -156,85 +146,8 @@ export default function VerdienenContent() {
         </div>
       </section>
 
-      {/* ── Link-Generator ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }} id="link">
-        <div className="max-w-2xl mx-auto px-6 lg:px-12">
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center mb-10"
-          >
-            <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight mb-3" style={{ fontFamily: "var(--font-display)" }}>
-              Dein eigener Link
-            </h2>
-            <p className="text-muted text-lg">
-              Registrier dich mit deiner Nummer und erstelle deinen persönlichen,
-              einzigartigen Empfehlungs-Link.
-            </p>
-          </motion.div>
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <AffiliateGenerator />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Was du verdienst (Beispiel) ── */}
-      <section className="py-24" style={{ background: "var(--color-accent-soft)" }}>
-        <div className="max-w-5xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-14 items-center">
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-6">
-              <span className="w-8 h-[2px] bg-accent" />
-              Was du verdienst
-            </span>
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="font-black text-accent leading-none" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4rem, 12vw, 7rem)" }}>
-                100&nbsp;€
-              </span>
-              <span className="text-primary/60 text-sm font-medium">*</span>
-            </div>
-            <p className="text-primary/70 text-lg leading-relaxed mb-3">
-              pro erfolgreich vermitteltem Handwerker — ausgezahlt, sobald er die
-              Einführungsphase besteht.
-            </p>
-            <p className="text-muted text-xs">*Beispielbetrag — der finale Betrag folgt.</p>
-          </motion.div>
-
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-white border border-border rounded-2xl p-8"
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted mb-4">Rechenbeispiel</p>
-            {[
-              { n: "1 Vermittlung", v: "100 €" },
-              { n: "3 Vermittlungen", v: "300 €" },
-              { n: "10 Vermittlungen", v: "1.000 €" },
-            ].map((row) => (
-              <div key={row.n} className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
-                <span className="text-primary/75 text-sm">{row.n}</span>
-                <span className="text-primary font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>{row.v}</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Interaktiver Rechner ── */}
-      <section className="py-24 bg-white" id="rechner">
+      {/* ── Rechner ── */}
+      <section className="py-24" style={{ background: "var(--color-surface)" }} id="rechner">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -244,11 +157,10 @@ export default function VerdienenContent() {
             className="text-center mb-10 max-w-xl mx-auto"
           >
             <h2 className="text-primary font-bold text-4xl md:text-5xl leading-tight mb-3" style={{ fontFamily: "var(--font-display)" }}>
-              Rechne selbst nach
+              Was kannst du verdienen?
             </h2>
             <p className="text-muted text-lg">
-              Wie viele Vermittlungen brauchst du für dein Ziel? Zieh am Regler oder gib
-              deinen Wunsch-Verdienst ein.
+              Stell ein, wie viele Deals du machst — und sieh sofort, was dabei rauskommt.
             </p>
           </motion.div>
           <motion.div
@@ -263,7 +175,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── Für wen ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+      <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}
@@ -277,12 +189,12 @@ export default function VerdienenContent() {
           </motion.h2>
           <div className="grid sm:grid-cols-2 gap-5">
             {[
-              { icon: HardHat, title: "Für Handwerker", desc: "Empfiehl Kollegen aus deinem Gewerk und verdien nebenbei mit." },
-              { icon: Users, title: "Für alle anderen", desc: "Du musst kein Handwerker sein. Wer Leute kennt, kann verdienen." },
+              { icon: HardHat, title: "Für Handwerker", desc: "Empfiehl Kollegen aus deinem Gewerk und verdien nebenbei." },
+              { icon: Users, title: "Für alle anderen", desc: "Kein Handwerker? Egal. Wer Leute kennt, kann verdienen." },
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.title} className="bg-white border border-border rounded-2xl p-7">
+                <div key={c.title} className="border border-border rounded-2xl p-7" style={{ background: "var(--color-surface)" }}>
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ background: "var(--color-accent-soft)" }}>
                     <Icon className="w-5 h-5 text-accent" strokeWidth={1.75} />
                   </div>
@@ -296,7 +208,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24" style={{ background: "var(--color-surface)" }}>
         <div className="max-w-3xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}
@@ -319,15 +231,15 @@ export default function VerdienenContent() {
         </div>
       </section>
 
-      {/* ── Partner-CTA ── */}
-      <section className="py-20 bg-primary relative overflow-hidden" id="partner">
+      {/* ── CTA ── */}
+      <section className="py-20 bg-primary relative overflow-hidden">
         <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.10) 0%, transparent 65%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <h2 className="text-white font-bold text-3xl md:text-4xl leading-tight mb-5" style={{ fontFamily: "var(--font-display)" }}>
             Bereit zu verdienen?
           </h2>
           <p className="text-white/60 text-base leading-relaxed max-w-xl mx-auto mb-9">
-            Erstelle jetzt deinen Link — kostenlos, unverbindlich, erfolgsbasiert.
+            Erstell jetzt deinen Link — kostenlos, unverbindlich, 100 € pro Vermittlung.
           </p>
           <a
             href="#link"

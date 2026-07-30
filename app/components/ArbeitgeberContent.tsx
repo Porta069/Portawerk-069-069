@@ -134,23 +134,23 @@ export default function ArbeitgeberContent() {
               ))}
             </motion.ul>
 
-            {/* Führungskraft, die aufs Formular zeigt */}
+            {/* Freigestellte Person, die aufs Formular zeigt — verschmilzt mit dem Hero */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="hidden lg:block relative mt-12 w-[85%]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden lg:block relative mt-6 w-[68%]"
             >
               <div
-                className="absolute -inset-5 rounded-3xl pointer-events-none"
-                style={{ background: "radial-gradient(circle at 65% 50%, rgba(232,168,56,0.18) 0%, transparent 70%)" }}
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: "radial-gradient(circle at 55% 45%, rgba(232,168,56,0.20) 0%, transparent 62%)" }}
               />
               <Image
-                src="/images/arbeitgeber-chef.jpg"
-                alt="Handwerks-Meister zeigt auf das Anfrage-Formular"
-                width={440}
-                height={293}
-                className="relative rounded-2xl w-full object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.5)]"
+                src="/images/arbeitgeber-chef.png"
+                alt="Handwerker zeigt auf das Anfrage-Formular"
+                width={499}
+                height={488}
+                className="relative w-full h-auto drop-shadow-[0_20px_40px_rgba(0,0,0,0.45)]"
               />
             </motion.div>
           </div>

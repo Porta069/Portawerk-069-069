@@ -105,10 +105,6 @@ export default function Visitenkarte() {
         </p>
 
         <div className="flex flex-wrap gap-3">
-          <button onClick={download} disabled={!!busy} className="inline-flex items-center gap-2 rounded-full bg-accent text-primary font-semibold px-6 py-3 text-sm hover:bg-amber-400 transition-colors disabled:opacity-60">
-            {busy === "dl" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Herunterladen
-          </button>
           <button onClick={copy} disabled={!!busy} className="inline-flex items-center gap-2 rounded-full border border-border text-primary font-semibold px-6 py-3 text-sm hover:border-accent transition-colors disabled:opacity-60">
             {busy === "copy" ? <Loader2 className="w-4 h-4 animate-spin" /> : copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
             {copied ? "Kopiert" : "Kopieren"}
@@ -120,11 +116,19 @@ export default function Visitenkarte() {
         </div>
       </div>
 
-      {/* ── Kartenvorschau (wird exportiert) ── */}
-      <div className="flex justify-center overflow-x-auto">
+      {/* ── Kartenvorschau: klickbar (lädt herunter) + Button darunter ── */}
+      <div className="flex flex-col items-center gap-4">
+        <button
+          type="button"
+          onClick={download}
+          disabled={!!busy}
+          title="Klicken zum Herunterladen"
+          aria-label="Affiliate-Bild herunterladen"
+          className="max-w-full overflow-x-auto cursor-pointer disabled:cursor-wait rounded-[20px] transition-transform duration-300 hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4"
+        >
         <div
           ref={cardRef}
-          className="relative overflow-hidden shrink-0"
+          className="relative overflow-hidden shrink-0 mx-auto"
           style={{
             width: 344,
             height: 468,
@@ -194,6 +198,16 @@ export default function Visitenkarte() {
             </div>
           </div>
         </div>
+        </button>
+        <button
+          type="button"
+          onClick={download}
+          disabled={!!busy}
+          className="inline-flex items-center gap-2 rounded-full bg-accent text-primary font-bold px-7 py-3.5 text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 shadow-[0_10px_28px_-12px_rgba(232,168,56,0.6)]"
+        >
+          {busy === "dl" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          Affiliate-Bild herunterladen
+        </button>
       </div>
     </div>
   );

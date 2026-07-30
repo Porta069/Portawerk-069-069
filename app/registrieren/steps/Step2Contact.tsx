@@ -13,7 +13,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s()/-]{6,}$/;
 
 export default function Step2Contact() {
-  const { data, setContact, setPassword, next } = useRegistration();
+  const { data, setContact, setReferredBy, setPassword, next } = useRegistration();
   const c = data.contact;
 
   const [touched, setTouched] = useState(false);
@@ -156,6 +156,15 @@ export default function Step2Contact() {
             </p>
           )}
         </div>
+
+        {/* Empfohlen von — nur der Name, nicht der ganze Link (optional) */}
+        <Field
+          label="Empfohlen von (Name)"
+          value={data.referredBy}
+          onChange={(v) => setReferredBy(v)}
+          placeholder="z. B. max"
+          hint="Hat dich jemand empfohlen? Gib einfach seinen Namen ein — nicht den ganzen Link. (Optional)"
+        />
       </div>
 
       <div

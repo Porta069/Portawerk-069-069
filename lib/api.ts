@@ -138,6 +138,8 @@ export const api = {
     email: string;
     phone: string;
     password: string;
+    /** Optionaler Werber-Name/-Code (Affiliate). */
+    referredBy?: string;
   }) {
     return request<AuthSession>("/auth/registration/complete", {
       method: "POST",

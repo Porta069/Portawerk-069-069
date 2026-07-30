@@ -75,6 +75,8 @@ export interface RegistrationData {
   verification: VerificationState;
   aiAnswers: AnswerMap;
   legal: LegalConsent;
+  /** Name/Code des Werbers (Affiliate) — nur der Name, nicht der ganze Link. */
+  referredBy: string;
 }
 
 /** Angemeldeter Nutzer (nach Login / abgeschlossener Registrierung). */

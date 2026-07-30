@@ -53,6 +53,7 @@ export default function Step5Legal() {
       email: data.contact.email.trim(),
       phone: data.contact.phone.trim(),
       password: data.password,
+      ...(data.referredBy.trim() ? { referredBy: data.referredBy.trim() } : {}),
     });
     setLoading(false);
     if (res.ok) {

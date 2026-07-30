@@ -50,6 +50,7 @@ const EMPTY: RegistrationData = {
   verification: { emailVerified: false, phoneVerified: false },
   aiAnswers: {},
   legal: { privacyAccepted: false, termsAccepted: false },
+  referredBy: "",
 };
 
 interface RegistrationContextValue {
@@ -65,6 +66,7 @@ interface RegistrationContextValue {
   setSurveyAnswer: (id: string, value: AnswerValue) => void;
   skipSurvey: () => void;
   setContact: (patch: Partial<ContactData>) => void;
+  setReferredBy: (name: string) => void;
   setPassword: (pw: string) => void;
   setVerification: (patch: Partial<VerificationState>) => void;
   setAiAnswer: (id: string, value: AnswerValue) => void;
@@ -119,6 +121,18 @@ export function RegistrationProvider({
       }
     } catch {
       /* ignore — Vorbelegung ist rein optional */
+    }
+
+    // ── Werber aus dem Affiliate-Link vorbelegen (?ref=NAME) ──
+    // Nur der Name/Code, nicht der ganze Link. Nutzer kann ihn im Formular
+    // sehen/ändern; leer = keine Empfehlung.
+    try {
+      const ref = new URLSearchParams(window.location.search).get("ref");
+      if (ref && !base.referredBy) {
+        base = { ...base, referredBy: ref.trim().slice(0, 30) };
+      }
+    } catch {
+      /* ignore */
     }
 
     setData(base);
@@ -178,6 +192,10 @@ export function RegistrationProvider({
     setData((d) => ({ ...d, contact: { ...d.contact, ...patch } }));
   }, []);
 
+  const setReferredBy = useCallback((name: string) => {
+    setData((d) => ({ ...d, referredBy: name }));
+  }, []);
+
   const setVerification = useCallback((patch: Partial<VerificationState>) => {
     setData((d) => ({ ...d, verification: { ...d.verification, ...patch } }));
   }, []);
@@ -220,6 +238,7 @@ export function RegistrationProvider({
     setSurveyAnswer,
     skipSurvey,
     setContact,
+    setReferredBy,
     setPassword,
     setVerification,
     setAiAnswer,

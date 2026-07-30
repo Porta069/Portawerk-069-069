@@ -64,11 +64,11 @@ export default function ArbeitgeberForm({
     if (presetFachkraft) setF((p) => ({ ...p, fachkraft: presetFachkraft }));
   }, [presetFachkraft]);
 
-  // Einmaliger Glanz-Effekt — etwas verzögert und langsam.
+  // Glanz-Effekt — etwas verzögert, langsam, läuft 2× durch (2 × 1.5s = 3s).
   useEffect(() => {
     if (shimmerSignal > 0) {
       const start = setTimeout(() => setShimmering(true), 480);
-      const stop = setTimeout(() => setShimmering(false), 480 + 2100);
+      const stop = setTimeout(() => setShimmering(false), 480 + 3000 + 150);
       return () => {
         clearTimeout(start);
         clearTimeout(stop);
@@ -219,8 +219,7 @@ export default function ArbeitgeberForm({
               {shimmering && (
                 <span
                   aria-hidden="true"
-                  className="shimmer-once pointer-events-none absolute top-0 left-0 z-10 h-full w-1/3 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
-                  style={{ animationDuration: "1.9s" }}
+                  className="shimmer-sweep pointer-events-none absolute top-0 left-0 z-10 h-full w-1/3 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
                 />
               )}
             </div>

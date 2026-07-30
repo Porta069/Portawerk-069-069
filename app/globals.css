@@ -45,14 +45,15 @@ body {
   animation: shimmer 2.9s linear infinite;
 }
 
-/* Einmaliger Glanz-Sweep (z. B. wenn ein Feld hervorgehoben wird) */
-.shimmer-once {
-  animation: shimmer 1.1s ease-out 1;
+/* Glanz-Sweep für Feld-Hervorhebung — läuft 2× durch und endet außerhalb
+   (forwards), damit er danach nicht zurück in die Mitte springt / blinkt. */
+.shimmer-sweep {
+  animation: shimmer 1.5s ease-out 2 forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .shimmer-glint,
-  .shimmer-once {
+  .shimmer-sweep {
     animation: none;
   }
 }

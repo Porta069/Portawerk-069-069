@@ -182,13 +182,17 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
 
   const save = async () => {
     setSaving(true); setMsg(null);
+    // Frischen Stand holen, damit z. B. Arbeitsorte nicht überschrieben werden.
+    const cur = await api.exportData(token);
+    const fresh = (cur.ok ? (cur.data.onboardingAnswers ?? base) : base) as Record<string, unknown>;
     const profileData = {
-      ...base,
-      "1": { ...((base["1"] as object) || {}), answers: survey },
-      "4": { ...((base["4"] as object) || {}), aiAnswers: ai },
+      ...fresh,
+      "1": { ...((fresh["1"] as object) || {}), answers: survey },
+      "4": { ...((fresh["4"] as object) || {}), aiAnswers: ai },
     };
     const res = await api.updateProfile(token, { profileData });
     setSaving(false);
+    if (res.ok) setBase(fresh);
     setMsg(res.ok ? { ok: true, text: t("btn.saved") } : { ok: false, text: res.error });
   };
 
@@ -238,9 +242,13 @@ function OrteSection({ token, t }: { token: string; t: T }) {
 
   const save = async () => {
     setSaving(true); setMsg(null);
-    const profileData = { ...base, "3": { ...((base["3"] as object) || {}), workLocations: locs } };
+    // Frischen Stand holen, damit andere Bereiche nicht überschrieben werden.
+    const cur = await api.exportData(token);
+    const fresh = (cur.ok ? (cur.data.onboardingAnswers ?? base) : base) as Record<string, unknown>;
+    const profileData = { ...fresh, "3": { ...((fresh["3"] as object) || {}), workLocations: locs } };
     const res = await api.updateProfile(token, { profileData });
     setSaving(false);
+    if (res.ok) setBase(fresh);
     setMsg(res.ok ? { ok: true, text: t("btn.saved") } : { ok: false, text: res.error });
   };
 

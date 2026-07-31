@@ -23,46 +23,80 @@ export function ProgressBar({ percent }: { percent: number }) {
   );
 }
 
-/** Horizontale Schritt-Anzeige (auf dunklem Header). */
+const PAST_BG = "rgba(232,168,56,0.18)";
+const PAST_BG_HOVER = "rgba(232,168,56,0.34)";
+
+/**
+ * Horizontale Schritt-Anzeige (auf dunklem Header).
+ *
+ * Wird `onStepSelect` uebergeben, sind bereits abgeschlossene Schritte
+ * anklickbar, um dort Eingaben zu korrigieren. Der aktuelle Schritt und alle
+ * noch nicht bearbeiteten bleiben bewusst passiv — nach vorne springt man nur
+ * ueber den regulaeren Weiter-Button, damit keine Pflichtangabe uebersprungen wird.
+ */
 export function StepIndicators({
   steps,
   currentIndex,
+  onStepSelect,
 }: {
   steps: StepDef[];
   currentIndex: number;
+  onStepSelect?: (index: number) => void;
 }) {
   return (
-    <div className="flex items-center flex-wrap gap-y-2 mt-10">
+    <nav className="flex items-center flex-wrap gap-y-2 mt-10" aria-label="Fortschritt">
       {steps.map((s, i) => {
         const isActive = i === currentIndex;
         const isPast = i < currentIndex;
+        const clickable = isPast && !!onStepSelect;
+
+        const inner = (
+          <>
+            <span
+              className="text-[11px] font-bold"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {s.code}
+            </span>
+            <span className="text-[11px] font-medium tracking-wide hidden sm:inline">
+              {s.label}
+            </span>
+          </>
+        );
+
+        const baseStyle = {
+          background: isActive ? "#E8A838" : isPast ? PAST_BG : "rgba(255,255,255,0.06)",
+          color: isActive ? "#1A1A2E" : isPast ? "#E8A838" : "rgba(255,255,255,0.28)",
+        };
+
         return (
           <div key={s.label} className="flex items-center">
-            <div
-              className="flex items-center gap-2 px-3.5 py-2.5 transition-all duration-300"
-              style={{
-                background: isActive
-                  ? "#E8A838"
-                  : isPast
-                  ? "rgba(232,168,56,0.18)"
-                  : "rgba(255,255,255,0.06)",
-                color: isActive
-                  ? "#1A1A2E"
-                  : isPast
-                  ? "#E8A838"
-                  : "rgba(255,255,255,0.28)",
-              }}
-            >
-              <span
-                className="text-[11px] font-bold"
-                style={{ fontFamily: "var(--font-display)" }}
+            {clickable ? (
+              <button
+                type="button"
+                onClick={() => onStepSelect(i)}
+                title={`Zu Schritt ${s.code} – ${s.label} zurueckspringen`}
+                aria-label={`Zurueck zu Schritt ${s.code}: ${s.label}`}
+                className="flex items-center gap-2 px-3.5 py-2.5 cursor-pointer transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                style={baseStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = PAST_BG_HOVER;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = PAST_BG;
+                }}
               >
-                {s.code}
-              </span>
-              <span className="text-[11px] font-medium tracking-wide hidden sm:inline">
-                {s.label}
-              </span>
-            </div>
+                {inner}
+              </button>
+            ) : (
+              <div
+                aria-current={isActive ? "step" : undefined}
+                className="flex items-center gap-2 px-3.5 py-2.5 transition-all duration-300"
+                style={baseStyle}
+              >
+                {inner}
+              </div>
+            )}
             {i < steps.length - 1 && (
               <div
                 style={{
@@ -76,6 +110,6 @@ export function StepIndicators({
           </div>
         );
       })}
-    </div>
+    </nav>
   );
 }

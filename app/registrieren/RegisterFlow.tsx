@@ -19,15 +19,19 @@ import Step4AiQuestions from "./steps/Step4AiQuestions";
 import Step5Legal from "./steps/Step5Legal";
 import StepSuccess from "./steps/StepSuccess";
 
-const STEP_DEFS: StepDef[] = [
-  { code: "01", label: "Umfrage" },
-  { code: "02", label: "Kontakt" },
-  { code: "03", label: "Arbeitsorte" },
-  { code: "04", label: "Verifizierung" },
-  { code: "05", label: "KI-Profil" },
-  { code: "06", label: "Abschluss" },
-  { code: "✓", label: "Fertig" },
+// Reihenfolge identisch zu STEP_ORDER im RegistrationContext — der Schluessel
+// haengt direkt am Eintrag, damit Indikator-Index und Schritt nicht auseinanderlaufen.
+const STEPS: { key: RegStep; code: string; label: string }[] = [
+  { key: "survey", code: "01", label: "Umfrage" },
+  { key: "contact", code: "02", label: "Kontakt" },
+  { key: "orte", code: "03", label: "Arbeitsorte" },
+  { key: "verify", code: "04", label: "Verifizierung" },
+  { key: "ai", code: "05", label: "KI-Profil" },
+  { key: "legal", code: "06", label: "Abschluss" },
+  { key: "success", code: "✓", label: "Fertig" },
 ];
+
+const STEP_DEFS: StepDef[] = STEPS.map(({ code, label }) => ({ code, label }));
 
 const HEAD: Record<RegStep, { h: string; s: string }> = {
   survey: {
@@ -60,7 +64,7 @@ const HEAD: Record<RegStep, { h: string; s: string }> = {
 const CONTENT_STEPS = 6; // survey…legal
 
 export default function RegisterFlow() {
-  const { step, stepIndex, hydrated, back, data, setDraftToken } = useRegistration();
+  const { step, stepIndex, hydrated, back, goTo, data, setDraftToken } = useRegistration();
   const startingRef = useRef(false);
 
   // Registrierungs-Sitzung (draftToken) einmalig starten, sobald hydratisiert.
@@ -151,7 +155,11 @@ export default function RegisterFlow() {
                 <p className="text-base mt-3 max-w-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
                   {HEAD[step].s}
                 </p>
-                <StepIndicators steps={STEP_DEFS} currentIndex={stepIndex} />
+                <StepIndicators
+                  steps={STEP_DEFS}
+                  currentIndex={stepIndex}
+                  onStepSelect={(i) => goTo(STEPS[i].key)}
+                />
               </div>
             </div>
           )}

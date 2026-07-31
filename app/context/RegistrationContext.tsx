@@ -24,24 +24,40 @@ import type {
 } from "@/lib/types";
 import { GEWERKE } from "@/lib/constants";
 
+/**
+ * Reihenfolge nach Conversion optimiert:
+ * Erst identitaetsstiftende Fachfragen (Gewerk, Erfahrung) — die kosten wenig
+ * Ueberwindung und bauen Commitment auf. Dann die E-Mail als einzelne, leichte
+ * Huerde: ab hier ist der Lead erreichbar, falls jemand abbricht. Die teuren
+ * Schritte (Passwort, Telefon, OTP) kommen zuletzt, wenn die Investition am
+ * groessten ist.
+ */
 export type RegStep =
-  | "survey"
-  | "contact"
+  | "gewerk"
+  | "erfahrung"
+  | "email"
   | "orte"
+  | "konto"
   | "verify"
-  | "ai"
-  | "legal"
   | "success";
 
 const STEP_ORDER: RegStep[] = [
-  "survey",
-  "contact",
+  "gewerk",
+  "erfahrung",
+  "email",
   "orte",
+  "konto",
   "verify",
-  "ai",
-  "legal",
   "success",
 ];
+
+/** Schritt-Namen der alten Reihenfolge auf die neue abbilden. */
+const LEGACY_STEPS: Record<string, RegStep> = {
+  survey: "gewerk",
+  contact: "email",
+  ai: "erfahrung",
+  legal: "konto",
+};
 
 const STORAGE_KEY = "portawerk_registration_v1";
 
@@ -94,7 +110,7 @@ export function RegistrationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [step, setStep] = useState<RegStep>("survey");
+  const [step, setStep] = useState<RegStep>("gewerk");
   const [data, setData] = useState<RegistrationData>(EMPTY);
   const [hydrated, setHydrated] = useState(false);
   const skipPersist = useRef(false);
@@ -111,7 +127,14 @@ export function RegistrationProvider({
         };
         if (parsed.data) base = { ...EMPTY, ...parsed.data };
         // Erfolgsschritt nie wiederherstellen — sonst hängt man im "Fertig".
-        if (parsed.step && parsed.step !== "success") setStep(parsed.step);
+        // Laufende Registrierungen aus der alten Reihenfolge werden übersetzt,
+        // damit niemand nach dem Update in einem toten Schritt landet.
+        const saved = parsed.step
+          ? LEGACY_STEPS[parsed.step] ?? parsed.step
+          : undefined;
+        if (saved && saved !== "success" && STEP_ORDER.includes(saved)) {
+          setStep(saved);
+        }
       }
     } catch {
       /* ignore corrupt storage */
@@ -254,7 +277,7 @@ export function RegistrationProvider({
       /* ignore */
     }
     setData(EMPTY);
-    setStep("survey");
+    setStep("gewerk");
     // erlauben, dass künftige Änderungen wieder persistiert werden
     setTimeout(() => (skipPersist.current = false), 0);
   }, []);

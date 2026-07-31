@@ -27,7 +27,8 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.tile.openstreetmap.org",
+  // Kartenkacheln: CARTO (Voyager-Stil) mit OSM als Rückfallebene.
+  "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
   `connect-src 'self' ${apiOrigin} https://nominatim.openstreetmap.org${
     isDev ? " ws://localhost:* http://localhost:*" : ""
   }`,

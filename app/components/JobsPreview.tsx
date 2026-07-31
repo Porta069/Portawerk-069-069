@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 const jobs = [
   {
     title: "Elektriker / Elektroniker",
+    gewerk: "Elektriker / Elektroniker",
     img: "/images/elektriker-werkstatt.jpg",
     category: "Elektro & Energietechnik",
     city: "München",
@@ -28,6 +29,7 @@ const jobs = [
   },
   {
     title: "Anlagenmechaniker SHK",
+    gewerk: "Installateur / Klempner (SHK)",
     img: "/images/shk-heizung.jpg",
     category: "Sanitär · Heizung · Klima",
     city: "Hamburg",
@@ -38,6 +40,7 @@ const jobs = [
   },
   {
     title: "Maler & Lackierer",
+    gewerk: "Maler & Lackierer",
     img: "/images/maler-leiter.jpg",
     category: "Ausbau & Oberfläche",
     city: "Berlin",
@@ -90,42 +93,87 @@ const popularTrades = [
 ];
 
 // Alle Gewerke — nach Fachbereich gruppiert (übersichtliche Spalten-Ansicht).
-const gewerkeGruppen = [
+//
+// WICHTIG: `gewerk` muss exakt einem Wert aus GEWERKE (lib/constants) entsprechen.
+// Der Funnel prüft beim Vorbelegen `GEWERKE.includes(param)` — ein Berufsname wie
+// "Maurer" oder "Anlagenmechaniker SHK" steht dort nicht und würde still ignoriert.
+// Deshalb trägt jede angezeigte Rolle ihr Ziel-Gewerk mit sich.
+interface Role {
+  /** Was der Nutzer liest. */
+  label: string;
+  /** Exakter GEWERKE-Wert für die Vorbelegung im Funnel. */
+  gewerk: string;
+  /** Weitere Suchbegriffe, unter denen dieser Beruf gefunden werden soll. */
+  synonyms?: string[];
+}
+
+const gewerkeGruppen: { category: string; roles: Role[] }[] = [
   {
     category: "Elektro & Energietechnik",
-    roles: ["Elektriker / Elektroniker", "Elektroniker Energietechnik"],
+    roles: [
+      { label: "Elektriker / Elektroniker", gewerk: "Elektriker / Elektroniker", synonyms: ["elektro", "elektrik"] },
+      { label: "Elektroniker Energietechnik", gewerk: "Elektriker / Elektroniker", synonyms: ["energie"] },
+    ],
   },
   {
     category: "Sanitär · Heizung · Klima",
-    roles: ["Anlagenmechaniker SHK", "Installateur / Klempner", "Heizungsbauer"],
+    roles: [
+      { label: "Anlagenmechaniker SHK", gewerk: "Installateur / Klempner (SHK)", synonyms: ["shk", "sanitär"] },
+      { label: "Installateur / Klempner", gewerk: "Installateur / Klempner (SHK)", synonyms: ["sanitär"] },
+      { label: "Heizungsbauer", gewerk: "Heizungs- & Lüftungsbauer", synonyms: ["heizung", "lüftung", "klima"] },
+    ],
   },
   {
     category: "Holz & Ausbau",
-    roles: ["Tischler / Schreiner", "Zimmerer", "Trockenbauer", "Bodenleger"],
+    roles: [
+      { label: "Tischler / Schreiner", gewerk: "Tischler / Schreiner", synonyms: ["holz", "möbel"] },
+      { label: "Zimmerer", gewerk: "Zimmerer", synonyms: ["holzbau", "dachstuhl"] },
+      { label: "Trockenbauer", gewerk: "Trockenbauer", synonyms: ["rigips", "innenausbau"] },
+      { label: "Bodenleger", gewerk: "Anderes Gewerk", synonyms: ["parkett", "laminat", "boden"] },
+    ],
   },
   {
     category: "Maler & Oberfläche",
-    roles: ["Maler & Lackierer", "Stuckateur", "Fliesenleger", "Estrichleger"],
+    roles: [
+      { label: "Maler & Lackierer", gewerk: "Maler & Lackierer", synonyms: ["maler", "lack", "streichen"] },
+      { label: "Stuckateur", gewerk: "Anderes Gewerk", synonyms: ["putz", "stuck"] },
+      { label: "Fliesenleger", gewerk: "Fliesenleger", synonyms: ["fliesen", "platten"] },
+      { label: "Estrichleger", gewerk: "Anderes Gewerk", synonyms: ["estrich"] },
+    ],
   },
   {
     category: "Rohbau & Außen",
     roles: [
-      "Maurer",
-      "Betonbauer",
-      "Dachdecker",
-      "Gerüstbauer",
-      "Garten- & Landschaftsbau",
-      "Bauhelfer",
+      { label: "Maurer", gewerk: "Maurer / Betonbauer", synonyms: ["mauern", "rohbau"] },
+      { label: "Betonbauer", gewerk: "Maurer / Betonbauer", synonyms: ["beton", "stahlbeton"] },
+      { label: "Dachdecker", gewerk: "Dachdecker", synonyms: ["dach"] },
+      { label: "Gerüstbauer", gewerk: "Gerüstbauer", synonyms: ["gerüst"] },
+      { label: "Garten- & Landschaftsbau", gewerk: "Garten- & Landschaftsbau", synonyms: ["galabau", "garten", "landschaft"] },
+      { label: "Bauhelfer", gewerk: "Anderes Gewerk", synonyms: ["helfer", "bau"] },
     ],
   },
   {
     category: "Metall & Mechanik",
-    roles: ["Metallbauer / Schlosser", "Feinwerkmechaniker", "KFZ-Mechatroniker"],
+    roles: [
+      { label: "Metallbauer / Schlosser", gewerk: "Metallbauer / Schlosser", synonyms: ["metall", "schweißen", "schlosser"] },
+      { label: "Feinwerkmechaniker", gewerk: "Metallbauer / Schlosser", synonyms: ["mechanik", "zerspanung"] },
+      { label: "KFZ-Mechatroniker", gewerk: "KFZ-Mechatroniker", synonyms: ["kfz", "auto", "mechatroniker"] },
+    ],
   },
 ];
 
 // Flache Gesamtliste (für die Suche) — abgeleitet, damit nichts auseinanderläuft.
-const allRoles = gewerkeGruppen.flatMap((g) => g.roles);
+const allRoles: Role[] = gewerkeGruppen.flatMap((g) => g.roles);
+
+/** Registrier-Link mit vorbelegtem Gewerk. */
+const regHref = (gewerk?: string) =>
+  gewerk ? `/registrieren?gewerk=${encodeURIComponent(gewerk)}` : "/registrieren";
+
+/** Sucht in Anzeigename und Synonymen. */
+const roleMatches = (r: Role, q: string) =>
+  r.label.toLowerCase().includes(q) ||
+  r.gewerk.toLowerCase().includes(q) ||
+  (r.synonyms ?? []).some((s) => s.includes(q));
 
 export default function JobsPreview() {
   const router = useRouter();
@@ -133,19 +181,28 @@ export default function JobsPreview() {
   const [showAll, setShowAll] = useState(false);
   const q = query.trim().toLowerCase();
 
-  const matches = q ? allRoles.filter((role) => role.toLowerCase().includes(q)) : [];
+  const matches = q ? allRoles.filter((role) => roleMatches(role, q)) : [];
+
+  // Die Stellenkarten werden von derselben Suche gefiltert.
+  const visibleJobs = q
+    ? jobs.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.category.toLowerCase().includes(q) ||
+          j.city.toLowerCase().includes(q) ||
+          j.gewerk.toLowerCase().includes(q)
+      )
+    : jobs;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const term = query.trim();
+    const term = query.trim().toLowerCase();
     if (!term) {
       router.push("/registrieren");
       return;
     }
-    const match = allRoles.find((r) => r.toLowerCase().includes(term.toLowerCase()));
-    router.push(
-      match ? `/registrieren?gewerk=${encodeURIComponent(match)}` : "/registrieren",
-    );
+    const match = allRoles.find((r) => roleMatches(r, term));
+    router.push(regHref(match?.gewerk));
   };
 
   return (
@@ -176,9 +233,21 @@ export default function JobsPreview() {
           </p>
         </motion.div>
 
-        {/* Job Cards */}
+        {/* Job Cards — von der Suche unten mitgefiltert */}
+        {q && visibleJobs.length === 0 && (
+          <div
+            className="mb-8 rounded-2xl bg-white px-6 py-8 text-center"
+            style={{ border: "1px solid var(--color-border)" }}
+          >
+            <p className="text-muted text-base">
+              Keine Beispielstelle passt zu{" "}
+              <span className="text-primary font-medium">{query}</span> — die passenden
+              Gewerke findest du direkt darunter.
+            </p>
+          </div>
+        )}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {jobs.map((job) => (
+          {visibleJobs.map((job) => (
             <article
               key={job.title}
               className="group bg-white border border-border rounded-2xl overflow-hidden hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 flex flex-col"
@@ -252,7 +321,7 @@ export default function JobsPreview() {
 
                 {/* Pill-CTA */}
                 <Link
-                  href="/registrieren"
+                  href={regHref(job.gewerk)}
                   className="mt-auto group/btn relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full bg-primary text-white text-sm font-semibold py-3.5 transition-colors duration-300"
                 >
                   <span className="relative z-10 inline-flex items-center gap-2 transition-colors duration-300 group-hover/btn:text-primary">
@@ -360,11 +429,11 @@ export default function JobsPreview() {
                     <div className="flex flex-wrap justify-center gap-2.5">
                       {matches.map((role) => (
                         <Link
-                          key={role}
-                          href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
+                          key={role.label}
+                          href={regHref(role.gewerk)}
                           className="group inline-flex items-center gap-2 text-sm text-primary/80 border border-border px-4 py-2.5 hover:border-accent hover:bg-accent hover:text-primary transition-colors duration-200"
                         >
-                          {role}
+                          {role.label}
                           <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
                         </Link>
                       ))}
@@ -404,12 +473,12 @@ export default function JobsPreview() {
                         </div>
                         <ul className="flex flex-col gap-2">
                           {group.roles.map((role) => (
-                            <li key={role}>
+                            <li key={role.label}>
                               <Link
-                                href={`/registrieren?gewerk=${encodeURIComponent(role)}`}
+                                href={regHref(role.gewerk)}
                                 className="group inline-flex items-center gap-1.5 text-sm text-primary/75 hover:text-accent transition-colors duration-200"
                               >
-                                {role}
+                                {role.label}
                                 <ArrowRight className="w-3 h-3 opacity-0 -ml-1.5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
                               </Link>
                             </li>

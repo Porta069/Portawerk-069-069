@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
+import BackendStatus from "./components/BackendStatus";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -43,7 +44,10 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={`${playfair.variable} ${inter.variable}`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <BackendStatus />
+        </AuthProvider>
       </body>
     </html>
   );

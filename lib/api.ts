@@ -20,6 +20,9 @@ export interface PublicUser {
   phone: string;
   role: UserRole;
   companyName: string | null;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  avatar: string | null;
   status: string;
   createdAt: string;
   lastLoginAt: string | null;
@@ -209,9 +212,19 @@ export const api = {
       lastName?: string;
       phone?: string;
       profileData?: Record<string, unknown>;
+      avatar?: string;
     }
   ) {
     return request<PublicUser>("/auth/me", { method: "PATCH", token, body: patch });
+  },
+
+  /** POST /auth/me/verify-contact — E-Mail/Telefon per OTP-Code bestätigen. */
+  verifyContact(token: string, channel: OtpChannel, code: string) {
+    return request<PublicUser>("/auth/me/verify-contact", {
+      method: "POST",
+      token,
+      body: { channel, code },
+    });
   },
 
   /** POST /auth/password/change — gibt eine frische Session zurück. */

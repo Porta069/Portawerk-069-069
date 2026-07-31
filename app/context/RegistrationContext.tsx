@@ -19,12 +19,14 @@ import type {
   LegalConsent,
   RegistrationData,
   VerificationState,
+  WorkLocation,
 } from "@/lib/types";
 import { GEWERKE } from "@/lib/constants";
 
 export type RegStep =
   | "survey"
   | "contact"
+  | "orte"
   | "verify"
   | "ai"
   | "legal"
@@ -33,6 +35,7 @@ export type RegStep =
 const STEP_ORDER: RegStep[] = [
   "survey",
   "contact",
+  "orte",
   "verify",
   "ai",
   "legal",
@@ -51,6 +54,8 @@ const EMPTY: RegistrationData = {
   aiAnswers: {},
   legal: { privacyAccepted: false, termsAccepted: false },
   referredBy: "",
+  workLocations: [],
+  avatar: "",
 };
 
 interface RegistrationContextValue {
@@ -67,6 +72,8 @@ interface RegistrationContextValue {
   skipSurvey: () => void;
   setContact: (patch: Partial<ContactData>) => void;
   setReferredBy: (name: string) => void;
+  setWorkLocations: (locs: WorkLocation[]) => void;
+  setAvatar: (dataUrl: string) => void;
   setPassword: (pw: string) => void;
   setVerification: (patch: Partial<VerificationState>) => void;
   setAiAnswer: (id: string, value: AnswerValue) => void;
@@ -143,10 +150,11 @@ export function RegistrationProvider({
   useEffect(() => {
     if (!hydrated || skipPersist.current) return;
     try {
-      // Passwort niemals persistieren (Sicherheit) — nur im Speicher halten.
-      const { password: _pw, ...safe } = data;
+      // Passwort nie persistieren (Sicherheit); Avatar nicht (zu groß für localStorage).
+      const { password: _pw, avatar: _av, ...safe } = data;
       void _pw;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, data: safe }));
+      void _av;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, data: { ...safe, avatar: "" } }));
     } catch {
       /* ignore quota errors */
     }
@@ -196,6 +204,14 @@ export function RegistrationProvider({
     setData((d) => ({ ...d, referredBy: name }));
   }, []);
 
+  const setWorkLocations = useCallback((locs: WorkLocation[]) => {
+    setData((d) => ({ ...d, workLocations: locs }));
+  }, []);
+
+  const setAvatar = useCallback((dataUrl: string) => {
+    setData((d) => ({ ...d, avatar: dataUrl }));
+  }, []);
+
   const setVerification = useCallback((patch: Partial<VerificationState>) => {
     setData((d) => ({ ...d, verification: { ...d.verification, ...patch } }));
   }, []);
@@ -239,6 +255,8 @@ export function RegistrationProvider({
     skipSurvey,
     setContact,
     setReferredBy,
+    setWorkLocations,
+    setAvatar,
     setPassword,
     setVerification,
     setAiAnswer,

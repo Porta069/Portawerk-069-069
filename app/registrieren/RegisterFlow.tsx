@@ -13,6 +13,7 @@ import { ProgressBar, StepIndicators, type StepDef } from "@/app/components/Prog
 
 import Step1Survey from "./steps/Step1Survey";
 import Step2Contact from "./steps/Step2Contact";
+import StepOrte from "./steps/StepOrte";
 import Step3Verify from "./steps/Step3Verify";
 import Step4AiQuestions from "./steps/Step4AiQuestions";
 import Step5Legal from "./steps/Step5Legal";
@@ -21,9 +22,10 @@ import StepSuccess from "./steps/StepSuccess";
 const STEP_DEFS: StepDef[] = [
   { code: "01", label: "Umfrage" },
   { code: "02", label: "Kontakt" },
-  { code: "03", label: "Verifizierung" },
-  { code: "04", label: "KI-Profil" },
-  { code: "05", label: "Abschluss" },
+  { code: "03", label: "Arbeitsorte" },
+  { code: "04", label: "Verifizierung" },
+  { code: "05", label: "KI-Profil" },
+  { code: "06", label: "Abschluss" },
   { code: "✓", label: "Fertig" },
 ];
 
@@ -35,6 +37,10 @@ const HEAD: Record<RegStep, { h: string; s: string }> = {
   contact: {
     h: "Deine Kontaktdaten",
     s: "Damit wir dich erreichen können. Diskret — kein Betrieb sieht deine Daten ohne dein OK.",
+  },
+  orte: {
+    h: "Deine Arbeitsorte",
+    s: "Wähl auf der Karte oder per Suche, wo du arbeiten möchtest — mit individuellem Umkreis.",
   },
   verify: {
     h: "Identität bestätigen",
@@ -51,7 +57,7 @@ const HEAD: Record<RegStep, { h: string; s: string }> = {
   success: { h: "", s: "" },
 };
 
-const CONTENT_STEPS = 5; // survey…legal
+const CONTENT_STEPS = 6; // survey…legal
 
 export default function RegisterFlow() {
   const { step, stepIndex, hydrated, back, data, setDraftToken } = useRegistration();
@@ -96,12 +102,20 @@ export default function RegisterFlow() {
           {canGoBack && (
             <button
               onClick={back}
-              className="flex items-center gap-1.5 text-sm transition-colors duration-200"
-              style={{ color: "rgba(255,255,255,0.5)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+              className="group flex items-center gap-2 text-sm font-semibold px-4 py-2 transition-all duration-200"
+              style={{ color: "white", border: "1.5px solid rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#E8A838";
+                e.currentTarget.style.borderColor = "#E8A838";
+                e.currentTarget.style.color = "#1A1A2E";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
+                e.currentTarget.style.color = "white";
+              }}
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
               Zurück
             </button>
           )}
@@ -145,6 +159,7 @@ export default function RegisterFlow() {
           <div className="flex-1 max-w-6xl mx-auto w-full px-6 lg:px-12 py-12">
             {step === "survey" && <Step1Survey />}
             {step === "contact" && <Step2Contact />}
+            {step === "orte" && <StepOrte />}
             {step === "verify" && <Step3Verify />}
             {step === "ai" && <Step4AiQuestions />}
             {step === "legal" && <Step5Legal />}

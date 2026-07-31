@@ -4,6 +4,7 @@
 
 export type SettingsSectionId =
   | "account"
+  | "orte"
   | "answers"
   | "security"
   | "language"
@@ -23,6 +24,9 @@ export const SETTINGS_ENTRIES: SettingsEntry[] = [
   { section: "account", keywords: ["nachname", "familienname", "last name", "surname", "apellido", "nom"] },
   { section: "account", keywords: ["email", "e-mail", "mail", "e mail adresse", "correo", "courriel"] },
   { section: "account", keywords: ["telefon", "handy", "nummer", "mobil", "phone", "teléfono", "téléphone"] },
+  { section: "account", keywords: ["profilbild", "avatar", "foto", "bild", "referenzbild", "picture", "photo"] },
+  { section: "account", keywords: ["verifizierung", "bestätigung", "email verifiziert", "telefon verifiziert", "verified", "verification"] },
+  { section: "orte", keywords: ["arbeitsorte", "orte", "standort", "karte", "map", "radius", "umkreis", "region", "wo arbeiten", "locations", "lieu", "ubicación"] },
   { section: "answers", keywords: ["antworten", "fragen", "umfrage", "profil", "gewerk", "erfahrung", "answers", "réponses", "respuestas"] },
   { section: "security", keywords: ["passwort", "kennwort", "password", "sicherheit", "contraseña", "mot de passe", "security"] },
   { section: "security", keywords: ["anmeldeaktivität", "login", "aktivität", "geräte", "sitzungen", "sessions", "verlauf", "history", "activité"] },

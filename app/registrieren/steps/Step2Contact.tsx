@@ -10,6 +10,7 @@ import { ArrowRight, Eye, EyeOff, Loader2, Check, AlertCircle } from "lucide-rea
 import { useRegistration } from "@/app/context/RegistrationContext";
 import { Field, PrimaryButton, SectionLabel } from "@/app/components/ui";
 import PasswordStrength from "@/app/components/PasswordStrength";
+import AvatarUpload from "@/app/components/AvatarUpload";
 import { evaluatePassword } from "@/lib/password";
 import { useEmailCheck, emailStatusMessage } from "@/lib/useEmailCheck";
 
@@ -17,7 +18,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s()/-]{6,}$/;
 
 export default function Step2Contact() {
-  const { data, setContact, setReferredBy, setPassword, next } = useRegistration();
+  const { data, setContact, setReferredBy, setPassword, setAvatar, next } = useRegistration();
   const c = data.contact;
 
   const [touched, setTouched] = useState(false);
@@ -52,6 +53,14 @@ export default function Step2Contact() {
         Damit erstellst du dein Konto. Deine Daten werden verschlüsselt gespeichert
         und nie ohne deine Zustimmung an Betriebe weitergegeben.
       </p>
+
+      {/* Profilbild (optional) */}
+      <div className="mb-7">
+        <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-3" style={{ color: "rgba(26,26,46,0.45)" }}>
+          Profilbild <span className="normal-case tracking-normal font-normal text-muted">(optional, als Referenzbild)</span>
+        </p>
+        <AvatarUpload value={data.avatar || null} onChange={(v) => setAvatar(v ?? "")} />
+      </div>
 
       <div className="space-y-5">
         <div className="grid sm:grid-cols-2 gap-5">

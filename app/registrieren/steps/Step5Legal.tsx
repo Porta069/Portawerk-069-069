@@ -58,6 +58,10 @@ export default function Step5Legal() {
     setLoading(false);
     if (res.ok) {
       login(res.data); // JWT-Session setzen → Dashboard verfügbar
+      // Optionales Profilbild nach Kontoerstellung speichern (best-effort).
+      if (data.avatar) {
+        void api.updateProfile(res.data.accessToken, { avatar: data.avatar });
+      }
       next(); // → success
     } else {
       setError(res.error);

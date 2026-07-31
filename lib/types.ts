@@ -43,6 +43,16 @@ export type AnswerValue = string | string[] | number;
 /** Map von Frage-ID → Antwortwert. */
 export type AnswerMap = Record<string, AnswerValue>;
 
+/** Ein möglicher Arbeitsort mit Umkreis (für die Karten-Auswahl). */
+export interface WorkLocation {
+  id: string;
+  label: string;
+  lat: number;
+  lng: number;
+  /** Arbeitsradius in Kilometern. */
+  radiusKm: number;
+}
+
 /** Kontaktdaten aus Schritt 2 (Backend erwartet Vor- und Nachname getrennt). */
 export interface ContactData {
   firstName: string;
@@ -77,6 +87,10 @@ export interface RegistrationData {
   legal: LegalConsent;
   /** Name/Code des Werbers (Affiliate) — nur der Name, nicht der ganze Link. */
   referredBy: string;
+  /** Mögliche Arbeitsorte mit Umkreis (Karten-Auswahl). */
+  workLocations: WorkLocation[];
+  /** Optionales Profilbild als (verkleinertes) Data-URL — nicht persistiert. */
+  avatar: string;
 }
 
 /** Angemeldeter Nutzer (nach Login / abgeschlossener Registrierung). */

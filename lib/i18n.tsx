@@ -26,7 +26,9 @@ const DICT: Dict = {
   "search.none":           { de: "Keine Treffer für", en: "No results for", fr: "Aucun résultat pour", es: "Sin resultados para" },
 
   "sec.account":           { de: "Konto", en: "Account", fr: "Compte", es: "Cuenta" },
-  "sec.account.desc":      { de: "Name, E-Mail und Telefon", en: "Name, email and phone", fr: "Nom, e-mail et téléphone", es: "Nombre, correo y teléfono" },
+  "sec.account.desc":      { de: "Profilbild, Name, E-Mail, Telefon & Verifizierung", en: "Photo, name, email, phone & verification", fr: "Photo, nom, e-mail, téléphone & vérification", es: "Foto, nombre, correo, teléfono y verificación" },
+  "sec.orte":              { de: "Arbeitsorte", en: "Work locations", fr: "Lieux de travail", es: "Lugares de trabajo" },
+  "sec.orte.desc":         { de: "Orte & Umkreis auf der Karte", en: "Places & radius on the map", fr: "Lieux & rayon sur la carte", es: "Lugares y radio en el mapa" },
   "sec.answers":           { de: "Profil-Antworten", en: "Profile answers", fr: "Réponses du profil", es: "Respuestas del perfil" },
   "sec.answers.desc":      { de: "Deine Angaben aus der Registrierung", en: "Your answers from sign-up", fr: "Vos réponses lors de l’inscription", es: "Tus respuestas del registro" },
   "sec.security":          { de: "Sicherheit", en: "Security", fr: "Sécurité", es: "Seguridad" },

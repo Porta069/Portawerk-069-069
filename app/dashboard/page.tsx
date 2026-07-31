@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { api } from "@/lib/api";
+import VerificationReminder from "@/app/components/VerificationReminder";
 
 function fmtDate(iso: string | null): string {
   if (!iso) return "—";
@@ -100,6 +101,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F8F7F4", fontFamily: "var(--font-sans)" }}>
+      {token && <VerificationReminder user={user} token={token} onUpdate={setUser} />}
       {/* Navbar */}
       <div className="bg-primary">
         <div className="max-w-6xl mx-auto px-6 lg:px-12 h-[68px] flex items-center justify-between">

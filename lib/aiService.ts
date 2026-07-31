@@ -6,7 +6,7 @@
 //   GET  /api/ai/profile-questions   → getProfileQuestions()
 //   POST /api/ai/answer-questions    → submitAiAnswers()
 
-import { GEWERKE, BUNDESLAENDER } from "./constants";
+import { GEWERKE } from "./constants";
 import type { AnswerMap, ApiResult, Question } from "./types";
 
 function delay(ms: number) {
@@ -31,13 +31,6 @@ const BASE_QUESTIONS: Question[] = [
     max: 40,
     step: 1,
     unit: "Jahre",
-    required: true,
-  },
-  {
-    id: "ai_region",
-    type: "radio",
-    prompt: "In welcher Region arbeitest du hauptsächlich?",
-    options: BUNDESLAENDER.map((b) => ({ value: b, label: b })),
     required: true,
   },
   {

@@ -10,8 +10,11 @@ import { useRouter } from "next/navigation";
 import {
   Hammer, ArrowLeft, Search, User as UserIcon, ListChecks, ShieldCheck,
   Languages, LifeBuoy, Scale, Database, LogOut, Loader2, Check, Eye, EyeOff,
-  Download, Trash2, Mail, ChevronDown, ChevronRight, Monitor,
+  Download, Trash2, Mail, ChevronDown, ChevronRight, Monitor, MapPin, AlertCircle,
 } from "lucide-react";
+import WorkLocationsMap from "@/app/components/WorkLocationsMapDynamic";
+import AvatarUpload from "@/app/components/AvatarUpload";
+import type { WorkLocation } from "@/lib/types";
 import { useAuth } from "@/app/context/AuthContext";
 import { useI18n, LANGUAGES, type Lang } from "@/lib/i18n";
 import { api, type AuthSession, type PublicUser } from "@/lib/api";
@@ -28,6 +31,7 @@ type T = (key: string) => string;
 
 const SECTION_META: { id: SettingsSectionId; icon: typeof UserIcon }[] = [
   { id: "account", icon: UserIcon },
+  { id: "orte", icon: MapPin },
   { id: "answers", icon: ListChecks },
   { id: "security", icon: ShieldCheck },
   { id: "language", icon: Languages },
@@ -96,8 +100,16 @@ function AccountSection({ token, t, user, setUser }: { token: string; t: T; user
     else setEmailMsg({ ok: false, text: res.error });
   };
 
+  const saveAvatar = async (dataUrl: string | null) => {
+    const res = await api.updateProfile(token, { avatar: dataUrl ?? "" });
+    if (res.ok) setUser(res.data);
+  };
+
   return (
     <div className="pt-3 space-y-5">
+      {/* Profilbild */}
+      <AvatarUpload value={user.avatar} onChange={saveAvatar} />
+
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label={t("field.firstName")} value={fn} onChange={setFn} />
         <Field label={t("field.lastName")} value={ln} onChange={setLn} />
@@ -122,6 +134,19 @@ function AccountSection({ token, t, user, setUser }: { token: string; t: T; user
             {emailBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}{t("btn.changeEmail")}
           </button>
           {emailMsg && <Msg ok={emailMsg.ok}>{emailMsg.text}</Msg>}
+        </div>
+      </div>
+
+      {/* Verifizierungs-Status */}
+      <div className="pt-5 mt-2" style={{ borderTop: "1px solid #F3F4F6" }}>
+        <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-3" style={{ color: "rgba(26,26,46,0.45)" }}>Verifizierung</p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {([["E-Mail", user.emailVerified], ["Telefon", user.phoneVerified]] as const).map(([lbl, ok]) => (
+            <div key={lbl} className="flex items-center gap-2 px-3 py-2.5 text-sm" style={{ border: "1px solid #E5E7EB", color: ok ? "#16A34A" : "rgba(26,26,46,0.6)" }}>
+              {ok ? <Check className="w-4 h-4" strokeWidth={3} /> : <AlertCircle className="w-4 h-4" style={{ color: "#E8A838" }} />}
+              {lbl}: {ok ? "bestätigt" : "offen"}
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -182,6 +207,50 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
         ))}
       </div>
       <div className="flex items-center gap-3 pt-4" style={{ borderTop: "1px solid #F3F4F6" }}>
+        <PrimaryButton onClick={save} loading={saving}>{t("btn.save")}</PrimaryButton>
+        {msg && <Msg ok={msg.ok}>{msg.text}</Msg>}
+      </div>
+    </div>
+  );
+}
+
+// ── Arbeitsorte ───────────────────────────────────────────────────────────────
+function OrteSection({ token, t }: { token: string; t: T }) {
+  const [locs, setLocs] = useState<WorkLocation[]>([]);
+  const [base, setBase] = useState<Record<string, unknown>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    api.exportData(token).then((exp) => {
+      if (!active) return;
+      if (exp.ok) {
+        const pd = (exp.data.onboardingAnswers ?? {}) as Record<string, { workLocations?: WorkLocation[] }>;
+        setBase(pd);
+        setLocs(pd["3"]?.workLocations ?? []);
+      }
+      setLoading(false);
+    });
+    return () => { active = false; };
+  }, [token]);
+
+  const save = async () => {
+    setSaving(true); setMsg(null);
+    const profileData = { ...base, "3": { ...((base["3"] as object) || {}), workLocations: locs } };
+    const res = await api.updateProfile(token, { profileData });
+    setSaving(false);
+    setMsg(res.ok ? { ok: true, text: t("btn.saved") } : { ok: false, text: res.error });
+  };
+
+  if (loading)
+    return <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} /></div>;
+
+  return (
+    <div className="pt-3 space-y-5">
+      <WorkLocationsMap value={locs} onChange={setLocs} />
+      <div className="flex items-center gap-3 pt-2">
         <PrimaryButton onClick={save} loading={saving}>{t("btn.save")}</PrimaryButton>
         {msg && <Msg ok={msg.ok}>{msg.text}</Msg>}
       </div>
@@ -441,6 +510,7 @@ export default function SettingsContent() {
             <SectionCard key={id} id={id} icon={icon} title={t(`sec.${id}`)} desc={t(`sec.${id}.desc`)}
               open={openId === id || shown !== null} onToggle={() => toggle(id)}>
               {id === "account" && <AccountSection token={token} t={t} user={user} setUser={setUser} />}
+              {id === "orte" && <OrteSection token={token} t={t} />}
               {id === "answers" && <AnswersSection token={token} t={t} />}
               {id === "security" && <SecuritySection token={token} t={t} lang={lang} onSession={login} onLogout={doLogout} />}
               {id === "language" && (

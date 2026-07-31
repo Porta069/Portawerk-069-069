@@ -16,13 +16,43 @@ import { AffiliateNudge } from "@/app/components/dashboard/AffiliateTile";
 
 const STATUS: Record<
   ApplicationStatus,
-  { label: string; color: string; bg: string; icon: LucideIcon }
+  { label: string; note: string; color: string; bg: string; icon: LucideIcon }
 > = {
-  gesendet: { label: "Gesendet", color: "rgba(26,26,46,0.55)", bg: "rgba(26,26,46,0.06)", icon: Send },
-  gesehen: { label: "Angesehen", color: "#B47B18", bg: "rgba(232,168,56,0.14)", icon: Eye },
-  im_gespraech: { label: "Im Gespräch", color: "#1D4ED8", bg: "rgba(29,78,216,0.1)", icon: MessagesSquare },
-  zusage: { label: "Zusage", color: "#16A34A", bg: "rgba(22,163,74,0.12)", icon: Check },
-  abgelehnt: { label: "Absage", color: "rgba(26,26,46,0.5)", bg: "rgba(26,26,46,0.06)", icon: X },
+  gesendet: {
+    label: "Eingegangen",
+    note: "Beim Betrieb angekommen — noch nicht geöffnet.",
+    color: "rgba(26,26,46,0.6)",
+    bg: "rgba(26,26,46,0.06)",
+    icon: Send,
+  },
+  gesehen: {
+    label: "Angesehen",
+    note: "Der Betrieb hat deine Bewerbung geöffnet.",
+    color: "#B47B18",
+    bg: "rgba(232,168,56,0.16)",
+    icon: Eye,
+  },
+  im_gespraech: {
+    label: "Im Gespräch",
+    note: "Der Betrieb ist auf dich zugekommen.",
+    color: "#1D4ED8",
+    bg: "rgba(29,78,216,0.12)",
+    icon: MessagesSquare,
+  },
+  zusage: {
+    label: "Zusage",
+    note: "Du hast die Stelle bekommen.",
+    color: "#15803D",
+    bg: "rgba(22,163,74,0.14)",
+    icon: Check,
+  },
+  abgelehnt: {
+    label: "Absage",
+    note: "Diesmal hat es nicht gepasst.",
+    color: "rgba(26,26,46,0.55)",
+    bg: "rgba(26,26,46,0.06)",
+    icon: X,
+  },
 };
 
 const ORDER: ApplicationStatus[] = ["zusage", "im_gespraech", "gesehen", "gesendet", "abgelehnt"];
@@ -108,13 +138,43 @@ export default function BewerbungenPage() {
         <div className="space-y-9">
           {grouped.map((g) => (
             <section key={g.status}>
-              <h2
-                className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] mb-4"
-                style={{ color: STATUS[g.status].color }}
+              {/* Statusleiste — gleiche Kennzeichnung wie in den Karten,
+                  nur groß genug, um den Stand auf einen Blick zu erfassen. */}
+              <div
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl px-4 py-3.5 mb-4"
+                style={{ background: STATUS[g.status].bg }}
               >
-                <span className="w-6 h-[2px]" style={{ background: STATUS[g.status].color, opacity: 0.5 }} />
-                {STATUS[g.status].label} · {g.items.length}
-              </h2>
+                <span
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: "rgba(255,255,255,0.7)" }}
+                >
+                  {(() => {
+                    const Icon = STATUS[g.status].icon;
+                    return <Icon className="w-[18px] h-[18px]" style={{ color: STATUS[g.status].color }} strokeWidth={2.6} />;
+                  })()}
+                </span>
+                <h2
+                  className="text-[18px] font-bold leading-none"
+                  style={{ fontFamily: "var(--font-display)", color: STATUS[g.status].color }}
+                >
+                  {STATUS[g.status].label}
+                </h2>
+                <span
+                  className="flex items-center justify-center rounded-full text-[12px] font-bold tabular-nums"
+                  style={{
+                    minWidth: 24,
+                    height: 24,
+                    padding: "0 7px",
+                    background: STATUS[g.status].color,
+                    color: "white",
+                  }}
+                >
+                  {g.items.length}
+                </span>
+                <span className="text-[13px] w-full sm:w-auto sm:ml-1" style={{ color: "rgba(26,26,46,0.6)" }}>
+                  {STATUS[g.status].note}
+                </span>
+              </div>
 
               <div className="space-y-4">
                 {g.items.map((a) => (

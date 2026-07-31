@@ -5,13 +5,28 @@
 // Fahrzeit (nicht Luftlinie), Gehalt inkl. Markteinordnung und die
 // Rahmenbedingungen (Montage, Fahrzeit=Arbeitszeit, Startpunkt).
 
+import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Car, Euro, CalendarDays, Home, Building2, Timer, Palmtree,
-  Sparkles, TrendingUp, TrendingDown, Clock3,
+  Sparkles, TrendingUp, TrendingDown, Clock3, Route, X, Loader2,
 } from "lucide-react";
 import type { Job } from "@/lib/types";
+
+// Leaflet nur im Browser laden — und erst, wenn die Route geoeffnet wird.
+const RouteMap = dynamic(() => import("./RouteMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center gap-2 py-24">
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+      <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+        Karte wird geladen …
+      </span>
+    </div>
+  ),
+});
 
 function euro(n: number) {
   return n.toLocaleString("de-DE");
@@ -30,27 +45,36 @@ function Cond({ icon: Icon, children }: { icon: typeof MapPin; children: React.R
   );
 }
 
-/** Ordnet das Gehalt gegen den regionalen Schnitt ein. */
+/** Ordnet das Gehalt gegen den regionalen Schnitt ein — bewusst prominent. */
 function SalaryContext({ job }: { job: Job }) {
   if (!job.marketAvg) return null;
   const mid = (job.salaryMin + job.salaryMax) / 2;
   const diff = Math.round(((mid - job.marketAvg) / job.marketAvg) * 100);
+
   if (Math.abs(diff) < 3) {
     return (
-      <span className="text-[12px]" style={{ color: "rgba(26,26,46,0.5)" }}>
-        etwa im Marktschnitt
+      <span
+        className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[14px] font-bold"
+        style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.6)" }}
+      >
+        Im Marktschnitt
       </span>
     );
   }
+
   const up = diff > 0;
   return (
     <span
-      className="inline-flex items-center gap-1 text-[12px] font-semibold"
-      style={{ color: up ? "#16A34A" : "#B45309" }}
+      className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[15px] font-bold"
+      style={{
+        background: up ? "rgba(22,163,74,0.12)" : "rgba(180,83,9,0.12)",
+        color: up ? "#15803D" : "#B45309",
+        fontFamily: "var(--font-display)",
+      }}
     >
-      {up ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+      {up ? <TrendingUp className="w-4 h-4" strokeWidth={2.6} /> : <TrendingDown className="w-4 h-4" strokeWidth={2.6} />}
       {up ? "+" : ""}
-      {diff} % zum Marktschnitt
+      {diff} % zum Markt
     </span>
   );
 }
@@ -66,6 +90,7 @@ export default function JobCard({
   highlight?: boolean;
 }) {
   const c = job.conditions;
+  const [showRoute, setShowRoute] = useState(false);
 
   return (
     <motion.article
@@ -110,10 +135,16 @@ export default function JobCard({
             >
               {job.title}
             </h3>
-            {/* Fahrzeit — die eigentlich entscheidende Größe */}
-            <span
-              className="flex flex-col items-end flex-shrink-0 rounded-xl px-3 py-1.5"
+            {/* Fahrzeit — anklickbar, öffnet die Route auf der Karte */}
+            <button
+              type="button"
+              onClick={() => setShowRoute(true)}
+              title="Fahrtweg auf der Karte ansehen"
+              aria-label={`Fahrtweg ansehen — ${job.travelMinutes} Minuten`}
+              className="group/route flex flex-col items-end flex-shrink-0 rounded-xl px-3 py-1.5 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               style={{ background: "rgba(232,168,56,0.12)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.24)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.12)")}
             >
               <span
                 className="inline-flex items-center gap-1.5 text-[15px] font-bold tabular-nums"
@@ -122,10 +153,14 @@ export default function JobCard({
                 <Car className="w-4 h-4" style={{ color: "#E8A838" }} />
                 {job.travelMinutes} Min.
               </span>
-              <span className="text-[10px] tabular-nums" style={{ color: "rgba(26,26,46,0.45)" }}>
+              <span
+                className="inline-flex items-center gap-1 text-[10px] tabular-nums"
+                style={{ color: "rgba(26,26,46,0.45)" }}
+              >
                 {job.distanceKm.toLocaleString("de-DE")} km
+                <Route className="w-3 h-3 opacity-0 transition-opacity duration-200 group-hover/route:opacity-100" />
               </span>
-            </span>
+            </button>
           </div>
 
           <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.6)" }}>
@@ -189,6 +224,59 @@ export default function JobCard({
           {footer && <div className="mt-5">{footer}</div>}
         </div>
       </div>
+
+      {/* ── Routen-Dialog ── */}
+      <AnimatePresence>
+        {showRoute && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6"
+            style={{ background: "rgba(26,26,46,0.55)", backdropFilter: "blur(3px)" }}
+            onClick={() => setShowRoute(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 18, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.98 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Fahrtweg zur Arbeitsstelle"
+              className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white"
+              style={{ boxShadow: "0 40px 80px -30px rgba(26,26,46,0.6)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4">
+                <div className="min-w-0">
+                  <h3
+                    className="text-primary font-bold text-[18px] leading-snug"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    Dein Arbeitsweg
+                  </h3>
+                  <p className="text-[13px] mt-0.5 truncate" style={{ color: "rgba(26,26,46,0.5)" }}>
+                    {job.title}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowRoute(false)}
+                  aria-label="Schliessen"
+                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
+                  style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.5)" }}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="px-6 pb-6">
+                <RouteMap job={job} />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 }

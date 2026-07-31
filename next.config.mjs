@@ -30,7 +30,8 @@ const csp = [
   // Kartenkacheln: deutschsprachige OSM-Kacheln (tile.openstreetmap.de),
   // dazu die internationalen OSM-/CARTO-Hosts als Rückfallebene.
   "img-src 'self' data: blob: https://tile.openstreetmap.de https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
-  `connect-src 'self' ${apiOrigin} https://nominatim.openstreetmap.org${
+  // router.project-osrm.org berechnet die Fahrtroute zur Arbeitsstelle.
+  `connect-src 'self' ${apiOrigin} https://nominatim.openstreetmap.org https://router.project-osrm.org${
     isDev ? " ws://localhost:* http://localhost:*" : ""
   }`,
   "font-src 'self' data:",

@@ -21,6 +21,7 @@ import type {
   JobOffer,
   OfferStatus,
   ProfileScore,
+  WorkLocation,
 } from "./types";
 
 /** Erkennbar für die UI: solange true, ist alles Demodaten. */
@@ -37,6 +38,11 @@ function delay(ms: number) {
 const JOBS: Job[] = [
   {
     id: "job-1",
+    lat: 48.1374,
+    lng: 11.5755,
+    startLabel: "Garching",
+    startLat: 48.2489,
+    startLng: 11.6512,
     title: "Elektriker / Elektroniker (m/w/d)",
     employer: "Stadtwerke Technik GmbH",
     gewerk: "Elektriker / Elektroniker",
@@ -62,6 +68,11 @@ const JOBS: Job[] = [
   },
   {
     id: "job-2",
+    lat: 53.5511,
+    lng: 9.9937,
+    startLabel: "Norderstedt",
+    startLat: 53.6858,
+    startLng: 9.9807,
     title: "Anlagenmechaniker SHK (m/w/d)",
     employer: "Nordwärme Haustechnik",
     gewerk: "Installateur / Klempner (SHK)",
@@ -86,6 +97,11 @@ const JOBS: Job[] = [
   },
   {
     id: "job-3",
+    lat: 52.5200,
+    lng: 13.4050,
+    startLabel: "Potsdam",
+    startLat: 52.3906,
+    startLng: 13.0645,
     title: "Maler & Lackierer (m/w/d)",
     employer: "Farbwerk Berlin GmbH",
     gewerk: "Maler & Lackierer",
@@ -110,6 +126,11 @@ const JOBS: Job[] = [
   },
   {
     id: "job-4",
+    lat: 51.5136,
+    lng: 7.4653,
+    startLabel: "Hagen",
+    startLat: 51.3671,
+    startLng: 7.4633,
     title: "Metallbauer / Schlosser (m/w/d)",
     employer: "Stahlbau Weber KG",
     gewerk: "Metallbauer / Schlosser",
@@ -134,6 +155,11 @@ const JOBS: Job[] = [
   },
   {
     id: "job-5",
+    lat: 48.7758,
+    lng: 9.1829,
+    startLabel: "Ludwigsburg",
+    startLat: 48.8974,
+    startLng: 9.1916,
     title: "Tischler / Schreiner (m/w/d)",
     employer: "Holzmanufaktur Süd",
     gewerk: "Tischler / Schreiner",
@@ -157,6 +183,11 @@ const JOBS: Job[] = [
   },
   {
     id: "job-6",
+    lat: 51.3397,
+    lng: 12.3731,
+    startLabel: "Halle (Saale)",
+    startLat: 51.4826,
+    startLng: 11.9698,
     title: "Maurer / Betonbauer (m/w/d)",
     employer: "Bauunternehmung Reichert",
     gewerk: "Maurer / Betonbauer",
@@ -382,4 +413,46 @@ export async function getProfileScore(profile?: {
     .sort((a, b) => b.extraJobs - a.extraJobs);
 
   return { ok: true, data: { percent, gaps } };
+}
+
+// ── Arbeitsorte des Nutzers ──────────────────────────────────────────────────
+// Später: GET/PUT /me/work-locations. Bis dahin localStorage — beim ersten
+// Zugriff aus den Angaben der Registrierung übernommen, damit im Dashboard
+// genau das steht, was der Nutzer im Funnel auf der Karte gewählt hat.
+
+const WORKLOC_KEY = "portawerk_work_locations_v1";
+const REGISTRATION_KEY = "portawerk_registration_v1";
+
+export async function getWorkLocations(): Promise<ApiResult<WorkLocation[]>> {
+  await delay(80);
+  try {
+    const own = localStorage.getItem(WORKLOC_KEY);
+    if (own) return { ok: true, data: JSON.parse(own) as WorkLocation[] };
+
+    // Einmalig aus der Registrierung übernehmen.
+    const reg = localStorage.getItem(REGISTRATION_KEY);
+    if (reg) {
+      const parsed = JSON.parse(reg) as { data?: { workLocations?: WorkLocation[] } };
+      const locs = parsed.data?.workLocations ?? [];
+      if (locs.length) {
+        localStorage.setItem(WORKLOC_KEY, JSON.stringify(locs));
+        return { ok: true, data: locs };
+      }
+    }
+  } catch {
+    /* defektes Storage ignorieren */
+  }
+  return { ok: true, data: [] };
+}
+
+export async function saveWorkLocations(
+  locs: WorkLocation[]
+): Promise<ApiResult<WorkLocation[]>> {
+  await delay(80);
+  try {
+    localStorage.setItem(WORKLOC_KEY, JSON.stringify(locs));
+  } catch {
+    return { ok: false, error: "Konnte Arbeitsorte nicht speichern." };
+  }
+  return { ok: true, data: locs };
 }

@@ -8,10 +8,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send } from "lucide-react";
-import { listJobs, type JobFilters, type JobSort } from "@/lib/jobsService";
+import {
+  listJobs, getWorkLocations, saveWorkLocations,
+  type JobFilters, type JobSort,
+} from "@/lib/jobsService";
 import { GEWERKE } from "@/lib/constants";
-import type { Job } from "@/lib/types";
+import type { Job, WorkLocation } from "@/lib/types";
 import JobCard from "@/app/components/dashboard/JobCard";
+import WorkLocationsMap from "@/app/components/WorkLocationsMapDynamic";
 import { ChipToggle } from "@/app/components/wizard";
 
 const TRAVEL_STEPS = [15, 30, 45, 60];
@@ -32,6 +36,23 @@ export default function JobboersePage() {
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Arbeitsorte: beim ersten Aufruf aus der Registrierung übernommen.
+  // Änderungen hier werden sofort gespeichert und gelten fürs Matching.
+  const [locations, setLocations] = useState<WorkLocation[]>([]);
+  const [locLoaded, setLocLoaded] = useState(false);
+
+  useEffect(() => {
+    getWorkLocations().then((res) => {
+      if (res.ok) setLocations(res.data);
+      setLocLoaded(true);
+    });
+  }, []);
+
+  const updateLocations = (locs: WorkLocation[]) => {
+    setLocations(locs);
+    void saveWorkLocations(locs);
+  };
 
   const filters = useMemo<JobFilters>(
     () => ({
@@ -185,6 +206,28 @@ export default function JobboersePage() {
           className="rounded-3xl bg-white p-5 sm:p-6 mb-6"
           style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
+          <div className="flex items-baseline justify-between gap-3 mb-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
+              Deine Arbeitsorte
+            </p>
+            <span className="text-[11px]" style={{ color: "rgba(26,26,46,0.4)" }}>
+              wird automatisch gespeichert
+            </span>
+          </div>
+          <p className="text-[13px] mb-3" style={{ color: "rgba(26,26,46,0.55)" }}>
+            Aus deiner Registrierung übernommen. Änderungen hier gelten sofort für
+            deine Stellenvorschläge — tipp auf die Karte oder such einen Ort.
+          </p>
+          <div className="mb-7">
+            {locLoaded ? (
+              <WorkLocationsMap value={locations} onChange={updateLocations} />
+            ) : (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+              </div>
+            )}
+          </div>
+
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(26,26,46,0.4)" }}>
             Maximale Fahrzeit
           </p>

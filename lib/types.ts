@@ -152,6 +152,13 @@ export interface Job {
   distanceKm: number;
   /** Fahrzeit in Minuten mit dem Auto — die für Handwerker relevante Größe. */
   travelMinutes: number;
+  /** Standort des Betriebs — Ziel der Route. */
+  lat: number;
+  lng: number;
+  /** Nächstgelegener Arbeitsort des Nutzers — Start der Route. */
+  startLabel: string;
+  startLat: number;
+  startLng: number;
   salaryMin: number;
   salaryMax: number;
   /** Regionaler Marktschnitt fürs Gewerk — für die Einordnung. */

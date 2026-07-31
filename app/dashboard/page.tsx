@@ -18,6 +18,7 @@ import {
   Search,
   UserCog,
   Bell,
+  Settings,
   Loader2,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
@@ -110,16 +111,28 @@ export default function DashboardPage() {
               PortaWerk
             </span>
           </Link>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-sm transition-colors duration-200"
-            style={{ color: "rgba(255,255,255,0.5)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
-          >
-            <LogOut className="w-4 h-4" />
-            Abmelden
-          </button>
+          <div className="flex items-center gap-5">
+            <Link
+              href="/einstellungen"
+              className="flex items-center gap-2 text-sm transition-colors duration-200"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+            >
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Einstellungen</span>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm transition-colors duration-200"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+            >
+              <LogOut className="w-4 h-4" />
+              Abmelden
+            </button>
+          </div>
         </div>
       </div>
 

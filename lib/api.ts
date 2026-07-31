@@ -77,7 +77,7 @@ function extractMessage(json: unknown): string | null {
 async function request<T>(
   path: string,
   opts: {
-    method?: "GET" | "POST" | "DELETE";
+    method?: "GET" | "POST" | "DELETE" | "PATCH";
     body?: unknown;
     token?: string;
   } = {}
@@ -164,6 +164,60 @@ export const api = {
   /** POST /auth/logout */
   logout(token: string) {
     return request<void>("/auth/logout", { method: "POST", token });
+  },
+
+  // ── Account-Selbstverwaltung ──
+  /** PATCH /auth/me — Name, Telefon und Onboarding-Antworten ändern. */
+  updateProfile(
+    token: string,
+    patch: {
+      firstName?: string;
+      lastName?: string;
+      phone?: string;
+      profileData?: Record<string, unknown>;
+    }
+  ) {
+    return request<PublicUser>("/auth/me", { method: "PATCH", token, body: patch });
+  },
+
+  /** POST /auth/password/change — gibt eine frische Session zurück. */
+  changePassword(token: string, currentPassword: string, newPassword: string) {
+    return request<AuthSession>("/auth/password/change", {
+      method: "POST",
+      token,
+      body: { currentPassword, newPassword },
+    });
+  },
+
+  /** POST /auth/email/change */
+  changeEmail(token: string, password: string, newEmail: string) {
+    return request<PublicUser>("/auth/email/change", {
+      method: "POST",
+      token,
+      body: { password, newEmail },
+    });
+  },
+
+  /** POST /auth/account/delete */
+  deleteAccount(token: string, password: string) {
+    return request<void>("/auth/account/delete", {
+      method: "POST",
+      token,
+      body: { password },
+    });
+  },
+
+  /** GET /auth/me/export — GDPR-Datenexport. */
+  exportData(token: string) {
+    return request<Record<string, unknown>>("/auth/me/export", { token });
+  },
+
+  /** GET /auth/me/activity — Login-Aktivität. */
+  activity(token: string) {
+    return request<Array<{ at: string; action: string; device: string | null }>>(
+      "/auth/me/activity",
+      { token }
+    );
   },
 
   /** POST /auth/email/check — Live-Prüfung (Syntax + MX-Record). */

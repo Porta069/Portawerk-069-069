@@ -254,6 +254,24 @@ export default function PartnerDashboard() {
           </div>
         </div>
 
+        {/* Online-Visitenkarte — freigeschaltet, weil man hier bereits Partner ist */}
+        <div className="mt-6 bg-white rounded-2xl border border-border p-6 sm:p-8" id="visitenkarte">
+          <div className="mb-8 max-w-xl">
+            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-4">
+              <span className="w-8 h-[2px] bg-accent" />
+              Deine Online-Visitenkarte
+            </span>
+            <h2 className="text-primary font-bold text-2xl md:text-3xl leading-tight mb-2" style={{ fontFamily: "var(--font-display)" }}>
+              Ein Bild — einfach weiterschicken
+            </h2>
+            <p className="text-muted text-base">
+              Lade deine persönliche Karte herunter und schick sie an Handwerker, die
+              einen Job suchen. Dein Link ist schon drauf.
+            </p>
+          </div>
+          <Visitenkarte />
+        </div>
+
         {/* ══ Rangliste ══ */}
         <div className="mt-6 bg-white rounded-2xl border border-border p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-1">
@@ -286,24 +304,6 @@ export default function PartnerDashboard() {
               <span className="text-xs font-semibold" style={{ color: "#B47B18" }}>Noch 4 Vermittlungen bis Platz 11</span>
             </div>
           </div>
-        </div>
-
-        {/* Online-Visitenkarte — freigeschaltet, weil man hier bereits Partner ist */}
-        <div className="mt-6 bg-white rounded-2xl border border-border p-6 sm:p-8" id="visitenkarte">
-          <div className="mb-8 max-w-xl">
-            <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-4">
-              <span className="w-8 h-[2px] bg-accent" />
-              Deine Online-Visitenkarte
-            </span>
-            <h2 className="text-primary font-bold text-2xl md:text-3xl leading-tight mb-2" style={{ fontFamily: "var(--font-display)" }}>
-              Ein Bild — einfach weiterschicken
-            </h2>
-            <p className="text-muted text-base">
-              Lade deine persönliche Karte herunter und schick sie an Handwerker, die
-              einen Job suchen. Dein Link ist schon drauf.
-            </p>
-          </div>
-          <Visitenkarte />
         </div>
 
         <p className="text-muted text-xs mt-6 text-center">

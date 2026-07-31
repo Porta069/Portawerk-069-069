@@ -122,7 +122,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <VerificationReminder user={user} token={token} onUpdate={setUser} />
       )}
       <DashboardNav badges={badges} onLogout={handleLogout} />
-      <main className="max-w-6xl mx-auto px-6 lg:px-12 py-10">{children}</main>
+      <main className="max-w-7xl mx-auto px-6 lg:px-12 py-10">{children}</main>
     </div>
   );
 }

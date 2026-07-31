@@ -135,6 +135,7 @@ export async function submitAiAnswers(
   answers: AnswerMap
 ): Promise<ApiResult<{ saved: number }>> {
   await delay(600);
-  console.log("[MOCK] submitAiAnswers", answers);
+  // Antworten werden real über api.saveStep(..., 4, ...) persistiert; hier kein
+  // Logging der Nutzerantworten in die Browser-Konsole.
   return { ok: true, data: { saved: Object.keys(answers).length } };
 }

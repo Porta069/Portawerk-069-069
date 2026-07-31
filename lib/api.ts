@@ -130,12 +130,17 @@ async function request<T>(
       }
       return { ok: true, data: json as T };
     } catch {
-      // fetch hat geworfen (Netzwerk/CORS während Kaltstart) → erneut versuchen.
+      // fetch hat geworfen (Netzwerk/CORS). Nur idempotente GETs wiederholen:
+      // bei einem POST könnte der Server den Request bereits verarbeitet haben
+      // (Konto anlegen, OTP-SMS, Referral) — ein Retry würde Duplikate bzw.
+      // Doppelkosten erzeugen. Der Kaltstart-Fall liefert eine echte 502/503/504
+      // (oben behandelt) und bleibt daher für alle Methoden mit Retry versorgt.
       sawNetworkError = true;
-      if (attempt < retries) {
+      if (method === "GET" && attempt < retries) {
         await sleep(backoff(attempt));
         continue;
       }
+      break;
     }
   }
 

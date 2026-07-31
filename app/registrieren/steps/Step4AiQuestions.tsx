@@ -12,16 +12,20 @@ import { getProfileQuestions, getFollowUpQuestions } from "@/lib/aiService";
 import { api } from "@/lib/api";
 import QuestionComponent from "@/app/components/QuestionComponent";
 import { SectionLabel, PrimaryButton } from "@/app/components/ui";
-import type { Question, AnswerValue } from "@/lib/types";
+import type { AnswerValue } from "@/lib/types";
 
 export default function Step4AiQuestions() {
-  const { data, setAiAnswer, next } = useRegistration();
+  const { data, setAiAnswer, setAiQuestions, addAiQuestions, next } = useRegistration();
 
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Die Fragen liegen im Context, nicht lokal: sonst wuerden sie beim
+  // Rueckspringen neu generiert und bereits gegebene Antworten haetten keine
+  // zugehoerige Frage mehr — sie waeren aus Nutzersicht verschwunden.
+  const questions = data.aiQuestions;
+  const followUpAdded = data.aiFollowUpAdded;
+
+  const [loading, setLoading] = useState(questions.length === 0);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [followUpAdded, setFollowUpAdded] = useState(false);
   const [newlyAdded, setNewlyAdded] = useState<string[]>([]);
   const loadedRef = useRef(false);
 
@@ -30,13 +34,15 @@ export default function Step4AiQuestions() {
     setError(null);
     const res = await getProfileQuestions(data.surveyAnswers);
     setLoading(false);
-    if (res.ok) setQuestions(res.data);
+    if (res.ok) setAiQuestions(res.data);
     else setError(res.error);
   };
 
   useEffect(() => {
     if (loadedRef.current) return;
     loadedRef.current = true;
+    // Schon geladene Fragen wiederverwenden statt neu generieren.
+    if (questions.length > 0) return;
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -60,13 +66,12 @@ export default function Step4AiQuestions() {
     if (!followUpAdded) {
       const follow = await getFollowUpQuestions(data.aiAnswers);
       if (follow.ok && follow.data.length > 0) {
-        setQuestions((qs) => [...qs, ...follow.data]);
+        addAiQuestions(follow.data);
         setNewlyAdded(follow.data.map((q) => q.id));
-        setFollowUpAdded(true);
         setBusy(false);
         return; // Nutzer beantwortet erst die Folgefragen
       }
-      setFollowUpAdded(true);
+      addAiQuestions([]); // markiert den Nachlade-Schritt als erledigt
     }
 
     // KI-Antworten opak als Wizard-Step 4 speichern (blockiert bei Fehler nicht).

@@ -84,6 +84,15 @@ export interface RegistrationData {
   password: string;
   verification: VerificationState;
   aiAnswers: AnswerMap;
+  /**
+   * Bereits geladene KI-Fragen inkl. nachgeladener Folgefragen. Wird
+   * mitgespeichert, damit ein Rücksprung auf den KI-Schritt exakt dieselben
+   * Fragen zeigt — sonst würden neu generierte Fragen die vorhandenen
+   * Antworten aus `aiAnswers` unsichtbar machen.
+   */
+  aiQuestions: Question[];
+  /** Ob die adaptiven Folgefragen schon nachgeladen wurden. */
+  aiFollowUpAdded: boolean;
   legal: LegalConsent;
   /** Name/Code des Werbers (Affiliate) — nur der Name, nicht der ganze Link. */
   referredBy: string;

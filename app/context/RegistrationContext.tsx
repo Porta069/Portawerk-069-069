@@ -17,6 +17,7 @@ import type {
   AnswerValue,
   ContactData,
   LegalConsent,
+  Question,
   RegistrationData,
   VerificationState,
   WorkLocation,
@@ -52,6 +53,8 @@ const EMPTY: RegistrationData = {
   password: "",
   verification: { emailVerified: false, phoneVerified: false },
   aiAnswers: {},
+  aiQuestions: [],
+  aiFollowUpAdded: false,
   legal: { privacyAccepted: false, termsAccepted: false },
   referredBy: "",
   workLocations: [],
@@ -78,6 +81,8 @@ interface RegistrationContextValue {
   setVerification: (patch: Partial<VerificationState>) => void;
   setAiAnswer: (id: string, value: AnswerValue) => void;
   setAiAnswers: (patch: AnswerMap) => void;
+  setAiQuestions: (questions: Question[]) => void;
+  addAiQuestions: (questions: Question[]) => void;
   setLegal: (patch: Partial<LegalConsent>) => void;
   reset: () => void;
 }
@@ -224,6 +229,19 @@ export function RegistrationProvider({
     setData((d) => ({ ...d, aiAnswers: { ...d.aiAnswers, ...patch } }));
   }, []);
 
+  const setAiQuestions = useCallback((questions: Question[]) => {
+    setData((d) => ({ ...d, aiQuestions: questions }));
+  }, []);
+
+  /** Folgefragen anhaengen und den Nachlade-Schritt als erledigt markieren. */
+  const addAiQuestions = useCallback((questions: Question[]) => {
+    setData((d) => ({
+      ...d,
+      aiQuestions: [...d.aiQuestions, ...questions],
+      aiFollowUpAdded: true,
+    }));
+  }, []);
+
   const setLegal = useCallback((patch: Partial<LegalConsent>) => {
     setData((d) => ({ ...d, legal: { ...d.legal, ...patch } }));
   }, []);
@@ -261,6 +279,8 @@ export function RegistrationProvider({
     setVerification,
     setAiAnswer,
     setAiAnswers,
+    setAiQuestions,
+    addAiQuestions,
     setLegal,
     reset,
   };

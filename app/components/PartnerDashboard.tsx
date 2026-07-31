@@ -1,34 +1,22 @@
 "use client";
 
-// ─── Affiliate-/Partner-Dashboard (Frontend, Demo-Daten) ──────────────────────
-// Zahlen sind Platzhalter. Sobald das Backend steht, werden sie aus den
-// Partner-Endpunkten (Referrals, Auszahlungen, Rangliste) geladen.
+// ─── Affiliate-/Partner-Dashboard ─────────────────────────────────────────────
+// Lädt die echten Kennzahlen aus dem Backend (/partner/dashboard): verdientes
+// Geld, geworbene/vermittelte Kandidaten, Einnahmen-Verlauf, Rangliste.
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Hammer, Copy, Check, Share2, Users, BadgeCheck, TrendingUp,
-  UserPlus, Clock, LogOut, ArrowUpRight, Trophy, Medal, Crown,
+  UserPlus, Clock, LogOut, ArrowUpRight, Trophy, Medal, Crown, Loader2,
 } from "lucide-react";
 import EarningsChart from "./EarningsChart";
 import Visitenkarte from "./Visitenkarte";
+import { api, partnerSession, type PartnerDashboardData, type ReferralStatus } from "@/lib/api";
 
-const NAME = "Max";
-const LINK = "portawerk.de/r/max";
-const SLUG = "max";
 const fmt = (n: number) => n.toLocaleString("de-DE");
-
-// Monats-Einnahmen (Demo).
-const EINNAHMEN = [
-  { m: "Feb", v: 200 },
-  { m: "Mär", v: 400 },
-  { m: "Apr", v: 300 },
-  { m: "Mai", v: 600 },
-  { m: "Jun", v: 900 },
-  { m: "Jul", v: 700 },
-];
 
 type Status = "geworben" | "vermittlung" | "vermittelt" | "ausgezahlt";
 const STATUS: Record<Status, { label: string; icon: typeof Check; bg: string; fg: string }> = {
@@ -37,28 +25,13 @@ const STATUS: Record<Status, { label: string; icon: typeof Check; bg: string; fg
   vermittelt:  { label: "Vermittelt",       icon: Check,      bg: "#E7F7EE", fg: "#15803D" },
   ausgezahlt:  { label: "Prämie ausgezahlt", icon: BadgeCheck, bg: "#E7F7EE", fg: "#15803D" },
 };
-
-const REFERRALS: { name: string; gewerk: string; datum: string; status: Status; euro: number }[] = [
-  { name: "Thomas M.", gewerk: "Elektriker", datum: "03.07.", status: "ausgezahlt", euro: 100 },
-  { name: "Kevin B.", gewerk: "Anlagenmechaniker SHK", datum: "28.06.", status: "ausgezahlt", euro: 100 },
-  { name: "Andreas R.", gewerk: "Maler & Lackierer", datum: "21.06.", status: "vermittelt", euro: 100 },
-  { name: "Sven K.", gewerk: "Tischler", datum: "18.06.", status: "vermittelt", euro: 100 },
-  { name: "Murat Y.", gewerk: "Metallbauer", datum: "11.06.", status: "vermittlung", euro: 0 },
-  { name: "Lukas P.", gewerk: "Maurer", datum: "05.06.", status: "vermittlung", euro: 0 },
-  { name: "Daniel W.", gewerk: "Dachdecker", datum: "29.05.", status: "geworben", euro: 0 },
-  { name: "Erkan D.", gewerk: "Fliesenleger", datum: "24.05.", status: "geworben", euro: 0 },
-];
-
-// Rangliste — nach erfolgreichen Vermittlungen sortiert, ohne Zahlen zu zeigen.
-const RANGLISTE = [
-  { rang: 1, name: "Sarah K." },
-  { rang: 2, name: "Tobias W." },
-  { rang: 3, name: "Mehmet A." },
-  { rang: 4, name: "Julia B." },
-  { rang: 5, name: "Andreas P." },
-  { rang: 6, name: "Nina H." },
-];
-const MEIN_RANG = 12;
+// Backend-Enum → Status-Schlüssel des UI.
+const STATUS_FROM_BACKEND: Record<ReferralStatus, Status> = {
+  REGISTERED: "geworben",
+  IN_PLACEMENT: "vermittlung",
+  PLACED: "vermittelt",
+  PAID: "ausgezahlt",
+};
 
 const initials = (n: string) => n.split(" ").map((p) => p[0]).join("");
 
@@ -73,12 +46,88 @@ export default function PartnerDashboard() {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
+  const [data, setData] = useState<PartnerDashboardData | null>(null);
+  const [loadError, setLoadError] = useState(false);
 
-  const geworben = 42;
-  const vermittelt = 31;
-  const verdient = EINNAHMEN.reduce((s, d) => s + d.v, 0);
-  const conversion = Math.round((vermittelt / geworben) * 100);
-  const letzterMonat = EINNAHMEN[EINNAHMEN.length - 1].v;
+  // Echte Kennzahlen laden; ohne gültige Partner-Session zurück zur Anmeldung.
+  useEffect(() => {
+    const token = partnerSession.get();
+    if (!token) {
+      router.replace("/verdienen/partner");
+      return;
+    }
+    let active = true;
+    api.partnerDashboard(token).then((r) => {
+      if (!active) return;
+      if (r.ok) {
+        setData(r.data);
+      } else if (r.status === 401) {
+        partnerSession.clear();
+        router.replace("/verdienen/partner");
+      } else {
+        setLoadError(true);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [router]);
+
+  const doLogout = async () => {
+    const token = partnerSession.get();
+    if (token) await api.partnerLogout(token);
+    partnerSession.clear();
+    router.push("/verdienen");
+  };
+
+  // Lade- / Fehlerzustand — markenkonform (Navy + Gold).
+  if (!data) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-primary text-white px-6 text-center">
+        {loadError ? (
+          <>
+            <p className="text-lg font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+              Dein Dashboard konnte nicht geladen werden.
+            </p>
+            <p className="text-white/60 text-sm">Der Server war kurz nicht erreichbar. Bitte lade die Seite neu.</p>
+            <button
+              onClick={() => { setLoadError(false); router.refresh(); }}
+              className="mt-2 rounded-full bg-accent text-primary font-bold px-6 py-3 text-sm hover:bg-amber-400 transition-colors"
+            >
+              Erneut versuchen
+            </button>
+          </>
+        ) : (
+          <>
+            <Loader2 className="w-7 h-7 text-accent animate-spin" />
+            <p className="text-white/60 text-sm">Dein Dashboard wird geladen …</p>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  const NAME = data.firstName;
+  const LINK = data.link;
+  const SLUG = data.slug;
+  const EINNAHMEN = data.monthly.map((m) => ({ m: m.month, v: Math.round(m.cents / 100) }));
+  const REFERRALS = data.referrals.map((r) => ({
+    name: r.name,
+    gewerk: r.trade,
+    datum: r.date,
+    status: STATUS_FROM_BACKEND[r.status],
+    euro: Math.round(r.rewardCents / 100),
+  }));
+  const RANGLISTE = data.ranking.top.map((t) => ({ rang: t.rank, name: t.name }));
+  const MEIN_RANG = data.ranking.myRank;
+
+  const geworben = data.referredCount;
+  const vermittelt = data.placedCount;
+  const verdient = Math.round(data.earnedCents / 100);
+  const conversion = data.conversion;
+  const lastMonth = EINNAHMEN[EINNAHMEN.length - 1];
+  const letzterMonat = lastMonth ? lastMonth.v : 0;
+  const letzterMonatLabel = lastMonth ? lastMonth.m : "";
 
   const copy = () => {
     navigator.clipboard?.writeText("https://" + LINK);
@@ -140,11 +189,13 @@ export default function PartnerDashboard() {
                   </span>
                   <span aria-hidden className="shimmer-glint pointer-events-none absolute inset-y-0 left-0 z-10 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent" />
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#22C55E]/15 text-[#4ADE80] text-sm font-bold px-3 py-1.5 mb-2">
-                  <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} /> +{fmt(letzterMonat)} € im Juli
-                </span>
+                {letzterMonat > 0 && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#22C55E]/15 text-[#4ADE80] text-sm font-bold px-3 py-1.5 mb-2">
+                    <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} /> +{fmt(letzterMonat)} € im {letzterMonatLabel}
+                  </span>
+                )}
               </div>
-              <p className="text-white/50 text-sm mt-4">in den letzten 6 Monaten · nächste Auszahlung am 01.08.</p>
+              <p className="text-white/50 text-sm mt-4">in den letzten 6 Monaten · Auszahlung nach erfolgreicher Vermittlung</p>
             </motion.div>
 
             {/* Rechts: Empfehlungs-Link */}
@@ -228,6 +279,15 @@ export default function PartnerDashboard() {
           {/* Empfehlungen-Liste */}
           <div className="lg:col-span-2 bg-white rounded-2xl border border-border p-6">
             <h2 className="text-primary font-bold text-lg mb-5" style={{ fontFamily: "var(--font-display)" }}>Deine Empfehlungen</h2>
+            {REFERRALS.length === 0 && (
+              <div className="text-center py-8">
+                <div className="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "var(--color-accent-soft)" }}>
+                  <UserPlus className="w-5 h-5 text-accent" strokeWidth={2} />
+                </div>
+                <p className="text-primary text-sm font-semibold mb-1">Noch keine Empfehlungen</p>
+                <p className="text-muted text-xs max-w-[15rem] mx-auto">Teil deinen Link — sobald jemand darüber startet, erscheint er hier.</p>
+              </div>
+            )}
             <div className="flex flex-col divide-y divide-border">
               {REFERRALS.map((r) => {
                 const s = STATUS[r.status];
@@ -269,7 +329,7 @@ export default function PartnerDashboard() {
               einen Job suchen. Dein Link ist schon drauf.
             </p>
           </div>
-          <Visitenkarte />
+          <Visitenkarte fixedSlug={SLUG} />
         </div>
 
         {/* ══ Rangliste ══ */}
@@ -307,7 +367,7 @@ export default function PartnerDashboard() {
         </div>
 
         <p className="text-muted text-xs mt-6 text-center">
-          Demo-Daten. Sobald das Backend steht, siehst du hier deine echten Zahlen in Echtzeit.
+          Deine echten Zahlen — in Echtzeit aus deinem Partner-Konto.
         </p>
       </div>
 
@@ -339,7 +399,7 @@ export default function PartnerDashboard() {
                   Abbrechen
                 </button>
                 <button
-                  onClick={() => router.push("/verdienen")}
+                  onClick={doLogout}
                   className="flex-1 rounded-full bg-primary text-white font-semibold py-3 text-sm hover:bg-accent hover:text-primary transition-colors"
                 >
                   Abmelden

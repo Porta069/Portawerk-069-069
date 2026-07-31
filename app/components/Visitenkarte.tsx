@@ -18,13 +18,15 @@ const PUNKTE = [
   "Wir kümmern uns um alles",
 ];
 
-export default function Visitenkarte() {
+export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {}) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState("");
   const [busy, setBusy] = useState<null | "dl" | "copy" | "share">(null);
   const [copied, setCopied] = useState(false);
 
-  const slug = slugify(name) || "dein-name";
+  // Auf dem Partner-Dashboard steht der echte Slug fest; sonst wird er aus dem
+  // eingegebenen Namen erzeugt.
+  const slug = fixedSlug || slugify(name) || "dein-name";
   const link = `portawerk.de/r/${slug}`;
 
   const render = () =>
@@ -88,17 +90,23 @@ export default function Visitenkarte() {
     <div className="grid lg:grid-cols-2 gap-10 items-center">
       {/* ── Steuerung ── */}
       <div>
-        <label htmlFor="vk-name" className="block text-primary text-sm font-medium mb-1.5">Dein Name auf der Karte</label>
+        <label htmlFor="vk-name" className="block text-primary text-sm font-medium mb-1.5">
+          {fixedSlug ? "Dein Link auf der Karte" : "Dein Name auf der Karte"}
+        </label>
         <div className="flex items-stretch rounded-xl border border-border overflow-hidden focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 transition-colors max-w-sm mb-2">
           <span className="flex items-center pl-4 pr-1 text-muted text-sm select-none">portawerk.de/r/</span>
-          <input
-            id="vk-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="dein-name"
-            autoComplete="off"
-            className="flex-1 py-3 pr-4 text-primary text-sm bg-transparent focus:outline-none"
-          />
+          {fixedSlug ? (
+            <span className="flex-1 py-3 pr-4 text-primary text-sm font-semibold truncate flex items-center">{slug}</span>
+          ) : (
+            <input
+              id="vk-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="dein-name"
+              autoComplete="off"
+              className="flex-1 py-3 pr-4 text-primary text-sm bg-transparent focus:outline-none"
+            />
+          )}
         </div>
         <p className="text-muted text-sm mb-6">
           Deine fertige Karte — herunterladen, kopieren und an Handwerker schicken, die einen Job suchen.

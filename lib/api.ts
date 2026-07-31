@@ -49,6 +49,52 @@ export interface WizardProgress {
 
 export type OtpChannel = "email" | "sms";
 
+// ── Partner / Affiliate ──
+export interface PublicPartner {
+  id: string;
+  name: string;
+  slug: string;
+  link: string;
+  phone: string;
+  email: string | null;
+  phoneVerified: boolean;
+  status: string;
+  createdAt: string;
+  lastLoginAt: string | null;
+  payout: { iban: string | null; holder: string | null } | null;
+}
+
+export interface PartnerSession {
+  accessToken: string;
+  expiresAt: string;
+  partner: PublicPartner;
+}
+
+export type ReferralStatus = "REGISTERED" | "IN_PLACEMENT" | "PLACED" | "PAID";
+
+export interface PartnerDashboardData {
+  name: string;
+  firstName: string;
+  slug: string;
+  link: string;
+  earnedCents: number;
+  referredCount: number;
+  placedCount: number;
+  inPlacementCount: number;
+  conversion: number;
+  monthly: { month: string; cents: number }[];
+  referrals: {
+    id: string;
+    name: string;
+    trade: string;
+    date: string;
+    status: ReferralStatus;
+    rewardCents: number;
+  }[];
+  payout: { iban: string | null; holder: string | null } | null;
+  ranking: { top: { rank: number; name: string }[]; myRank: number };
+}
+
 // ── Fehlermeldungen ins Deutsche übersetzen (Fallback: Originaltext) ──
 const MESSAGE_MAP: Record<string, string> = {
   "An account with this email already exists":
@@ -329,6 +375,101 @@ export const api = {
         ok: false,
         error: "Verbindung zum Server fehlgeschlagen. Bitte erneut versuchen.",
       };
+    }
+  },
+
+  // ── Partner / Affiliate ──
+  /** GET /partner/slug/check — Live-Verfügbarkeit eines Wunsch-Links. */
+  partnerSlugCheck(slug: string) {
+    return request<{ slug: string; available: boolean }>(
+      `/partner/slug/check?slug=${encodeURIComponent(slug)}`,
+      { retries: 1 }
+    );
+  },
+
+  /** POST /partner/register — Partner-Konto anlegen (mit SMS-Nachweis). */
+  partnerRegister(payload: {
+    name: string;
+    phone: string;
+    email?: string;
+    password: string;
+    slug: string;
+    verificationToken?: string;
+  }) {
+    return request<PartnerSession>("/partner/register", {
+      method: "POST",
+      body: payload,
+      retries: 3,
+    });
+  },
+
+  /** POST /partner/login */
+  partnerLogin(identifier: string, password: string) {
+    return request<PartnerSession>("/partner/login", {
+      method: "POST",
+      body: { identifier, password },
+      retries: 3,
+    });
+  },
+
+  /** GET /partner/me */
+  partnerMe(token: string) {
+    return request<PublicPartner>("/partner/me", { token });
+  },
+
+  /** GET /partner/dashboard — aggregierte Kennzahlen + Empfehlungen. */
+  partnerDashboard(token: string) {
+    return request<PartnerDashboardData>("/partner/dashboard", { token });
+  },
+
+  /** POST /partner/logout */
+  partnerLogout(token: string) {
+    return request<void>("/partner/logout", { method: "POST", token });
+  },
+
+  /** POST /partner/click — Klick auf einen Empfehlungs-Link zählen. */
+  partnerClick(slug: string) {
+    return request<{ ok: boolean }>("/partner/click", {
+      method: "POST",
+      body: { slug },
+      retries: 0,
+    });
+  },
+
+  /** PATCH /partner/payout — Bankdaten für die Auszahlung hinterlegen. */
+  partnerUpdatePayout(token: string, payout: { iban?: string; holder?: string }) {
+    return request<PublicPartner>("/partner/payout", {
+      method: "PATCH",
+      token,
+      body: payout,
+    });
+  },
+};
+
+// ── Partner-Session im Browser (getrennt von der Bewerber-Session) ──
+const PARTNER_TOKEN_KEY = "portawerk_partner_v1";
+
+export const partnerSession = {
+  get(): string | null {
+    if (typeof window === "undefined") return null;
+    try {
+      return window.localStorage.getItem(PARTNER_TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  },
+  set(token: string) {
+    try {
+      window.localStorage.setItem(PARTNER_TOKEN_KEY, token);
+    } catch {
+      /* ignore */
+    }
+  },
+  clear() {
+    try {
+      window.localStorage.removeItem(PARTNER_TOKEN_KEY);
+    } catch {
+      /* ignore */
     }
   },
 };

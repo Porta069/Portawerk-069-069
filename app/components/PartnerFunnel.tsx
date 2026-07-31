@@ -1,9 +1,10 @@
 "use client";
 
-// ─── Affiliate-/Partner-Registrierung (Frontend, Mock-API) ────────────────────
-// Echtes 2FA-Modell: Passwort + SMS-Code. Alle Backend-Aufrufe sind hier noch
-// gemockt (siehe // MOCK). Sobald die Endpunkte stehen, nur diese Stellen auf
-// fetch/api.* umstellen — der restliche Funnel bleibt.
+// ─── Affiliate-/Partner-Registrierung ────────────────────────────────────────
+// Echtes 2FA-Modell: Passwort + (optionaler) SMS-Code. Spricht das Live-Backend
+// (/partner/*). Der SMS-Code ist erst zwingend, sobald SMS-Versand konfiguriert
+// ist; bis dahin kann ohne Code fortgefahren werden (Konto wird angelegt, die
+// Telefonnummer bleibt dann unbestätigt).
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -16,6 +17,7 @@ import { ProgressBar, StepIndicators, type StepDef } from "./ProgressBar";
 import OtpInput from "./OtpInput";
 import PasswordStrength from "./PasswordStrength";
 import { evaluatePassword } from "@/lib/password";
+import { api, partnerSession } from "@/lib/api";
 
 const STEP_DEFS: StepDef[] = [
   { code: "01", label: "Deine Daten" },
@@ -25,8 +27,6 @@ const STEP_DEFS: StepDef[] = [
 ];
 const CONTENT_STEPS = 3;
 const BASE = "portawerk.de/r/";
-const RESERVIERT = ["portawerk", "admin", "test", "team", "support", "info", "max"];
-const DEMO_CODE = "123456"; // MOCK: gültiger Demo-Code
 
 const HEAD = [
   { h: "Werde Partner", s: "Deine Daten — damit wir dich erreichen und deine Prämie auszahlen können." },
@@ -72,13 +72,20 @@ export default function PartnerFunnel() {
     } catch { /* ignore */ }
   }, []);
 
-  // MOCK: Live-Verfügbarkeitsprüfung des Slugs (später GET /partner/slug/check).
+  // Live-Verfügbarkeitsprüfung des Slugs über das Backend (debounced).
   useEffect(() => {
     const s = slugify(slug);
     if (s.length < 3) { setSlugStatus("idle"); return; }
     setSlugStatus("checking");
-    const t = setTimeout(() => setSlugStatus(RESERVIERT.includes(s) ? "taken" : "free"), 550);
-    return () => clearTimeout(t);
+    let active = true;
+    const t = setTimeout(async () => {
+      const r = await api.partnerSlugCheck(s);
+      if (!active) return;
+      // Bei einem transienten Fehler nicht blockieren — der finale Register-Call
+      // erzwingt die Eindeutigkeit ohnehin (409 bei vergeben).
+      setSlugStatus(r.ok ? (r.data.available ? "free" : "taken") : "free");
+    }, 450);
+    return () => { active = false; clearTimeout(t); };
   }, [slug]);
 
   // Resend-Countdown.
@@ -88,10 +95,13 @@ export default function PartnerFunnel() {
     return () => clearTimeout(t);
   }, [resendIn]);
 
-  // MOCK: SMS-Code senden, sobald Schritt 3 erreicht wird (später api.requestOtp("sms", telefon)).
+  // SMS-Code senden, sobald Schritt 3 erreicht wird (best-effort).
   const sendOtp = () => {
     setSending(true); setOtpError(null); setOtp("");
-    setTimeout(() => { setSending(false); setResendIn(30); }, 900);
+    api.requestOtp("sms", telefon).finally(() => {
+      setSending(false);
+      setResendIn(30);
+    });
   };
   useEffect(() => {
     if (step === 2 && !otpRequested.current) { otpRequested.current = true; sendOtp(); }
@@ -105,7 +115,6 @@ export default function PartnerFunnel() {
     if (!evaluatePassword(passwort).valid)
       return setErr("Dein Passwort erfüllt noch nicht alle Kriterien (siehe Liste).");
     if (!consent) return setErr("Bitte stimme der Verarbeitung deiner Daten zu.");
-    // MOCK: später POST /partner/register/start -> { draftToken }
     setStep(1);
   };
 
@@ -115,20 +124,37 @@ export default function PartnerFunnel() {
     setStep(2);
   };
 
-  const verify = () => {
-    if (otp.length < 6) return;
-    setVerifying(true); setOtpError(null);
-    // MOCK: später api.verifyOtp("sms", telefon, otp) -> verificationToken,
-    // dann POST /partner/register/complete -> { link, sessionToken }.
-    setTimeout(() => {
-      setVerifying(false);
-      if (otp === DEMO_CODE) {
-        setFinalLink(BASE + slugify(slug));
-        setStep(3);
-      } else {
-        setOtpError("Der Code stimmt nicht. Versuch es nochmal.");
+  // Abschluss: falls ein 6-stelliger Code eingegeben wurde, erst verifizieren
+  // (→ verificationToken, Nummer bestätigt); anschließend Partner-Konto anlegen.
+  // Ohne Code wird das Konto trotzdem angelegt (Nummer bleibt unbestätigt).
+  const complete = async () => {
+    setVerifying(true); setOtpError(null); setErr(null);
+    let verificationToken: string | undefined;
+    if (otp.length === 6) {
+      const v = await api.verifyOtp("sms", telefon, otp);
+      if (!v.ok) {
+        setVerifying(false);
+        setOtpError(v.error || "Der Code stimmt nicht. Versuch es nochmal.");
+        return;
       }
-    }, 700);
+      verificationToken = v.data.verificationToken;
+    }
+    const r = await api.partnerRegister({
+      name: name.trim(),
+      phone: telefon.trim(),
+      email: email.trim() || undefined,
+      password: passwort,
+      slug: slugify(slug),
+      verificationToken,
+    });
+    setVerifying(false);
+    if (!r.ok) {
+      setOtpError(r.error);
+      return;
+    }
+    partnerSession.set(r.data.accessToken);
+    setFinalLink(r.data.partner.link);
+    setStep(3);
   };
 
   const copy = () => {
@@ -281,7 +307,10 @@ export default function PartnerFunnel() {
                     Code gesendet an <span className="font-semibold">{telefon || "deine Nummer"}</span>
                   </p>
                   <p className="text-muted text-xs mb-6">
-                    Demo: Gib <span className="text-primary font-semibold">{DEMO_CODE}</span> ein. (Echter SMS-Versand folgt über das Backend.)
+                    Gib den 6-stelligen Code ein, um deine Nummer zu bestätigen.
+                    Noch kein Code erhalten? Du kannst auch{" "}
+                    <span className="text-primary font-semibold">ohne Bestätigung</span>{" "}
+                    fortfahren und sie später bestätigen.
                   </p>
                   <OtpInput value={otp} onChange={setOtp} error={!!otpError} disabled={verifying || sending} />
                   {otpError && <p className="text-red-600 text-sm mt-4">{otpError}</p>}
@@ -298,8 +327,8 @@ export default function PartnerFunnel() {
                   </div>
                 </div>
 
-                <button onClick={verify} disabled={otp.length < 6 || verifying} className="group w-full rounded-full bg-accent text-primary font-bold py-4 text-base hover:bg-amber-400 transition-colors inline-flex items-center justify-center gap-2.5 disabled:opacity-50">
-                  {verifying ? <><Loader2 className="w-5 h-5 animate-spin" /> Wird geprüft …</> : <>Registrierung abschließen <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" /></>}
+                <button onClick={complete} disabled={verifying} className="group w-full rounded-full bg-accent text-primary font-bold py-4 text-base hover:bg-amber-400 transition-colors inline-flex items-center justify-center gap-2.5 disabled:opacity-50">
+                  {verifying ? <><Loader2 className="w-5 h-5 animate-spin" /> Wird geprüft …</> : <>{otp.length === 6 ? "Bestätigen & abschließen" : "Ohne Bestätigung abschließen"} <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" /></>}
                 </button>
               </div>
             )}

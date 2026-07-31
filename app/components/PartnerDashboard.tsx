@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Hammer, Copy, Check, Share2, Users, BadgeCheck, TrendingUp,
-  UserPlus, Clock, LogOut, ArrowUpRight, Trophy, Medal, Crown, Loader2,
+  UserPlus, Clock, LogOut, ArrowUpRight, Trophy, Medal, Crown, Loader2, Settings,
 } from "lucide-react";
 import EarningsChart from "./EarningsChart";
 import Visitenkarte from "./Visitenkarte";
@@ -162,12 +162,20 @@ export default function PartnerDashboard() {
               <span className="text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
               <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>
-            <button
-              onClick={() => setShowLogout(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
-            >
-              <LogOut className="w-4 h-4" /> Abmelden
-            </button>
+            <div className="flex items-center gap-2.5">
+              <Link
+                href="/verdienen/einstellungen"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
+              >
+                <Settings className="w-4 h-4" /> <span className="hidden sm:inline">Einstellungen</span>
+              </Link>
+              <button
+                onClick={() => setShowLogout(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
+              >
+                <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Abmelden</span>
+              </button>
+            </div>
           </div>
 
           {/* Begrüßung + Held-Zahl + Link */}

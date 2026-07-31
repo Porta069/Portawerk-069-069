@@ -444,6 +444,41 @@ export const api = {
       body: payout,
     });
   },
+
+  /** PATCH /partner/me — Name, E-Mail, Telefon ändern (Slug ist fix). */
+  partnerUpdateProfile(
+    token: string,
+    patch: { name?: string; email?: string; phone?: string }
+  ) {
+    return request<PublicPartner>("/partner/me", {
+      method: "PATCH",
+      token,
+      body: patch,
+    });
+  },
+
+  /** POST /partner/password/change — gibt eine frische Session zurück. */
+  partnerChangePassword(token: string, currentPassword: string, newPassword: string) {
+    return request<PartnerSession>("/partner/password/change", {
+      method: "POST",
+      token,
+      body: { currentPassword, newPassword },
+    });
+  },
+
+  /** POST /partner/account/delete — Konto endgültig löschen. */
+  partnerDeleteAccount(token: string, password: string) {
+    return request<void>("/partner/account/delete", {
+      method: "POST",
+      token,
+      body: { password },
+    });
+  },
+
+  /** GET /partner/me/export — DSGVO-Datenexport. */
+  partnerExport(token: string) {
+    return request<Record<string, unknown>>("/partner/me/export", { token });
+  },
 };
 
 // ── Partner-Session im Browser (getrennt von der Bewerber-Session) ──

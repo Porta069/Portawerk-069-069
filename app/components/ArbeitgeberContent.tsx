@@ -477,23 +477,26 @@ export default function ArbeitgeberContent() {
             {vorteile.map((b, i) => {
               const Icon = b.icon;
               return (
+                // Framer aussen (Einblendung), Hover-CSS innen — sonst schreiben
+                // beide gleichzeitig transform und die Karte ruckelt beim Laden.
                 <motion.div
                   key={b.title}
                   initial={{ y: 24, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="group bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(26,26,46,0.38)] hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
-                    style={{ background: "var(--color-accent-soft)" }}
-                  >
-                    <Icon className="w-8 h-8 text-accent" strokeWidth={1.6} />
-                  </div>
-                  <div>
-                    <h3 className="text-primary font-bold text-2xl mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>{b.title}</h3>
-                    <p className="text-muted text-base md:text-lg leading-relaxed">{b.desc}</p>
+                  <div className="group h-full bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(26,26,46,0.38)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 ease-out">
+                    <div
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+                      style={{ background: "var(--color-accent-soft)" }}
+                    >
+                      <Icon className="w-8 h-8 text-accent" strokeWidth={1.6} />
+                    </div>
+                    <div>
+                      <h3 className="text-primary font-bold text-2xl mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>{b.title}</h3>
+                      <p className="text-muted text-base md:text-lg leading-relaxed">{b.desc}</p>
+                    </div>
                   </div>
                 </motion.div>
               );

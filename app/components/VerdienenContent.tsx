@@ -122,30 +122,34 @@ export default function VerdienenContent() {
             {steps.map((s, i) => {
               const Icon = s.icon;
               return (
+                // Aussen: Framer (Einblendung, steuert transform).
+                // Innen: CSS (Hover-Lift) — sonst kaempfen beide um dieselbe
+                // transform-Eigenschaft und die Karte ruckelt beim Laden.
                 <motion.div
                   key={s.title}
                   initial={{ y: 24, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  className="group relative overflow-hidden rounded-3xl bg-primary p-8 hover:-translate-y-2 transition-all duration-300 shadow-[0_20px_44px_-24px_rgba(26,26,46,0.5)] hover:shadow-[0_30px_60px_-22px_rgba(232,168,56,0.5)]"
                 >
-                  <span
-                    className="absolute -top-6 right-1 font-black text-white/[0.06] leading-none select-none pointer-events-none"
-                    style={{ fontFamily: "var(--font-display)", fontSize: "9rem" }}
-                  >
-                    {i + 1}
-                  </span>
-                  <div
-                    className="absolute -inset-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{ background: "radial-gradient(circle at 70% 0%, rgba(232,168,56,0.2) 0%, transparent 60%)" }}
-                  />
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
-                      <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
+                  <div className="group relative h-full overflow-hidden rounded-3xl bg-primary p-8 hover:-translate-y-2 transition-[transform,box-shadow] duration-300 ease-out shadow-[0_20px_44px_-24px_rgba(26,26,46,0.5)] hover:shadow-[0_30px_60px_-22px_rgba(232,168,56,0.5)]">
+                    <span
+                      className="absolute -top-6 right-1 font-black text-white/[0.06] leading-none select-none pointer-events-none"
+                      style={{ fontFamily: "var(--font-display)", fontSize: "9rem" }}
+                    >
+                      {i + 1}
+                    </span>
+                    <div
+                      className="absolute -inset-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      style={{ background: "radial-gradient(circle at 70% 0%, rgba(232,168,56,0.2) 0%, transparent 60%)" }}
+                    />
+                    <div className="relative">
+                      <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+                        <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
+                      </div>
+                      <h3 className="text-white font-bold text-2xl mb-2.5" style={{ fontFamily: "var(--font-display)" }}>{s.title}</h3>
+                      <p className="text-white/55 text-base leading-relaxed">{s.desc}</p>
                     </div>
-                    <h3 className="text-white font-bold text-2xl mb-2.5" style={{ fontFamily: "var(--font-display)" }}>{s.title}</h3>
-                    <p className="text-white/55 text-base leading-relaxed">{s.desc}</p>
                   </div>
                 </motion.div>
               );
@@ -202,19 +206,21 @@ export default function VerdienenContent() {
             ].map((c, i) => {
               const Icon = c.icon;
               return (
+                // Gleiche Trennung wie oben: Framer aussen, Hover-CSS innen.
                 <motion.div
                   key={c.title}
                   initial={{ y: 24, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="group rounded-3xl border border-border bg-white p-8 sm:p-10 hover:border-accent hover:-translate-y-1.5 hover:shadow-[0_26px_54px_-28px_rgba(232,168,56,0.5)] transition-all duration-300"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
-                    <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
+                  <div className="group h-full rounded-3xl border border-border bg-white p-8 sm:p-10 hover:border-accent hover:-translate-y-1.5 hover:shadow-[0_26px_54px_-28px_rgba(232,168,56,0.5)] transition-[transform,box-shadow,border-color] duration-300 ease-out">
+                    <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+                      <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
+                    </div>
+                    <h3 className="text-primary font-bold text-2xl mb-2.5" style={{ fontFamily: "var(--font-display)" }}>{c.title}</h3>
+                    <p className="text-muted text-base md:text-lg leading-relaxed">{c.desc}</p>
                   </div>
-                  <h3 className="text-primary font-bold text-2xl mb-2.5" style={{ fontFamily: "var(--font-display)" }}>{c.title}</h3>
-                  <p className="text-muted text-base md:text-lg leading-relaxed">{c.desc}</p>
                 </motion.div>
               );
             })}

@@ -53,7 +53,7 @@ export default function PartnerDashboard() {
   useEffect(() => {
     const token = partnerSession.get();
     if (!token) {
-      router.replace("/verdienen/partner");
+      router.replace("/verdienen/login");
       return;
     }
     let active = true;
@@ -63,7 +63,7 @@ export default function PartnerDashboard() {
         setData(r.data);
       } else if (r.status === 401) {
         partnerSession.clear();
-        router.replace("/verdienen/partner");
+        router.replace("/verdienen/login");
       } else {
         setLoadError(true);
       }

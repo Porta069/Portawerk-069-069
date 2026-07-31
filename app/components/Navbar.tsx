@@ -18,14 +18,27 @@ function ctaFor(pathname: string) {
   if (pathname.startsWith("/arbeitgeber")) {
     return {
       login: "/unternehmen/login",
+      loginLabel: "Unternehmen-Login",
       label: "Kontakt aufnehmen",
       href: "mailto:kontakt@portawerk.de",
     };
   }
   if (pathname.startsWith("/verdienen")) {
-    return { login: "/login", label: "Link erstellen", href: "/verdienen#link" };
+    // Eigener Partner-Login/-Register, damit es NICHT mit dem Haupt-Login /
+    // der Handwerker-Registrierung verwechselt wird.
+    return {
+      login: "/verdienen/login",
+      loginLabel: "Partner-Login",
+      label: "Partner werden",
+      href: "/verdienen/partner",
+    };
   }
-  return { login: "/login", label: "Jetzt registrieren", href: "/registrieren" };
+  return {
+    login: "/login",
+    loginLabel: "Login",
+    label: "Jetzt registrieren",
+    href: "/registrieren",
+  };
 }
 
 function isActive(pathname: string, href: string) {
@@ -91,7 +104,7 @@ export default function Navbar() {
               href={cta.login}
               className="text-white/55 hover:text-white text-sm transition-colors duration-200"
             >
-              Login
+              {cta.loginLabel}
             </Link>
             <Link
               href={cta.href}
@@ -142,7 +155,7 @@ export default function Navbar() {
                 onClick={() => setMobileOpen(false)}
                 className="py-2 text-base text-white/75 hover:text-white transition-colors"
               >
-                Login
+                {cta.loginLabel}
               </Link>
               <Link
                 href={cta.href}

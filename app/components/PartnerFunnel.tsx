@@ -186,6 +186,11 @@ export default function PartnerFunnel() {
               <ArrowLeft className="w-3.5 h-3.5" /> Zurück
             </button>
           )}
+          {step === 0 && !isSuccess && (
+            <Link href="/verdienen/login" className="text-sm text-white/50 hover:text-white transition-colors">
+              Schon Partner? <span className="text-accent font-semibold">Anmelden</span>
+            </Link>
+          )}
         </div>
         <ProgressBar percent={percent} />
       </div>

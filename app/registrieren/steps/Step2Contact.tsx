@@ -178,7 +178,7 @@ export default function Step2Contact() {
           * Pflichtfelder
         </p>
         <PrimaryButton onClick={handleNext} disabled={!valid}>
-          Weiter zur Verifizierung
+          Weiter zu den Arbeitsorten
           <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
         </PrimaryButton>
       </div>

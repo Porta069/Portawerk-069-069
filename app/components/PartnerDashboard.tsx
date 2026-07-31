@@ -4,7 +4,7 @@
 // Lädt die echten Kennzahlen aus dem Backend (/partner/dashboard): verdientes
 // Geld, geworbene/vermittelte Kandidaten, Einnahmen-Verlauf, Rangliste.
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -50,15 +50,14 @@ export default function PartnerDashboard() {
   const [loadError, setLoadError] = useState(false);
 
   // Echte Kennzahlen laden; ohne gültige Partner-Session zurück zur Anmeldung.
-  useEffect(() => {
+  const load = useCallback(() => {
     const token = partnerSession.get();
     if (!token) {
       router.replace("/verdienen/login");
       return;
     }
-    let active = true;
+    setLoadError(false);
     api.partnerDashboard(token).then((r) => {
-      if (!active) return;
       if (r.ok) {
         setData(r.data);
       } else if (r.status === 401) {
@@ -68,10 +67,11 @@ export default function PartnerDashboard() {
         setLoadError(true);
       }
     });
-    return () => {
-      active = false;
-    };
   }, [router]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const doLogout = async () => {
     const token = partnerSession.get();
@@ -91,7 +91,7 @@ export default function PartnerDashboard() {
             </p>
             <p className="text-white/60 text-sm">Der Server war kurz nicht erreichbar. Bitte lade die Seite neu.</p>
             <button
-              onClick={() => { setLoadError(false); router.refresh(); }}
+              onClick={load}
               className="mt-2 rounded-full bg-accent text-primary font-bold px-6 py-3 text-sm hover:bg-amber-400 transition-colors"
             >
               Erneut versuchen
@@ -270,7 +270,10 @@ export default function PartnerDashboard() {
               </div>
               <div className="text-right">
                 <p className="text-primary font-black text-xl leading-none" style={{ fontFamily: "var(--font-display)" }}>{fmt(verdient)} €</p>
-                <p className="text-[#15803D] text-xs font-semibold mt-1">▲ Aufwärtstrend</p>
+                {EINNAHMEN.length >= 2 &&
+                  EINNAHMEN[EINNAHMEN.length - 1].v > EINNAHMEN[EINNAHMEN.length - 2].v && (
+                    <p className="text-[#15803D] text-xs font-semibold mt-1">▲ Aufwärtstrend</p>
+                  )}
               </div>
             </div>
             <EarningsChart data={EINNAHMEN} />
@@ -358,10 +361,10 @@ export default function PartnerDashboard() {
             <div className="flex items-center gap-3 py-2.5 rounded-xl px-3 -mx-1" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(232,168,56,0.35)" }}>
               <span className="w-6 flex justify-center"><span className="text-sm font-bold tabular-nums" style={{ color: "#B47B18" }}>{MEIN_RANG}</span></span>
               <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-accent">
-                <span className="text-[11px] font-bold text-primary">{initials(NAME + " M.")}</span>
+                <span className="text-[11px] font-bold text-primary">{initials(NAME)}</span>
               </div>
-              <span className="text-primary text-sm font-bold flex-1 truncate">{NAME} M. <span className="text-accent font-semibold">· Du</span></span>
-              <span className="text-xs font-semibold" style={{ color: "#B47B18" }}>Noch 4 Vermittlungen bis Platz 11</span>
+              <span className="text-primary text-sm font-bold flex-1 truncate">{NAME} <span className="text-accent font-semibold">· Du</span></span>
+              <span className="text-xs font-semibold" style={{ color: "#B47B18" }}>{vermittelt} Vermittlung{vermittelt === 1 ? "" : "en"}</span>
             </div>
           </div>
         </div>

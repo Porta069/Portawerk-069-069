@@ -87,7 +87,7 @@ export default function HeroSection() {
               />
             </Link>
             <p className="text-muted text-sm mt-3 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" style={{ animation: "pulse 2s infinite" }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot" />
               Dauert nur 3 Minuten · schon <span className="text-primary font-semibold">127 Handwerker</span> diese Woche
             </p>
           </motion.div>

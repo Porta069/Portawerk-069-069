@@ -55,10 +55,27 @@ body {
   animation: shimmer 1.4s ease-out 1s 1 both;
 }
 
+/* Pulsierender "live"-Punkt (z.B. Aktivitäts-Indikator im Hero). */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+.pulse-dot {
+  animation: pulse 2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shimmer-glint,
   .shimmer-sweep-1,
-  .shimmer-sweep-2 {
+  .shimmer-sweep-2,
+  .pulse-dot {
     animation: none;
   }
 }

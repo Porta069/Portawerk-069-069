@@ -4,8 +4,9 @@ import { useRef, useState } from "react";
 import { toPng, toBlob } from "html-to-image";
 import { Download, Copy, Check, Share2, Hammer, MessageCircle, Loader2 } from "lucide-react";
 
-// TODO: echte WhatsApp-Nummer eintragen (Platzhalter).
-const WHATSAPP = "+49 1512 3456789";
+// Support-WhatsApp aus der Env — nur wenn gesetzt wird die Zeile auf der Karte
+// angezeigt (keine Platzhalter-Nummer auf echten Karten).
+const WHATSAPP = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP ?? "";
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[àáâä]/g, "a").replace(/[öó]/g, "o").replace(/[üú]/g, "u")
@@ -199,10 +200,12 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
               <div style={{ display: "inline-flex", alignItems: "center", background: "#E8A838", color: "#1A1A2E", fontWeight: 800, fontSize: 12.5, padding: "8px 12px", borderRadius: 999, maxWidth: "100%" }}>
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{link}</span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 9 }}>
-                <MessageCircle style={{ width: 14, height: 14, color: "#25D366" }} strokeWidth={2.2} />
-                <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 10.5 }}>Fragen? WhatsApp {WHATSAPP}</span>
-              </div>
+              {WHATSAPP && (
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 9 }}>
+                  <MessageCircle style={{ width: 14, height: 14, color: "#25D366" }} strokeWidth={2.2} />
+                  <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 10.5 }}>Fragen? WhatsApp {WHATSAPP}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

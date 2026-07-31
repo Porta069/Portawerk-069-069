@@ -21,6 +21,21 @@ export default function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+
+  const handleForgot = async () => {
+    setError(null);
+    setInfo(null);
+    if (!email) {
+      setError("Bitte gib zuerst deine E-Mail-Adresse ein.");
+      return;
+    }
+    await api.forgotPassword(email);
+    // Antwort ist bewusst generisch (keine Konto-Enumeration).
+    setInfo(
+      "Falls ein Konto mit dieser E-Mail existiert, haben wir dir einen Link zum Zurücksetzen geschickt."
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,7 +196,7 @@ export default function LoginPage() {
                 type="button"
                 className="text-sm transition-colors"
                 style={{ color: "#E8A838" }}
-                onClick={() => setError("Passwort-Reset ist bald verfügbar.")}
+                onClick={handleForgot}
               >
                 Passwort vergessen?
               </button>
@@ -193,6 +208,15 @@ export default function LoginPage() {
                 style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.25)", color: "#B91C1C" }}
               >
                 {error}
+              </div>
+            )}
+
+            {info && (
+              <div
+                className="px-4 py-3 text-sm"
+                style={{ background: "rgba(34,197,94,0.07)", border: "1px solid rgba(34,197,94,0.3)", color: "#15803D" }}
+              >
+                {info}
               </div>
             )}
 

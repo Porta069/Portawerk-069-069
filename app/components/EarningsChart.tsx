@@ -46,6 +46,17 @@ export default function EarningsChart({ data }: { data: Pt[] }) {
   }, []);
 
   const H = 280;
+  // Leere Serie: nichts zu zeichnen (verhindert pts[-1]-Zugriff).
+  if (data.length === 0) {
+    return (
+      <div
+        className="w-full flex items-center justify-center text-muted text-sm"
+        style={{ height: H }}
+      >
+        Noch keine Einnahmen im Verlauf.
+      </div>
+    );
+  }
   const PL = 46, PR = 18, PT = 36, PB = 30;
   const n = data.length;
   const iw = Math.max(w - PL - PR, 10);

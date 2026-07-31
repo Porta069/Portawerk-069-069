@@ -1,10 +1,16 @@
 "use client";
 
 // ─── Arbeitsorte-Karte ────────────────────────────────────────────────────────
-// Leaflet, aber mit CARTO-Voyager-Kacheln statt Standard-OSM: deutlich ruhigere
-// Farben, keine grellen Straßenfarben, passt zum Navy/Gold-System. Bedienung
-// unverändert — Klick auf die Karte ODER Suche fügt einen Ort hinzu, jeder Ort
-// bekommt seinen eigenen Radius.
+// Leaflet mit den deutschsprachigen OSM-Kacheln (tile.openstreetmap.de), damit
+// Ortsnamen auf Deutsch erscheinen. Die Farben werden per CSS-Filter
+// zurückgenommen (.pw-map-tiles), sodass der goldene Arbeitsradius führt.
+//
+// Die Leaflet-Standardattribution ist abgeschaltet: der Leaflet-Hinweis ist
+// rechtlich nicht erforderlich, die OSM-Nennung schon — die steht als eigener,
+// dezenter Link unten links.
+//
+// Bedienung unverändert — Klick auf die Karte ODER Suche fügt einen Ort hinzu,
+// jeder Ort bekommt seinen eigenen Radius.
 
 import "leaflet/dist/leaflet.css";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
@@ -285,8 +291,8 @@ export default function WorkLocationsMap({
 
       {/* ── Karte ── */}
       <div
-        className="relative overflow-hidden rounded-2xl"
-        style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -20px rgba(26,26,46,0.5)" }}
+        className="relative overflow-hidden rounded-3xl"
+        style={{ boxShadow: "0 18px 44px -26px rgba(26,26,46,0.55)" }}
       >
         {adding && (
           <div
@@ -300,7 +306,7 @@ export default function WorkLocationsMap({
 
         {value.length === 0 && !adding && (
           <div
-            className="absolute z-[1000] bottom-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
+            className="absolute z-[1000] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
             style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)", boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)" }}
           >
             <Crosshair className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
@@ -313,13 +319,20 @@ export default function WorkLocationsMap({
           zoom={6}
           scrollWheelZoom
           zoomControl={false}
-          style={{ height: 380, width: "100%", background: "#F3F1EC" }}
+          // Eigene Attribution unten — die Leaflet-Zeile (inkl. Flaggen-Präfix)
+          // ist rechtlich nicht erforderlich, die OSM-Nennung schon.
+          attributionControl={false}
+          style={{ height: 400, width: "100%", background: "#EFECE6" }}
         >
           <TileLayer
-            attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> · &copy; OpenStreetMap'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            // CARTO Positron: der minimalste helle Basiskartenstil. Kein
+            // Autobahn-Orange, keine grellen Flächen, dünne Straßen — nah an der
+            // Anmutung von Apple Karten. Ortsnamen kommen aus dem lokalen
+            // OSM-name-Tag, in Deutschland also auf Deutsch.
+            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
-            maxZoom={19}
+            maxZoom={20}
+            className="pw-map-tiles"
           />
           <ClickHandler onClick={handleMapClick} />
           <FlyTo target={flyTarget} />
@@ -341,6 +354,19 @@ export default function WorkLocationsMap({
             </Fragment>
           ))}
         </MapContainer>
+
+        {/* Pflichtangabe nach ODbL — dezent, ohne Leaflet-Werbung. */}
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"
+          style={{ background: "rgba(255,255,255,0.82)", color: "rgba(26,26,46,0.5)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#1A1A2E")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.5)")}
+        >
+          © OpenStreetMap
+        </a>
       </div>
 
       {/* ── Gewählte Orte ── */}

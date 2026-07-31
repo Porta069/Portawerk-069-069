@@ -6,19 +6,26 @@
 // ist damit kein verlorener Lead mehr.
 
 import { useState } from "react";
-import { Mail, Loader2, Check, Lock, BellRing } from "lucide-react";
+import { Mail, Loader2, Check, Lock, BellRing, MessageCircle, Phone } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
 import { useEmailCheck, emailStatusMessage } from "@/lib/useEmailCheck";
 import { StepHeading, NextButton, StepActions, ValueNote } from "@/app/components/wizard";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+]?[\d\s()/-]{6,}$/;
 
 export default function StepEmail() {
   const { data, setContact, next } = useRegistration();
   const email = data.contact.email;
+  const phone = data.contact.phone;
 
   const [touched, setTouched] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [phoneFocused, setPhoneFocused] = useState(false);
+
+  // Telefon ist hier bewusst optional: der Schritt soll leicht bleiben. Wer sie
+  // angibt, ist per WhatsApp erreichbar — auch wenn er den Funnel später abbricht.
+  const phoneOk = phone.trim() === "" || PHONE_RE.test(phone);
 
   const { status, reason } = useEmailCheck(email);
   const statusMsg = emailStatusMessage(status, reason);
@@ -30,7 +37,7 @@ export default function StepEmail() {
     ? statusMsg ?? "Diese E-Mail scheint nicht zu existieren."
     : "";
   const showError = touched && !!error;
-  const canProceed = syntaxOk && status !== "invalid";
+  const canProceed = syntaxOk && status !== "invalid" && phoneOk;
 
   const submit = () => {
     setTouched(true);
@@ -111,19 +118,69 @@ export default function StepEmail() {
         </p>
       ) : null}
 
+      {/* ── Handynummer (optional) — für die WhatsApp-Ansprache ── */}
+      <div className="mt-8">
+        <label
+          className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold mb-2.5"
+          style={{ color: phoneFocused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
+        >
+          Handynummer
+          <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(26,26,46,0.35)" }}>
+            (optional)
+          </span>
+        </label>
+        <div className="relative">
+          <Phone
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
+            style={{ color: phoneFocused ? "#E8A838" : "rgba(26,26,46,0.28)" }}
+          />
+          <input
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            value={phone}
+            onChange={(e) => setContact({ phone: e.target.value })}
+            onFocus={() => setPhoneFocused(true)}
+            onBlur={() => setPhoneFocused(false)}
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+            placeholder="+49 170 1234567"
+            className="w-full rounded-2xl bg-white text-primary text-[15px] pl-12 pr-4 py-4 outline-none transition-all duration-200 placeholder:text-primary/20"
+            style={{
+              border: `1.5px solid ${
+                !phoneOk ? "#EF4444" : phoneFocused ? "#E8A838" : phone ? "#1A1A2E" : "#E9E7E1"
+              }`,
+              boxShadow: phoneFocused
+                ? "0 0 0 4px rgba(232,168,56,0.12)"
+                : "0 2px 10px -6px rgba(26,26,46,0.12)",
+              fontFamily: "var(--font-sans)",
+            }}
+          />
+        </div>
+        {!phoneOk && (
+          <p className="text-[13px] mt-2.5" style={{ color: "#EF4444" }}>
+            Diese Nummer sieht nicht gültig aus.
+          </p>
+        )}
+      </div>
+
       <div className="mt-8 space-y-3">
+        <ValueNote icon={MessageCircle}>
+          Mit Handynummer melden wir uns auf Wunsch per <strong>WhatsApp</strong> — die
+          meisten Betriebe antworten so am schnellsten. Rein optional, du kannst sie
+          jederzeit wieder entfernen.
+        </ValueNote>
         <ValueNote icon={BellRing}>
           Du bekommst nur Nachrichten zu passenden Stellen — keine Newsletter, keine
           Werbung von Dritten.
         </ValueNote>
         <ValueNote icon={Lock}>
-          Kein Betrieb sieht deine Adresse. Erst wenn du einer Anfrage zustimmst,
+          Kein Betrieb sieht deine Daten. Erst wenn du einer Anfrage zustimmst,
           stellen wir den Kontakt her.
         </ValueNote>
       </div>
 
-      <StepActions note="Passwort und Telefonnummer folgen erst später.">
-        <NextButton onClick={submit} disabled={!syntaxOk || status === "invalid"}>
+      <StepActions note="Das Passwort folgt erst später.">
+        <NextButton onClick={submit} disabled={!syntaxOk || status === "invalid" || !phoneOk}>
           Weiter
         </NextButton>
       </StepActions>

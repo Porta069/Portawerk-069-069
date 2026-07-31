@@ -1,257 +1,236 @@
 "use client";
 
-// ─── Dashboard (nach Login) ───────────────────────────────────────────────────
-// Validiert das JWT über GET /auth/me und zeigt die echten Kontodaten.
+// ─── Übersicht ────────────────────────────────────────────────────────────────
+// Statusheimat: Begrüßung, Profil-Score mit beziffertem Nutzen, drei
+// Schnellzugriffe, Aktivitätsfeed und die Verdienen-Kachel. Auth und Navigation
+// liegen im Layout.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Hammer,
-  LogOut,
-  Mail,
-  Phone,
-  User as UserIcon,
-  CalendarClock,
-  ShieldCheck,
-  Search,
-  UserCog,
-  Bell,
-  Settings,
-  Loader2,
+  Inbox, Search, FileText, ArrowRight, Sparkles, Clock3, Loader2, FlaskConical,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
-import { api } from "@/lib/api";
-import VerificationReminder from "@/app/components/VerificationReminder";
+import {
+  getProfileScore, listApplications, listOffers, JOBS_ARE_MOCKED,
+} from "@/lib/jobsService";
+import type { Application, JobOffer, ProfileScore as Score } from "@/lib/types";
+import ProfileScore from "@/app/components/dashboard/ProfileScore";
+import { AffiliateTile } from "@/app/components/dashboard/AffiliateTile";
 
-function fmtDate(iso: string | null): string {
-  if (!iso) return "—";
-  try {
-    return new Date(iso).toLocaleDateString("de-DE", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  } catch {
-    return "—";
-  }
-}
+const APP_STATUS_TEXT: Record<Application["status"], string> = {
+  gesendet: "Bewerbung gesendet",
+  gesehen: "Bewerbung angesehen",
+  im_gespraech: "Im Gespräch",
+  abgelehnt: "Abgesagt",
+  zusage: "Zusage erhalten",
+};
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const { user, token, hydrated, logout, setUser } = useAuth();
-  const [checking, setChecking] = useState(true);
+export default function DashboardOverviewPage() {
+  const { user } = useAuth();
+  const [score, setScore] = useState<Score | null>(null);
+  const [offers, setOffers] = useState<JobOffer[]>([]);
+  const [apps, setApps] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Auth-Guard + Token gegen /auth/me validieren
   useEffect(() => {
-    if (!hydrated) return;
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
     let active = true;
-    api.me(token).then((res) => {
+    Promise.all([
+      getProfileScore({
+        gewerke: user?.role ? ["Elektriker / Elektroniker"] : undefined,
+        erfahrungJahre: 8,
+        phone: user?.phone || undefined,
+        hasAvatar: !!user?.avatar,
+        workLocations: 1,
+      }),
+      listOffers(),
+      listApplications(),
+    ]).then(([s, o, a]) => {
       if (!active) return;
-      if (res.ok) {
-        if (res.data.role === "EMPLOYER") {
-          router.replace("/unternehmen/dashboard");
-          return;
-        }
-        setUser(res.data);
-        setChecking(false);
-      } else {
-        // Token ungültig/abgelaufen → abmelden
-        logout();
-        router.replace("/login");
-      }
+      if (s.ok) setScore(s.data);
+      if (o.ok) setOffers(o.data);
+      if (a.ok) setApps(a.data);
+      setLoading(false);
     });
     return () => {
       active = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, token]);
+  }, [user]);
 
-  const handleLogout = async () => {
-    if (token) await api.logout(token);
-    logout();
-    router.push("/");
-  };
+  const openOffers = offers.filter((o) => o.status === "neu");
 
-  if (!hydrated || checking || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F8F7F4" }}>
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
-      </div>
-    );
-  }
-
-  const profileItems = [
-    { icon: UserIcon, label: "Name", value: `${user.firstName} ${user.lastName}`.trim() || "—" },
-    { icon: Mail, label: "E-Mail", value: user.email },
-    { icon: Phone, label: "Telefon", value: user.phone || "—" },
-    { icon: CalendarClock, label: "Mitglied seit", value: fmtDate(user.createdAt) },
+  const quick = [
+    {
+      href: "/dashboard/angebote",
+      label: "Angebote",
+      desc: openOffers.length ? `${openOffers.length} offen` : "Nichts Neues",
+      icon: Inbox,
+      badge: openOffers.length,
+    },
+    { href: "/dashboard/jobboerse", label: "Jobbörse", desc: "Stellen durchsuchen", icon: Search, badge: 0 },
+    {
+      href: "/dashboard/bewerbungen",
+      label: "Bewerbungen",
+      desc: `${apps.length} laufend`,
+      icon: FileText,
+      badge: 0,
+    },
   ];
 
-  const features = [
-    { icon: Search, title: "Passende Jobs", desc: "Stellen, die zu deinem Profil passen — bald verfügbar." },
-    { icon: Bell, title: "Vermittlungsanfragen", desc: "Betriebe, die dich kontaktieren möchten." },
-    { icon: UserCog, title: "Profil bearbeiten", desc: "Gewerke, Erfahrung & Verfügbarkeit anpassen." },
+  // Aktivität aus Angeboten und Bewerbungen — verdichtet statt achtmal dieselbe Zeile.
+  const activity = [
+    ...offers.map((o) => ({
+      id: `o-${o.id}`,
+      title: `${o.job.employer} bietet dir „${o.job.title}" an`,
+      meta: o.receivedAt,
+      unread: o.status === "neu",
+      href: "/dashboard/angebote",
+    })),
+    ...apps.map((a) => ({
+      id: `a-${a.id}`,
+      title: `${APP_STATUS_TEXT[a.status]} — ${a.job.title}`,
+      meta: a.updatedAt,
+      unread: false,
+      href: "/dashboard/bewerbungen",
+    })),
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: "#F8F7F4", fontFamily: "var(--font-sans)" }}>
-      {token && <VerificationReminder user={user} token={token} onUpdate={setUser} />}
-      {/* Navbar */}
-      <div className="bg-primary">
-        <div className="max-w-6xl mx-auto px-6 lg:px-12 h-[68px] flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-              PortaWerk
-            </span>
-          </Link>
-          <div className="flex items-center gap-5">
-            <Link
-              href="/einstellungen"
-              className="flex items-center gap-2 text-sm transition-colors duration-200"
-              style={{ color: "rgba(255,255,255,0.5)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Einstellungen</span>
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 text-sm transition-colors duration-200"
-              style={{ color: "rgba(255,255,255,0.5)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
-            >
-              <LogOut className="w-4 h-4" />
-              Abmelden
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="bg-primary pb-16">
-        <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-8">
-          <span className="flex items-center gap-3 text-accent text-[10px] font-semibold tracking-[0.22em] uppercase mb-4">
-            <span className="w-8 h-[2px] bg-accent" />
-            Dein Dashboard
-          </span>
-          <motion.h1
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-white font-bold"
-            style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4vw, 3rem)" }}
-          >
-            Willkommen, {user.firstName || "zurück"}.
-          </motion.h1>
-          <p className="text-white/45 text-base mt-3 max-w-lg leading-relaxed">
-            Dein Profil ist aktiv. Sobald passende Betriebe gefunden sind, erscheinen
-            sie hier — wir melden uns zusätzlich persönlich.
+    <div>
+      {JOBS_ARE_MOCKED && (
+        <div
+          className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-6"
+          style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
+        >
+          <FlaskConical className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+          <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
+            <strong>Demodaten:</strong> Für Stellen, Angebote und Bewerbungen gibt es noch
+            keine Backend-Endpunkte. Die Oberfläche arbeitet gegen einen Mock und
+            verhält sich bereits wie später im Betrieb.
           </p>
         </div>
+      )}
+
+      <motion.h1
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="text-primary font-bold mb-1"
+        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
+      >
+        Willkommen, {user?.firstName || "zurück"}.
+      </motion.h1>
+      <p className="text-[15px] mb-8" style={{ color: "rgba(26,26,46,0.55)" }}>
+        {openOffers.length > 0
+          ? `${openOffers.length} ${openOffers.length === 1 ? "Betrieb möchte" : "Betriebe möchten"} dich einstellen.`
+          : "Dein Profil ist aktiv. Wir melden uns, sobald ein Betrieb zu dir passt."}
+      </p>
+
+      {/* Schnellzugriffe */}
+      <div className="grid sm:grid-cols-3 gap-3 mb-6">
+        {quick.map((q) => {
+          const Icon = q.icon;
+          return (
+            <Link
+              key={q.href}
+              href={q.href}
+              className="group relative flex items-center gap-3.5 rounded-2xl bg-white p-4 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5"
+              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 6px 20px -16px rgba(26,26,46,0.5)" }}
+            >
+              <span
+                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "rgba(232,168,56,0.13)" }}
+              >
+                <Icon className="w-[18px] h-[18px]" style={{ color: "#E8A838" }} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-bold text-primary">{q.label}</span>
+                <span className="block text-[12.5px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+                  {q.desc}
+                </span>
+              </span>
+              {q.badge > 0 && (
+                <span
+                  className="flex items-center justify-center rounded-full text-[11px] font-bold tabular-nums flex-shrink-0"
+                  style={{ minWidth: 22, height: 22, padding: "0 6px", background: "#E8A838", color: "#1A1A2E" }}
+                >
+                  {q.badge}
+                </span>
+              )}
+              <ArrowRight
+                className="w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+                style={{ color: "rgba(26,26,46,0.25)" }}
+              />
+            </Link>
+          );
+        })}
       </div>
 
-      {/* Inhalt */}
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 -mt-8 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white mb-6"
-          style={{ border: "1px solid #E5E7EB" }}
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)] gap-6 items-start">
+        {/* Aktivität */}
+        <section
+          className="rounded-3xl bg-white overflow-hidden"
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #E5E7EB" }}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
-              Dein Konto
-            </p>
-            <span
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1"
-              style={{ background: "rgba(34,197,94,0.10)", color: "#16A34A", border: "1px solid rgba(34,197,94,0.3)" }}
-            >
-              <ShieldCheck className="w-3 h-3" />
-              {user.status === "ACTIVE" ? "Aktiv" : user.status}
-            </span>
+          <div className="px-6 py-4" style={{ borderBottom: "1px solid #F1EEE8" }}>
+            <h2 className="text-primary font-bold text-[17px]" style={{ fontFamily: "var(--font-display)" }}>
+              Letzte Aktivität
+            </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x" style={{ borderColor: "#F3F4F6" }}>
-            {profileItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className="px-6 py-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em]" style={{ color: "rgba(26,26,46,0.4)" }}>
-                      {item.label}
+
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+            </div>
+          ) : activity.length === 0 ? (
+            <div className="px-6 py-14 text-center">
+              <Sparkles className="w-6 h-6 mx-auto mb-3" style={{ color: "#E8A838" }} />
+              <p className="text-[14px] font-semibold text-primary mb-1">Noch nichts passiert</p>
+              <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+                Sobald ein Betrieb dein Profil sieht, erscheint es hier.
+              </p>
+            </div>
+          ) : (
+            <ul>
+              {activity.map((a, i) => (
+                <li key={a.id} style={{ borderTop: i > 0 ? "1px solid #F6F4F0" : "none" }}>
+                  <Link
+                    href={a.href}
+                    className="flex items-start gap-3 px-6 py-4 transition-colors"
+                    style={{ background: a.unread ? "rgba(232,168,56,0.06)" : "transparent" }}
+                  >
+                    <span
+                      className="rounded-full flex-shrink-0 mt-1.5"
+                      style={{
+                        width: 7,
+                        height: 7,
+                        background: a.unread ? "#E8A838" : "rgba(26,26,46,0.15)",
+                      }}
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[14px] font-medium text-primary leading-snug">
+                        {a.title}
+                      </span>
+                      <span
+                        className="inline-flex items-center gap-1.5 text-[11.5px] mt-0.5"
+                        style={{ color: "rgba(26,26,46,0.42)" }}
+                      >
+                        <Clock3 className="w-3 h-3" />
+                        {a.meta}
+                      </span>
                     </span>
-                  </div>
-                  <p className="text-sm font-medium text-primary leading-snug break-all">{item.value}</p>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
-        {/* CTA: Unterlagen hochladen */}
-        <Link
-          href="/unterlagen"
-          className="group flex items-center justify-between gap-4 px-6 py-5 mb-6 transition-colors"
-          style={{ background: "#1A1A2E" }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center" style={{ background: "#E8A838" }}>
-              <UserCog className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-white font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-                Unterlagen hochladen
-              </p>
-              <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Lebenslauf, Foto & Zeugnisse einreichen — erhöht deine Vermittlungschancen.
-              </p>
-            </div>
-          </div>
-          <span className="text-accent text-sm font-semibold group-hover:translate-x-1 transition-transform">→</span>
-        </Link>
-
-        <div className="grid md:grid-cols-3 gap-5">
-          {features.map((f, i) => {
-            const Icon = f.icon;
-            return (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 + i * 0.08 }}
-                className="bg-white p-6 flex flex-col"
-                style={{ border: "1px solid #E5E7EB" }}
-              >
-                <div className="w-11 h-11 flex items-center justify-center mb-5" style={{ background: "rgba(232,168,56,0.1)" }}>
-                  <Icon className="w-5 h-5" style={{ color: "#E8A838" }} strokeWidth={1.75} />
-                </div>
-                <h3 className="text-primary font-bold text-base mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
-                  {f.title}
-                </h3>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: "#6B7280" }}>
-                  {f.desc}
-                </p>
-                <span
-                  className="mt-auto self-start text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-1"
-                  style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.4)" }}
-                >
-                  Bald verfügbar
-                </span>
-              </motion.div>
-            );
-          })}
+        {/* Rechte Spalte */}
+        <div className="space-y-5">
+          {score && <ProfileScore score={score} />}
+          <AffiliateTile geworben={0} offenEuro={0} ausgezahltEuro={0} />
         </div>
       </div>
     </div>

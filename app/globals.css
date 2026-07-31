@@ -79,3 +79,19 @@ body {
     animation: none;
   }
 }
+
+/* Kartenkacheln (CARTO Positron): ohnehin sehr ruhig — hier nur noch minimal
+   aufgehellt und leicht entsättigt, damit der goldene Arbeitsradius und die
+   Pins klar davor stehen. Bewusst kein starker Filter, sonst wirkt die Karte
+   milchig. */
+.pw-map-tiles {
+  filter: saturate(0.9) brightness(1.02);
+}
+
+/* Leaflet-Steuerung an das Design angleichen. */
+.leaflet-container {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+.leaflet-container a {
+  color: #b47b18;
+}

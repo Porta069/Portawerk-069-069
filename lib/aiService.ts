@@ -62,6 +62,7 @@ const BASE_QUESTIONS: Question[] = [
     id: "ai_staerken",
     type: "text",
     prompt: "Was zeichnet deine Arbeit besonders aus?",
+    hint: "Optional — ein bis zwei Stichworte reichen und heben dein Profil ab.",
     placeholder: "z.B. Sauberkeit, Termintreue, Kundenkommunikation …",
   },
 ];

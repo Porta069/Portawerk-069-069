@@ -122,3 +122,89 @@ export interface User {
 export type ApiResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: string };
+
+// ─── Jobbörse, Angebote, Bewerbungen ─────────────────────────────────────────
+// Noch ohne Backend-Endpunkte — bedient von lib/jobsService.ts (Mock).
+
+/** Handwerksspezifische Rahmenbedingungen, die im Handwerk die Zusage entscheiden. */
+export interface JobConditions {
+  /** z.B. "Jeden Abend zuhause" | "Gelegentlich Montage" | "Dauermontage" */
+  montage: string;
+  /** Zählt die Anfahrt als Arbeitszeit? */
+  fahrzeitIstArbeitszeit: boolean;
+  /** Startet der Arbeitstag an der Haustür oder am Betrieb? */
+  startpunkt: "Haustür" | "Betrieb";
+  urlaubstage: number;
+  /** z.B. "Ab sofort" */
+  start: string;
+  /** Optional: Schicht, Notdienst, Rufbereitschaft … */
+  extras?: string[];
+}
+
+export interface Job {
+  id: string;
+  title: string;
+  employer: string;
+  /** Exakter GEWERKE-Wert — Brücke zum Profil des Kandidaten. */
+  gewerk: string;
+  city: string;
+  /** Luftlinie in km (Backend liefert später Routing). */
+  distanceKm: number;
+  /** Fahrzeit in Minuten mit dem Auto — die für Handwerker relevante Größe. */
+  travelMinutes: number;
+  salaryMin: number;
+  salaryMax: number;
+  /** Regionaler Marktschnitt fürs Gewerk — für die Einordnung. */
+  marketAvg?: number;
+  tags: string[];
+  conditions: JobConditions;
+  image: string;
+  /** Wurde die Stelle vom Matching empfohlen? */
+  recommended?: boolean;
+  /** Wie schnell der Betrieb üblicherweise antwortet (Tage). */
+  respondsInDays?: number;
+  /** Warum diese Stelle passt — konkrete Gründe aus dem Profil. */
+  matchReasons?: string[];
+}
+
+export type OfferStatus = "neu" | "angenommen" | "abgelehnt";
+
+/** Ein Betrieb bietet dem Handwerker aktiv eine Stelle an. */
+export interface JobOffer {
+  id: string;
+  job: Job;
+  /** Persönliche Nachricht des Betriebs. */
+  message: string;
+  contactPerson: string;
+  receivedAt: string;
+  status: OfferStatus;
+}
+
+export type ApplicationStatus =
+  | "gesendet"
+  | "gesehen"
+  | "im_gespraech"
+  | "abgelehnt"
+  | "zusage";
+
+export interface Application {
+  id: string;
+  job: Job;
+  status: ApplicationStatus;
+  updatedAt: string;
+}
+
+/** Ein konkreter, mit Nutzen beziffertet Schritt zur Profilvervollständigung. */
+export interface ProfileGap {
+  id: string;
+  label: string;
+  /** Wie viele zusätzliche Stellen die Angabe freischaltet. */
+  extraJobs: number;
+  /** Wohin der Klick führt. */
+  href: string;
+}
+
+export interface ProfileScore {
+  percent: number;
+  gaps: ProfileGap[];
+}

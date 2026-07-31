@@ -158,6 +158,8 @@ export default function RegisterFlow() {
             />
           </motion.div>
         </AnimatePresence>
+        {/* Foto bleibt bewusst im Hintergrund — es trägt die Stimmung, die
+            Schrift führt. */}
         <div
           className="absolute inset-0"
           style={{
@@ -192,12 +194,43 @@ export default function RegisterFlow() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               >
+                {/* Schritt-Zähler: groß, plakativ, mit durchlaufendem Glanz. */}
                 <span
-                  className="inline-flex items-center gap-2.5 text-[10px] font-semibold tracking-[0.22em] uppercase mb-5"
-                  style={{ color: "#E8A838" }}
+                  className="relative inline-flex items-center gap-3 overflow-hidden rounded-full pl-2.5 pr-5 py-2 mb-6"
+                  style={{
+                    background: "rgba(232,168,56,0.14)",
+                    border: "1px solid rgba(232,168,56,0.4)",
+                    backdropFilter: "blur(4px)",
+                  }}
                 >
-                  <span className="w-7 h-[2px] bg-accent" />
-                  Schritt {stepIndex + 1} von {CONTENT_STEPS}
+                  <span
+                    className="flex items-center justify-center rounded-full font-bold tabular-nums"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      background: "#E8A838",
+                      color: "#1A1A2E",
+                      width: 34,
+                      height: 34,
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {stepIndex + 1}
+                  </span>
+                  <span
+                    className="font-bold tracking-wide"
+                    style={{ fontFamily: "var(--font-display)", color: "#F6D08A", fontSize: "0.95rem" }}
+                  >
+                    von {CONTENT_STEPS}
+                  </span>
+                  {/* Glanz-Sweep */}
+                  <span
+                    aria-hidden="true"
+                    className="shimmer-glint absolute inset-y-0 -left-1/2 w-1/2 pointer-events-none"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent)",
+                    }}
+                  />
                 </span>
                 <h1
                   className="font-bold leading-[1.08] text-white mb-4"

@@ -27,9 +27,9 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  // Kartenkacheln: deutschsprachige OSM-Kacheln (tile.openstreetmap.de),
-  // dazu die internationalen OSM-/CARTO-Hosts als Rückfallebene.
-  "img-src 'self' data: blob: https://tile.openstreetmap.de https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
+  // Kartenkacheln ausschliesslich von tile.openstreetmap.de — deutsche
+  // Ortsnamen. Die internationalen Stile beschriften Staedte englisch.
+  "img-src 'self' data: blob: https://tile.openstreetmap.de",
   // router.project-osrm.org berechnet die Fahrtroute zur Arbeitsstelle.
   `connect-src 'self' ${apiOrigin} https://nominatim.openstreetmap.org https://router.project-osrm.org${
     isDev ? " ws://localhost:* http://localhost:*" : ""

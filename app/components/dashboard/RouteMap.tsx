@@ -15,6 +15,9 @@ import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet
 import L from "leaflet";
 import { Car, Loader2, Ruler, AlertCircle } from "lucide-react";
 import type { Job } from "@/lib/types";
+import {
+  GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
+} from "@/lib/mapConfig";
 
 function pin(letter: string, bg: string, fg: string) {
   return L.divIcon({
@@ -149,17 +152,15 @@ export default function RouteMap({ job }: { job: Job }) {
         <MapContainer
           center={[(job.startLat + job.lat) / 2, (job.startLng + job.lng) / 2]}
           zoom={9}
+          minZoom={MIN_ZOOM}
+          maxBounds={GERMANY_BOUNDS}
+          maxBoundsViscosity={1}
           scrollWheelZoom={false}
           zoomControl={false}
           attributionControl={false}
           style={{ height: 340, width: "100%", background: "#EFECE6" }}
         >
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            subdomains="abcd"
-            maxZoom={20}
-            className="pw-map-tiles"
-          />
+          <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
           {route && (
             <>
               {/* Schatten unter der Route für Kontrast auf hellen Flächen */}
@@ -184,7 +185,7 @@ export default function RouteMap({ job }: { job: Job }) {
         </MapContainer>
 
         <a
-          href="https://www.openstreetmap.org/copyright"
+          href={OSM_COPYRIGHT_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px]"

@@ -18,8 +18,9 @@ import { MapContainer, TileLayer, Marker, Circle, useMap, useMapEvents } from "r
 import L from "leaflet";
 import { Search, X, Loader2, Trash2, MapPin, Plus, Minus, Crosshair } from "lucide-react";
 import type { WorkLocation } from "@/lib/types";
-
-const GERMANY_CENTER: [number, number] = [51.163, 10.447];
+import {
+  GERMANY_CENTER, GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
+} from "@/lib/mapConfig";
 
 /** Gold-Pin mit weißem Ring und weichem Schlagschatten. */
 const markerIcon = L.divIcon({
@@ -317,6 +318,9 @@ export default function WorkLocationsMap({
         <MapContainer
           center={GERMANY_CENTER}
           zoom={6}
+          minZoom={MIN_ZOOM}
+          maxBounds={GERMANY_BOUNDS}
+          maxBoundsViscosity={1}
           scrollWheelZoom
           zoomControl={false}
           // Eigene Attribution unten — die Leaflet-Zeile (inkl. Flaggen-Präfix)
@@ -324,16 +328,7 @@ export default function WorkLocationsMap({
           attributionControl={false}
           style={{ height: 400, width: "100%", background: "#EFECE6" }}
         >
-          <TileLayer
-            // CARTO Positron: der minimalste helle Basiskartenstil. Kein
-            // Autobahn-Orange, keine grellen Flächen, dünne Straßen — nah an der
-            // Anmutung von Apple Karten. Ortsnamen kommen aus dem lokalen
-            // OSM-name-Tag, in Deutschland also auf Deutsch.
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            subdomains="abcd"
-            maxZoom={20}
-            className="pw-map-tiles"
-          />
+          <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
           <ClickHandler onClick={handleMapClick} />
           <FlyTo target={flyTarget} />
           <ZoomControls />
@@ -357,7 +352,7 @@ export default function WorkLocationsMap({
 
         {/* Pflichtangabe nach ODbL — dezent, ohne Leaflet-Werbung. */}
         <a
-          href="https://www.openstreetmap.org/copyright"
+          href={OSM_COPYRIGHT_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"

@@ -12,6 +12,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { warmup } from "@/lib/api";
 import type { AuthSession, PublicUser } from "@/lib/api";
 
 const STORAGE_KEY = "portawerk_session_v1";
@@ -34,6 +35,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    // Backend früh aufwecken (Render-Free schläft) → weniger Kaltstart-Fehler.
+    warmup();
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {

@@ -74,42 +74,74 @@ function extractMessage(json: unknown): string | null {
   return null;
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const backoff = (attempt: number) => Math.min(1500 * 2 ** attempt, 8000);
+
+/** Wärmt das (evtl. schlafende) Backend auf — fire-and-forget, ignoriert Fehler. */
+export async function warmup(): Promise<void> {
+  try {
+    await fetch(`${API_BASE_URL}/health`, { cache: "no-store" });
+  } catch {
+    /* egal */
+  }
+}
+
 async function request<T>(
   path: string,
   opts: {
     method?: "GET" | "POST" | "DELETE" | "PATCH";
     body?: unknown;
     token?: string;
+    /** Anzahl Wiederholungen bei Netzwerkfehler/502-503-504 (Kaltstart). */
+    retries?: number;
   } = {}
 ): Promise<ApiResult<T>> {
-  const { method = "GET", body, token } = opts;
-  try {
-    const res = await fetch(`${API_BASE_URL}${path}`, {
-      method,
-      headers: {
-        ...(body ? { "Content-Type": "application/json" } : {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
+  const { method = "GET", body, token, retries = 3 } = opts;
+  let sawNetworkError = false;
 
-    if (res.status === 204) return { ok: true, data: undefined as T };
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${API_BASE_URL}${path}`, {
+        method,
+        headers: {
+          ...(body ? { "Content-Type": "application/json" } : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
 
-    const text = await res.text();
-    const json = text ? JSON.parse(text) : null;
+      // Render-Kaltstart liefert kurz 502/503/504 (ohne App-Antwort) → erneut versuchen.
+      if ([502, 503, 504].includes(res.status) && attempt < retries) {
+        await sleep(backoff(attempt));
+        continue;
+      }
 
-    if (!res.ok) {
-      const raw = extractMessage(json) ?? `Fehler (${res.status})`;
-      return { ok: false, error: translate(raw), status: res.status };
+      if (res.status === 204) return { ok: true, data: undefined as T };
+
+      const text = await res.text();
+      const json = text ? JSON.parse(text) : null;
+
+      if (!res.ok) {
+        const raw = extractMessage(json) ?? `Fehler (${res.status})`;
+        return { ok: false, error: translate(raw), status: res.status };
+      }
+      return { ok: true, data: json as T };
+    } catch {
+      // fetch hat geworfen (Netzwerk/CORS während Kaltstart) → erneut versuchen.
+      sawNetworkError = true;
+      if (attempt < retries) {
+        await sleep(backoff(attempt));
+        continue;
+      }
     }
-    return { ok: true, data: json as T };
-  } catch {
-    return {
-      ok: false,
-      error:
-        "Verbindung zum Server fehlgeschlagen. Bitte prüfe deine Internetverbindung und versuche es erneut.",
-    };
   }
+
+  return {
+    ok: false,
+    error: sawNetworkError
+      ? "Der Server war kurz nicht erreichbar (er startet vielleicht gerade). Bitte einen Moment warten und erneut versuchen."
+      : "Verbindung zum Server fehlgeschlagen. Bitte erneut versuchen.",
+  };
 }
 
 export const api = {
@@ -118,7 +150,7 @@ export const api = {
   startRegistration() {
     return request<{ draftToken: string; progress: WizardProgress }>(
       "/auth/registration/start",
-      { method: "POST", body: {} }
+      { method: "POST", body: {}, retries: 7 }
     );
   },
 
@@ -144,6 +176,7 @@ export const api = {
     return request<AuthSession>("/auth/registration/complete", {
       method: "POST",
       body: payload,
+      retries: 7,
     });
   },
 
@@ -153,6 +186,7 @@ export const api = {
     return request<AuthSession>("/auth/login", {
       method: "POST",
       body: { email, password },
+      retries: 7,
     });
   },
 
@@ -225,6 +259,7 @@ export const api = {
     return request<{ deliverable: boolean; reason: string }>("/auth/email/check", {
       method: "POST",
       body: { email },
+      retries: 0,
     });
   },
 

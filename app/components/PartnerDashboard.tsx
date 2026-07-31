@@ -2,18 +2,22 @@
 
 // ─── Affiliate-/Partner-Dashboard (Frontend, Demo-Daten) ──────────────────────
 // Zahlen sind Platzhalter. Sobald das Backend steht, werden sie aus den
-// Partner-Endpunkten (Referrals, Auszahlungen) geladen.
+// Partner-Endpunkten (Referrals, Auszahlungen, Rangliste) geladen.
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Hammer, Copy, Check, Share2, Wallet, Users, BadgeCheck, TrendingUp,
-  UserPlus, Clock, LogOut,
+  Hammer, Copy, Check, Share2, Users, BadgeCheck, TrendingUp,
+  UserPlus, Clock, LogOut, ArrowUpRight, Trophy, Medal, Crown,
 } from "lucide-react";
+import EarningsChart from "./EarningsChart";
 import Visitenkarte from "./Visitenkarte";
 
+const NAME = "Max";
 const LINK = "portawerk.de/r/max";
+const SLUG = "max";
 const fmt = (n: number) => n.toLocaleString("de-DE");
 
 // Monats-Einnahmen (Demo).
@@ -45,16 +49,36 @@ const REFERRALS: { name: string; gewerk: string; datum: string; status: Status; 
   { name: "Erkan D.", gewerk: "Fliesenleger", datum: "24.05.", status: "geworben", euro: 0 },
 ];
 
+// Rangliste — nach erfolgreichen Vermittlungen sortiert, ohne Zahlen zu zeigen.
+const RANGLISTE = [
+  { rang: 1, name: "Sarah K." },
+  { rang: 2, name: "Tobias W." },
+  { rang: 3, name: "Mehmet A." },
+  { rang: 4, name: "Julia B." },
+  { rang: 5, name: "Andreas P." },
+  { rang: 6, name: "Nina H." },
+];
+const MEIN_RANG = 12;
+
+const initials = (n: string) => n.split(" ").map((p) => p[0]).join("");
+
+function RankBadge({ rang }: { rang: number }) {
+  if (rang === 1) return <Crown className="w-4 h-4" style={{ color: "#E8A838" }} strokeWidth={2.2} fill="#E8A838" />;
+  if (rang === 2) return <Medal className="w-4 h-4" style={{ color: "#9CA3AF" }} strokeWidth={2.2} />;
+  if (rang === 3) return <Medal className="w-4 h-4" style={{ color: "#B47B18" }} strokeWidth={2.2} />;
+  return <span className="text-muted text-sm font-bold tabular-nums w-4 text-center">{rang}</span>;
+}
+
 export default function PartnerDashboard() {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
-  const [hover, setHover] = useState<number | null>(null);
+  const [showLogout, setShowLogout] = useState(false);
 
   const geworben = 42;
   const vermittelt = 31;
   const verdient = EINNAHMEN.reduce((s, d) => s + d.v, 0);
   const conversion = Math.round((vermittelt / geworben) * 100);
-  const maxV = Math.max(...EINNAHMEN.map((d) => d.v));
-  const yTop = Math.ceil(maxV / 300) * 300; // schöne Obergrenze
+  const letzterMonat = EINNAHMEN[EINNAHMEN.length - 1].v;
 
   const copy = () => {
     navigator.clipboard?.writeText("https://" + LINK);
@@ -67,52 +91,94 @@ export default function PartnerDashboard() {
   };
 
   const kpis = [
-    { label: "Verdient gesamt", value: `${fmt(verdient)} €`, icon: Wallet, accent: true, sub: "in den letzten 6 Monaten" },
     { label: "Geworben", value: fmt(geworben), icon: Users, sub: "Kandidaten insgesamt" },
     { label: "Vermittelt", value: fmt(vermittelt), icon: BadgeCheck, sub: "erfolgreich in den Job" },
-    { label: "Conversion-Rate", value: `${conversion} %`, icon: TrendingUp, sub: "der Geworbenen", bar: conversion },
+    { label: "Conversion-Rate", value: `${conversion} %`, icon: TrendingUp, sub: "deiner Geworbenen", bar: conversion },
   ];
 
   return (
     <div className="min-h-screen" style={{ background: "var(--color-surface)" }}>
-      {/* Kopf */}
-      <div className="bg-primary">
-        <div className="max-w-6xl mx-auto px-6 lg:px-12 h-[68px] flex items-center justify-between">
-          <Link href="/verdienen" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center transition-transform group-hover:scale-95">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
-            <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
-          </Link>
-          <Link href="/verdienen" className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors">
-            <LogOut className="w-4 h-4" /> Abmelden
-          </Link>
-        </div>
-      </div>
+      {/* ══ Hero (Navy, full-bleed) ══ */}
+      <header className="relative overflow-hidden bg-primary text-white">
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
+        <div className="absolute -top-24 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.20) 0%, transparent 65%)" }} />
 
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-10">
-        {/* Begrüßung + Link */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-          <div>
-            <h1 className="text-primary font-bold text-3xl md:text-4xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-              Hi, Max 👋
-            </h1>
-            <p className="text-muted mt-2">Dein Überblick — alle Zahlen auf einen Blick.</p>
-          </div>
-          <div className="flex items-stretch rounded-full border border-border bg-white overflow-hidden max-w-full">
-            <span className="flex items-center px-4 text-primary font-semibold text-sm truncate">{LINK}</span>
-            <button onClick={copy} className="shrink-0 px-4 bg-accent text-primary text-sm font-semibold inline-flex items-center gap-1.5 hover:bg-amber-400 transition-colors">
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}{copied ? "Kopiert" : "Kopieren"}
-            </button>
-            <button onClick={share} aria-label="Teilen" className="shrink-0 px-4 border-l border-border text-primary hover:bg-surface transition-colors">
-              <Share2 className="w-4 h-4" />
+        <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
+          {/* Topbar */}
+          <div className="h-[68px] flex items-center justify-between">
+            <Link href="/verdienen" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 bg-accent flex items-center justify-center rounded-md transition-transform group-hover:scale-95">
+                <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
+              </div>
+              <span className="text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
+              <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
+            </Link>
+            <button
+              onClick={() => setShowLogout(true)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
+            >
+              <LogOut className="w-4 h-4" /> Abmelden
             </button>
           </div>
-        </div>
 
-        {/* KPI-Kacheln */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {/* Begrüßung + Held-Zahl + Link */}
+          <div className="pt-8 pb-24 grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-14 items-center">
+            {/* Links */}
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+              <h1 className="font-bold leading-[1.05] mb-7" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4vw, 2.7rem)" }}>
+                Hi, {NAME} <span className="inline-block">👋</span>
+              </h1>
+
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/45 mb-2">Bereits verdient</p>
+              <div className="flex items-end gap-4 flex-wrap">
+                <span
+                  className="relative inline-flex overflow-hidden leading-none"
+                  style={{ filter: "drop-shadow(0 0 42px rgba(232,168,56,0.35))" }}
+                >
+                  <span className="relative z-0 font-black text-accent" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.2rem, 8.5vw, 5rem)" }}>
+                    {fmt(verdient)} €
+                  </span>
+                  <span aria-hidden className="shimmer-glint pointer-events-none absolute inset-y-0 left-0 z-10 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent" />
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#22C55E]/15 text-[#4ADE80] text-sm font-bold px-3 py-1.5 mb-2">
+                  <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} /> +{fmt(letzterMonat)} € im Juli
+                </span>
+              </div>
+              <p className="text-white/50 text-sm mt-4">in den letzten 6 Monaten · nächste Auszahlung am 01.08.</p>
+            </motion.div>
+
+            {/* Rechts: Empfehlungs-Link */}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm p-6"
+            >
+              <p className="text-[11px] uppercase tracking-[0.18em] text-accent font-semibold mb-3">Dein Empfehlungs-Link</p>
+              <div className="rounded-xl bg-white/[0.06] border border-white/10 px-4 py-3.5 mb-4">
+                <p className="text-lg sm:text-xl font-semibold tracking-tight break-all">
+                  <span className="text-white/45">portawerk.de/r/</span><span className="text-white">{SLUG}</span>
+                </p>
+              </div>
+              <div className="flex gap-2.5">
+                <button onClick={copy} className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-accent text-primary font-bold py-3 text-sm hover:bg-amber-400 transition-colors">
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}{copied ? "Kopiert" : "Kopieren"}
+                </button>
+                <button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-white font-semibold px-5 py-3 text-sm hover:bg-white/10 transition-colors">
+                  <Share2 className="w-4 h-4" /> Teilen
+                </button>
+              </div>
+              <p className="text-white/40 text-xs mt-4 flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-accent" /> 100 € pro erfolgreicher Vermittlung
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </header>
+
+      {/* ══ Body ══ */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 pb-14">
+        {/* KPI-Kacheln — überlappen den Hero */}
+        <div className="relative z-10 -mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           {kpis.map((k, i) => {
             const Icon = k.icon;
             return (
@@ -120,14 +186,16 @@ export default function PartnerDashboard() {
                 key={k.label}
                 initial={{ y: 16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="bg-white rounded-2xl border border-border p-5"
+                transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
+                className="bg-white rounded-2xl border border-border p-5 shadow-[0_18px_40px_-24px_rgba(26,26,46,0.35)]"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-muted text-xs font-semibold uppercase tracking-wider">{k.label}</span>
-                  <Icon className="w-4 h-4 text-accent" strokeWidth={2} />
+                  <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--color-accent-soft)" }}>
+                    <Icon className="w-4 h-4 text-accent" strokeWidth={2} />
+                  </span>
                 </div>
-                <p className={`font-black leading-none ${k.accent ? "text-accent" : "text-primary"}`} style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 5vw, 2.1rem)" }}>
+                <p className="font-black leading-none text-primary" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 5vw, 2.2rem)" }}>
                   {k.value}
                 </p>
                 {typeof k.bar === "number" && (
@@ -144,55 +212,20 @@ export default function PartnerDashboard() {
         <div className="grid lg:grid-cols-5 gap-6">
           {/* Einnahmen-Chart */}
           <div className="lg:col-span-3 bg-white rounded-2xl border border-border p-6">
-            <div className="flex items-baseline justify-between mb-6">
-              <h2 className="text-primary font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>Deine Einnahmen</h2>
-              <span className="text-muted text-xs">pro Monat · €</span>
-            </div>
-
-            <div className="relative" style={{ height: 200 }}>
-              {/* Gridlines + Y-Beschriftung */}
-              {[0, 0.5, 1].map((g) => (
-                <div key={g} className="absolute left-0 right-0 flex items-center gap-2" style={{ bottom: `${g * 100}%` }}>
-                  <span className="text-[10px] text-muted w-8 text-right tabular-nums" style={{ fontVariantNumeric: "tabular-nums" }}>{fmt(g * yTop)}</span>
-                  <div className="flex-1 border-t border-border/70" />
-                </div>
-              ))}
-              {/* Balken */}
-              <div className="absolute inset-0 pl-10 flex items-end justify-between gap-2 sm:gap-3">
-                {EINNAHMEN.map((d, i) => (
-                  <div
-                    key={d.m}
-                    className="flex-1 h-full flex flex-col justify-end items-center relative"
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
-                  >
-                    {hover === i && (
-                      <div className="absolute -top-1 z-10 -translate-y-full whitespace-nowrap rounded-lg bg-primary text-white text-xs font-semibold px-2.5 py-1.5 shadow-lg">
-                        {d.m}: {fmt(d.v)} €
-                      </div>
-                    )}
-                    <div
-                      className="w-full rounded-t-md transition-all duration-200"
-                      style={{
-                        height: `${(d.v / yTop) * 100}%`,
-                        background: hover === null || hover === i ? "#E8A838" : "rgba(232,168,56,0.4)",
-                        maxWidth: 46,
-                        marginInline: "auto",
-                      }}
-                    />
-                  </div>
-                ))}
+            <div className="flex items-baseline justify-between mb-4">
+              <div>
+                <h2 className="text-primary font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>Deine Einnahmen</h2>
+                <p className="text-muted text-xs mt-0.5">Verlauf der letzten 6 Monate</p>
+              </div>
+              <div className="text-right">
+                <p className="text-primary font-black text-xl leading-none" style={{ fontFamily: "var(--font-display)" }}>{fmt(verdient)} €</p>
+                <p className="text-[#15803D] text-xs font-semibold mt-1">▲ Aufwärtstrend</p>
               </div>
             </div>
-            {/* X-Beschriftung */}
-            <div className="pl-10 flex justify-between gap-2 sm:gap-3 mt-2">
-              {EINNAHMEN.map((d) => (
-                <span key={d.m} className="flex-1 text-center text-[11px] text-muted">{d.m}</span>
-              ))}
-            </div>
+            <EarningsChart data={EINNAHMEN} />
           </div>
 
-          {/* Empfehlungen-Tabelle */}
+          {/* Empfehlungen-Liste */}
           <div className="lg:col-span-2 bg-white rounded-2xl border border-border p-6">
             <h2 className="text-primary font-bold text-lg mb-5" style={{ fontFamily: "var(--font-display)" }}>Deine Empfehlungen</h2>
             <div className="flex flex-col divide-y divide-border">
@@ -202,7 +235,7 @@ export default function PartnerDashboard() {
                 return (
                   <div key={r.name} className="flex items-center gap-3 py-3">
                     <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "var(--color-accent-soft)" }}>
-                      <span className="text-[11px] font-bold" style={{ color: "#B47B18" }}>{r.name.split(" ").map((p) => p[0]).join("")}</span>
+                      <span className="text-[11px] font-bold" style={{ color: "#B47B18" }}>{initials(r.name)}</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-primary text-sm font-semibold truncate">{r.name}</p>
@@ -217,6 +250,40 @@ export default function PartnerDashboard() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </div>
+
+        {/* ══ Rangliste ══ */}
+        <div className="mt-6 bg-white rounded-2xl border border-border p-6 sm:p-8">
+          <div className="flex items-center gap-3 mb-1">
+            <span className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "var(--color-accent-soft)" }}>
+              <Trophy className="w-5 h-5 text-accent" strokeWidth={2} />
+            </span>
+            <h2 className="text-primary font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>Rangliste</h2>
+          </div>
+          <p className="text-muted text-xs mb-6 ml-12">Die stärksten Vermittler dieses Monats — sei ganz oben dabei.</p>
+
+          <div className="flex flex-col">
+            {RANGLISTE.map((p) => (
+              <div key={p.rang} className="flex items-center gap-3 py-2.5 border-t border-border first:border-t-0">
+                <span className="w-6 flex justify-center"><RankBadge rang={p.rang} /></span>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#F1F1EF" }}>
+                  <span className="text-[11px] font-bold text-muted">{initials(p.name)}</span>
+                </div>
+                <span className="text-primary text-sm font-semibold flex-1 truncate">{p.name}</span>
+              </div>
+            ))}
+
+            {/* Trenner + eigene Position */}
+            <div className="flex items-center gap-2 py-2 pl-6 text-muted/60 text-xs tracking-widest select-none">· · ·</div>
+            <div className="flex items-center gap-3 py-2.5 rounded-xl px-3 -mx-1" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(232,168,56,0.35)" }}>
+              <span className="w-6 flex justify-center"><span className="text-sm font-bold tabular-nums" style={{ color: "#B47B18" }}>{MEIN_RANG}</span></span>
+              <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-accent">
+                <span className="text-[11px] font-bold text-primary">{initials(NAME + " M.")}</span>
+              </div>
+              <span className="text-primary text-sm font-bold flex-1 truncate">{NAME} M. <span className="text-accent font-semibold">· Du</span></span>
+              <span className="text-xs font-semibold" style={{ color: "#B47B18" }}>Noch 4 Vermittlungen bis Platz 11</span>
             </div>
           </div>
         </div>
@@ -243,6 +310,45 @@ export default function PartnerDashboard() {
           Demo-Daten. Sobald das Backend steht, siehst du hier deine echten Zahlen in Echtzeit.
         </p>
       </div>
+
+      {/* ══ Abmelde-Bestätigung ══ */}
+      <AnimatePresence>
+        {showLogout && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-primary/60 backdrop-blur-sm" onClick={() => setShowLogout(false)} />
+            <motion.div
+              initial={{ scale: 0.94, opacity: 0, y: 8 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 8 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative bg-white rounded-2xl border border-border shadow-2xl p-7 max-w-sm w-full text-center"
+            >
+              <span className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "var(--color-accent-soft)" }}>
+                <LogOut className="w-5 h-5 text-accent" strokeWidth={2} />
+              </span>
+              <h3 className="text-primary font-bold text-xl mb-2" style={{ fontFamily: "var(--font-display)" }}>Wirklich abmelden?</h3>
+              <p className="text-muted text-sm mb-6">Du verlässt dein Partner-Dashboard und kommst zurück zur Startseite.</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLogout(false)}
+                  className="flex-1 rounded-full border border-border text-primary font-semibold py-3 text-sm hover:border-accent transition-colors"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={() => router.push("/verdienen")}
+                  className="flex-1 rounded-full bg-primary text-white font-semibold py-3 text-sm hover:bg-accent hover:text-primary transition-colors"
+                >
+                  Abmelden
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

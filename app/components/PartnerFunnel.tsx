@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { ProgressBar, StepIndicators, type StepDef } from "./ProgressBar";
 import OtpInput from "./OtpInput";
+import PasswordStrength from "./PasswordStrength";
+import { evaluatePassword } from "@/lib/password";
 
 const STEP_DEFS: StepDef[] = [
   { code: "01", label: "Deine Daten" },
@@ -39,13 +41,6 @@ const slugify = (s: string) =>
 const input =
   "w-full rounded-xl border border-border bg-white px-4 py-3 text-primary text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 transition-colors placeholder:text-muted/70";
 const label = "block text-primary text-sm font-medium mb-1.5";
-
-function pwStrength(pw: string) {
-  if (pw.length < 10) return { pct: Math.min(pw.length / 10, 1) * 40, label: "Zu kurz", color: "#EF4444" };
-  if (pw.length < 12) return { pct: 60, label: "Ok", color: "#E8A838" };
-  if (pw.length < 16) return { pct: 80, label: "Gut", color: "#22C55E" };
-  return { pct: 100, label: "Stark", color: "#22C55E" };
-}
 
 export default function PartnerFunnel() {
   const [step, setStep] = useState(0); // 0..2 Inhalt, 3 = Erfolg
@@ -102,14 +97,13 @@ export default function PartnerFunnel() {
     if (step === 2 && !otpRequested.current) { otpRequested.current = true; sendOtp(); }
   }, [step]);
 
-  const strength = pwStrength(passwort);
-
   const nextFromData = () => {
     setErr(null);
     if (!name.trim()) return setErr("Bitte gib deinen Namen ein.");
     if (telefon.replace(/\D/g, "").length < 6) return setErr("Bitte gib eine gültige Telefonnummer ein.");
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErr("Die E-Mail-Adresse sieht nicht gültig aus.");
-    if (passwort.length < 10) return setErr("Dein Passwort braucht mindestens 10 Zeichen.");
+    if (!evaluatePassword(passwort).valid)
+      return setErr("Dein Passwort erfüllt noch nicht alle Kriterien (siehe Liste).");
     if (!consent) return setErr("Bitte stimme der Verarbeitung deiner Daten zu.");
     // MOCK: später POST /partner/register/start -> { draftToken }
     setStep(1);
@@ -229,14 +223,7 @@ export default function PartnerFunnel() {
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                     <input id="p-pw" type="password" className={input + " pl-10"} value={passwort} onChange={(e) => setPasswort(e.target.value)} placeholder="Mind. 10 Zeichen" />
                   </div>
-                  {passwort && (
-                    <div className="flex items-center gap-3 mt-2">
-                      <div className="flex-1 h-1.5 rounded-full bg-border overflow-hidden">
-                        <div className="h-full rounded-full transition-all duration-300" style={{ width: `${strength.pct}%`, background: strength.color }} />
-                      </div>
-                      <span className="text-xs font-medium" style={{ color: strength.color }}>{strength.label}</span>
-                    </div>
-                  )}
+                  <PasswordStrength password={passwort} />
                 </div>
                 <label className="flex items-start gap-3 mt-1 cursor-pointer">
                   <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#E8A838] flex-shrink-0" />

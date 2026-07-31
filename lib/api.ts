@@ -166,6 +166,14 @@ export const api = {
     return request<void>("/auth/logout", { method: "POST", token });
   },
 
+  /** POST /auth/email/check — Live-Prüfung (Syntax + MX-Record). */
+  checkEmail(email: string) {
+    return request<{ deliverable: boolean; reason: string }>("/auth/email/check", {
+      method: "POST",
+      body: { email },
+    });
+  },
+
   /** POST /auth/password/forgot */
   forgotPassword(email: string) {
     return request<{ status: string }>("/auth/password/forgot", {

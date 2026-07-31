@@ -4,6 +4,7 @@
 // Rendert eine einzelne Frage passend zu ihrem Typ. Wird sowohl von der
 // Umfrage (Schritt 1) als auch von den KI-Profilfragen (Schritt 4) genutzt.
 
+import { useEffect } from "react";
 import { PillSelect, CheckCard, Slider, TextArea } from "./ui";
 import type { AnswerValue, Question } from "@/lib/types";
 
@@ -19,6 +20,15 @@ export default function QuestionComponent({
   index?: number;
 }) {
   const q = question;
+
+  // Slider: Default sofort als Antwort setzen, damit ein Pflicht-Slider den
+  // Schritt nicht blockiert, wenn der Regler (noch) nicht bewegt wurde.
+  useEffect(() => {
+    if (q.type === "slider" && typeof value !== "number") {
+      onChange(q.min ?? 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q.id]);
 
   return (
     <div>

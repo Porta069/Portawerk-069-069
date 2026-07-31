@@ -10,19 +10,27 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hammer, Settings, LogOut, Menu, X } from "lucide-react";
+import { Hammer, Settings, LogOut, Menu, X, ArrowUpRight } from "lucide-react";
 
 export interface NavBadges {
   angebote?: number;
   bewerbungen?: number;
 }
 
-const AREAS: { href: string; label: string; key?: keyof NavBadges }[] = [
+const AREAS: {
+  href: string;
+  label: string;
+  key?: keyof NavBadges;
+  /** Verlaesst den Dashboard-Bereich (eigener Login). */
+  external?: boolean;
+}[] = [
   { href: "/dashboard", label: "Übersicht" },
   { href: "/dashboard/jobboerse", label: "Jobbörse" },
   { href: "/dashboard/angebote", label: "Angebote", key: "angebote" },
   { href: "/dashboard/bewerbungen", label: "Bewerbungen", key: "bewerbungen" },
-  { href: "/verdienen/dashboard", label: "Verdienen" },
+  // Fuehrt bewusst auf die oeffentliche Verdienen-Sektion: das Partner-
+  // Programm hat einen eigenen Login, getrennt vom Handwerker-Konto.
+  { href: "/verdienen", label: "Verdienen", external: true },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -83,6 +91,9 @@ export default function DashboardNav({
                 >
                   {a.label}
                   <Badge count={count} />
+                  {a.external && (
+                    <ArrowUpRight className="inline-block w-3.5 h-3.5 ml-1 -mt-0.5 opacity-60" />
+                  )}
                   {active && <span className="absolute left-4 right-4 -bottom-0.5 h-[2px] bg-accent" />}
                 </Link>
               );
@@ -143,6 +154,9 @@ export default function DashboardNav({
                   >
                     {a.label}
                     <Badge count={count} />
+                    {a.external && (
+                      <ArrowUpRight className="inline-block w-4 h-4 ml-1 -mt-0.5 opacity-60" />
+                    )}
                   </Link>
                 );
               })}

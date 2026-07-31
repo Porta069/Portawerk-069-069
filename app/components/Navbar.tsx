@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Hammer, Menu, X } from "lucide-react";
+import { Hammer, Menu, X, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/app/context/AuthContext";
 
 // Drei Zielgruppen-Welten, umschaltbar über die Kopfleiste.
 const AUDIENCES = [
@@ -50,6 +51,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const cta = ctaFor(pathname);
+
+  // Angemeldete Handwerker sollen jederzeit zurueck in ihren Bereich wechseln
+  // koennen — sonst ist die Verdienen-Sektion eine Sackgasse.
+  const { user, hydrated } = useAuth();
+  const showDashboard = hydrated && !!user && !pathname.startsWith("/dashboard");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -100,12 +106,22 @@ export default function Navbar() {
 
           {/* Konto-Aktionen (kontextabhängig) */}
           <div className="hidden lg:flex items-center gap-5 flex-shrink-0">
-            <Link
-              href={cta.login}
-              className="text-white/55 hover:text-white text-sm transition-colors duration-200"
-            >
-              {cta.loginLabel}
-            </Link>
+            {showDashboard ? (
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 text-white/55 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Meine Bewerbungen
+              </Link>
+            ) : (
+              <Link
+                href={cta.login}
+                className="text-white/55 hover:text-white text-sm transition-colors duration-200"
+              >
+                {cta.loginLabel}
+              </Link>
+            )}
             <Link
               href={cta.href}
               className="bg-accent text-primary text-sm font-semibold px-5 py-2.5 hover:bg-amber-400 transition-colors duration-200 whitespace-nowrap"
@@ -150,13 +166,24 @@ export default function Navbar() {
                 );
               })}
               <div className="h-px bg-white/10 my-3" />
-              <Link
-                href={cta.login}
-                onClick={() => setMobileOpen(false)}
-                className="py-2 text-base text-white/75 hover:text-white transition-colors"
-              >
-                {cta.loginLabel}
-              </Link>
+              {showDashboard ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center gap-2 py-2 text-base text-white/75 hover:text-white transition-colors"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Meine Bewerbungen
+                </Link>
+              ) : (
+                <Link
+                  href={cta.login}
+                  onClick={() => setMobileOpen(false)}
+                  className="py-2 text-base text-white/75 hover:text-white transition-colors"
+                >
+                  {cta.loginLabel}
+                </Link>
+              )}
               <Link
                 href={cta.href}
                 onClick={() => setMobileOpen(false)}

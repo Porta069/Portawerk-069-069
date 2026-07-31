@@ -48,7 +48,10 @@ export function AffiliateTile({
         </h2>
         <p className="text-[13.5px] leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.5)" }}>
           Du kennst jemanden, der wechseln will? Teil deinen persönlichen Link — sobald
-          er über dich einen Job findet, bekommst du die Prämie.
+          er über dich einen Job findet, bekommst du die Prämie.{" "}
+          <span style={{ color: "rgba(255,255,255,0.38)" }}>
+            Das Partnerprogramm hat einen eigenen Login.
+          </span>
         </p>
 
         <div className="grid grid-cols-3 gap-2 mb-5">
@@ -72,7 +75,7 @@ export function AffiliateTile({
         </div>
 
         <Link
-          href="/verdienen/dashboard"
+          href="/verdienen"
           className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
             background: "#E8A838",
@@ -81,7 +84,7 @@ export function AffiliateTile({
             boxShadow: "0 14px 28px -14px rgba(232,168,56,0.9)",
           }}
         >
-          Link teilen
+          Zum Empfehlungsprogramm
           <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
         </Link>
       </div>
@@ -132,7 +135,7 @@ export function AffiliateNudge({
         </p>
       </div>
       <Link
-        href="/verdienen/dashboard"
+        href="/verdienen"
         className="group inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
         style={{ background: "#1A1A2E", color: "#FFFFFF", fontFamily: "var(--font-display)" }}
       >

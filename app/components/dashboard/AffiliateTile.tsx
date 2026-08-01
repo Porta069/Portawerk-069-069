@@ -75,7 +75,7 @@ export function AffiliateTile({
         </div>
 
         <Link
-          href="/verdienen"
+          href="/dashboard/verdienen"
           className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
             background: "#E8A838",
@@ -135,7 +135,7 @@ export function AffiliateNudge({
         </p>
       </div>
       <Link
-        href="/verdienen"
+        href="/dashboard/verdienen"
         className="group inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
         style={{ background: "#1A1A2E", color: "#FFFFFF", fontFamily: "var(--font-display)" }}
       >

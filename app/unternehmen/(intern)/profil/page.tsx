@@ -59,6 +59,15 @@ function resizeLogo(file: File, max = 320): Promise<string> {
   });
 }
 
+/** Pflichtfelder des Unternehmensprofils. */
+function fieldErrors(p: EmployerProfile): Partial<Record<keyof EmployerProfile, string>> {
+  const e: Partial<Record<keyof EmployerProfile, string>> = {};
+  if (!p.firmenname.trim()) e.firmenname = "Ohne Firmennamen erscheint Ihr Angebot namenlos.";
+  if (!/^\d{5}$/.test(p.plz)) e.plz = "Fünfstellige Postleitzahl — sie steuert die Kandidatensuche.";
+  if (!p.ort.trim()) e.ort = "Bitte den Ort angeben.";
+  return e;
+}
+
 const inputCls =
   "w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-primary/25";
 const inputStyle = { border: "1.5px solid #E9E7E1" } as const;
@@ -67,10 +76,12 @@ function Label({
   children,
   hint,
   optional,
+  required,
 }: {
   children: React.ReactNode;
   hint?: string;
   optional?: boolean;
+  required?: boolean;
 }) {
   return (
     <label className="block mb-2">
@@ -79,6 +90,7 @@ function Label({
         style={{ color: "rgba(26,26,46,0.45)" }}
       >
         {children}
+        {required && <span style={{ color: "#EF4444" }}>*</span>}
         {optional && (
           <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(26,26,46,0.32)" }}>
             (optional)
@@ -146,6 +158,8 @@ export default function EmployerProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [logoBusy, setLogoBusy] = useState(false);
   const [logoError, setLogoError] = useState<string | null>(null);
+  /** Erst nach einem Speicherversuch werden Pflichtfelder markiert. */
+  const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
     getEmployerProfile().then((res) => {
@@ -198,6 +212,23 @@ export default function EmployerProfilePage() {
 
   const save = async () => {
     if (!p) return;
+
+    // Pflichtfelder pruefen — ohne Firmenname und Standort kann weder das
+    // Angebot noch die Kandidatensuche sinnvoll arbeiten.
+    const errs = fieldErrors(p);
+    if (Object.keys(errs).length > 0) {
+      setShowErrors(true);
+      setError("Bitte füllen Sie die rot markierten Pflichtfelder aus.");
+      // Zum ersten fehlenden Feld springen, es kann ausserhalb des Bilds liegen.
+      requestAnimationFrame(() => {
+        document
+          .querySelector<HTMLElement>("[data-invalid='true']")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      return;
+    }
+
+    setShowErrors(false);
     setSaving(true);
     setError(null);
     const res = await saveEmployerProfile(p);
@@ -218,6 +249,17 @@ export default function EmployerProfilePage() {
 
   const score = profileScore(p);
   const gaps = profileGaps(p);
+  const errs = showErrors ? fieldErrors(p) : {};
+
+  /** Rahmen, Aufleuchten und Sprungmarke fuer ein Pflichtfeld. */
+  const fieldProps = (key: keyof EmployerProfile) => {
+    const bad = !!errs[key];
+    return {
+      "data-invalid": bad ? "true" : undefined,
+      className: `${inputCls}${bad ? " pw-field-error" : ""}`,
+      style: { border: `1.5px solid ${bad ? "#EF4444" : "#E9E7E1"}` },
+    };
+  };
 
   return (
     <div>
@@ -270,17 +312,21 @@ export default function EmployerProfilePage() {
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] gap-6 items-start">
         {/* ══ Bearbeiten ══ */}
         <div className="space-y-5">
-          <Section title="Grunddaten" desc="Name und Kurzbeschreibung stehen im Angebot ganz oben.">
+          <Section title="Grunddaten" desc="Name und Kurzbeschreibung stehen im Angebot ganz oben. Mit * markierte Felder sind Pflicht.">
             <div className="space-y-4">
               <div>
-                <Label>Firmenname</Label>
+                <Label required>Firmenname</Label>
                 <input
-                  className={inputCls}
-                  style={inputStyle}
+                  {...fieldProps("firmenname")}
                   value={p.firmenname}
                   onChange={(e) => set("firmenname", e.target.value)}
                   placeholder="Muster Elektrotechnik GmbH"
                 />
+                {errs.firmenname && (
+                  <p className="text-[12.5px] mt-1.5" style={{ color: "#EF4444" }}>
+                    {errs.firmenname}
+                  </p>
+                )}
               </div>
               <div>
                 <Label optional hint="Ein Satz, der Ihren Betrieb beschreibt">Kurzbeschreibung</Label>
@@ -329,7 +375,7 @@ export default function EmployerProfilePage() {
             </div>
           </Section>
 
-          <Section title="Standort" desc="Bestimmt, welche Kandidaten Ihnen vorgeschlagen werden.">
+          <Section title="Standort" desc="Pflichtangabe — bestimmt, welche Kandidaten Ihnen vorgeschlagen werden.">
             <div className="space-y-4">
               <div>
                 <Label optional>Straße & Hausnummer</Label>
@@ -343,10 +389,10 @@ export default function EmployerProfilePage() {
               </div>
               <div className="grid sm:grid-cols-[140px_minmax(0,1fr)] gap-4">
                 <div>
-                  <Label>PLZ</Label>
+                  <Label required>PLZ</Label>
                   <input
-                    className={`${inputCls} tabular-nums`}
-                    style={inputStyle}
+                    {...fieldProps("plz")}
+                    className={`${fieldProps("plz").className} tabular-nums`}
                     inputMode="numeric"
                     maxLength={5}
                     value={p.plz}
@@ -355,16 +401,20 @@ export default function EmployerProfilePage() {
                   />
                 </div>
                 <div>
-                  <Label>Ort</Label>
+                  <Label required>Ort</Label>
                   <input
-                    className={inputCls}
-                    style={inputStyle}
+                    {...fieldProps("ort")}
                     value={p.ort}
                     onChange={(e) => set("ort", e.target.value)}
                     placeholder="München"
                   />
                 </div>
               </div>
+              {(errs.plz || errs.ort) && (
+                <p className="text-[12.5px]" style={{ color: "#EF4444" }}>
+                  {errs.plz ?? errs.ort}
+                </p>
+              )}
             </div>
           </Section>
 

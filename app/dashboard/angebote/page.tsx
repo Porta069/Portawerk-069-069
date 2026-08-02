@@ -7,14 +7,82 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Inbox, Loader2, ArrowRight } from "lucide-react";
-import { listOffers, respondToOffer, type DeclineReason } from "@/lib/jobsService";
-import type { JobOffer } from "@/lib/types";
+import { Inbox, Loader2, ArrowRight, ShieldCheck, Check, X } from "lucide-react";
+import {
+  listOffers, respondToOffer, listContactRequests, respondContactRequest,
+  type DeclineReason,
+} from "@/lib/jobsService";
+import type { JobOffer, WorkerContactRequest } from "@/lib/types";
 import OfferCard from "@/app/components/dashboard/OfferCard";
 import { AffiliateNudge } from "@/app/components/dashboard/AffiliateTile";
 
+/** Ein Betrieb möchte Kontaktdaten sehen — der Handwerker entscheidet. */
+function ContactRequestRow({
+  request,
+  onRespond,
+}: {
+  request: WorkerContactRequest;
+  onRespond: (decision: "freigeben" | "ablehnen") => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const decide = async (d: "freigeben" | "ablehnen") => {
+    setBusy(true);
+    await onRespond(d);
+    setBusy(false);
+  };
+
+  return (
+    <div
+      className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl bg-white px-5 py-4"
+      style={{ border: "1.5px solid #E9E7E1" }}
+    >
+      <span
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: "rgba(232,168,56,0.14)" }}
+      >
+        <ShieldCheck className="w-4.5 h-4.5" style={{ color: "#B47B18" }} />
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className="text-[14.5px] font-bold text-primary leading-snug">
+          {request.company}
+        </p>
+        <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+          möchte dich für „{request.position}“ kontaktieren · {request.sentAt}
+        </p>
+      </div>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {busy ? (
+          <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#E8A838" }} />
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => decide("freigeben")}
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-bold"
+              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            >
+              <Check className="w-3.5 h-3.5" />
+              Kontakt freigeben
+            </button>
+            <button
+              type="button"
+              onClick={() => decide("ablehnen")}
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold"
+              style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)", background: "white" }}
+            >
+              <X className="w-3.5 h-3.5" />
+              Ablehnen
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AngebotePage() {
   const [offers, setOffers] = useState<JobOffer[]>([]);
+  const [requests, setRequests] = useState<WorkerContactRequest[]>([]);
   const [loading, setLoading] = useState(true);
   /** Zuletzt getroffene Entscheidung — steuert den passenden Anstoß. */
   const [lastDecision, setLastDecision] = useState<"angenommen" | "abgelehnt" | null>(null);
@@ -24,9 +92,22 @@ export default function AngebotePage() {
       if (res.ok) setOffers(res.data);
       setLoading(false);
     });
+    listContactRequests().then((res) => {
+      if (res.ok) setRequests(res.data);
+    });
   };
 
   useEffect(load, []);
+
+  const handleContactRespond = async (
+    id: string,
+    decision: "freigeben" | "ablehnen"
+  ) => {
+    const res = await respondContactRequest(id, decision);
+    if (res.ok) load();
+  };
+
+  const offeneAnfragen = requests.filter((r) => r.status === "angefragt");
 
   const handleRespond = async (
     offerId: string,
@@ -54,6 +135,28 @@ export default function AngebotePage() {
       <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
         Diese Betriebe möchten dich einstellen — du entscheidest, wer dein Profil sehen darf.
       </p>
+
+      {/* Offene Kontaktanfragen — Diskretionsversprechen in Aktion */}
+      {offeneAnfragen.length > 0 && (
+        <section className="mb-8">
+          <h2
+            className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] mb-4"
+            style={{ color: "#B47B18" }}
+          >
+            <span className="w-6 h-[2px]" style={{ background: "#E8A838" }} />
+            Kontaktanfragen · {offeneAnfragen.length}
+          </h2>
+          <div className="space-y-3">
+            {offeneAnfragen.map((r) => (
+              <ContactRequestRow
+                key={r.id}
+                request={r}
+                onRespond={(d) => handleContactRespond(r.id, d)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-20">

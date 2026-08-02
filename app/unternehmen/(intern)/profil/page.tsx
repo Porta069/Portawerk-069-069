@@ -589,14 +589,19 @@ export default function EmployerProfilePage() {
             </div>
           </Section>
 
-          <Section title="Über uns" desc="Optional — zwei bis drei Sätze reichen, ehrlich schlägt Werbetext.">
+          <Section
+            title="Über uns"
+            desc="Ihre Unternehmensbeschreibung — gerne ausführlich: Geschichte, Projekte, Team, Arbeitsweise. Handwerker lesen das, bevor sie zusagen."
+          >
             <textarea
-              rows={5}
-              className={`${inputCls} resize-none`}
+              rows={10}
+              className={`${inputCls} resize-y`}
               style={inputStyle}
-              value={p.ueberUns}
-              onChange={(e) => set("ueberUns", e.target.value)}
-              placeholder="Wir sind ein Familienbetrieb mit 25 Mitarbeitern und arbeiten überwiegend im Raum München …"
+              value={p.beschreibung}
+              onChange={(e) => set("beschreibung", e.target.value)}
+              placeholder={
+                "Wir sind ein Familienbetrieb mit 25 Mitarbeitern und arbeiten überwiegend im Raum München …\n\nMehrere Absätze sind ausdrücklich erwünscht."
+              }
             />
           </Section>
         </div>
@@ -738,9 +743,12 @@ export default function EmployerProfilePage() {
                   ))}
                 </div>
 
-                {p.ueberUns ? (
-                  <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.65)" }}>
-                    {p.ueberUns}
+                {p.beschreibung ? (
+                  <p
+                    className="text-[13px] leading-relaxed whitespace-pre-line"
+                    style={{ color: "rgba(26,26,46,0.65)" }}
+                  >
+                    {p.beschreibung}
                   </p>
                 ) : (
                   <p className="text-[13px] italic" style={{ color: "rgba(26,26,46,0.35)" }}>

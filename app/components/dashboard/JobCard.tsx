@@ -14,6 +14,7 @@ import {
   Sparkles, TrendingUp, TrendingDown, Clock3, Route, X, Loader2,
 } from "lucide-react";
 import type { Job } from "@/lib/types";
+import ScoreExplainer from "@/app/components/ScoreExplainer";
 
 // Leaflet nur im Browser laden — und erst, wenn die Route geoeffnet wird.
 const RouteMap = dynamic(() => import("./RouteMap"), {
@@ -135,6 +136,25 @@ export default function JobCard({
             >
               {job.title}
             </h3>
+            <div className="flex items-start gap-2 flex-shrink-0">
+            {/* Match-Score inkl. Transparenz-„e" (Testphase) */}
+            {typeof job.matchScore === "number" && (
+              <span
+                className="flex flex-col items-end rounded-xl px-3 py-1.5"
+                style={{ background: "rgba(26,26,46,0.05)" }}
+              >
+                <span
+                  className="text-[15px] font-bold tabular-nums"
+                  style={{ fontFamily: "var(--font-display)", color: job.matchScore >= 70 ? "#15803D" : "#1A1A2E" }}
+                >
+                  {job.matchScore} %
+                  <ScoreExplainer breakdown={job.matchBreakdown} subject={job.title} />
+                </span>
+                <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.45)" }}>
+                  Match
+                </span>
+              </span>
+            )}
             {/* Fahrzeit — anklickbar, öffnet die Route auf der Karte */}
             <button
               type="button"
@@ -161,6 +181,7 @@ export default function JobCard({
                 <Route className="w-3 h-3 opacity-0 transition-opacity duration-200 group-hover/route:opacity-100" />
               </span>
             </button>
+            </div>
           </div>
 
           <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.6)" }}>
@@ -182,7 +203,7 @@ export default function JobCard({
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 <Euro className="w-4 h-4" style={{ color: "#E8A838" }} />
-                {euro(job.salaryMin)} – {euro(job.salaryMax)}
+                {job.salaryMax > 0 ? `${euro(job.salaryMin)} – ${euro(job.salaryMax)}` : "Nach Vereinbarung"}
               </span>
               <SalaryContext job={job} />
             </div>
@@ -196,7 +217,7 @@ export default function JobCard({
             <Cond icon={Home}>{c.montage}</Cond>
             {c.fahrzeitIstArbeitszeit && <Cond icon={Timer}>Fahrzeit = Arbeitszeit</Cond>}
             <Cond icon={MapPin}>Start ab {c.startpunkt}</Cond>
-            <Cond icon={Palmtree}>{c.urlaubstage} Urlaubstage</Cond>
+            {c.urlaubstage > 0 && <Cond icon={Palmtree}>{c.urlaubstage} Urlaubstage</Cond>}
             <Cond icon={CalendarDays}>{c.start}</Cond>
             {c.extras?.map((e) => (
               <Cond key={e} icon={Sparkles}>

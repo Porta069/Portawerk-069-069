@@ -138,7 +138,7 @@ export async function warmup(): Promise<void> {
 async function request<T>(
   path: string,
   opts: {
-    method?: "GET" | "POST" | "DELETE" | "PATCH";
+    method?: "GET" | "POST" | "DELETE" | "PATCH" | "PUT";
     body?: unknown;
     token?: string;
     /** Anzahl Wiederholungen bei Netzwerkfehler/502-503-504 (Kaltstart). */
@@ -478,6 +478,39 @@ export const api = {
   /** GET /partner/me/export — DSGVO-Datenexport. */
   partnerExport(token: string) {
     return request<Record<string, unknown>>("/partner/me/export", { token });
+  },
+};
+
+/**
+ * Generischer, authentifizierbarer Request — für die Fach-Services
+ * (jobsService, employerService), die eigene Endpunkt-Familien kapseln.
+ */
+export function apiRequest<T>(
+  path: string,
+  opts: {
+    method?: "GET" | "POST" | "DELETE" | "PATCH" | "PUT";
+    body?: unknown;
+    token?: string;
+    retries?: number;
+  } = {}
+): Promise<ApiResult<T>> {
+  return request<T>(path, opts as Parameters<typeof request>[1]);
+}
+
+// ── Bewerber-/Arbeitgeber-Session (gleicher Speicher wie AuthContext) ──
+const USER_SESSION_KEY = "portawerk_session_v1";
+
+export const userSession = {
+  /** JWT der angemeldeten Nutzer-Session, oder null. */
+  get(): string | null {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(USER_SESSION_KEY);
+      if (!raw) return null;
+      return (JSON.parse(raw) as { token?: string }).token ?? null;
+    } catch {
+      return null;
+    }
   },
 };
 

@@ -7,9 +7,9 @@
 // Angaben aus der Registrierung landen hier als Filter wieder an der Oberfläche.
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send, Check } from "lucide-react";
 import {
-  listJobs, getWorkLocations, saveWorkLocations,
+  listJobs, getWorkLocations, saveWorkLocations, applyToJob,
   type JobFilters, type JobSort,
 } from "@/lib/jobsService";
 import { GEWERKE } from "@/lib/constants";
@@ -19,6 +19,45 @@ import WorkLocationsMap from "@/app/components/WorkLocationsMapDynamic";
 import { ChipToggle } from "@/app/components/wizard";
 
 const TRAVEL_STEPS = [15, 30, 45, 60];
+
+/** Bewerben-Button mit Zustand: sendet die Bewerbung ans Backend. */
+function ApplyButton({ jobId }: { jobId: string }) {
+  const [state, setState] = useState<"idle" | "busy" | "done" | "already">("idle");
+
+  const apply = async () => {
+    if (state === "busy" || state === "done") return;
+    setState("busy");
+    const res = await applyToJob(jobId);
+    if (res.ok) setState("done");
+    else if (res.error.includes("bereits")) setState("already");
+    else setState("idle");
+  };
+
+  if (state === "done" || state === "already") {
+    return (
+      <span
+        className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
+        style={{ background: "rgba(22,163,74,0.12)", color: "#15803D", fontFamily: "var(--font-display)" }}
+      >
+        <Check className="w-4 h-4" />
+        {state === "done" ? "Bewerbung gesendet" : "Bereits beworben"}
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={apply}
+      disabled={state === "busy"}
+      className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
+      style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}
+    >
+      {state === "busy" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+      Diskret bewerben
+    </button>
+  );
+}
 const SORTS: { value: JobSort; label: string }[] = [
   { value: "relevanz", label: "Relevanz" },
   { value: "fahrzeit", label: "Kürzeste Fahrzeit" },
@@ -308,20 +347,7 @@ export default function JobboersePage() {
                 key={job.id}
                 job={job}
                 highlight={job.recommended}
-                footer={
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
-                    style={{
-                      background: "#1A1A2E",
-                      color: "white",
-                      fontFamily: "var(--font-display)",
-                    }}
-                  >
-                    <Send className="w-4 h-4" />
-                    Diskret bewerben
-                  </button>
-                }
+                footer={<ApplyButton jobId={job.id} />}
               />
             ))}
           </div>

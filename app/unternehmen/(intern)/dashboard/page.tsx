@@ -11,13 +11,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Loader2, Users, FlaskConical, ShieldCheck, X, Zap, Euro, Route, MapPin,
+  Loader2, Users, ShieldCheck, X, Route, MapPin, Target,
   SlidersHorizontal, RotateCcw, ArrowUpDown, Award, Briefcase,
 } from "lucide-react";
+import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import {
   searchCandidates, requestContact, getStoredPlz, storePlz,
-  ZERTIFIKAT_OPTIONEN, BEREITSCHAFT_OPTIONEN, EMPLOYER_DATA_IS_MOCKED,
+  ZERTIFIKAT_OPTIONEN, BEREITSCHAFT_OPTIONEN,
   type CandidateFilters, type CandidateSort,
 } from "@/lib/employerService";
 import type { Candidate } from "@/lib/types";
@@ -28,11 +29,9 @@ const SORTS: { value: CandidateSort; label: string }[] = [
   { value: "match", label: "Beste Übereinstimmung" },
   { value: "naehe", label: "Kürzeste Anfahrt" },
   { value: "erfahrung", label: "Meiste Erfahrung" },
-  { value: "gehalt", label: "Günstigste Gehaltsvorstellung" },
 ];
 
 const ERFAHRUNG_STUFEN = [0, 3, 5, 10];
-const GEHALT_STUFEN = [0, 3000, 3500, 4000, 5000];
 
 /** Filter-Gruppe mit Überschrift. */
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
@@ -95,14 +94,14 @@ export default function EmployerSearchPage() {
   const [radius, setRadius] = useState(50);
 
   const [minErfahrung, setMinErfahrung] = useState(0);
-  const [maxGehalt, setMaxGehalt] = useState(0);
-  const [nurSofort, setNurSofort] = useState(false);
   const [zertifikate, setZertifikate] = useState<string[]>([]);
   const [bereitschaft, setBereitschaft] = useState<string[]>([]);
   const [sort, setSort] = useState<CandidateSort>("match");
   const [mobileFilters, setMobileFilters] = useState(false);
 
   const [results, setResults] = useState<Candidate[] | null>(null);
+  /** Gegen welches Inserat die Scores gerechnet wurden (Transparenz). */
+  const [scoredAgainst, setScoredAgainst] = useState<{ id: string; title: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -117,11 +116,7 @@ export default function EmployerSearchPage() {
   const ready = /^\d{5}$/.test(plz);
 
   const activeCount =
-    (minErfahrung ? 1 : 0) +
-    (maxGehalt ? 1 : 0) +
-    (nurSofort ? 1 : 0) +
-    zertifikate.length +
-    bereitschaft.length;
+    (minErfahrung ? 1 : 0) + zertifikate.length + bereitschaft.length;
 
   const run = useCallback(async () => {
     if (!ready) return;
@@ -131,27 +126,27 @@ export default function EmployerSearchPage() {
       plz,
       radiusKm: radius,
       minErfahrung: minErfahrung || undefined,
-      maxGehalt: maxGehalt || undefined,
-      nurSofort: nurSofort || undefined,
       zertifikate: zertifikate.length ? zertifikate : undefined,
       bereitschaft: bereitschaft.length ? bereitschaft : undefined,
       sort,
     };
     const res = await searchCandidates(f);
     setLoading(false);
-    if (res.ok) setResults(res.data);
-    else {
+    if (res.ok) {
+      setResults(res.data.candidates);
+      setScoredAgainst(res.data.scoredAgainst);
+    } else {
       setError(res.error);
       setResults(null);
     }
-  }, [plz, ready, radius, minErfahrung, maxGehalt, nurSofort, zertifikate, bereitschaft, sort]);
+  }, [plz, ready, radius, minErfahrung, zertifikate, bereitschaft, sort]);
 
   useEffect(() => {
     if (!ready) return;
     const t = setTimeout(() => void run(), 220);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plz, radius, minErfahrung, maxGehalt, nurSofort, zertifikate, bereitschaft, sort]);
+  }, [plz, radius, minErfahrung, zertifikate, bereitschaft, sort]);
 
   const handleArea = (a: SearchArea) => {
     setArea(a);
@@ -164,8 +159,6 @@ export default function EmployerSearchPage() {
 
   const resetFilters = () => {
     setMinErfahrung(0);
-    setMaxGehalt(0);
-    setNurSofort(false);
     setZertifikate([]);
     setBereitschaft([]);
   };
@@ -174,15 +167,19 @@ export default function EmployerSearchPage() {
     if (!results?.length) return null;
     return {
       total: results.length,
-      sofort: results.filter((c) => c.verfuegbarAb === "Ab sofort").length,
-      avgWeg: Math.round(results.reduce((s, c) => s + c.distanceKm, 0) / results.length),
-      avgLohn: Math.round(
-        results.reduce((s, c) => s + (c.gehaltVon + c.gehaltBis) / 2, 0) / results.length
+      avgWeg: Math.round(
+        results.reduce((s, c) => s + (c.distanceKm ?? 0), 0) / results.length
+      ),
+      avgMatch: Math.round(
+        results.reduce((s, c) => s + c.matchScore, 0) / results.length
       ),
     };
   }, [results]);
 
-  const points = results?.map((c) => ({ lat: c.lat, lng: c.lng })) ?? [];
+  const points =
+    results
+      ?.filter((c) => c.lat != null && c.lng != null)
+      .map((c) => ({ lat: c.lat as number, lng: c.lng as number })) ?? [];
 
   const handleRequest = async (id: string, position: string) => {
     const res = await requestContact(id, position);
@@ -228,22 +225,6 @@ export default function EmployerSearchPage() {
         </div>
       </Group>
 
-      <Group title="Gehaltsrahmen">
-        <div className="space-y-0.5">
-          {GEHALT_STUFEN.map((g) => (
-            <Choice key={g} active={maxGehalt === g} onClick={() => setMaxGehalt(g)}>
-              {g === 0 ? "Egal" : `bis ${g.toLocaleString("de-DE")} €`}
-            </Choice>
-          ))}
-        </div>
-      </Group>
-
-      <Group title="Verfügbarkeit">
-        <Choice active={nurSofort} onClick={() => setNurSofort((v) => !v)}>
-          Nur sofort verfügbar
-        </Choice>
-      </Group>
-
       <Group title="Qualifikation">
         <div className="space-y-0.5">
           {ZERTIFIKAT_OPTIONEN.map((z) => (
@@ -276,15 +257,31 @@ export default function EmployerSearchPage() {
 
   return (
     <div>
-      {EMPLOYER_DATA_IS_MOCKED && (
+      {/* Transparenz (Testphase): gegen welches Inserat wird gescort? */}
+      {results && (
         <div
           className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-6"
           style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
         >
-          <FlaskConical className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+          <Target className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
           <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
-            <strong>Demodaten:</strong> Für die Kandidatensuche gibt es noch keine
-            Backend-Endpunkte. Die Oberfläche arbeitet gegen einen Mock.
+            {scoredAgainst ? (
+              <>
+                <strong>Match-Scores</strong> werden gegen Ihr Inserat{" "}
+                <strong>„{scoredAgainst.title}“</strong> berechnet (Gewichtungen und
+                Wunsch-Ranges aus dem Inserat). Das kleine <em>e</em> am Score zeigt den
+                vollständigen Rechenweg.
+              </>
+            ) : (
+              <>
+                <strong>Kein aktives Inserat mit Kriterien</strong> — die Scores sind eine
+                einfache Nähe-/Erfahrungs-Heuristik. Legen Sie unter{" "}
+                <Link href="/unternehmen/inserate" className="font-semibold underline">
+                  Inserate
+                </Link>{" "}
+                ein Inserat mit Gewichtungen an, um echtes Matching zu sehen.
+              </>
+            )}
           </p>
         </div>
       )}
@@ -321,9 +318,8 @@ export default function EmployerSearchPage() {
               <div className="flex flex-wrap gap-2.5">
                 {[
                   { icon: Users, v: String(stats.total), l: "Treffer" },
-                  { icon: Zap, v: String(stats.sofort), l: "sofort" },
                   { icon: Route, v: `${stats.avgWeg} km`, l: "Ø Anfahrt" },
-                  { icon: Euro, v: `${stats.avgLohn.toLocaleString("de-DE")} €`, l: "Ø Wunsch" },
+                  { icon: Target, v: `${stats.avgMatch} %`, l: "Ø Match" },
                 ].map((s) => {
                   const Icon = s.icon;
                   return (

@@ -123,8 +123,56 @@ export type ApiResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: string };
 
+// ─── Matching-Transparenz ────────────────────────────────────────────────────
+// Das Backend liefert zu jedem Score den vollständigen Rechenweg mit:
+// pro Frage Antwort, Range, Gewicht, Differenz und Strafpunkte. Wird nur in
+// der Testphase angezeigt (kleines „e" am Score) und später entfernt.
+
+/** Eine Frage aus dem Matching-Katalog (GET /match-questions). */
+export interface MatchQuestionInfo {
+  key: string;
+  label: string;
+  hint: string;
+  scaleMin: number;
+  scaleMax: number;
+  unit: string;
+  defaultWeight: number;
+  sortOrder: number;
+}
+
+/** Rechenweg einer einzelnen Frage im Match-Score. */
+export interface MatchCriterionBreakdown {
+  questionKey: string;
+  label: string;
+  unit: string;
+  scaleMin: number;
+  scaleMax: number;
+  /** Abgeleiteter Zahlenwert des Handwerkers (null = keine Angabe). */
+  workerValue: number | null;
+  rangeMin: number;
+  rangeMax: number;
+  weight: number;
+  diff: number | null;
+  /** Gewicht × Differenz. */
+  penalty: number | null;
+  maxDiff: number;
+  maxPenalty: number;
+  skipped: boolean;
+}
+
+/** Vollständiger Rechenweg eines Match-Scores. */
+export interface MatchBreakdown {
+  criteria: MatchCriterionBreakdown[];
+  totalPenalty: number;
+  totalMaxPenalty: number;
+  score: number;
+  formula: string;
+  /** Reserviert: Score der späteren KI-Fragerunde. */
+  aiScore: number | null;
+}
+
 // ─── Jobbörse, Angebote, Bewerbungen ─────────────────────────────────────────
-// Noch ohne Backend-Endpunkte — bedient von lib/jobsService.ts (Mock).
+// Bedient von lib/jobsService.ts (echte Endpunkte auf dem NestJS-Backend).
 
 /** Handwerksspezifische Rahmenbedingungen, die im Handwerk die Zusage entscheiden. */
 export interface JobConditions {
@@ -172,6 +220,10 @@ export interface Job {
   respondsInDays?: number;
   /** Warum diese Stelle passt — konkrete Gründe aus dem Profil. */
   matchReasons?: string[];
+  /** Match-Score 0–100 (Σ Gewicht × Differenz, normalisiert). */
+  matchScore?: number;
+  /** Vollständiger Rechenweg — für die Transparenz-Ansicht in der Testphase. */
+  matchBreakdown?: MatchBreakdown | null;
 }
 
 export type OfferStatus = "neu" | "angenommen" | "abgelehnt";
@@ -244,12 +296,14 @@ export interface Candidate {
   bereitschaft: string[];
   /** Was ihm wichtig ist — aus der Umfrage. */
   praeferenz: string;
-  /** Gehaltsvorstellung, brutto monatlich. */
-  gehaltVon: number;
-  gehaltBis: number;
-  verfuegbarAb: string;
+  /** Gehaltsvorstellung, brutto monatlich (null = nicht angegeben). */
+  gehaltVon: number | null;
+  gehaltBis: number | null;
+  verfuegbarAb: string | null;
   /** Wie gut das Profil zur Suche passt (0–100). */
   matchScore: number;
+  /** Rechenweg des Scores — nur gefüllt, wenn gegen ein Inserat gescort wurde. */
+  matchBreakdown?: MatchBreakdown | null;
   status: CandidateStatus;
   /** Wann zuletzt aktiv — Signal für Erreichbarkeit. */
   zuletztAktiv: string;
@@ -285,6 +339,8 @@ export interface EmployerProfile {
   firmenname: string;
   /** Kurzer Satz, der im Angebot direkt unter dem Namen steht. */
   slogan: string;
+  /** Ausführliche Unternehmensbeschreibung (Fließtext, mehrere Absätze). */
+  beschreibung: string;
   gruendungsjahr: string;
   mitarbeiter: string;
   strasse: string;
@@ -305,4 +361,74 @@ export interface EmployerProfile {
   urlaubstage: string;
   /** Logo als Data-URL (optional). */
   logo: string;
+}
+
+// ─── Job-Inserate (Arbeitgeber-Verwaltung) ───────────────────────────────────
+// Ein Inserat trägt neben den Stellen-Eckdaten die Matching-Kriterien: pro
+// Katalogfrage eine optionale Antwort als RANGE (Einzelwert = min = max) plus
+// eine Gewichtung 0–5. Score = Σ Gewicht × Abstand der Antwort zur Range.
+
+export interface JobCriterionInput {
+  questionKey: string;
+  minValue: number;
+  maxValue: number;
+  weight: number;
+}
+
+export type EmployerJobStatus = "DRAFT" | "ACTIVE" | "PAUSED" | "ARCHIVED";
+
+export interface EmployerJob {
+  id: string;
+  title: string;
+  gewerk: string;
+  description: string;
+  tags: string[];
+  city: string;
+  lat: number | null;
+  lng: number | null;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  montage: string;
+  fahrzeitIstArbeitszeit: boolean;
+  startpunkt: string;
+  urlaubstage: number | null;
+  startText: string;
+  extras: string[];
+  status: EmployerJobStatus;
+  /** SELF = vom Betrieb selbst, ADMIN/AI = von uns bzw. der KI angelegt. */
+  source: "SELF" | "ADMIN" | "AI";
+  createdAt: string;
+  updatedAt: string;
+  criteria: (JobCriterionInput & { label: string })[];
+  /** Anzahl eingegangener Bewerbungen. */
+  applications?: number;
+}
+
+/** Eingabedaten beim Anlegen/Bearbeiten eines Inserats. */
+export interface EmployerJobInput {
+  title: string;
+  gewerk: string;
+  description?: string;
+  tags?: string[];
+  city?: string;
+  salaryMin?: number;
+  salaryMax?: number;
+  montage?: string;
+  fahrzeitIstArbeitszeit?: boolean;
+  startpunkt?: "Haustür" | "Betrieb";
+  urlaubstage?: number;
+  startText?: string;
+  extras?: string[];
+  status?: EmployerJobStatus;
+  criteria?: JobCriterionInput[];
+}
+
+/** Kontaktanfrage aus Sicht des Handwerkers (Freigabe-Entscheidung). */
+export interface WorkerContactRequest {
+  id: string;
+  company: string;
+  companySlogan: string;
+  position: string;
+  status: "angefragt" | "freigegeben" | "abgelehnt";
+  sentAt: string;
 }

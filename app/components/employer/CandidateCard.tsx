@@ -16,6 +16,7 @@ import {
   ShieldCheck, X, Route, Briefcase, Star, ChevronRight, Eye, Heart, Sparkles, Phone, Mail,
 } from "lucide-react";
 import type { Candidate } from "@/lib/types";
+import ScoreExplainer from "@/app/components/ScoreExplainer";
 
 /** Symbolbild je Gewerk — echtes Foto, aber niemals die Person. */
 const TRADE_IMAGE: Record<string, string> = {
@@ -154,10 +155,10 @@ function ProfileDialog({
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { icon: Briefcase, value: `${c.erfahrungJahre} Jahre`, label: "Erfahrung" },
-              { icon: Route, value: `${c.distanceKm} km`, label: "Anfahrt zu Ihnen" },
-              { icon: MapPin, value: `${c.radiusKm} km`, label: "Sein Suchradius" },
-              { icon: CalendarDays, value: c.verfuegbarAb.replace("Ab ", ""), label: "Verfügbar" },
+              { icon: Briefcase, value: c.erfahrungJahre != null ? `${c.erfahrungJahre} Jahre` : "—", label: "Erfahrung" },
+              { icon: Route, value: c.distanceKm != null ? `${c.distanceKm} km` : "—", label: "Anfahrt zu Ihnen" },
+              { icon: MapPin, value: c.radiusKm != null ? `${c.radiusKm} km` : "—", label: "Sein Suchradius" },
+              { icon: CalendarDays, value: c.verfuegbarAb ? c.verfuegbarAb.replace("Ab ", "") : "—", label: "Verfügbar" },
             ].map((f) => (
               <div key={f.label} className="rounded-2xl p-4" style={{ background: "var(--color-surface)" }}>
                 <Fact icon={f.icon} value={f.value} label={f.label} />
@@ -165,20 +166,22 @@ function ProfileDialog({
             ))}
           </div>
 
-          <div className="rounded-2xl px-5 py-4" style={{ background: "rgba(232,168,56,0.1)" }}>
-            <p className="text-[11px] uppercase tracking-[0.16em] mb-1" style={{ color: "#8A5B0F" }}>
-              Gehaltsvorstellung
-            </p>
-            <p
-              className="text-[26px] font-bold tabular-nums text-primary leading-none"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {euro(c.gehaltVon)} – {euro(c.gehaltBis)} €
-            </p>
-            <p className="text-[12px] mt-1" style={{ color: "rgba(26,26,46,0.5)" }}>
-              brutto pro Monat
-            </p>
-          </div>
+          {c.gehaltVon != null && c.gehaltBis != null && (
+            <div className="rounded-2xl px-5 py-4" style={{ background: "rgba(232,168,56,0.1)" }}>
+              <p className="text-[11px] uppercase tracking-[0.16em] mb-1" style={{ color: "#8A5B0F" }}>
+                Gehaltsvorstellung
+              </p>
+              <p
+                className="text-[26px] font-bold tabular-nums text-primary leading-none"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {euro(c.gehaltVon)} – {euro(c.gehaltBis)} €
+              </p>
+              <p className="text-[12px] mt-1" style={{ color: "rgba(26,26,46,0.5)" }}>
+                brutto pro Monat
+              </p>
+            </div>
+          )}
 
           <div>
             <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
@@ -207,12 +210,14 @@ function ProfileDialog({
             </div>
           )}
 
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
-              Worauf es ihm ankommt
-            </p>
-            <p className="text-[15px] text-primary">{c.praeferenz}</p>
-          </div>
+          {c.praeferenz && (
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
+                Worauf es ihm ankommt
+              </p>
+              <p className="text-[15px] text-primary">{c.praeferenz}</p>
+            </div>
+          )}
 
           {c.freigegeben ? (
             <div
@@ -492,6 +497,7 @@ export default function CandidateCard({
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {c.matchScore} %
+                    <ScoreExplainer breakdown={c.matchBreakdown} subject={c.handle} />
                   </span>
                 </span>
               )}
@@ -499,12 +505,24 @@ export default function CandidateCard({
 
             {/* Kernzahlen in einer Zeile — von links nach rechts lesbar */}
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-4 mb-5">
-              <Fact icon={Briefcase} value={`${c.erfahrungJahre} Jahre`} label="Erfahrung" />
-              <Fact icon={Route} value={`${c.distanceKm} km`} label="Anfahrt" />
-              <Fact icon={CalendarDays} value={c.verfuegbarAb.replace("Ab ", "")} label="Verfügbar" />
+              <Fact
+                icon={Briefcase}
+                value={c.erfahrungJahre != null ? `${c.erfahrungJahre} Jahre` : "—"}
+                label="Erfahrung"
+              />
+              <Fact icon={Route} value={c.distanceKm != null ? `${c.distanceKm} km` : "—"} label="Anfahrt" />
+              <Fact
+                icon={CalendarDays}
+                value={c.verfuegbarAb ? c.verfuegbarAb.replace("Ab ", "") : "—"}
+                label="Verfügbar"
+              />
               <Fact
                 icon={Euro}
-                value={`${euro(c.gehaltVon)}–${euro(c.gehaltBis)}`}
+                value={
+                  c.gehaltVon != null && c.gehaltBis != null
+                    ? `${euro(c.gehaltVon)}–${euro(c.gehaltBis)}`
+                    : "—"
+                }
                 label="Gehaltswunsch"
               />
             </div>

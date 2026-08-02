@@ -30,7 +30,7 @@ export default function EmployerNav({
 
   return (
     <header className="sticky top-0 left-0 right-0 z-50 bg-[#1A1A2E] shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
           <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-9 h-9 bg-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-95">
@@ -79,7 +79,7 @@ export default function EmployerNav({
 
           <div className="hidden lg:flex items-center justify-end gap-5 flex-shrink-0">
             <span
-              className="text-white/55 text-sm truncate max-w-[190px] text-right"
+              className="text-white/55 text-sm truncate max-w-[240px] text-right"
               title={companyName}
             >
               {companyName}
@@ -113,7 +113,7 @@ export default function EmployerNav({
             className="lg:hidden overflow-hidden bg-[#1A1A2E]"
             style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
           >
-            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col">
+            <div className="max-w-[1680px] mx-auto px-6 py-4 flex flex-col">
               {AREAS.map((a) => (
                 <Link
                   key={a.href}

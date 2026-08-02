@@ -6,7 +6,7 @@
 // Punkte, die im Handwerk über eine Zusage entscheiden. Die Bereitschafts-
 // Angaben aus der Registrierung landen hier als Filter wieder an der Oberfläche.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send, Check,
@@ -116,16 +116,26 @@ export default function JobboersePage() {
     [query, gewerke, maxTravel, abendsZuhause, fahrzeitArbeitszeit]
   );
 
+  // Erste Liste sofort laden; erst Tipp-/Filteränderungen werden entprellt.
+  const firstLoad = useRef(true);
   useEffect(() => {
     let active = true;
     setLoading(true);
-    const t = setTimeout(() => {
+    const run = () =>
       listJobs(filters, sort).then((res) => {
         if (!active) return;
         if (res.ok) setJobs(res.data);
         setLoading(false);
       });
-    }, 220);
+
+    if (firstLoad.current) {
+      firstLoad.current = false;
+      void run();
+      return () => {
+        active = false;
+      };
+    }
+    const t = setTimeout(run, 220);
     return () => {
       active = false;
       clearTimeout(t);

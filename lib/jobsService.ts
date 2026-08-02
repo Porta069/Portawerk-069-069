@@ -207,6 +207,20 @@ export async function applyToJob(
   return apiRequest(`/jobs/${jobId}/apply`, { method: "POST", token: token() });
 }
 
+/**
+ * Exakte Fahrzeit (Straßennetz/OSRM) ab einem gewählten Ausgangspunkt —
+ * die Liste zeigt zunächst nur die Circa-Schätzung.
+ */
+export async function getTravelTime(
+  jobId: string,
+  lat: number,
+  lng: number
+): Promise<ApiResult<{ minutes: number; distanceKm: number; exact: boolean }>> {
+  return apiRequest(`/jobs/${jobId}/travel?lat=${lat}&lng=${lng}`, {
+    token: token(),
+  });
+}
+
 // ── Merkliste (Favoriten) ────────────────────────────────────────────────────
 
 export async function listFavorites(): Promise<ApiResult<Job[]>> {

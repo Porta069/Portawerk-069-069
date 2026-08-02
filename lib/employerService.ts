@@ -20,6 +20,7 @@ import type {
   ApiResult,
   Candidate,
   ContactRequest,
+  EmployerApplication,
   EmployerJob,
   EmployerJobInput,
   EmployerProfile,
@@ -282,4 +283,36 @@ export async function archiveJob(id: string): Promise<ApiResult<void>> {
 /** Fragenkatalog fürs Matching — Grundlage des Kriterien-Editors. */
 export async function listMatchQuestions(): Promise<ApiResult<MatchQuestionInfo[]>> {
   return apiRequest<MatchQuestionInfo[]>("/match-questions");
+}
+
+// ── Bewerbungen auf eigene Inserate ──────────────────────────────────────────
+
+export async function listEmployerApplications(): Promise<
+  ApiResult<EmployerApplication[]>
+> {
+  const res = await apiRequest<EmployerApplication[]>("/employer/applications", {
+    token: token(),
+  });
+  if (!res.ok) return res;
+  return {
+    ok: true,
+    data: res.data.map((a) => ({
+      ...a,
+      createdAt: formatRelative(a.createdAt),
+      updatedAt: formatRelative(a.updatedAt),
+      candidate: mapCandidate(a.candidate),
+    })),
+  };
+}
+
+/** Setzt den Bewerbungsstatus — der Handwerker sieht ihn sofort. */
+export async function setApplicationStatus(
+  id: string,
+  status: "gesehen" | "im_gespraech" | "zusage" | "abgelehnt"
+): Promise<ApiResult<{ id: string; status: string }>> {
+  return apiRequest(`/employer/applications/${id}/status`, {
+    method: "POST",
+    token: token(),
+    body: { status },
+  });
 }

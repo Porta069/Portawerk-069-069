@@ -205,18 +205,42 @@ export default function ScoreExplainer({
                     </span>
                   </p>
                   <p className="text-[13px] tabular-nums text-primary pl-6">
-                    Score = 100 × (1 − {fmt(breakdown.totalPenalty)} / {fmt(breakdown.totalMaxPenalty) || "0"}) ={" "}
-                    <strong
-                      className="text-[15px]"
-                      style={{ fontFamily: "var(--font-display)", color: "#B47B18" }}
-                    >
-                      {breakdown.score} %
+                    Basis-Score = 100 × (1 − {fmt(breakdown.totalPenalty)} /{" "}
+                    {fmt(breakdown.totalMaxPenalty) || "0"}) ={" "}
+                    <strong className="text-[14px]" style={{ fontFamily: "var(--font-display)" }}>
+                      {breakdown.baseScore ?? breakdown.score} %
                     </strong>
                   </p>
                   <p className="text-[11.5px] leading-relaxed pl-6" style={{ color: "rgba(26,26,46,0.5)" }}>
                     {breakdown.formula} Ohne bewertbare Kriterien gilt Score = 100.
                   </p>
                 </div>
+
+                {/* Abzüge aus Absage-Feedback */}
+                {breakdown.adjustments?.length ? (
+                  <div
+                    className="rounded-2xl px-4 py-3.5 mt-3 space-y-1"
+                    style={{ background: "rgba(180,83,9,0.06)", border: "1px solid rgba(180,83,9,0.2)" }}
+                  >
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: "#B45309" }}>
+                      Abzüge aus deinen Absagen
+                    </p>
+                    {breakdown.adjustments.map((a) => (
+                      <p key={a.id} className="flex items-baseline justify-between gap-3 text-[13px]" style={{ color: "rgba(26,26,46,0.7)" }}>
+                        <span>{a.label}</span>
+                        <span className="tabular-nums font-bold flex-shrink-0" style={{ color: "#B45309" }}>
+                          −{a.points}
+                        </span>
+                      </p>
+                    ))}
+                    <p className="text-[13px] tabular-nums text-primary pt-1" style={{ borderTop: "1px dashed rgba(180,83,9,0.25)" }}>
+                      Endscore = {breakdown.baseScore} − {breakdown.adjustments.reduce((s, a) => s + a.points, 0)} ={" "}
+                      <strong className="text-[15px]" style={{ fontFamily: "var(--font-display)", color: "#B47B18" }}>
+                        {breakdown.score} %
+                      </strong>
+                    </p>
+                  </div>
+                ) : null}
 
                 {/* Platzhalter KI-Score */}
                 <p className="text-[12px] mt-3" style={{ color: "rgba(26,26,46,0.45)" }}>

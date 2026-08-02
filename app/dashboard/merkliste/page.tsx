@@ -11,8 +11,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart, Loader2, ArrowRight, Send, Check, X, GitCompareArrows,
 } from "lucide-react";
-import { listFavorites, setFavorite, applyToJob } from "@/lib/jobsService";
-import type { Job } from "@/lib/types";
+import { listFavorites, setFavorite, applyToJob, getWorkLocations } from "@/lib/jobsService";
+import type { Job, WorkLocation } from "@/lib/types";
 import JobCard from "@/app/components/dashboard/JobCard";
 import JobDetailDialog from "@/app/components/dashboard/JobDetailDialog";
 import CompareDialog from "@/app/components/dashboard/CompareDialog";
@@ -60,11 +60,15 @@ export default function MerklistePage() {
   const [detailJob, setDetailJob] = useState<Job | null>(null);
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [locations, setLocations] = useState<WorkLocation[]>([]);
 
   useEffect(() => {
     listFavorites().then((res) => {
       if (res.ok) setJobs(res.data);
       else setJobs([]);
+    });
+    getWorkLocations().then((res) => {
+      if (res.ok) setLocations(res.data);
     });
   }, []);
 
@@ -134,6 +138,7 @@ export default function MerklistePage() {
                 onToggleFavorite={removeFavorite}
                 compareSelected={compareIds.includes(job.id)}
                 onToggleCompare={toggleCompare}
+                workLocations={locations}
               />
             ))}
           </div>

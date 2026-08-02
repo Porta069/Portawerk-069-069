@@ -379,6 +379,7 @@ export default function JobboersePage() {
                 onToggleFavorite={toggleFavorite}
                 compareSelected={compareIds.includes(job.id)}
                 onToggleCompare={toggleCompare}
+                workLocations={locations}
               />
             ))}
           </div>

@@ -12,10 +12,153 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Car, Euro, CalendarDays, Home, Building2, Timer, Palmtree,
   Sparkles, TrendingUp, TrendingDown, Clock3, Route, X, Loader2, Heart,
-  GitCompareArrows,
+  GitCompareArrows, LocateFixed, Navigation,
 } from "lucide-react";
-import type { Job } from "@/lib/types";
+import type { Job, WorkLocation } from "@/lib/types";
+import { getTravelTime } from "@/lib/jobsService";
 import ScoreExplainer from "@/app/components/ScoreExplainer";
+
+// ─── Genaue Fahrzeit — klein und inline, kein Popup ──────────────────────────
+// Die Liste zeigt zunächst die Circa-Schätzung ("~28 Min."). Über den kleinen
+// Text-Button wählt man einen seiner Arbeitsorte aus der Registrierung ODER
+// den aktuellen Standort — dann ersetzt die exakte Straßenroute (OSRM) die
+// Schätzung, dezent als kleine Zeile unter der Karteninfo.
+
+interface ExactTravel {
+  minutes: number;
+  from: string;
+  isExact: boolean;
+}
+
+function ExactTravelRow({
+  job,
+  locations,
+  exact,
+  onExact,
+}: {
+  job: Job;
+  locations: WorkLocation[];
+  exact: ExactTravel | null;
+  onExact: (e: ExactTravel) => void;
+}) {
+  const [choosing, setChoosing] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const compute = async (label: string, lat: number, lng: number) => {
+    setBusy(label);
+    setError(null);
+    const res = await getTravelTime(job.id, lat, lng);
+    setBusy(null);
+    if (res.ok) {
+      onExact({ minutes: res.data.minutes, from: label, isExact: res.data.exact });
+      setChoosing(false);
+    } else {
+      setError("Berechnung fehlgeschlagen — bitte erneut versuchen.");
+    }
+  };
+
+  const useMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Standort wird von diesem Browser nicht unterstützt.");
+      return;
+    }
+    setBusy("Mein Standort");
+    setError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => void compute("Mein Standort", pos.coords.latitude, pos.coords.longitude),
+      () => {
+        setBusy(null);
+        setError("Standort-Freigabe abgelehnt.");
+      },
+      { timeout: 8000 }
+    );
+  };
+
+  const chipStyle: React.CSSProperties = {
+    border: "1px solid rgba(232,168,56,0.45)",
+    background: "rgba(232,168,56,0.08)",
+    color: "#8A5B0F",
+  };
+
+  return (
+    <div className="mt-1.5 text-[11.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
+      {exact ? (
+        <span className="inline-flex flex-wrap items-center gap-x-1.5">
+          <Navigation className="w-3 h-3" style={{ color: "#15803D" }} />
+          <span style={{ color: "#15803D", fontWeight: 600 }}>
+            {exact.minutes} Min.
+          </span>
+          ab „{exact.from}“{exact.isExact ? " · genaue Route" : " · Schätzung"}
+          <button
+            type="button"
+            onClick={() => setChoosing(true)}
+            className="font-semibold underline-offset-2 hover:underline"
+            style={{ color: "rgba(26,26,46,0.4)" }}
+          >
+            ändern
+          </button>
+        </span>
+      ) : !choosing ? (
+        <button
+          type="button"
+          onClick={() => setChoosing(true)}
+          className="inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline"
+          style={{ color: "#B47B18" }}
+        >
+          <LocateFixed className="w-3 h-3" />
+          Genaue Fahrzeit berechnen
+        </button>
+      ) : null}
+
+      {choosing && (
+        <span className="inline-flex flex-wrap items-center gap-1.5 ml-1.5">
+          <span>ab:</span>
+          {locations.map((l) => (
+            <button
+              key={l.id}
+              type="button"
+              disabled={busy !== null}
+              onClick={() => void compute(l.label, l.lat, l.lng)}
+              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold disabled:opacity-50"
+              style={chipStyle}
+            >
+              {busy === l.label && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+              {l.label}
+            </button>
+          ))}
+          <button
+            type="button"
+            disabled={busy !== null}
+            onClick={useMyLocation}
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold disabled:opacity-50"
+            style={chipStyle}
+          >
+            {busy === "Mein Standort" ? (
+              <Loader2 className="w-2.5 h-2.5 animate-spin" />
+            ) : (
+              <LocateFixed className="w-2.5 h-2.5" />
+            )}
+            Mein Standort
+          </button>
+          <button
+            type="button"
+            onClick={() => setChoosing(false)}
+            aria-label="Abbrechen"
+            style={{ color: "rgba(26,26,46,0.35)" }}
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </span>
+      )}
+      {error && (
+        <span className="block" style={{ color: "#B91C1C" }}>
+          {error}
+        </span>
+      )}
+    </div>
+  );
+}
 
 // Leaflet nur im Browser laden — und erst, wenn die Route geoeffnet wird.
 const RouteMap = dynamic(() => import("./RouteMap"), {
@@ -89,6 +232,7 @@ export default function JobCard({
   onToggleFavorite,
   compareSelected,
   onToggleCompare,
+  workLocations,
 }: {
   job: Job;
   /** Aktionsbereich (Bewerben, Annehmen/Ablehnen, Statuszeile …). */
@@ -101,9 +245,12 @@ export default function JobCard({
   /** Vergleichsauswahl (Checkbox unten). */
   compareSelected?: boolean;
   onToggleCompare?: (job: Job) => void;
+  /** Aktiviert „Genaue Fahrzeit berechnen“ (Orte aus der Registrierung). */
+  workLocations?: WorkLocation[];
 }) {
   const c = job.conditions;
   const [showRoute, setShowRoute] = useState(false);
+  const [exactTravel, setExactTravel] = useState<ExactTravel | null>(null);
 
   return (
     <motion.article
@@ -209,20 +356,20 @@ export default function JobCard({
                 style={{ fontFamily: "var(--font-display)", color: "#1A1A2E" }}
               >
                 <Car className="w-4 h-4" style={{ color: "#E8A838" }} />
-                {job.travelMinutes} Min.
+                {exactTravel ? `${exactTravel.minutes} Min.` : `~${job.travelMinutes} Min.`}
               </span>
               <span
                 className="inline-flex items-center gap-1 text-[10px] tabular-nums"
-                style={{ color: "rgba(26,26,46,0.45)" }}
+                style={{ color: exactTravel ? "#15803D" : "rgba(26,26,46,0.45)" }}
               >
-                {job.distanceKm.toLocaleString("de-DE")} km
+                {exactTravel ? "genau" : `${job.distanceKm.toLocaleString("de-DE")} km`}
                 <Route className="w-3 h-3 opacity-0 transition-opacity duration-200 group-hover/route:opacity-100" />
               </span>
             </button>
             </div>
           </div>
 
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.6)" }}>
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "rgba(26,26,46,0.6)" }}>
             <span className="inline-flex items-center gap-1.5">
               <Building2 className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
               {job.employer}
@@ -232,6 +379,17 @@ export default function JobCard({
               {job.city}
             </span>
           </p>
+
+          {/* Genaue Fahrzeit — klein, inline */}
+          {workLocations ? (
+            <ExactTravelRow
+              job={job}
+              locations={workLocations}
+              exact={exactTravel}
+              onExact={setExactTravel}
+            />
+          ) : null}
+          <div className="mb-4" />
 
           {/* Gehalt + Einordnung */}
           <div className="rounded-2xl px-4 py-3 mb-4" style={{ background: "var(--color-surface)" }}>

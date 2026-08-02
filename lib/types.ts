@@ -160,11 +160,22 @@ export interface MatchCriterionBreakdown {
   skipped: boolean;
 }
 
+/** Punktabzug aus dem Nutzerverhalten (z. B. abgelehnte Angebote). */
+export interface ScoreAdjustment {
+  id: string;
+  label: string;
+  points: number;
+}
+
 /** Vollständiger Rechenweg eines Match-Scores. */
 export interface MatchBreakdown {
   criteria: MatchCriterionBreakdown[];
   totalPenalty: number;
   totalMaxPenalty: number;
+  /** Score aus den Kriterien allein (vor Abzügen). */
+  baseScore: number;
+  /** Abzüge aus Absage-Feedback — im Rechenweg sichtbar. */
+  adjustments: ScoreAdjustment[];
   score: number;
   formula: string;
   /** Reserviert: Score der späteren KI-Fragerunde. */
@@ -439,6 +450,16 @@ export interface EmployerJobInput {
   extras?: string[];
   status?: EmployerJobStatus;
   criteria?: JobCriterionInput[];
+}
+
+/** Eine Bewerbung aus Arbeitgeber-Sicht (anonymer Kandidat + Status). */
+export interface EmployerApplication {
+  id: string;
+  status: ApplicationStatus;
+  createdAt: string;
+  updatedAt: string;
+  jobPosting: { id: string; title: string; gewerk: string };
+  candidate: Candidate;
 }
 
 /** Kontaktanfrage aus Sicht des Handwerkers (Freigabe-Entscheidung). */

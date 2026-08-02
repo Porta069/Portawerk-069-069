@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { api } from "@/lib/api";
-import { listRequests } from "@/lib/employerService";
+import { listRequests, listEmployerApplications } from "@/lib/employerService";
 import EmployerNav from "@/app/components/employer/EmployerNav";
 
 /** Vorschau ohne Login — nur im Dev-Server, siehe app/dashboard/layout.tsx. */
@@ -44,6 +44,7 @@ export default function EmployerLayout({ children }: { children: React.ReactNode
   const { user, token, hydrated, logout, setUser } = useAuth();
   const [checking, setChecking] = useState(true);
   const [openRequests, setOpenRequests] = useState(0);
+  const [newApplications, setNewApplications] = useState(0);
   const devPreview = useDevPreview();
 
   useEffect(() => {
@@ -86,6 +87,9 @@ export default function EmployerLayout({ children }: { children: React.ReactNode
     listRequests().then((res) => {
       if (res.ok) setOpenRequests(res.data.filter((r) => r.status === "angefragt").length);
     });
+    listEmployerApplications().then((res) => {
+      if (res.ok) setNewApplications(res.data.filter((a) => a.status === "gesendet").length);
+    });
   }, [checking]);
 
   const handleLogout = async () => {
@@ -107,6 +111,7 @@ export default function EmployerLayout({ children }: { children: React.ReactNode
       <EmployerNav
         companyName={user.companyName || `${user.firstName} ${user.lastName}`.trim()}
         openRequests={openRequests}
+        newApplications={newApplications}
         onLogout={handleLogout}
       />
       <main className="max-w-7xl mx-auto px-6 lg:px-12 py-10">{children}</main>

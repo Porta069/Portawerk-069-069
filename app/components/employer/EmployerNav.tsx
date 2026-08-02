@@ -14,6 +14,7 @@ import type { LucideIcon } from "lucide-react";
 const AREAS: { href: string; label: string; icon?: LucideIcon }[] = [
   { href: "/unternehmen/dashboard", label: "Kandidaten suchen" },
   { href: "/unternehmen/inserate", label: "Inserate" },
+  { href: "/unternehmen/bewerbungen", label: "Bewerbungen" },
   { href: "/unternehmen/anfragen", label: "Meine Anfragen" },
   // Zahnrad, damit erkennbar ist: hier werden Einstellungen gepflegt, es ist
   // kein weiterer Arbeitsbereich wie die beiden davor.
@@ -23,10 +24,13 @@ const AREAS: { href: string; label: string; icon?: LucideIcon }[] = [
 export default function EmployerNav({
   companyName,
   openRequests = 0,
+  newApplications = 0,
   onLogout,
 }: {
   companyName: string;
   openRequests?: number;
+  /** Anzahl neuer (ungesehener) Bewerbungen — Badge am Nav-Punkt. */
+  newApplications?: number;
   onLogout: () => void;
 }) {
   const pathname = usePathname() || "";
@@ -57,7 +61,11 @@ export default function EmployerNav({
           <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center min-w-0">
             {AREAS.map((a) => {
               const active = pathname.startsWith(a.href);
-              const badge = a.href.endsWith("anfragen") ? openRequests : 0;
+              const badge = a.href.endsWith("anfragen")
+                ? openRequests
+                : a.href.endsWith("bewerbungen")
+                  ? newApplications
+                  : 0;
               return (
                 <Link
                   key={a.href}

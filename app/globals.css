@@ -95,3 +95,27 @@ body {
 .leaflet-container a {
   color: #b47b18;
 }
+
+/* ─── Leaflet einbetten ──────────────────────────────────────────────────────
+   Leaflet vergibt intern z-Indizes bis 1000 (Panes, Controls). Ohne eigenen
+   Stacking-Kontext schiebt sich die Karte damit beim Scrollen über Kopfleiste
+   und Dialoge. `isolation: isolate` sperrt diese Werte in den Container ein —
+   nach aussen zaehlt nur noch der z-index des Containers selbst. */
+.leaflet-container {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+/* Umriss Deutschlands: der helle Halo bekommt einen weichen Schlagschatten,
+   dadurch wirkt das Land aufgelegt statt ausgestanzt. */
+.pw-de-outline {
+  filter: drop-shadow(0 5px 14px rgba(26, 26, 46, 0.22));
+}
+
+/* Bei reduzierter Bewegung keine Kachel-Filter animieren (rein defensiv). */
+@media (prefers-reduced-motion: reduce) {
+  .leaflet-fade-anim .leaflet-tile {
+    transition: none !important;
+  }
+}

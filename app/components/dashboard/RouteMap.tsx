@@ -137,7 +137,7 @@ export default function RouteMap({ job }: { job: Job }) {
       >
         {loading && (
           <div
-            className="absolute inset-0 z-[1000] flex items-center justify-center gap-2"
+            className="absolute inset-0 z-[10] flex items-center justify-center gap-2"
             style={{ background: "rgba(255,255,255,0.75)" }}
           >
             <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />

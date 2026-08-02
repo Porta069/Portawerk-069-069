@@ -30,7 +30,12 @@ const WORLD: [number, number][] = [
 ];
 
 /**
- * Deckt alles ausserhalb Deutschlands ab und zeichnet die Grenze nach.
+ * Legt Deutschland wie ein Blatt auf die Seite: aussen der Papierton der
+ * Oberfläche, sodass die Nachbarländer nur noch als leiser Schemen
+ * durchscheinen — Kontext ja, Ablenkung nein. Ein heller Halo entlang der
+ * Grenze plus weicher Schlagschatten erzeugt Tiefe, damit es nicht wie ein
+ * ausgestanztes graues Loch wirkt.
+ *
  * Nicht anklickbar, damit Kartenklicks weiterhin durchgehen.
  */
 function GermanyMask() {
@@ -39,17 +44,37 @@ function GermanyMask() {
       <Polygon
         positions={[WORLD, GERMANY_OUTLINE]}
         pathOptions={{
-          // Deckschicht im Flächenton der Oberfläche — wirkt wie ein Passepartout.
           color: "transparent",
-          fillColor: "#EDEAE3",
-          fillOpacity: 0.97,
+          // Exakt der Flächenton der Oberfläche (--color-surface).
+          fillColor: "#F8F7F4",
+          // Bewusst nicht deckend: die Umgebung bleibt als Andeutung erkennbar.
+          fillOpacity: 0.9,
           weight: 0,
           interactive: false,
         }}
       />
+      {/* Heller Halo — hebt die Kante vom Kartenbild ab */}
       <Polyline
         positions={GERMANY_OUTLINE}
-        pathOptions={{ color: "#1A1A2E", weight: 1.6, opacity: 0.35, interactive: false }}
+        pathOptions={{
+          color: "#FFFFFF",
+          weight: 7,
+          opacity: 0.9,
+          lineJoin: "round",
+          interactive: false,
+          className: "pw-de-outline",
+        }}
+      />
+      {/* Feine Kontur darüber */}
+      <Polyline
+        positions={GERMANY_OUTLINE}
+        pathOptions={{
+          color: "#1A1A2E",
+          weight: 1.4,
+          opacity: 0.26,
+          lineJoin: "round",
+          interactive: false,
+        }}
       />
     </>
   );
@@ -60,7 +85,7 @@ function FitGermany({ enabled }: { enabled: boolean }) {
   const map = useMap();
   useEffect(() => {
     if (!enabled) return;
-    map.fitBounds(GERMANY_BOUNDS as LatLngBoundsExpression, { padding: [12, 12] });
+    map.fitBounds(GERMANY_BOUNDS as LatLngBoundsExpression, { padding: [26, 26] });
   }, [enabled, map]);
   return null;
 }
@@ -92,7 +117,7 @@ export default function MapShell({
       scrollWheelZoom={scrollWheelZoom}
       zoomControl={false}
       attributionControl={false}
-      style={{ height, width: "100%", background: "#EDEAE3" }}
+      style={{ height, width: "100%", background: "#F8F7F4" }}
     >
       <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
       <GermanyMask />
@@ -109,7 +134,7 @@ export function MapAttribution() {
       href={OSM_COPYRIGHT_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"
+      className="absolute z-[10] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"
       style={{ background: "rgba(255,255,255,0.85)", color: "rgba(26,26,46,0.5)" }}
     >
       © OpenStreetMap
@@ -123,7 +148,7 @@ export function MapZoom() {
   const btn = "w-9 h-9 flex items-center justify-center transition-colors duration-150 text-primary";
   return (
     <div
-      className="absolute z-[1000] right-3 bottom-3 flex flex-col overflow-hidden rounded-xl"
+      className="absolute z-[10] right-3 bottom-3 flex flex-col overflow-hidden rounded-xl"
       style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px -10px rgba(26,26,46,0.45)" }}
     >
       <button type="button" aria-label="Hineinzoomen" className={btn} onClick={() => map.zoomIn()}>

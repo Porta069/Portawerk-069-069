@@ -200,7 +200,7 @@ export default function SearchAreaMap({
 
         {open && hits.length > 0 && (
           <div
-            className="absolute z-[1200] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
+            className="absolute z-[20] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
             style={{ boxShadow: "0 20px 40px -18px rgba(26,26,46,0.5)" }}
           >
             {hits.map((h, i) => (
@@ -229,7 +229,7 @@ export default function SearchAreaMap({
       <div className="relative overflow-hidden rounded-2xl" style={{ boxShadow: "0 16px 40px -26px rgba(0,0,0,0.7)" }}>
         {locating && (
           <div
-            className="absolute z-[1000] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium"
+            className="absolute z-[10] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium"
             style={{ background: "rgba(26,26,46,0.94)", color: "white" }}
           >
             <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#E8A838" }} />
@@ -239,7 +239,7 @@ export default function SearchAreaMap({
 
         {!area && !locating && (
           <div
-            className="absolute z-[1000] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
+            className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
             style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)" }}
           >
             <Crosshair className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />

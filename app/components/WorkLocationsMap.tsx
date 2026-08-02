@@ -227,7 +227,7 @@ export default function WorkLocationsMap({
 
         {showResults && results.length > 0 && (
           <div
-            className="absolute z-[1200] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
+            className="absolute z-[20] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
             style={{ border: "1px solid #E9E7E1", boxShadow: "0 20px 40px -18px rgba(26,26,46,0.4)" }}
           >
             {results.map((r, i) => (
@@ -260,7 +260,7 @@ export default function WorkLocationsMap({
       >
         {adding && (
           <div
-            className="absolute z-[1000] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium"
+            className="absolute z-[10] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium"
             style={{ background: "rgba(26,26,46,0.94)", color: "white" }}
           >
             <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#E8A838" }} />
@@ -270,7 +270,7 @@ export default function WorkLocationsMap({
 
         {value.length === 0 && !adding && (
           <div
-            className="absolute z-[1000] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
+            className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
             style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)", boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)" }}
           >
             <Crosshair className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />

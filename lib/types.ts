@@ -195,6 +195,8 @@ export interface Job {
   employer: string;
   /** Exakter GEWERKE-Wert — Brücke zum Profil des Kandidaten. */
   gewerk: string;
+  /** Beschreibung der Stelle (aus dem Inserat). */
+  description?: string;
   city: string;
   /** Luftlinie in km (Backend liefert später Routing). */
   distanceKm: number;
@@ -224,6 +226,22 @@ export interface Job {
   matchScore?: number;
   /** Vollständiger Rechenweg — für die Transparenz-Ansicht in der Testphase. */
   matchBreakdown?: MatchBreakdown | null;
+  /** Wann das Inserat angelegt wurde (ISO). */
+  createdAt?: string;
+  /** Steht die Stelle auf der Merkliste des Nutzers? */
+  favorite?: boolean;
+  // Unternehmensdetails für Detailansicht + Vergleich.
+  companyDescription?: string;
+  companySlogan?: string;
+  benefits?: string[];
+  companyLogo?: string | null;
+  companyGruendungsjahr?: string;
+  companyMitarbeiter?: string;
+  companyWebsite?: string;
+  companyOrt?: string;
+  companyStrasse?: string;
+  companyPlz?: string;
+  companyKontaktName?: string;
 }
 
 export type OfferStatus = "neu" | "angenommen" | "abgelehnt";

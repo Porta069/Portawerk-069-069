@@ -11,7 +11,8 @@ import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Car, Euro, CalendarDays, Home, Building2, Timer, Palmtree,
-  Sparkles, TrendingUp, TrendingDown, Clock3, Route, X, Loader2,
+  Sparkles, TrendingUp, TrendingDown, Clock3, Route, X, Loader2, Heart,
+  GitCompareArrows,
 } from "lucide-react";
 import type { Job } from "@/lib/types";
 import ScoreExplainer from "@/app/components/ScoreExplainer";
@@ -84,11 +85,22 @@ export default function JobCard({
   job,
   footer,
   highlight = false,
+  onOpen,
+  onToggleFavorite,
+  compareSelected,
+  onToggleCompare,
 }: {
   job: Job;
   /** Aktionsbereich (Bewerben, Annehmen/Ablehnen, Statuszeile …). */
   footer?: React.ReactNode;
   highlight?: boolean;
+  /** Öffnet die Detailansicht (Klick auf Titel/Bild). */
+  onOpen?: (job: Job) => void;
+  /** Merken-Herz auf dem Bild. */
+  onToggleFavorite?: (job: Job) => void;
+  /** Vergleichsauswahl (Checkbox unten). */
+  compareSelected?: boolean;
+  onToggleCompare?: (job: Job) => void;
 }) {
   const c = job.conditions;
   const [showRoute, setShowRoute] = useState(false);
@@ -108,7 +120,10 @@ export default function JobCard({
     >
       <div className="flex flex-col sm:flex-row">
         {/* Bild */}
-        <div className="relative w-full sm:w-52 h-40 sm:h-auto flex-shrink-0">
+        <div
+          className={`relative w-full sm:w-52 h-40 sm:h-auto flex-shrink-0 ${onOpen ? "cursor-pointer" : ""}`}
+          onClick={onOpen ? () => onOpen(job) : undefined}
+        >
           <Image
             src={job.image}
             alt=""
@@ -116,6 +131,25 @@ export default function JobCard({
             sizes="(max-width: 640px) 100vw, 208px"
             className="object-cover"
           />
+          {onToggleFavorite && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite(job);
+              }}
+              aria-label={job.favorite ? "Von Merkliste entfernen" : "Auf Merkliste setzen"}
+              title={job.favorite ? "Von Merkliste entfernen" : "Merken"}
+              className="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110"
+              style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 4px 12px -4px rgba(0,0,0,0.35)" }}
+            >
+              <Heart
+                className="w-4 h-4"
+                style={{ color: job.favorite ? "#DC2626" : "#1A1A2E" }}
+                fill={job.favorite ? "#DC2626" : "none"}
+              />
+            </button>
+          )}
           {job.recommended && (
             <span
               className="absolute bottom-0 inset-x-0 flex items-center justify-center gap-1.5 py-2 text-[11px] font-bold"
@@ -131,8 +165,12 @@ export default function JobCard({
         <div className="flex-1 min-w-0 p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4 mb-1">
             <h3
-              className="text-primary font-bold text-[19px] leading-snug"
+              className={`text-primary font-bold text-[19px] leading-snug ${
+                onOpen ? "cursor-pointer transition-colors hover:text-[#B47B18]" : ""
+              }`}
               style={{ fontFamily: "var(--font-display)" }}
+              onClick={onOpen ? () => onOpen(job) : undefined}
+              title={onOpen ? "Details ansehen" : undefined}
             >
               {job.title}
             </h3>
@@ -242,7 +280,26 @@ export default function JobCard({
             </p>
           )}
 
-          {footer && <div className="mt-5">{footer}</div>}
+          {(footer || onToggleCompare) && (
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              {footer}
+              {onToggleCompare && (
+                <button
+                  type="button"
+                  onClick={() => onToggleCompare(job)}
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-colors"
+                  style={{
+                    border: `1.5px solid ${compareSelected ? "#E8A838" : "#E0DDD6"}`,
+                    background: compareSelected ? "rgba(232,168,56,0.14)" : "white",
+                    color: compareSelected ? "#8A5B0F" : "rgba(26,26,46,0.6)",
+                  }}
+                >
+                  <GitCompareArrows className="w-4 h-4" />
+                  {compareSelected ? "Im Vergleich" : "Vergleichen"}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

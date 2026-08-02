@@ -7,14 +7,20 @@
 // Angaben aus der Registrierung landen hier als Filter wieder an der Oberfläche.
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  listJobs, getWorkLocations, saveWorkLocations, applyToJob,
+  Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send, Check,
+  GitCompareArrows,
+} from "lucide-react";
+import {
+  listJobs, getWorkLocations, saveWorkLocations, applyToJob, setFavorite,
   type JobFilters, type JobSort,
 } from "@/lib/jobsService";
 import { GEWERKE } from "@/lib/constants";
 import type { Job, WorkLocation } from "@/lib/types";
 import JobCard from "@/app/components/dashboard/JobCard";
+import JobDetailDialog from "@/app/components/dashboard/JobDetailDialog";
+import CompareDialog from "@/app/components/dashboard/CompareDialog";
 import WorkLocationsMap from "@/app/components/WorkLocationsMapDynamic";
 import { ChipToggle } from "@/app/components/wizard";
 
@@ -59,9 +65,10 @@ function ApplyButton({ jobId }: { jobId: string }) {
   );
 }
 const SORTS: { value: JobSort; label: string }[] = [
-  { value: "relevanz", label: "Relevanz" },
-  { value: "fahrzeit", label: "Kürzeste Fahrzeit" },
+  { value: "relevanz", label: "Bester Match zuerst" },
+  { value: "fahrzeit", label: "Nächster an meinen Orten" },
   { value: "gehalt", label: "Höchstes Gehalt" },
+  { value: "neueste", label: "Neueste Inserate" },
 ];
 
 export default function JobboersePage() {
@@ -75,6 +82,11 @@ export default function JobboersePage() {
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+
+  /** Detailansicht + Vergleichsauswahl. */
+  const [detailJob, setDetailJob] = useState<Job | null>(null);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   // Arbeitsorte: beim ersten Aufruf aus der Registrierung übernommen.
   // Änderungen hier werden sofort gespeichert und gelten fürs Matching.
@@ -122,6 +134,21 @@ export default function JobboersePage() {
 
   const toggleGewerk = (g: string) =>
     setGewerke((cur) => (cur.includes(g) ? cur.filter((x) => x !== g) : [...cur, g]));
+
+  /** Merken/Entmerken — Zustand sofort in Liste + offener Detailansicht spiegeln. */
+  const toggleFavorite = (job: Job) => {
+    const next = !job.favorite;
+    setJobs((cur) => cur.map((j) => (j.id === job.id ? { ...j, favorite: next } : j)));
+    setDetailJob((cur) => (cur?.id === job.id ? { ...cur, favorite: next } : cur));
+    void setFavorite(job.id, next);
+  };
+
+  const toggleCompare = (job: Job) =>
+    setCompareIds((cur) =>
+      cur.includes(job.id) ? cur.filter((id) => id !== job.id) : [...cur, job.id]
+    );
+
+  const compareJobs = jobs.filter((j) => compareIds.includes(j.id));
 
   // Aktive Filter als entfernbare Chips — Transparenz statt versteckter Zustand.
   const activeChips: { label: string; clear: () => void }[] = [
@@ -348,11 +375,75 @@ export default function JobboersePage() {
                 job={job}
                 highlight={job.recommended}
                 footer={<ApplyButton jobId={job.id} />}
+                onOpen={setDetailJob}
+                onToggleFavorite={toggleFavorite}
+                compareSelected={compareIds.includes(job.id)}
+                onToggleCompare={toggleCompare}
               />
             ))}
           </div>
         </>
       )}
+
+      {/* ── Detailansicht ── */}
+      <JobDetailDialog
+        job={detailJob}
+        onClose={() => setDetailJob(null)}
+        onToggleFavorite={toggleFavorite}
+        footer={detailJob ? <ApplyButton jobId={detailJob.id} /> : null}
+      />
+
+      {/* ── Vergleich ── */}
+      <CompareDialog
+        jobs={compareJobs}
+        open={compareOpen}
+        onClose={() => setCompareOpen(false)}
+        onRemove={(id) => {
+          setCompareIds((cur) => {
+            const next = cur.filter((x) => x !== id);
+            if (next.length === 0) setCompareOpen(false);
+            return next;
+          });
+        }}
+      />
+
+      {/* Schwebende Vergleichsleiste */}
+      <AnimatePresence>
+        {compareIds.length > 0 && !compareOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-3 rounded-full pl-5 pr-2 py-2"
+            style={{ background: "#1A1A2E", boxShadow: "0 20px 50px -20px rgba(26,26,46,0.8)" }}
+          >
+            <span className="text-white text-[13.5px] whitespace-nowrap">
+              <strong className="tabular-nums">{compareIds.length}</strong>{" "}
+              {compareIds.length === 1 ? "Betrieb" : "Betriebe"} ausgewählt
+            </span>
+            <button
+              type="button"
+              onClick={() => setCompareOpen(true)}
+              disabled={compareIds.length < 2}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-bold disabled:opacity-50"
+              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            >
+              <GitCompareArrows className="w-4 h-4" />
+              {compareIds.length < 2 ? "Noch 1 wählen" : "Vergleichen"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCompareIds([])}
+              aria-label="Auswahl leeren"
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(255,255,255,0.12)", color: "white" }}
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

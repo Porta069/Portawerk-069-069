@@ -78,6 +78,7 @@ interface ApiJob {
   title: string;
   employer: string;
   gewerk: string;
+  description: string;
   city: string;
   distanceKm: number | null;
   travelMinutes: number | null;
@@ -101,6 +102,19 @@ interface ApiJob {
   matchReasons: string[];
   matchScore: number;
   matchBreakdown: MatchBreakdown;
+  createdAt: string;
+  favorite: boolean;
+  companyDescription: string;
+  companySlogan: string;
+  benefits: string[];
+  companyLogo: string | null;
+  companyGruendungsjahr: string;
+  companyMitarbeiter: string;
+  companyWebsite: string;
+  companyOrt: string;
+  companyStrasse: string;
+  companyPlz: string;
+  companyKontaktName: string;
 }
 
 function toJob(j: ApiJob): Job {
@@ -109,6 +123,7 @@ function toJob(j: ApiJob): Job {
     title: j.title,
     employer: j.employer,
     gewerk: j.gewerk,
+    description: j.description,
     city: j.city,
     distanceKm: j.distanceKm ?? 0,
     travelMinutes: j.travelMinutes ?? 0,
@@ -133,6 +148,19 @@ function toJob(j: ApiJob): Job {
     matchReasons: j.matchReasons,
     matchScore: j.matchScore,
     matchBreakdown: j.matchBreakdown,
+    createdAt: j.createdAt,
+    favorite: j.favorite,
+    companyDescription: j.companyDescription,
+    companySlogan: j.companySlogan,
+    benefits: j.benefits,
+    companyLogo: j.companyLogo,
+    companyGruendungsjahr: j.companyGruendungsjahr,
+    companyMitarbeiter: j.companyMitarbeiter,
+    companyWebsite: j.companyWebsite,
+    companyOrt: j.companyOrt,
+    companyStrasse: j.companyStrasse,
+    companyPlz: j.companyPlz,
+    companyKontaktName: j.companyKontaktName,
   };
 }
 
@@ -149,7 +177,7 @@ export interface JobFilters {
   fahrzeitIstArbeitszeit?: boolean;
 }
 
-export type JobSort = "relevanz" | "fahrzeit" | "gehalt";
+export type JobSort = "relevanz" | "fahrzeit" | "gehalt" | "neueste";
 
 export async function listJobs(
   filters: JobFilters = {},
@@ -177,6 +205,25 @@ export async function applyToJob(
   jobId: string
 ): Promise<ApiResult<{ id: string; status: string }>> {
   return apiRequest(`/jobs/${jobId}/apply`, { method: "POST", token: token() });
+}
+
+// ── Merkliste (Favoriten) ────────────────────────────────────────────────────
+
+export async function listFavorites(): Promise<ApiResult<Job[]>> {
+  const res = await apiRequest<ApiJob[]>("/me/favorites", { token: token() });
+  if (!res.ok) return res;
+  return { ok: true, data: res.data.map(toJob) };
+}
+
+/** Merkt eine Stelle bzw. entfernt sie wieder von der Merkliste. */
+export async function setFavorite(
+  jobId: string,
+  favorite: boolean
+): Promise<ApiResult<{ favorite: boolean }>> {
+  return apiRequest(`/jobs/${jobId}/favorite`, {
+    method: favorite ? "POST" : "DELETE",
+    token: token(),
+  });
 }
 
 // ── Angebote ─────────────────────────────────────────────────────────────────

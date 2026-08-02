@@ -24,6 +24,7 @@ const AREAS: {
 }[] = [
   { href: "/dashboard", label: "Übersicht" },
   { href: "/dashboard/jobboerse", label: "Jobbörse" },
+  { href: "/dashboard/merkliste", label: "Merkliste" },
   { href: "/dashboard/angebote", label: "Angebote", key: "angebote" },
   { href: "/dashboard/bewerbungen", label: "Bewerbungen", key: "bewerbungen" },
   // Bleibt im Dashboard: das Partnerprogramm hat zwar einen eigenen Login,

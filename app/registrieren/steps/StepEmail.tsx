@@ -8,7 +8,7 @@
 import { useState } from "react";
 import { Mail, Loader2, Check, Lock, BellRing, MessageCircle, Phone } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
-import { useEmailCheck, emailStatusMessage } from "@/lib/useEmailCheck";
+import { useEmailCheck, emailStatusMessage, suggestEmail } from "@/lib/useEmailCheck";
 import { StepHeading, NextButton, StepActions, ValueNote } from "@/app/components/wizard";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,6 +29,7 @@ export default function StepEmail() {
 
   const { status, reason } = useEmailCheck(email);
   const statusMsg = emailStatusMessage(status, reason);
+  const suggestion = suggestEmail(email.trim());
 
   const syntaxOk = EMAIL_RE.test(email);
   const error = !syntaxOk
@@ -117,6 +118,22 @@ export default function StepEmail() {
           Adresse sieht gut aus.
         </p>
       ) : null}
+
+      {/* Tippfehler-Vorschlag: gmial.com → gmail.com, gxm.de → gmx.de … */}
+      {suggestion && (
+        <p className="text-[13px] mt-2.5" style={{ color: "rgba(26,26,46,0.6)" }}>
+          Meintest du{" "}
+          <button
+            type="button"
+            onClick={() => setContact({ email: suggestion })}
+            className="font-bold underline underline-offset-2"
+            style={{ color: "#B47B18" }}
+          >
+            {suggestion}
+          </button>
+          ?
+        </p>
+      )}
 
       {/* ── Handynummer (optional) — für die WhatsApp-Ansprache ── */}
       <div className="mt-8">

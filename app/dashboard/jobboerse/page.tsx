@@ -240,6 +240,27 @@ export default function JobboersePage() {
         </div>
       </div>
 
+      {/* Ohne Arbeitsorte kein Fahrzeit-Matching — ehrlich sagen, was fehlt. */}
+      {locLoaded && locations.length === 0 && (
+        <div
+          className="flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3.5 mb-5"
+          style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
+        >
+          <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
+            <strong>Noch keine Arbeitsorte hinterlegt.</strong> Ohne sie können
+            wir keine Fahrzeiten berechnen und keine Stellen nach Nähe sortieren.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowFilters(true)}
+            className="rounded-full px-4 py-2 text-[13px] font-bold"
+            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+          >
+            Arbeitsorte festlegen
+          </button>
+        </div>
+      )}
+
       {/* Aktive Filter */}
       {activeChips.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 mb-5">
@@ -416,7 +437,7 @@ export default function JobboersePage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 24 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-3 rounded-full pl-5 pr-2 py-2"
+            className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[90] flex flex-wrap items-center justify-center gap-3 rounded-full pl-5 pr-2 py-2 max-w-[calc(100vw-24px)]"
             style={{ background: "#1A1A2E", boxShadow: "0 20px 50px -20px rgba(26,26,46,0.8)" }}
           >
             <span className="text-white text-[13.5px] whitespace-nowrap">

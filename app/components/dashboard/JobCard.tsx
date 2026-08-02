@@ -340,7 +340,27 @@ export default function JobCard({
                 </span>
               </span>
             )}
-            {/* Fahrzeit — anklickbar, öffnet die Route auf der Karte */}
+            {/* Fahrzeit — anklickbar, öffnet die Route auf der Karte.
+                Ohne hinterlegte Arbeitsorte gibt es keinen Startpunkt: dann
+                ehrlich „—“ statt irreführender 0-Werte. */}
+            {!job.startLabel ? (
+              <span
+                className="flex flex-col items-end flex-shrink-0 rounded-xl px-3 py-1.5"
+                style={{ background: "rgba(26,26,46,0.04)" }}
+                title="Lege zuerst deine Arbeitsorte fest"
+              >
+                <span
+                  className="inline-flex items-center gap-1.5 text-[15px] font-bold"
+                  style={{ fontFamily: "var(--font-display)", color: "rgba(26,26,46,0.4)" }}
+                >
+                  <Car className="w-4 h-4" style={{ color: "rgba(232,168,56,0.5)" }} />
+                  — Min.
+                </span>
+                <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.35)" }}>
+                  Orte fehlen
+                </span>
+              </span>
+            ) : (
             <button
               type="button"
               onClick={() => setShowRoute(true)}
@@ -366,6 +386,7 @@ export default function JobCard({
                 <Route className="w-3 h-3 opacity-0 transition-opacity duration-200 group-hover/route:opacity-100" />
               </span>
             </button>
+            )}
             </div>
           </div>
 

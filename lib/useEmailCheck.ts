@@ -11,6 +11,52 @@ export type EmailStatus = "idle" | "checking" | "valid" | "invalid";
 
 const SYNTAX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// ── „Meintest du …?“ — Tippfehler in bekannten Domains erkennen ──────────────
+// gmial.com, gmx.ed & Co. haben oft sogar gültige MX-Records fremder Squatter;
+// der MX-Check allein fängt sie nicht. Kleine Edit-Distanz gegen die im
+// Handwerk üblichsten Anbieter verhindert tote Kontakte.
+
+const COMMON_DOMAINS = [
+  "gmail.com", "googlemail.com", "gmx.de", "gmx.net", "web.de",
+  "outlook.com", "outlook.de", "hotmail.com", "hotmail.de", "yahoo.com",
+  "yahoo.de", "t-online.de", "icloud.com", "freenet.de", "aol.com",
+];
+
+function editDistance(a: string, b: string): number {
+  const dp = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+      );
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+/**
+ * Liefert die vermutlich gemeinte Adresse ("max@gmail.com") oder null.
+ * Schlägt nur vor, wenn die getippte Domain KEINE bekannte ist, aber einer
+ * bekannten sehr nahe kommt (Edit-Distanz 1–2).
+ */
+export function suggestEmail(email: string): string | null {
+  const at = email.lastIndexOf("@");
+  if (at <= 0) return null;
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1).toLowerCase();
+  if (!domain || COMMON_DOMAINS.includes(domain)) return null;
+
+  let best: { d: string; dist: number } | null = null;
+  for (const d of COMMON_DOMAINS) {
+    const dist = editDistance(domain, d);
+    if (dist <= 2 && (!best || dist < best.dist)) best = { d, dist };
+  }
+  return best ? `${local}@${best.d}` : null;
+}
+
 export function useEmailCheck(email: string): {
   status: EmailStatus;
   reason: string | null;

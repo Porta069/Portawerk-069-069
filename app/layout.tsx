@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "./context/AuthContext";
 import BackendStatus from "./components/BackendStatus";
 
@@ -18,9 +19,28 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PortaWerk — Handwerker-Jobs finden, ohne dich zu bewerben",
+  // Basis für absolute OG-/Canonical-URLs (Link-Vorschau in WhatsApp & Co.).
+  metadataBase: new URL("https://portawerk-two.vercel.app"),
+  title: {
+    default: "PortaWerk — Handwerker-Jobs finden, ohne dich zu bewerben",
+    template: "%s · PortaWerk",
+  },
   description:
     "Kostenlose Jobvermittlung fürs Handwerk: Wir suchen die Jobs für dich, die Betriebe bewerben sich bei dir. Lebenslauf gratis, diskret & anonym, 200 € Startprämie. Elektriker, SHK, Maler, Tischler & mehr.",
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "PortaWerk",
+    title: "PortaWerk — Der Job findet dich",
+    description:
+      "Betriebe bewerben sich bei Handwerkern — diskret, anonym, kostenlos. Jetzt Profil anlegen und Angebote erhalten.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PortaWerk — Der Job findet dich",
+    description:
+      "Betriebe bewerben sich bei Handwerkern — diskret, anonym, kostenlos.",
+  },
   keywords: [
     "Handwerker Jobs",
     "Job im Handwerk",
@@ -48,6 +68,8 @@ export default function RootLayout({
           {children}
           <BackendStatus />
         </AuthProvider>
+        {/* Cookiefreie Seitenaufruf-Statistik (Vercel Web Analytics). */}
+        <Analytics />
       </body>
     </html>
   );

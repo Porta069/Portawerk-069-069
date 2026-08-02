@@ -53,7 +53,7 @@ function Fact({
       </span>
       <span className="min-w-0">
         <span
-          className="block text-[17px] font-bold tabular-nums text-primary leading-none truncate"
+          className="block text-[17px] font-bold tabular-nums text-primary leading-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
           {value}
@@ -433,12 +433,12 @@ export default function CandidateCard({
       >
         <div className="flex flex-col sm:flex-row">
           {/* Gewerk-Bild — bewusst nicht die Person */}
-          <div className="relative w-full sm:w-[210px] h-44 sm:h-auto flex-shrink-0 overflow-hidden">
+          <div className="relative w-full sm:w-[240px] h-44 sm:h-auto flex-shrink-0 overflow-hidden">
             <Image
               src={img}
               alt=""
               fill
-              sizes="(max-width: 640px) 100vw, 210px"
+              sizes="(max-width: 640px) 100vw, 240px"
               className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
             <div
@@ -478,25 +478,27 @@ export default function CandidateCard({
                 aktiv {c.zuletztAktiv}
               </p>
 
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 flex-shrink-0"
-                style={{
-                  background: top ? "rgba(232,168,56,0.2)" : "rgba(26,26,46,0.05)",
-                  color: top ? "#8A5B0F" : "rgba(26,26,46,0.6)",
-                }}
-              >
-                {top ? <Star className="w-4 h-4" fill="currentColor" /> : <Sparkles className="w-4 h-4" />}
+              {c.matchScore > 0 && (
                 <span
-                  className="text-[15px] font-bold tabular-nums"
-                  style={{ fontFamily: "var(--font-display)" }}
+                  className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 flex-shrink-0"
+                  style={{
+                    background: top ? "rgba(232,168,56,0.2)" : "rgba(26,26,46,0.05)",
+                    color: top ? "#8A5B0F" : "rgba(26,26,46,0.6)",
+                  }}
                 >
-                  {c.matchScore} %
+                  {top ? <Star className="w-4 h-4" fill="currentColor" /> : <Sparkles className="w-4 h-4" />}
+                  <span
+                    className="text-[15px] font-bold tabular-nums"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {c.matchScore} %
+                  </span>
                 </span>
-              </span>
+              )}
             </div>
 
             {/* Kernzahlen in einer Zeile — von links nach rechts lesbar */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-4 mb-5">
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-4 mb-5">
               <Fact icon={Briefcase} value={`${c.erfahrungJahre} Jahre`} label="Erfahrung" />
               <Fact icon={Route} value={`${c.distanceKm} km`} label="Anfahrt" />
               <Fact icon={CalendarDays} value={c.verfuegbarAb.replace("Ab ", "")} label="Verfügbar" />
@@ -522,7 +524,7 @@ export default function CandidateCard({
             {/* Aktionen */}
             {c.freigegeben ? (
               <div
-                className="rounded-2xl px-4 py-3.5"
+                className="rounded-2xl px-5 py-4"
                 style={{ background: "rgba(22,163,74,0.09)", border: "1px solid rgba(22,163,74,0.3)" }}
               >
                 <p

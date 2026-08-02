@@ -128,10 +128,12 @@ export default function EmployerRequestsPage() {
                   </span>
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-4">
+                {/* Volle Breite: die Karte ist eine breite Zeile — in zwei Spalten
+                    gequetscht brechen die Kennzahlen ab ("9." statt "9 Jahre"). */}
+                <div className="space-y-5">
                   {g.items.map((r) => (
                     <div key={r.id}>
-                      <p className="text-[12px] mb-2 ml-1" style={{ color: "rgba(26,26,46,0.45)" }}>
+                      <p className="text-[12.5px] mb-2 ml-1" style={{ color: "rgba(26,26,46,0.45)" }}>
                         Angefragt für <strong className="text-primary">{r.position}</strong> · {r.sentAt}
                       </p>
                       <CandidateCard candidate={r.candidate} />

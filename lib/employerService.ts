@@ -46,18 +46,27 @@ function delay(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/** Grobe PLZ-Zuordnung für die Distanzberechnung im Mock. */
-const PLZ_REGIONS: { prefix: string; region: string; lat: number; lng: number }[] = [
-  { prefix: "0", region: "Sachsen / Leipzig", lat: 51.34, lng: 12.37 },
-  { prefix: "1", region: "Berlin / Brandenburg", lat: 52.52, lng: 13.4 },
-  { prefix: "2", region: "Hamburg / Niedersachsen", lat: 53.55, lng: 9.99 },
-  { prefix: "3", region: "Hannover / Kassel", lat: 52.37, lng: 9.73 },
-  { prefix: "4", region: "Ruhrgebiet / Münster", lat: 51.51, lng: 7.47 },
-  { prefix: "5", region: "Köln / Bonn", lat: 50.94, lng: 6.96 },
-  { prefix: "6", region: "Rhein-Main", lat: 50.11, lng: 8.68 },
-  { prefix: "7", region: "Stuttgart / Baden", lat: 48.78, lng: 9.18 },
-  { prefix: "8", region: "München / Oberbayern", lat: 48.14, lng: 11.58 },
-  { prefix: "9", region: "Nürnberg / Franken", lat: 49.45, lng: 11.08 },
+/**
+ * Grobe PLZ-Zuordnung. `city` liefert die sprechende Ortsangabe der Kandidaten
+ * ("Landkreis München"), damit die Demodaten zur gesuchten Region passen.
+ */
+const PLZ_REGIONS: {
+  prefix: string;
+  region: string;
+  city: string;
+  lat: number;
+  lng: number;
+}[] = [
+  { prefix: "0", region: "Sachsen / Leipzig", city: "Leipzig", lat: 51.34, lng: 12.37 },
+  { prefix: "1", region: "Berlin / Brandenburg", city: "Berlin", lat: 52.52, lng: 13.4 },
+  { prefix: "2", region: "Hamburg / Niedersachsen", city: "Hamburg", lat: 53.55, lng: 9.99 },
+  { prefix: "3", region: "Hannover / Kassel", city: "Hannover", lat: 52.37, lng: 9.73 },
+  { prefix: "4", region: "Ruhrgebiet / Münster", city: "Dortmund", lat: 51.51, lng: 7.47 },
+  { prefix: "5", region: "Köln / Bonn", city: "Köln", lat: 50.94, lng: 6.96 },
+  { prefix: "6", region: "Rhein-Main", city: "Frankfurt", lat: 50.11, lng: 8.68 },
+  { prefix: "7", region: "Stuttgart / Baden", city: "Stuttgart", lat: 48.78, lng: 9.18 },
+  { prefix: "8", region: "München / Oberbayern", city: "München", lat: 48.14, lng: 11.58 },
+  { prefix: "9", region: "Nürnberg / Franken", city: "Nürnberg", lat: 49.45, lng: 11.08 },
 ];
 
 export function regionForPlz(plz: string): string | null {
@@ -67,74 +76,80 @@ export function regionForPlz(plz: string): string | null {
 }
 
 // ── Kandidaten-Grunddaten ────────────────────────────────────────────────────
-// `plzPrefix` steuert, in welcher Region ein Kandidat auftaucht.
-const CANDIDATES: (Omit<Candidate, "distanceKm" | "status" | "matchScore" | "lat" | "lng"> & {
-  plzPrefix: string;
+// Die Demodaten haengen bewusst NICHT an einer festen Leitregion: sonst liefert
+// jede andere PLZ null Treffer und der Ablauf laesst sich nicht pruefen. Ort und
+// Koordinaten werden zur gesuchten Region berechnet, `ortTyp` gibt nur die Art
+// der Lage an ("Landkreis", "Stadtgebiet", ...).
+const CANDIDATES: (Omit<
+  Candidate,
+  "distanceKm" | "status" | "matchScore" | "lat" | "lng" | "region"
+> & {
+  ortTyp: string;
   baseDistance: number;
 })[] = [
   {
-    id: "c-1", handle: "Elektriker #A47", plzPrefix: "8",
+    id: "c-1", handle: "Elektriker #A47",
     gewerk: "Elektriker / Elektroniker", erfahrungJahre: 9,
     zertifikate: ["Gesellenbrief", "Führerschein Kl. BE"],
-    region: "Landkreis München", baseDistance: 11, radiusKm: 40,
+    ortTyp: "Landkreis", baseDistance: 11, radiusKm: 40,
     bereitschaft: ["Notdienst / Rufbereitschaft"], praeferenz: "Besseres Gehalt",
     gehaltVon: 3200, gehaltBis: 3900, verfuegbarAb: "Ab sofort", zuletztAktiv: "vor 2 Tagen",
   },
   {
-    id: "c-2", handle: "Elektroniker #B12", plzPrefix: "8",
+    id: "c-2", handle: "Elektroniker #B12",
     gewerk: "Elektriker / Elektroniker", erfahrungJahre: 4,
     zertifikate: ["Gesellenbrief"],
-    region: "München Stadt", baseDistance: 6, radiusKm: 25,
+    ortTyp: "Stadtgebiet", baseDistance: 6, radiusKm: 25,
     bereitschaft: ["Schichtarbeit"], praeferenz: "Kurzer Arbeitsweg",
     gehaltVon: 2900, gehaltBis: 3400, verfuegbarAb: "Ab 01.10.", zuletztAktiv: "gestern",
   },
   {
-    id: "c-3", handle: "Meister SHK #C09", plzPrefix: "8",
+    id: "c-3", handle: "Meister SHK #C09",
     gewerk: "Installateur / Klempner (SHK)", erfahrungJahre: 16,
     zertifikate: ["Meisterbrief", "Gesellenbrief", "Führerschein Kl. BE"],
-    region: "Landkreis Freising", baseDistance: 28, radiusKm: 60,
+    ortTyp: "Umland", baseDistance: 28, radiusKm: 60,
     bereitschaft: ["Montage / Reisetätigkeit", "Notdienst / Rufbereitschaft"],
     praeferenz: "Aufstiegsmöglichkeiten",
     gehaltVon: 4200, gehaltBis: 5100, verfuegbarAb: "Ab 01.11.", zuletztAktiv: "vor 5 Tagen",
   },
   {
-    id: "c-4", handle: "Anlagenmechaniker #D33", plzPrefix: "2",
+    id: "c-4", handle: "Anlagenmechaniker #D33",
     gewerk: "Installateur / Klempner (SHK)", erfahrungJahre: 7,
     zertifikate: ["Gesellenbrief", "Staplerschein"],
-    region: "Hamburg Nord", baseDistance: 9, radiusKm: 35,
+    ortTyp: "Stadtgebiet Nord", baseDistance: 9, radiusKm: 35,
     bereitschaft: [], praeferenz: "Gutes Team & Betriebsklima",
     gehaltVon: 3000, gehaltBis: 3600, verfuegbarAb: "Ab sofort", zuletztAktiv: "vor 3 Tagen",
   },
   {
-    id: "c-5", handle: "Metallbauer #E58", plzPrefix: "4",
+    id: "c-5", handle: "Metallbauer #E58",
     gewerk: "Metallbauer / Schlosser", erfahrungJahre: 12,
     zertifikate: ["Gesellenbrief", "Schweißerpass", "Führerschein Kl. BE"],
-    region: "Kreis Unna", baseDistance: 22, radiusKm: 80,
+    ortTyp: "Kreis", baseDistance: 22, radiusKm: 80,
     bereitschaft: ["Montage / Reisetätigkeit", "Umzug für den richtigen Job"],
     praeferenz: "Besseres Gehalt",
     gehaltVon: 3400, gehaltBis: 4200, verfuegbarAb: "Ab sofort", zuletztAktiv: "heute",
   },
   {
-    id: "c-6", handle: "Tischler #F21", plzPrefix: "7",
+    id: "c-6", handle: "Tischler #F21",
     gewerk: "Tischler / Schreiner", erfahrungJahre: 5,
     zertifikate: ["Gesellenbrief"],
-    region: "Kreis Ludwigsburg", baseDistance: 17, radiusKm: 30,
+    ortTyp: "Landkreis", baseDistance: 17, radiusKm: 30,
     bereitschaft: [], praeferenz: "Kurzer Arbeitsweg",
     gehaltVon: 2800, gehaltBis: 3300, verfuegbarAb: "Ab 01.09.", zuletztAktiv: "vor 1 Woche",
   },
   {
-    id: "c-7", handle: "Maler #G74", plzPrefix: "1",
+    id: "c-7", handle: "Maler #G74",
     gewerk: "Maler & Lackierer", erfahrungJahre: 3,
     zertifikate: ["Gesellenbrief"],
-    region: "Berlin Süd", baseDistance: 14, radiusKm: 25,
+    ortTyp: "Stadtgebiet Süd", baseDistance: 14, radiusKm: 25,
     bereitschaft: ["Schichtarbeit"], praeferenz: "Gutes Team & Betriebsklima",
     gehaltVon: 2600, gehaltBis: 3100, verfuegbarAb: "Ab sofort", zuletztAktiv: "vor 4 Tagen",
   },
   {
-    id: "c-8", handle: "Dachdecker #H15", plzPrefix: "5",
+    id: "c-8", handle: "Dachdecker #H15",
     gewerk: "Dachdecker", erfahrungJahre: 11,
     zertifikate: ["Gesellenbrief", "Führerschein Kl. BE"],
-    region: "Rhein-Sieg-Kreis", baseDistance: 25, radiusKm: 50,
+    ortTyp: "Umland", baseDistance: 25, radiusKm: 50,
     bereitschaft: ["Montage / Reisetätigkeit"], praeferenz: "Besseres Gehalt",
     gehaltVon: 3100, gehaltBis: 3800, verfuegbarAb: "Ab sofort", zuletztAktiv: "vor 2 Tagen",
   },
@@ -231,10 +246,10 @@ export async function searchCandidates(
   const prefix = f.plz.trim()[0];
   const states = readStates();
 
+  const home = PLZ_REGIONS.find((r) => r.prefix === prefix) ?? PLZ_REGIONS[0];
+
   const out = CANDIDATES.map((c) => {
-    // Gleiche Leitregion → echte Nähe; andere Region → deutlich weiter.
-    const distanceKm =
-      c.plzPrefix === prefix ? c.baseDistance : c.baseDistance + 180 + Number(c.plzPrefix) * 7;
+    const distanceKm = c.baseDistance;
 
     // Match-Score: Nähe, Erfahrung und ob der Kandidat selbst so weit fahren will.
     const nahe = Math.max(0, 1 - distanceKm / Math.max(f.radiusKm, 1));
@@ -244,13 +259,13 @@ export async function searchCandidates(
 
     // Kartenposition: Regionsmittelpunkt plus fester Versatz. Bewusst grob —
     // die Karte zeigt Dichte, niemals eine Adresse.
-    const home = PLZ_REGIONS.find((r) => r.prefix === c.plzPrefix) ?? PLZ_REGIONS[0];
     const spread = (Number(c.id.replace(/\D/g, "")) || 1) * 0.037;
 
     const st = states[c.id];
     const status = (st?.status ?? "verfuegbar") as CandidateStatus;
     return {
       ...c,
+      region: `${c.ortTyp} ${home.city}`,
       // Klartextdaten nur bei Freigabe — sonst gar nicht erst im Objekt.
       ...(status === "freigegeben" && FREIGEGEBEN[c.id]
         ? { freigegeben: FREIGEGEBEN[c.id] }
@@ -309,6 +324,7 @@ export async function listRequests(): Promise<ApiResult<ContactRequest[]>> {
       id: `req-${id}`,
       candidate: {
         ...base,
+        region: `${base.ortTyp} ${PLZ_REGIONS[8].city}`,
         ...(st.status === "freigegeben" && FREIGEGEBEN[id]
           ? { freigegeben: FREIGEGEBEN[id] }
           : {}),

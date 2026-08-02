@@ -11,7 +11,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Building2, MapPin, Phone, Mail, Globe, Users, CalendarDays, Loader2, Check,
-  Save, Eye, Sparkles, Home, Palmtree, ImagePlus, Trash2, AlertCircle,
+  Save, Eye, Sparkles, Home, Palmtree, ImagePlus, Trash2, AlertCircle, Settings,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import {
@@ -266,9 +266,15 @@ export default function EmployerProfilePage() {
       <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
         <div>
           <h1
-            className="text-primary font-bold mb-1"
+            className="flex items-center gap-3 text-primary font-bold mb-1"
             style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
           >
+            <span
+              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "rgba(232,168,56,0.14)" }}
+            >
+              <Settings className="w-[20px] h-[20px]" style={{ color: "#B47B18" }} strokeWidth={2.2} />
+            </span>
             Unternehmensprofil
           </h1>
           <p className="text-[15px]" style={{ color: "rgba(26,26,46,0.55)" }}>

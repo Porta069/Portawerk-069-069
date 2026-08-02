@@ -8,12 +8,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Building2, LogOut, Menu, X } from "lucide-react";
+import { Building2, LogOut, Menu, X, Settings } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const AREAS = [
+const AREAS: { href: string; label: string; icon?: LucideIcon }[] = [
   { href: "/unternehmen/dashboard", label: "Kandidaten suchen" },
   { href: "/unternehmen/anfragen", label: "Meine Anfragen" },
-  { href: "/unternehmen/profil", label: "Unternehmensprofil" },
+  // Zahnrad, damit erkennbar ist: hier werden Einstellungen gepflegt, es ist
+  // kein weiterer Arbeitsbereich wie die beiden davor.
+  { href: "/unternehmen/profil", label: "Unternehmensprofil", icon: Settings },
 ];
 
 export default function EmployerNav({
@@ -58,10 +61,11 @@ export default function EmployerNav({
                 <Link
                   key={a.href}
                   href={a.href}
-                  className={`relative px-4 py-2 text-sm transition-colors duration-200 whitespace-nowrap ${
+                  className={`relative inline-flex items-center gap-1.5 px-4 py-2 text-sm transition-colors duration-200 whitespace-nowrap ${
                     active ? "text-white font-semibold" : "text-white/55 hover:text-white"
                   }`}
                 >
+                  {a.icon && <a.icon className="w-4 h-4 flex-shrink-0" strokeWidth={2.1} />}
                   {a.label}
                   {badge > 0 && (
                     <span
@@ -119,10 +123,11 @@ export default function EmployerNav({
                   key={a.href}
                   href={a.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`py-3 text-base ${
+                  className={`inline-flex items-center gap-2 py-3 text-base ${
                     pathname.startsWith(a.href) ? "text-white font-semibold" : "text-white/60"
                   }`}
                 >
+                  {a.icon && <a.icon className="w-4 h-4 flex-shrink-0" strokeWidth={2.1} />}
                   {a.label}
                 </Link>
               ))}

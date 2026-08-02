@@ -13,6 +13,7 @@ import { Building2, LogOut, Menu, X } from "lucide-react";
 const AREAS = [
   { href: "/unternehmen/dashboard", label: "Kandidaten suchen" },
   { href: "/unternehmen/anfragen", label: "Meine Anfragen" },
+  { href: "/unternehmen/profil", label: "Unternehmensprofil" },
 ];
 
 export default function EmployerNav({

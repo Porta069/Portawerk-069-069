@@ -266,3 +266,35 @@ export interface ContactRequest {
   sentAt: string;
   status: Exclude<CandidateStatus, "verfuegbar">;
 }
+
+// ─── Unternehmensprofil (Arbeitgeber) ────────────────────────────────────────
+// Was der Betrieb über sich hinterlegt — und woraus die Vorschau entsteht,
+// die Handwerker später im Jobangebot sehen.
+
+export interface EmployerProfile {
+  firmenname: string;
+  /** Kurzer Satz, der im Angebot direkt unter dem Namen steht. */
+  slogan: string;
+  gruendungsjahr: string;
+  mitarbeiter: string;
+  strasse: string;
+  plz: string;
+  ort: string;
+  website: string;
+  /** Fließtext "Über uns". */
+  ueberUns: string;
+  /** Ansprechpartner — im Angebot sichtbar, schafft Vertrauen. */
+  kontaktName: string;
+  kontaktPosition: string;
+  kontaktTelefon: string;
+  kontaktEmail: string;
+  /** Leistungen, die im Angebot als Chips erscheinen. */
+  benefits: string[];
+  /** z.B. "Jeden Abend zuhause" */
+  montage: string;
+  fahrzeitIstArbeitszeit: boolean;
+  startpunkt: "Haustür" | "Betrieb";
+  urlaubstage: string;
+  /** Logo als Data-URL (optional). */
+  logo: string;
+}

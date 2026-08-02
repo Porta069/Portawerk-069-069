@@ -12,7 +12,9 @@
 // Kontaktdaten geführt. Diese Felder existieren in der Arbeitgeber-Sicht
 // bewusst gar nicht — Freigabe passiert ausschließlich beim Kandidaten.
 
-import type { ApiResult, Candidate, CandidateStatus, ContactRequest } from "./types";
+import type {
+  ApiResult, Candidate, CandidateStatus, ContactRequest, EmployerProfile,
+} from "./types";
 
 export const EMPLOYER_DATA_IS_MOCKED = true;
 
@@ -296,4 +298,112 @@ export async function listRequests(): Promise<ApiResult<ContactRequest[]>> {
     };
   });
   return { ok: true, data: out };
+}
+
+
+// ── Unternehmensprofil ───────────────────────────────────────────────────────
+// Später: GET/PATCH /employer/profile. Bis dahin localStorage.
+
+const PROFILE_KEY = "portawerk_employer_profile_v1";
+
+export const BENEFIT_OPTIONEN = [
+  "Firmenwagen",
+  "Werkzeug wird gestellt",
+  "Arbeitskleidung gestellt",
+  "Weiterbildung & Schulungen",
+  "Betriebliche Altersvorsorge",
+  "Unbefristeter Vertrag",
+  "Leistungsprämien",
+  "Vermögenswirksame Leistungen",
+  "Feste Arbeitszeiten",
+  "Junges Team",
+];
+
+export const MONTAGE_OPTIONEN = [
+  "Jeden Abend zuhause",
+  "Gelegentlich Montage",
+  "Dauermontage",
+];
+
+const EMPTY_PROFILE: EmployerProfile = {
+  firmenname: "",
+  slogan: "",
+  gruendungsjahr: "",
+  mitarbeiter: "",
+  strasse: "",
+  plz: "",
+  ort: "",
+  website: "",
+  ueberUns: "",
+  kontaktName: "",
+  kontaktPosition: "",
+  kontaktTelefon: "",
+  kontaktEmail: "",
+  benefits: [],
+  montage: "",
+  fahrzeitIstArbeitszeit: false,
+  startpunkt: "Betrieb",
+  urlaubstage: "",
+  logo: "",
+};
+
+export async function getEmployerProfile(): Promise<ApiResult<EmployerProfile>> {
+  await delay(120);
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    if (raw) {
+      return { ok: true, data: { ...EMPTY_PROFILE, ...(JSON.parse(raw) as EmployerProfile) } };
+    }
+    // PLZ aus der Anfrage übernehmen, damit das Profil nicht bei null startet.
+    const plz = getStoredPlz();
+    return { ok: true, data: { ...EMPTY_PROFILE, plz } };
+  } catch {
+    return { ok: true, data: EMPTY_PROFILE };
+  }
+}
+
+export async function saveEmployerProfile(
+  p: EmployerProfile
+): Promise<ApiResult<EmployerProfile>> {
+  await delay(320);
+  try {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
+  } catch {
+    return { ok: false, error: "Profil konnte nicht gespeichert werden." };
+  }
+  if (/^\d{5}$/.test(p.plz)) storePlz(p.plz);
+  return { ok: true, data: p };
+}
+
+/**
+ * Wie vollständig ist das Profil — und was bringt der nächste Schritt?
+ * Bewusst mit beziffertem Nutzen statt nackter Prozentzahl.
+ */
+export function profileGaps(p: EmployerProfile): { label: string; hint: string }[] {
+  const gaps: { label: string; hint: string }[] = [];
+  if (!p.logo) gaps.push({ label: "Logo hinterlegen", hint: "Angebote mit Logo werden häufiger geöffnet" });
+  if (!p.ueberUns.trim()) gaps.push({ label: "Über uns ausfüllen", hint: "Handwerker wollen wissen, wo sie landen" });
+  if (!p.kontaktName.trim()) gaps.push({ label: "Ansprechpartner nennen", hint: "Ein Name schafft mehr Vertrauen als eine GmbH" });
+  if (p.benefits.length < 3) gaps.push({ label: "Mindestens 3 Leistungen angeben", hint: "Sie erscheinen als Chips im Angebot" });
+  if (!p.montage) gaps.push({ label: "Montageaufkommen angeben", hint: "Für Handwerker das wichtigste Kriterium" });
+  if (!p.urlaubstage) gaps.push({ label: "Urlaubstage eintragen", hint: "Wird direkt mit anderen Betrieben verglichen" });
+  if (!p.slogan.trim()) gaps.push({ label: "Kurzbeschreibung ergänzen", hint: "Steht im Angebot direkt unter dem Namen" });
+  return gaps;
+}
+
+/** Anteil ausgefüllter Kernangaben in Prozent. */
+export function profileScore(p: EmployerProfile): number {
+  const checks = [
+    !!p.firmenname.trim(),
+    !!p.slogan.trim(),
+    !!p.plz && !!p.ort,
+    !!p.ueberUns.trim(),
+    !!p.kontaktName.trim(),
+    !!p.kontaktTelefon.trim(),
+    p.benefits.length >= 3,
+    !!p.montage,
+    !!p.urlaubstage,
+    !!p.logo,
+  ];
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
 }

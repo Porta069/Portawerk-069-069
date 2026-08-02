@@ -84,8 +84,19 @@ function FitRadius({ area, radiusKm }: { area: SearchArea | null; radiusKm: numb
   const map = useMap();
   useEffect(() => {
     if (!area) return;
-    const circle = L.circle([area.lat, area.lng], { radius: radiusKm * 1000 });
-    map.flyToBounds(circle.getBounds(), { padding: [36, 36], duration: 0.7 });
+    if (!Number.isFinite(area.lat) || !Number.isFinite(area.lng)) return;
+
+    // Bewusst ueber LatLng.toBounds statt ueber einen L.circle: ein Kreis, der
+    // nicht auf der Karte liegt, hat weder _map noch _point — sein getBounds()
+    // greift intern darauf zu und wirft. toBounds ist eine reine Rechnung.
+    const bounds = L.latLng(area.lat, area.lng).toBounds(radiusKm * 2000);
+
+    try {
+      map.flyToBounds(bounds, { padding: [36, 36], duration: 0.7 });
+    } catch {
+      // Karte noch nicht vermessen — dann wenigstens zentrieren.
+      map.setView([area.lat, area.lng], map.getZoom());
+    }
   }, [area, radiusKm, map]);
   return null;
 }

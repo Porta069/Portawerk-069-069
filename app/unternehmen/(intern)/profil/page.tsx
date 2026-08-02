@@ -20,18 +20,70 @@ import {
 } from "@/lib/employerService";
 import type { EmployerProfile } from "@/lib/types";
 
+/**
+ * Verkleinert das Logo auf max. 320 px Kantenlaenge. Transparenz bleibt
+ * erhalten (PNG), sonst wird als JPEG komprimiert — so passt es sicher in
+ * localStorage und spaeter in eine Datenbankspalte.
+ */
+function resizeLogo(file: File, max = 320): Promise<string> {
+  return new Promise((resolve, reject) => {
+    // SVG braucht keine Rasterung.
+    if (file.type === "image/svg+xml") {
+      const r = new FileReader();
+      r.onerror = () => reject(new Error("read"));
+      r.onload = () => resolve(String(r.result));
+      r.readAsDataURL(file);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("read"));
+    reader.onload = () => {
+      const img = new window.Image();
+      img.onerror = () => reject(new Error("img"));
+      img.onload = () => {
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale));
+        const h = Math.max(1, Math.round(img.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject(new Error("ctx"));
+        ctx.drawImage(img, 0, 0, w, h);
+        const keepAlpha = file.type === "image/png" || file.type === "image/webp";
+        resolve(canvas.toDataURL(keepAlpha ? "image/png" : "image/jpeg", 0.85));
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 const inputCls =
   "w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-primary/25";
 const inputStyle = { border: "1.5px solid #E9E7E1" } as const;
 
-function Label({ children, hint }: { children: React.ReactNode; hint?: string }) {
+function Label({
+  children,
+  hint,
+  optional,
+}: {
+  children: React.ReactNode;
+  hint?: string;
+  optional?: boolean;
+}) {
   return (
     <label className="block mb-2">
       <span
-        className="block text-[10px] uppercase tracking-[0.16em] font-semibold"
+        className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold"
         style={{ color: "rgba(26,26,46,0.45)" }}
       >
         {children}
+        {optional && (
+          <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(26,26,46,0.32)" }}>
+            (optional)
+          </span>
+        )}
       </span>
       {hint && (
         <span className="block text-[12px] mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }}>
@@ -92,6 +144,8 @@ export default function EmployerProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [logoBusy, setLogoBusy] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
 
   useEffect(() => {
     getEmployerProfile().then((res) => {
@@ -118,15 +172,28 @@ export default function EmployerProfilePage() {
     set("benefits", p.benefits.includes(b) ? p.benefits.filter((x) => x !== b) : [...p.benefits, b]);
   };
 
-  const handleLogo = (file: File | null) => {
+  /**
+   * Logo wird clientseitig auf 320 px verkleinert. Vorher wurden grosse
+   * Dateien schlicht abgelehnt — die Fehlermeldung stand oben auf der Seite,
+   * waehrend der Nutzer unten am Logo-Feld sass und dachte, nichts passiert.
+   * PNG bleibt PNG, damit transparente Logos nicht auf weissem Kasten landen.
+   */
+  const handleLogo = async (file: File | null) => {
     if (!file) return;
-    if (file.size > 900_000) {
-      setError("Das Logo ist zu groß (max. 900 KB).");
+    setLogoError(null);
+    if (!file.type.startsWith("image/")) {
+      setLogoError("Bitte eine Bilddatei wählen (PNG, JPG, SVG oder WebP).");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => set("logo", String(reader.result));
-    reader.readAsDataURL(file);
+    setLogoBusy(true);
+    try {
+      const dataUrl = await resizeLogo(file);
+      set("logo", dataUrl);
+    } catch {
+      setLogoError("Diese Datei konnte nicht gelesen werden. Versuch es mit PNG oder JPG.");
+    } finally {
+      setLogoBusy(false);
+    }
   };
 
   const save = async () => {
@@ -216,7 +283,7 @@ export default function EmployerProfilePage() {
                 />
               </div>
               <div>
-                <Label hint="Ein Satz, der Ihren Betrieb beschreibt">Kurzbeschreibung</Label>
+                <Label optional hint="Ein Satz, der Ihren Betrieb beschreibt">Kurzbeschreibung</Label>
                 <input
                   className={inputCls}
                   style={inputStyle}
@@ -227,7 +294,7 @@ export default function EmployerProfilePage() {
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <Label>Gegründet</Label>
+                  <Label optional>Gegründet</Label>
                   <input
                     className={inputCls}
                     style={inputStyle}
@@ -239,7 +306,7 @@ export default function EmployerProfilePage() {
                   />
                 </div>
                 <div>
-                  <Label>Mitarbeiter</Label>
+                  <Label optional>Mitarbeiter</Label>
                   <input
                     className={inputCls}
                     style={inputStyle}
@@ -250,7 +317,7 @@ export default function EmployerProfilePage() {
                 </div>
               </div>
               <div>
-                <Label>Website</Label>
+                <Label optional>Website</Label>
                 <input
                   className={inputCls}
                   style={inputStyle}
@@ -265,7 +332,7 @@ export default function EmployerProfilePage() {
           <Section title="Standort" desc="Bestimmt, welche Kandidaten Ihnen vorgeschlagen werden.">
             <div className="space-y-4">
               <div>
-                <Label>Straße & Hausnummer</Label>
+                <Label optional>Straße & Hausnummer</Label>
                 <input
                   className={inputCls}
                   style={inputStyle}
@@ -301,7 +368,7 @@ export default function EmployerProfilePage() {
             </div>
           </Section>
 
-          <Section title="Logo" desc="Erscheint im Angebot neben Ihrem Namen.">
+          <Section title="Logo" desc="Optional — erscheint im Angebot neben Ihrem Namen.">
             <div className="flex items-center gap-4">
               <div
                 className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden"
@@ -314,36 +381,46 @@ export default function EmployerProfilePage() {
                   <Building2 className="w-7 h-7" style={{ color: "rgba(26,26,46,0.25)" }} />
                 )}
               </div>
-              <div className="flex flex-wrap gap-2.5">
-                <label
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold cursor-pointer"
-                  style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
-                >
-                  <ImagePlus className="w-4 h-4" />
-                  {p.logo ? "Ersetzen" : "Logo hochladen"}
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/svg+xml"
-                    className="hidden"
-                    onChange={(e) => handleLogo(e.target.files?.[0] ?? null)}
-                  />
-                </label>
-                {p.logo && (
-                  <button
-                    type="button"
-                    onClick={() => set("logo", "")}
-                    className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold"
-                    style={{ color: "rgba(26,26,46,0.5)" }}
+              <div className="min-w-0">
+                <div className="flex flex-wrap gap-2.5">
+                  <label
+                    className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold cursor-pointer transition-colors"
+                    style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
                   >
-                    <Trash2 className="w-4 h-4" />
-                    Entfernen
-                  </button>
-                )}
+                    {logoBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
+                    {logoBusy ? "Wird verarbeitet …" : p.logo ? "Ersetzen" : "Logo hochladen"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={logoBusy}
+                      onChange={(e) => {
+                        void handleLogo(e.target.files?.[0] ?? null);
+                        // zuruecksetzen, damit dieselbe Datei erneut waehlbar ist
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                  {p.logo && (
+                    <button
+                      type="button"
+                      onClick={() => set("logo", "")}
+                      className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold"
+                      style={{ color: "rgba(26,26,46,0.5)" }}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Entfernen
+                    </button>
+                  )}
+                </div>
+                <p className="text-[12px] mt-2" style={{ color: logoError ? "#B91C1C" : "rgba(26,26,46,0.45)" }}>
+                  {logoError ?? "PNG, JPG, SVG oder WebP — wird automatisch verkleinert."}
+                </p>
               </div>
             </div>
           </Section>
 
-          <Section title="Ansprechpartner" desc="Handwerker bewerben sich bei Menschen, nicht bei einer GmbH.">
+          <Section title="Ansprechpartner" desc="Optional, aber wirksam — Handwerker bewerben sich bei Menschen, nicht bei einer GmbH.">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <Label>Name</Label>
@@ -356,7 +433,7 @@ export default function EmployerProfilePage() {
                 />
               </div>
               <div>
-                <Label>Position</Label>
+                <Label optional>Position</Label>
                 <input
                   className={inputCls}
                   style={inputStyle}
@@ -419,7 +496,7 @@ export default function EmployerProfilePage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <Label>Urlaubstage pro Jahr</Label>
+                  <Label optional>Urlaubstage pro Jahr</Label>
                   <input
                     className={`${inputCls} tabular-nums`}
                     style={inputStyle}
@@ -480,7 +557,7 @@ export default function EmployerProfilePage() {
             </div>
           </Section>
 
-          <Section title="Leistungen" desc="Erscheinen als Chips im Angebot — mindestens drei empfohlen.">
+          <Section title="Leistungen" desc="Optional — erscheinen als Chips im Angebot, mindestens drei empfohlen.">
             <div className="flex flex-wrap gap-2">
               {BENEFIT_OPTIONEN.map((b) => {
                 const on = p.benefits.includes(b);
@@ -503,7 +580,7 @@ export default function EmployerProfilePage() {
             </div>
           </Section>
 
-          <Section title="Über uns" desc="Zwei bis drei Sätze reichen — ehrlich schlägt Werbetext.">
+          <Section title="Über uns" desc="Optional — zwei bis drei Sätze reichen, ehrlich schlägt Werbetext.">
             <textarea
               rows={5}
               className={`${inputCls} resize-none`}

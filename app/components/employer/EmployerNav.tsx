@@ -31,7 +31,7 @@ export default function EmployerNav({
   return (
     <header className="sticky top-0 left-0 right-0 z-50 bg-[#1A1A2E] shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="relative flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
           <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-9 h-9 bg-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-95">
               <Building2 className="w-4 h-4 text-primary" strokeWidth={2} />
@@ -50,7 +50,7 @@ export default function EmployerNav({
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center min-w-0">
             {AREAS.map((a) => {
               const active = pathname.startsWith(a.href);
               const badge = a.href.endsWith("anfragen") ? openRequests : 0;
@@ -77,8 +77,13 @@ export default function EmployerNav({
             })}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-5 flex-shrink-0">
-            <span className="text-white/55 text-sm truncate max-w-[200px]">{companyName}</span>
+          <div className="hidden lg:flex items-center justify-end gap-5 flex-shrink-0">
+            <span
+              className="text-white/55 text-sm truncate max-w-[190px] text-right"
+              title={companyName}
+            >
+              {companyName}
+            </span>
             <button
               onClick={onLogout}
               className="inline-flex items-center gap-2 bg-accent text-primary text-sm font-semibold px-5 py-2.5 hover:bg-amber-400 transition-colors duration-200"

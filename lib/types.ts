@@ -256,6 +256,16 @@ export interface Candidate {
   /** Ungefährer Ort für die Kartendarstellung — bewusst nur regionsgenau. */
   lat: number;
   lng: number;
+  /**
+   * Klartextdaten — existieren NUR, wenn der Kandidat die Anfrage angenommen
+   * hat. Solange der Status nicht "freigegeben" ist, liefert das Backend
+   * dieses Feld gar nicht erst mit.
+   */
+  freigegeben?: {
+    name: string;
+    telefon: string;
+    email: string;
+  };
 }
 
 export interface ContactRequest {
@@ -292,8 +302,6 @@ export interface EmployerProfile {
   benefits: string[];
   /** z.B. "Jeden Abend zuhause" */
   montage: string;
-  fahrzeitIstArbeitszeit: boolean;
-  startpunkt: "Haustür" | "Betrieb";
   urlaubstage: string;
   /** Logo als Data-URL (optional). */
   logo: string;

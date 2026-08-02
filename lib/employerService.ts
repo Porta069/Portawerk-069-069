@@ -144,13 +144,31 @@ const CANDIDATES: (Omit<Candidate, "distanceKm" | "status" | "matchScore" | "lat
 
 type StateMap = Record<string, { status: CandidateStatus; position: string; sentAt: string }>;
 
+/**
+ * Beispielanfragen, damit der Bereich nicht leer startet und der ganze Ablauf
+ * nachvollziehbar ist: eine bereits freigegebene (Kontaktdaten sichtbar), eine
+ * laufende (Kandidat entscheidet noch) und eine abgelehnte. Sobald der Nutzer
+ * selbst eine Anfrage stellt, werden sie mitgespeichert.
+ */
+const DEMO_STATES: StateMap = {
+  "c-1": { status: "freigegeben", position: "Elektriker Gebäudetechnik", sentAt: "vor 6 Tagen" },
+  "c-3": { status: "angefragt", position: "Obermonteur SHK", sentAt: "vor 2 Tagen" },
+  "c-6": { status: "abgelehnt", position: "Tischler Möbelbau", sentAt: "vor 3 Wochen" },
+};
+
+/** Kontaktdaten, die nach Freigabe sichtbar werden. */
+const FREIGEGEBEN: Record<string, { name: string; telefon: string; email: string }> = {
+  "c-1": { name: "Michael Brandt", telefon: "+49 170 2249104", email: "m.brandt@example.de" },
+};
+
 function readStates(): StateMap {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as StateMap) : {};
+    if (raw) return JSON.parse(raw) as StateMap;
   } catch {
-    return {};
+    /* defektes Storage ignorieren */
   }
+  return { ...DEMO_STATES };
 }
 
 function writeStates(s: StateMap) {
@@ -230,8 +248,13 @@ export async function searchCandidates(
     const spread = (Number(c.id.replace(/\D/g, "")) || 1) * 0.037;
 
     const st = states[c.id];
+    const status = (st?.status ?? "verfuegbar") as CandidateStatus;
     return {
       ...c,
+      // Klartextdaten nur bei Freigabe — sonst gar nicht erst im Objekt.
+      ...(status === "freigegeben" && FREIGEGEBEN[c.id]
+        ? { freigegeben: FREIGEGEBEN[c.id] }
+        : {}),
       lat: home.lat + (spread % 0.31) - 0.15,
       lng: home.lng + ((spread * 1.7) % 0.42) - 0.21,
       distanceKm: Math.round(distanceKm),
@@ -286,6 +309,9 @@ export async function listRequests(): Promise<ApiResult<ContactRequest[]>> {
       id: `req-${id}`,
       candidate: {
         ...base,
+        ...(st.status === "freigegeben" && FREIGEGEBEN[id]
+          ? { freigegeben: FREIGEGEBEN[id] }
+          : {}),
         lat: 0,
         lng: 0,
         distanceKm: base.baseDistance,
@@ -306,17 +332,19 @@ export async function listRequests(): Promise<ApiResult<ContactRequest[]>> {
 
 const PROFILE_KEY = "portawerk_employer_profile_v1";
 
+/**
+ * Bewusst kurz gehalten: Werkzeug, Arbeitskleidung oder ein "junges Team"
+ * setzt im Handwerk jeder voraus — solche Chips fuellen das Profil, ohne zu
+ * unterscheiden. Hier stehen nur Punkte, bei denen sich Betriebe wirklich
+ * unterscheiden.
+ */
 export const BENEFIT_OPTIONEN = [
   "Firmenwagen",
-  "Werkzeug wird gestellt",
-  "Arbeitskleidung gestellt",
+  "Unbefristeter Vertrag",
+  "Übertarifliche Bezahlung",
+  "4-Tage-Woche",
   "Weiterbildung & Schulungen",
   "Betriebliche Altersvorsorge",
-  "Unbefristeter Vertrag",
-  "Leistungsprämien",
-  "Vermögenswirksame Leistungen",
-  "Feste Arbeitszeiten",
-  "Junges Team",
 ];
 
 export const MONTAGE_OPTIONEN = [
@@ -341,8 +369,6 @@ const EMPTY_PROFILE: EmployerProfile = {
   kontaktEmail: "",
   benefits: [],
   montage: "",
-  fahrzeitIstArbeitszeit: false,
-  startpunkt: "Betrieb",
   urlaubstage: "",
   logo: "",
 };
@@ -384,7 +410,7 @@ export function profileGaps(p: EmployerProfile): { label: string; hint: string }
   if (!p.logo) gaps.push({ label: "Logo hinterlegen", hint: "Angebote mit Logo werden häufiger geöffnet" });
   if (!p.ueberUns.trim()) gaps.push({ label: "Über uns ausfüllen", hint: "Handwerker wollen wissen, wo sie landen" });
   if (!p.kontaktName.trim()) gaps.push({ label: "Ansprechpartner nennen", hint: "Ein Name schafft mehr Vertrauen als eine GmbH" });
-  if (p.benefits.length < 3) gaps.push({ label: "Mindestens 3 Leistungen angeben", hint: "Sie erscheinen als Chips im Angebot" });
+  if (p.benefits.length < 2) gaps.push({ label: "Mindestens 2 Leistungen angeben", hint: "Sie erscheinen als Chips im Angebot" });
   if (!p.montage) gaps.push({ label: "Montageaufkommen angeben", hint: "Für Handwerker das wichtigste Kriterium" });
   if (!p.urlaubstage) gaps.push({ label: "Urlaubstage eintragen", hint: "Wird direkt mit anderen Betrieben verglichen" });
   if (!p.slogan.trim()) gaps.push({ label: "Kurzbeschreibung ergänzen", hint: "Steht im Angebot direkt unter dem Namen" });
@@ -400,7 +426,7 @@ export function profileScore(p: EmployerProfile): number {
     !!p.ueberUns.trim(),
     !!p.kontaktName.trim(),
     !!p.kontaktTelefon.trim(),
-    p.benefits.length >= 3,
+    p.benefits.length >= 2,
     !!p.montage,
     !!p.urlaubstage,
     !!p.logo,

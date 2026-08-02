@@ -11,7 +11,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Building2, MapPin, Phone, Mail, Globe, Users, CalendarDays, Loader2, Check,
-  Save, Eye, Sparkles, Home, Timer, Palmtree, ImagePlus, Trash2, AlertCircle,
+  Save, Eye, Sparkles, Home, Palmtree, ImagePlus, Trash2, AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import {
@@ -494,66 +494,19 @@ export default function EmployerProfilePage() {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <Label optional>Urlaubstage pro Jahr</Label>
-                  <input
-                    className={`${inputCls} tabular-nums`}
-                    style={inputStyle}
-                    inputMode="numeric"
-                    maxLength={2}
-                    value={p.urlaubstage}
-                    onChange={(e) => set("urlaubstage", e.target.value.replace(/\D/g, "").slice(0, 2))}
-                    placeholder="30"
-                  />
-                </div>
-                <div>
-                  <Label>Arbeitsbeginn</Label>
-                  <div className="flex gap-2">
-                    {(["Betrieb", "Haustür"] as const).map((s) => {
-                      const on = p.startpunkt === s;
-                      return (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => set("startpunkt", s)}
-                          className="flex-1 rounded-2xl py-3.5 text-[13.5px] font-medium transition-all duration-200"
-                          style={{
-                            background: on ? "#1A1A2E" : "white",
-                            color: on ? "white" : "rgba(26,26,46,0.6)",
-                            border: `1.5px solid ${on ? "#1A1A2E" : "#E9E7E1"}`,
-                          }}
-                        >
-                          ab {s}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+              <div className="sm:max-w-[220px]">
+                <Label optional>Urlaubstage pro Jahr</Label>
+                <input
+                  className={`${inputCls} tabular-nums`}
+                  style={inputStyle}
+                  inputMode="numeric"
+                  maxLength={2}
+                  value={p.urlaubstage}
+                  onChange={(e) => set("urlaubstage", e.target.value.replace(/\D/g, "").slice(0, 2))}
+                  placeholder="30"
+                />
               </div>
 
-              <button
-                type="button"
-                onClick={() => set("fahrzeitIstArbeitszeit", !p.fahrzeitIstArbeitszeit)}
-                className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition-colors"
-                style={{
-                  background: p.fahrzeitIstArbeitszeit ? "rgba(232,168,56,0.12)" : "white",
-                  border: `1.5px solid ${p.fahrzeitIstArbeitszeit ? "#E8A838" : "#E9E7E1"}`,
-                }}
-              >
-                <span
-                  className="w-[20px] h-[20px] rounded-md flex items-center justify-center flex-shrink-0"
-                  style={{
-                    border: `1.5px solid ${p.fahrzeitIstArbeitszeit ? "#E8A838" : "#DDD9D1"}`,
-                    background: p.fahrzeitIstArbeitszeit ? "#E8A838" : "transparent",
-                  }}
-                >
-                  {p.fahrzeitIstArbeitszeit && <Check className="w-3 h-3 text-primary" strokeWidth={4} />}
-                </span>
-                <span className="text-[14px] font-medium text-primary">
-                  Fahrzeit zählt als Arbeitszeit
-                </span>
-              </button>
             </div>
           </Section>
 
@@ -721,8 +674,6 @@ export default function EmployerProfilePage() {
                       Montageaufkommen fehlt
                     </span>
                   )}
-                  {p.fahrzeitIstArbeitszeit && <PreviewChip icon={Timer}>Fahrzeit = Arbeitszeit</PreviewChip>}
-                  <PreviewChip icon={MapPin}>Start ab {p.startpunkt}</PreviewChip>
                   {p.urlaubstage && <PreviewChip icon={Palmtree}>{p.urlaubstage} Urlaubstage</PreviewChip>}
                   {p.benefits.map((b) => (
                     <PreviewChip key={b} icon={Sparkles}>

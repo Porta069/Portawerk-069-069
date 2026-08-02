@@ -13,7 +13,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Euro, CalendarDays, Award, Clock3, Send, Check, Loader2,
-  ShieldCheck, X, Route, Briefcase, Star, ChevronRight, Eye, Heart, Sparkles,
+  ShieldCheck, X, Route, Briefcase, Star, ChevronRight, Eye, Heart, Sparkles, Phone, Mail,
 } from "lucide-react";
 import type { Candidate } from "@/lib/types";
 
@@ -214,16 +214,41 @@ function ProfileDialog({
             <p className="text-[15px] text-primary">{c.praeferenz}</p>
           </div>
 
-          <div
-            className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
-            style={{ background: "rgba(26,26,46,0.035)" }}
-          >
-            <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
-            <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
-              Name, Foto und Kontaktdaten sind ausgeblendet. Sie werden sichtbar, sobald
-              der Kandidat Ihre Anfrage annimmt.
-            </p>
-          </div>
+          {c.freigegeben ? (
+            <div
+              className="rounded-2xl px-5 py-4"
+              style={{ background: "rgba(22,163,74,0.09)", border: "1px solid rgba(22,163,74,0.3)" }}
+            >
+              <p className="inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.14em] mb-2" style={{ color: "#15803D" }}>
+                <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                Freigegeben
+              </p>
+              <p className="text-[19px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
+                {c.freigegeben.name}
+              </p>
+              <div className="flex flex-wrap gap-x-5 gap-y-1 mt-1.5 text-[14px]" style={{ color: "rgba(26,26,46,0.7)" }}>
+                <a href={`tel:${c.freigegeben.telefon.replace(/\s/g, "")}`} className="inline-flex items-center gap-1.5">
+                  <Phone className="w-4 h-4" style={{ color: "#15803D" }} />
+                  {c.freigegeben.telefon}
+                </a>
+                <a href={`mailto:${c.freigegeben.email}`} className="inline-flex items-center gap-1.5">
+                  <Mail className="w-4 h-4" style={{ color: "#15803D" }} />
+                  {c.freigegeben.email}
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
+              style={{ background: "rgba(26,26,46,0.035)" }}
+            >
+              <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
+              <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+                Name, Foto und Kontaktdaten sind ausgeblendet. Sie werden sichtbar, sobald
+                der Kandidat Ihre Anfrage annimmt.
+              </p>
+            </div>
+          )}
         </div>
 
         {c.status === "verfuegbar" && onRequest && (
@@ -495,7 +520,33 @@ export default function CandidateCard({
             </div>
 
             {/* Aktionen */}
-            {st ? (
+            {c.freigegeben ? (
+              <div
+                className="rounded-2xl px-4 py-3.5"
+                style={{ background: "rgba(22,163,74,0.09)", border: "1px solid rgba(22,163,74,0.3)" }}
+              >
+                <p
+                  className="inline-flex items-center gap-2 text-[13px] font-bold mb-2"
+                  style={{ color: "#15803D" }}
+                >
+                  <Check className="w-4 h-4" strokeWidth={3} />
+                  Profil freigegeben — Sie dürfen Kontakt aufnehmen
+                </p>
+                <p className="text-[16px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
+                  {c.freigegeben.name}
+                </p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[13px]" style={{ color: "rgba(26,26,46,0.65)" }}>
+                  <a href={`tel:${c.freigegeben.telefon.replace(/\s/g, "")}`} className="inline-flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                    <Phone className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
+                    {c.freigegeben.telefon}
+                  </a>
+                  <a href={`mailto:${c.freigegeben.email}`} className="inline-flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                    <Mail className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
+                    {c.freigegeben.email}
+                  </a>
+                </div>
+              </div>
+            ) : st ? (
               <p
                 className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold"
                 style={{ background: st.bg, color: st.color }}

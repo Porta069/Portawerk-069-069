@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
+  LogIn,
   BadgeEuro,
   UserCheck,
   ShieldCheck,
@@ -164,6 +166,35 @@ export default function ArbeitgeberContent() {
                 </li>
               ))}
             </motion.ul>
+
+            {/* Einstieg für bestehende Kunden — sonst finden Betriebe ihren
+                Zugang nur über den Textlink in der Kopfleiste. */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2"
+            >
+              <span className="text-white/50 text-[15px]">Sie haben bereits einen Zugang?</span>
+              <Link
+                href="/unternehmen/login"
+                className="group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-all duration-200"
+                style={{ border: "1.5px solid rgba(255,255,255,0.28)", color: "white" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#E8A838";
+                  e.currentTarget.style.borderColor = "#E8A838";
+                  e.currentTarget.style.color = "#1A1A2E";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
+                  e.currentTarget.style.color = "white";
+                }}
+              >
+                <LogIn className="w-4 h-4" />
+                Zum Betriebs-Login
+              </Link>
+            </motion.div>
 
             {/* Freigestellte Person, die aufs Formular zeigt — verschmilzt mit dem Hero */}
             <motion.div

@@ -215,3 +215,51 @@ export interface ProfileScore {
   percent: number;
   gaps: ProfileGap[];
 }
+
+// ─── Arbeitgeber-Sicht: anonymisierte Kandidaten ─────────────────────────────
+// Kernversprechen der Plattform: der Betrieb sieht ein fachlich vollständiges,
+// aber personenlose Profil. Name und Kontaktdaten gibt erst der Kandidat frei.
+
+export type CandidateStatus =
+  | "verfuegbar"
+  | "angefragt"
+  | "freigegeben"
+  | "abgelehnt";
+
+export interface Candidate {
+  /** Pseudonyme ID — kein Rückschluss auf die Person. */
+  id: string;
+  /** Anzeigekürzel statt Name, z.B. "Elektriker #A47". */
+  handle: string;
+  gewerk: string;
+  erfahrungJahre: number;
+  zertifikate: string[];
+  /** Ort nur grob: Kreis/Stadt, keine Adresse. */
+  region: string;
+  /** Entfernung zur eingegebenen PLZ in km. */
+  distanceKm: number;
+  /** Gewünschter Arbeitsradius des Kandidaten. */
+  radiusKm: number;
+  /** Wozu er bereit ist (Montage, Schicht, Notdienst, Umzug). */
+  bereitschaft: string[];
+  /** Was ihm wichtig ist — aus der Umfrage. */
+  praeferenz: string;
+  /** Gehaltsvorstellung, brutto monatlich. */
+  gehaltVon: number;
+  gehaltBis: number;
+  verfuegbarAb: string;
+  /** Wie gut das Profil zur Suche passt (0–100). */
+  matchScore: number;
+  status: CandidateStatus;
+  /** Wann zuletzt aktiv — Signal für Erreichbarkeit. */
+  zuletztAktiv: string;
+}
+
+export interface ContactRequest {
+  id: string;
+  candidate: Candidate;
+  /** Stelle, für die angefragt wurde. */
+  position: string;
+  sentAt: string;
+  status: Exclude<CandidateStatus, "verfuegbar">;
+}

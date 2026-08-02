@@ -253,6 +253,9 @@ export interface Candidate {
   status: CandidateStatus;
   /** Wann zuletzt aktiv — Signal für Erreichbarkeit. */
   zuletztAktiv: string;
+  /** Ungefährer Ort für die Kartendarstellung — bewusst nur regionsgenau. */
+  lat: number;
+  lng: number;
 }
 
 export interface ContactRequest {

@@ -18,6 +18,28 @@ export const EMPLOYER_DATA_IS_MOCKED = true;
 
 const STORAGE_KEY = "portawerk_employer_requests_v1";
 
+/**
+ * PLZ aus der Anfrage auf /arbeitgeber. Wird dort beim Absenden gesetzt und
+ * belegt die Kandidatensuche vor — der Betrieb tippt sie nicht zweimal.
+ */
+export const EMPLOYER_PLZ_KEY = "portawerk_employer_plz_v1";
+
+export function getStoredPlz(): string {
+  try {
+    return localStorage.getItem(EMPLOYER_PLZ_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export function storePlz(plz: string) {
+  try {
+    localStorage.setItem(EMPLOYER_PLZ_KEY, plz);
+  } catch {
+    /* Storage nicht verfuegbar */
+  }
+}
+
 function delay(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -44,7 +66,7 @@ export function regionForPlz(plz: string): string | null {
 
 // ── Kandidaten-Grunddaten ────────────────────────────────────────────────────
 // `plzPrefix` steuert, in welcher Region ein Kandidat auftaucht.
-const CANDIDATES: (Omit<Candidate, "distanceKm" | "status" | "matchScore"> & {
+const CANDIDATES: (Omit<Candidate, "distanceKm" | "status" | "matchScore" | "lat" | "lng"> & {
   plzPrefix: string;
   baseDistance: number;
 })[] = [
@@ -176,9 +198,16 @@ export async function searchCandidates(
     const erfahrung = Math.min(1, c.erfahrungJahre / 12);
     const matchScore = Math.round((nahe * 0.5 + willFahren * 0.3 + erfahrung * 0.2) * 100);
 
+    // Kartenposition: Regionsmittelpunkt plus fester Versatz. Bewusst grob —
+    // die Karte zeigt Dichte, niemals eine Adresse.
+    const home = PLZ_REGIONS.find((r) => r.prefix === c.plzPrefix) ?? PLZ_REGIONS[0];
+    const spread = (Number(c.id.replace(/\D/g, "")) || 1) * 0.037;
+
     const st = states[c.id];
     return {
       ...c,
+      lat: home.lat + (spread % 0.31) - 0.15,
+      lng: home.lng + ((spread * 1.7) % 0.42) - 0.21,
       distanceKm: Math.round(distanceKm),
       matchScore,
       status: (st?.status ?? "verfuegbar") as CandidateStatus,
@@ -221,6 +250,8 @@ export async function listRequests(): Promise<ApiResult<ContactRequest[]>> {
       id: `req-${id}`,
       candidate: {
         ...base,
+        lat: 0,
+        lng: 0,
         distanceKm: base.baseDistance,
         matchScore: 0,
         status: st.status,

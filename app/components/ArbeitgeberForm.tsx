@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { EMPLOYER_PLZ_KEY } from "@/lib/employerService";
 import { ArrowRight, CheckCircle2, Loader2, ChevronDown } from "lucide-react";
 
 const FACHKRAEFTE = [
@@ -22,7 +23,8 @@ type Fields = {
   email: string;
   telefon: string;
   fachkraft: string;
-  nachricht: string;
+  /** Standort des Betriebs — Ausgangspunkt der spaeteren Kandidatensuche. */
+  plz: string;
 };
 
 const EMPTY: Fields = {
@@ -32,7 +34,7 @@ const EMPTY: Fields = {
   email: "",
   telefon: "",
   fachkraft: FACHKRAEFTE[0],
-  nachricht: "",
+  plz: "",
 };
 
 const inputBase =
@@ -121,9 +123,16 @@ export default function ArbeitgeberForm({
       `E-Mail: ${f.email}`,
       `Telefon: ${f.telefon}`,
       `Gesuchte Fachkraft: ${f.fachkraft}`,
-      "",
-      `Nachricht: ${f.nachricht || "—"}`,
+      `Standort (PLZ): ${f.plz}`,
     ].join("\n");
+
+    // PLZ merken: die Kandidatensuche startet damit spaeter vorbelegt, statt
+    // dass der Betrieb sie ein zweites Mal eintippen muss.
+    try {
+      localStorage.setItem(EMPLOYER_PLZ_KEY, f.plz.trim());
+    } catch {
+      /* Storage nicht verfuegbar — unkritisch */
+    }
 
     window.location.href = `mailto:kontakt@portawerk.de?subject=${encodeURIComponent(
       subject,
@@ -267,8 +276,23 @@ export default function ArbeitgeberForm({
           </div>
         </div>
         <div className="sm:col-span-2">
-          <label className={labelBase} htmlFor="nachricht">Nachricht <span className="text-muted font-normal">(optional)</span></label>
-          <textarea id="nachricht" rows={3} className={inputBase} value={f.nachricht} onChange={set("nachricht")} placeholder="Standort, Umfang, Wunschtermin …" />
+          <label className={labelBase} htmlFor="plz">
+            Postleitzahl Ihres Betriebs
+          </label>
+          <input
+            id="plz"
+            inputMode="numeric"
+            maxLength={5}
+            className={inputBase}
+            value={f.plz}
+            onChange={(e) =>
+              setF((cur) => ({ ...cur, plz: e.target.value.replace(/\D/g, "").slice(0, 5) }))
+            }
+            placeholder="z. B. 80331"
+          />
+          <p className="text-muted text-xs mt-1.5">
+            Danach suchen wir Kandidaten im Umkreis — Sie sehen sie sofort in Ihrem Zugang.
+          </p>
         </div>
       </div>
 

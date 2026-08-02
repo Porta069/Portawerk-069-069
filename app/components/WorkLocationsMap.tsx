@@ -14,13 +14,11 @@
 
 import "leaflet/dist/leaflet.css";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Circle, useMap, useMapEvents } from "react-leaflet";
+import { Marker, Circle, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { Search, X, Loader2, Trash2, MapPin, Plus, Minus, Crosshair } from "lucide-react";
+import { Search, X, Loader2, Trash2, MapPin, Plus, Crosshair } from "lucide-react";
 import type { WorkLocation } from "@/lib/types";
-import {
-  GERMANY_CENTER, GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
-} from "@/lib/mapConfig";
+import MapShell, { MapAttribution, MapZoom } from "./MapShell";
 
 /** Gold-Pin mit weißem Ring und weichem Schlagschatten. */
 const markerIcon = L.divIcon({
@@ -100,41 +98,6 @@ function FlyTo({ target }: { target: [number, number] | null }) {
     if (target) map.flyTo(target, 10, { duration: 0.8 });
   }, [target, map]);
   return null;
-}
-
-/** Eigene Zoom-Steuerung — die Leaflet-Standardbuttons wirken wie 2010. */
-function ZoomControls() {
-  const map = useMap();
-  const btn =
-    "w-9 h-9 flex items-center justify-center transition-colors duration-150 text-primary";
-  return (
-    <div
-      className="absolute z-[1000] right-3 bottom-3 flex flex-col overflow-hidden rounded-xl"
-      style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px -10px rgba(26,26,46,0.45)" }}
-    >
-      <button
-        type="button"
-        aria-label="Hineinzoomen"
-        className={btn}
-        onClick={() => map.zoomIn()}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.16)")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-      >
-        <Plus className="w-4 h-4" strokeWidth={2.4} />
-      </button>
-      <span style={{ height: 1, background: "#EDEBE5" }} />
-      <button
-        type="button"
-        aria-label="Herauszoomen"
-        className={btn}
-        onClick={() => map.zoomOut()}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.16)")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-      >
-        <Minus className="w-4 h-4" strokeWidth={2.4} />
-      </button>
-    </div>
-  );
 }
 
 export default function WorkLocationsMap({
@@ -315,23 +278,10 @@ export default function WorkLocationsMap({
           </div>
         )}
 
-        <MapContainer
-          center={GERMANY_CENTER}
-          zoom={6}
-          minZoom={MIN_ZOOM}
-          maxBounds={GERMANY_BOUNDS}
-          maxBoundsViscosity={1}
-          scrollWheelZoom
-          zoomControl={false}
-          // Eigene Attribution unten — die Leaflet-Zeile (inkl. Flaggen-Präfix)
-          // ist rechtlich nicht erforderlich, die OSM-Nennung schon.
-          attributionControl={false}
-          style={{ height: 400, width: "100%", background: "#EFECE6" }}
-        >
-          <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
+        <MapShell height={400} fitGermany>
           <ClickHandler onClick={handleMapClick} />
           <FlyTo target={flyTarget} />
-          <ZoomControls />
+          <MapZoom />
           {value.map((l) => (
             <Fragment key={l.id}>
               <Circle
@@ -340,28 +290,18 @@ export default function WorkLocationsMap({
                 pathOptions={{
                   color: "#E8A838",
                   fillColor: "#E8A838",
-                  fillOpacity: 0.14,
+                  fillOpacity: 0.16,
                   weight: 2,
-                  opacity: 0.75,
+                  opacity: 0.85,
                 }}
               />
               <Marker position={[l.lat, l.lng]} icon={markerIcon} />
             </Fragment>
           ))}
-        </MapContainer>
+        </MapShell>
 
         {/* Pflichtangabe nach ODbL — dezent, ohne Leaflet-Werbung. */}
-        <a
-          href={OSM_COPYRIGHT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"
-          style={{ background: "rgba(255,255,255,0.82)", color: "rgba(26,26,46,0.5)" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#1A1A2E")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.5)")}
-        >
-          © OpenStreetMap
-        </a>
+        <MapAttribution />
       </div>
 
       {/* ── Gewählte Orte ── */}

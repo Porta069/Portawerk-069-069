@@ -8,12 +8,10 @@
 
 import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Circle, CircleMarker, useMap, useMapEvents } from "react-leaflet";
+import { Marker, Circle, CircleMarker, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { Search, X, Loader2, Crosshair, Plus, Minus, MapPin, Trash2 } from "lucide-react";
-import {
-  GERMANY_CENTER, GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
-} from "@/lib/mapConfig";
+import { Search, X, Loader2, Crosshair, MapPin, Trash2 } from "lucide-react";
+import MapShell, { MapAttribution, MapZoom } from "@/app/components/MapShell";
 
 export interface SearchArea {
   lat: number;
@@ -90,25 +88,6 @@ function FitRadius({ area, radiusKm }: { area: SearchArea | null; radiusKm: numb
     map.flyToBounds(circle.getBounds(), { padding: [36, 36], duration: 0.7 });
   }, [area, radiusKm, map]);
   return null;
-}
-
-function ZoomControls() {
-  const map = useMap();
-  const btn = "w-9 h-9 flex items-center justify-center transition-colors duration-150 text-primary";
-  return (
-    <div
-      className="absolute z-[1000] right-3 bottom-3 flex flex-col overflow-hidden rounded-xl"
-      style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px -10px rgba(26,26,46,0.45)" }}
-    >
-      <button type="button" aria-label="Hineinzoomen" className={btn} onClick={() => map.zoomIn()}>
-        <Plus className="w-4 h-4" strokeWidth={2.4} />
-      </button>
-      <span style={{ height: 1, background: "#EDEBE5" }} />
-      <button type="button" aria-label="Herauszoomen" className={btn} onClick={() => map.zoomOut()}>
-        <Minus className="w-4 h-4" strokeWidth={2.4} />
-      </button>
-    </div>
-  );
 }
 
 export default function SearchAreaMap({
@@ -268,20 +247,14 @@ export default function SearchAreaMap({
           </div>
         )}
 
-        <MapContainer
-          center={area ? [area.lat, area.lng] : GERMANY_CENTER}
-          zoom={area ? 9 : 6}
-          minZoom={MIN_ZOOM}
-          maxBounds={GERMANY_BOUNDS}
-          maxBoundsViscosity={1}
-          scrollWheelZoom
-          zoomControl={false}
-          attributionControl={false}
-          style={{ height: 320, width: "100%", background: "#EFECE6" }}
+        <MapShell
+          height={340}
+          center={area ? [area.lat, area.lng] : undefined}
+          zoom={area ? 9 : undefined}
+          fitGermany={!area}
         >
-          <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
           <ClickHandler onClick={handleMapClick} />
-          <ZoomControls />
+          <MapZoom />
           <FitRadius area={area} radiusKm={radiusKm} />
 
           {area && (
@@ -289,7 +262,7 @@ export default function SearchAreaMap({
               <Circle
                 center={[area.lat, area.lng]}
                 radius={radiusKm * 1000}
-                pathOptions={{ color: "#E8A838", fillColor: "#E8A838", fillOpacity: 0.12, weight: 2, opacity: 0.8 }}
+                pathOptions={{ color: "#E8A838", fillColor: "#E8A838", fillOpacity: 0.16, weight: 2, opacity: 0.85 }}
               />
               <Marker position={[area.lat, area.lng]} icon={homeIcon} />
             </>
@@ -304,17 +277,9 @@ export default function SearchAreaMap({
               pathOptions={{ color: "#fff", weight: 2, fillColor: "#E8A838", fillOpacity: 1 }}
             />
           ))}
-        </MapContainer>
+        </MapShell>
 
-        <a
-          href={OSM_COPYRIGHT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px]"
-          style={{ background: "rgba(255,255,255,0.82)", color: "rgba(26,26,46,0.5)" }}
-        >
-          © OpenStreetMap
-        </a>
+        <MapAttribution />
       </div>
 
       {/* ── Gewählter Bereich — identisch zur Arbeitsorte-Karte der Registrierung ── */}

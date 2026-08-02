@@ -1,34 +1,266 @@
 "use client";
 
 // ─── Kandidatenkarte (Arbeitgeber-Sicht) ─────────────────────────────────────
-// Fachlich vollständig, aber personenlos: kein Name, kein Foto, keine Adresse,
-// keine Kontaktdaten. Das ist kein Anzeigefehler, sondern das Kernversprechen —
-// erst wenn der Kandidat zustimmt, wird das Profil freigegeben.
+// Breite Zeile statt schmaler Kachel: ein Chef scannt von links nach rechts —
+// wer, wie weit, wie erfahren, was kostet er, was ist der nächste Schritt.
+//
+// Das Bild links zeigt das GEWERK, nie die Person. Es ist bewusst abgedunkelt
+// und trägt den Vermerk "Anonymes Profil", damit kein Zweifel entsteht. Name,
+// Foto und Kontaktdaten gibt ausschließlich der Kandidat frei.
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Euro, CalendarDays, Award, Clock3, UserRound, Send, Check, Loader2,
-  ShieldCheck, X, Target,
+  MapPin, Euro, CalendarDays, Award, Clock3, Send, Check, Loader2,
+  ShieldCheck, X, Route, Briefcase, Star, ChevronRight, Eye, Heart, Sparkles,
 } from "lucide-react";
 import type { Candidate } from "@/lib/types";
+
+/** Symbolbild je Gewerk — echtes Foto, aber niemals die Person. */
+const TRADE_IMAGE: Record<string, string> = {
+  "Elektriker / Elektroniker": "/images/elektriker-werkstatt.jpg",
+  "Installateur / Klempner (SHK)": "/images/shk-heizung.jpg",
+  "Heizungs- & Lüftungsbauer": "/images/shk-heizung.jpg",
+  "Maler & Lackierer": "/images/maler-leiter.jpg",
+  "Tischler / Schreiner": "/images/tischler-hobel.jpg",
+  "Maurer / Betonbauer": "/images/maurer-ziegel.jpg",
+  "Metallbauer / Schlosser": "/images/metallbau-schweisser.jpg",
+  "Dachdecker": "/images/hero-team-werkstatt.jpg",
+};
+const FALLBACK_IMAGE = "/images/hero-team-werkstatt.jpg";
 
 function euro(n: number) {
   return n.toLocaleString("de-DE");
 }
 
-function Chip({ children }: { children: React.ReactNode }) {
+function Fact({
+  icon: Icon,
+  value,
+  label,
+}: {
+  icon: typeof MapPin;
+  value: string;
+  label: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <span
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: "rgba(232,168,56,0.13)" }}
+      >
+        <Icon className="w-[18px] h-[18px]" style={{ color: "#B47B18" }} strokeWidth={2.2} />
+      </span>
+      <span className="min-w-0">
+        <span
+          className="block text-[17px] font-bold tabular-nums text-primary leading-none truncate"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          {value}
+        </span>
+        <span className="block text-[11.5px] mt-1" style={{ color: "rgba(26,26,46,0.45)" }}>
+          {label}
+        </span>
+      </span>
+    </div>
+  );
+}
+
+function Tag({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "gold" }) {
+  const gold = tone === "gold";
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-      style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.72)" }}
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium"
+      style={{
+        background: gold ? "rgba(232,168,56,0.15)" : "rgba(26,26,46,0.05)",
+        color: gold ? "#8A5B0F" : "rgba(26,26,46,0.68)",
+      }}
     >
       {children}
     </span>
   );
 }
 
-/** Anfrage-Dialog: knapp, erklärt nur, was der Klick auslöst. */
+// ─── Volles Profil ───────────────────────────────────────────────────────────
+function ProfileDialog({
+  candidate,
+  onClose,
+  onRequest,
+}: {
+  candidate: Candidate;
+  onClose: () => void;
+  onRequest?: () => void;
+}) {
+  const c = candidate;
+  const img = TRADE_IMAGE[c.gewerk] ?? FALLBACK_IMAGE;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      style={{ background: "rgba(26,26,46,0.6)", backdropFilter: "blur(4px)" }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 22, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 12, scale: 0.98 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Profil ${c.handle}`}
+        className="w-full max-w-3xl my-auto overflow-hidden rounded-3xl bg-white"
+        style={{ boxShadow: "0 50px 90px -30px rgba(26,26,46,0.65)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Kopf */}
+        <div className="relative h-40 sm:h-48">
+          <Image src={img} alt="" fill sizes="768px" className="object-cover" />
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(160deg, rgba(26,26,46,0.72) 0%, rgba(26,26,46,0.94) 75%)" }}
+          />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Schließen"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center"
+            style={{ background: "rgba(255,255,255,0.16)", color: "white" }}
+          >
+            <X className="w-4 h-4" />
+          </button>
+          <div className="absolute inset-x-0 bottom-0 p-6">
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] mb-2.5"
+              style={{ background: "rgba(232,168,56,0.22)", color: "#F6D08A" }}
+            >
+              <ShieldCheck className="w-3 h-3" />
+              Anonymes Profil
+            </span>
+            <h2
+              className="text-white font-bold text-[26px] leading-tight"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {c.handle}
+            </h2>
+            <p className="text-[14px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
+              {c.gewerk} · {c.region}
+            </p>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { icon: Briefcase, value: `${c.erfahrungJahre} Jahre`, label: "Erfahrung" },
+              { icon: Route, value: `${c.distanceKm} km`, label: "Anfahrt zu Ihnen" },
+              { icon: MapPin, value: `${c.radiusKm} km`, label: "Sein Suchradius" },
+              { icon: CalendarDays, value: c.verfuegbarAb.replace("Ab ", ""), label: "Verfügbar" },
+            ].map((f) => (
+              <div key={f.label} className="rounded-2xl p-4" style={{ background: "var(--color-surface)" }}>
+                <Fact icon={f.icon} value={f.value} label={f.label} />
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-2xl px-5 py-4" style={{ background: "rgba(232,168,56,0.1)" }}>
+            <p className="text-[11px] uppercase tracking-[0.16em] mb-1" style={{ color: "#8A5B0F" }}>
+              Gehaltsvorstellung
+            </p>
+            <p
+              className="text-[26px] font-bold tabular-nums text-primary leading-none"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {euro(c.gehaltVon)} – {euro(c.gehaltBis)} €
+            </p>
+            <p className="text-[12px] mt-1" style={{ color: "rgba(26,26,46,0.5)" }}>
+              brutto pro Monat
+            </p>
+          </div>
+
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
+              Qualifikationen
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {c.zertifikate.map((z) => (
+                <Tag key={z} tone="gold">
+                  <Award className="w-3.5 h-3.5" />
+                  {z}
+                </Tag>
+              ))}
+            </div>
+          </div>
+
+          {c.bereitschaft.length > 0 && (
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
+                Bereit zu
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {c.bereitschaft.map((b) => (
+                  <Tag key={b}>{b}</Tag>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
+              Worauf es ihm ankommt
+            </p>
+            <p className="text-[15px] text-primary">{c.praeferenz}</p>
+          </div>
+
+          <div
+            className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
+            style={{ background: "rgba(26,26,46,0.035)" }}
+          >
+            <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
+            <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+              Name, Foto und Kontaktdaten sind ausgeblendet. Sie werden sichtbar, sobald
+              der Kandidat Ihre Anfrage annimmt.
+            </p>
+          </div>
+        </div>
+
+        {c.status === "verfuegbar" && onRequest && (
+          <div className="px-6 py-5 flex flex-col sm:flex-row gap-3" style={{ background: "var(--color-surface)" }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="sm:flex-1 rounded-full px-5 py-3.5 text-[14px] font-semibold"
+              style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)", background: "white" }}
+            >
+              Zurück zur Liste
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onRequest();
+              }}
+              className="sm:flex-1 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "#E8A838",
+                color: "#1A1A2E",
+                fontFamily: "var(--font-display)",
+                boxShadow: "0 14px 28px -14px rgba(232,168,56,0.9)",
+              }}
+            >
+              <Send className="w-4 h-4" />
+              Kontakt anfragen
+            </button>
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── Anfrage-Dialog ──────────────────────────────────────────────────────────
 function RequestDialog({
   candidate,
   busy,
@@ -47,8 +279,8 @@ function RequestDialog({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[110] flex items-center justify-center p-5"
-      style={{ background: "rgba(26,26,46,0.55)", backdropFilter: "blur(3px)" }}
+      className="fixed inset-0 z-[130] flex items-center justify-center p-5"
+      style={{ background: "rgba(26,26,46,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onCancel}
     >
       <motion.div
@@ -78,9 +310,8 @@ function RequestDialog({
               Kontakt anfragen
             </h3>
             <p className="text-[14px] leading-relaxed" style={{ color: "rgba(26,26,46,0.62)" }}>
-              <strong className="text-primary">{candidate.handle}</strong> bekommt dein
-              Angebot und entscheidet selbst. Erst bei Zusage siehst du Name und
-              Kontaktdaten.
+              <strong className="text-primary">{candidate.handle}</strong> entscheidet
+              selbst. Erst bei Zusage sehen Sie Name und Kontaktdaten.
             </p>
           </div>
         </div>
@@ -101,10 +332,7 @@ function RequestDialog({
           />
         </div>
 
-        <div
-          className="flex flex-col-reverse sm:flex-row gap-3 px-6 py-5"
-          style={{ background: "var(--color-surface)" }}
-        >
+        <div className="flex flex-col-reverse sm:flex-row gap-3 px-6 py-5" style={{ background: "var(--color-surface)" }}>
           <button
             type="button"
             onClick={onCancel}
@@ -134,6 +362,7 @@ function RequestDialog({
   );
 }
 
+// ─── Karte ───────────────────────────────────────────────────────────────────
 export default function CandidateCard({
   candidate,
   onRequest,
@@ -141,179 +370,195 @@ export default function CandidateCard({
   candidate: Candidate;
   onRequest?: (position: string) => Promise<void>;
 }) {
-  const [dialog, setDialog] = useState(false);
+  const [profile, setProfile] = useState(false);
+  const [request, setRequest] = useState(false);
   const [busy, setBusy] = useState(false);
   const c = candidate;
+  const img = TRADE_IMAGE[c.gewerk] ?? FALLBACK_IMAGE;
 
   const confirm = async (position: string) => {
     if (!onRequest) return;
     setBusy(true);
     await onRequest(position);
     setBusy(false);
-    setDialog(false);
+    setRequest(false);
   };
 
-  const statusLabel: Record<Candidate["status"], { text: string; bg: string; color: string } | null> = {
+  const status: Record<Candidate["status"], { text: string; bg: string; color: string } | null> = {
     verfuegbar: null,
-    angefragt: { text: "Anfrage läuft — Kandidat entscheidet", bg: "rgba(232,168,56,0.16)", color: "#B47B18" },
-    freigegeben: { text: "Profil freigegeben", bg: "rgba(22,163,74,0.12)", color: "#15803D" },
+    angefragt: { text: "Anfrage läuft — Kandidat entscheidet", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F" },
+    freigegeben: { text: "Profil freigegeben", bg: "rgba(22,163,74,0.14)", color: "#15803D" },
     abgelehnt: { text: "Kandidat hat abgelehnt", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.5)" },
   };
-  const st = statusLabel[c.status];
+  const st = status[c.status];
+  const top = c.matchScore >= 80;
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-3xl bg-white p-5 sm:p-6"
-      style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
-    >
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className="flex items-center gap-3.5 min-w-0">
-          {/* Bewusst eine Silhouette statt eines Fotos */}
-          <span
-            className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(26,26,46,0.06)" }}
-          >
-            <UserRound className="w-5 h-5" style={{ color: "rgba(26,26,46,0.35)" }} />
-          </span>
-          <div className="min-w-0">
-            <h3
-              className="text-primary font-bold text-[18px] leading-snug truncate"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {c.handle}
-            </h3>
-            <p className="text-[13px] truncate" style={{ color: "rgba(26,26,46,0.55)" }}>
-              {c.gewerk}
-            </p>
+    <>
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        onClick={() => setProfile(true)}
+        className="group relative cursor-pointer overflow-hidden rounded-3xl bg-white transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1"
+        style={{
+          border: `1.5px solid ${top ? "rgba(232,168,56,0.55)" : "#E9E7E1"}`,
+          boxShadow: "0 14px 40px -28px rgba(26,26,46,0.55)",
+        }}
+      >
+        <div className="flex flex-col sm:flex-row">
+          {/* Gewerk-Bild — bewusst nicht die Person */}
+          <div className="relative w-full sm:w-[210px] h-44 sm:h-auto flex-shrink-0 overflow-hidden">
+            <Image
+              src={img}
+              alt=""
+              fill
+              sizes="(max-width: 640px) 100vw, 210px"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            />
+            <div
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(155deg, rgba(26,26,46,0.55) 0%, rgba(26,26,46,0.86) 100%)" }}
+            />
+            <div className="absolute inset-0 p-4 flex flex-col justify-between">
+              <span
+                className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em]"
+                style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
+              >
+                <ShieldCheck className="w-3 h-3" />
+                Anonym
+              </span>
+              <div>
+                <p
+                  className="text-white font-bold text-[19px] leading-tight"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {c.handle}
+                </p>
+                <p className="text-[12px] mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>
+                  {c.gewerk}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Inhalt */}
+          <div className="flex-1 min-w-0 p-5 sm:p-6">
+            <div className="flex items-start justify-between gap-4 mb-5">
+              <p className="inline-flex items-center gap-1.5 text-[13.5px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+                <MapPin className="w-4 h-4" style={{ color: "#E8A838" }} />
+                {c.region}
+                <span className="mx-1" style={{ color: "rgba(26,26,46,0.2)" }}>·</span>
+                <Clock3 className="w-3.5 h-3.5" />
+                aktiv {c.zuletztAktiv}
+              </p>
+
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 flex-shrink-0"
+                style={{
+                  background: top ? "rgba(232,168,56,0.2)" : "rgba(26,26,46,0.05)",
+                  color: top ? "#8A5B0F" : "rgba(26,26,46,0.6)",
+                }}
+              >
+                {top ? <Star className="w-4 h-4" fill="currentColor" /> : <Sparkles className="w-4 h-4" />}
+                <span
+                  className="text-[15px] font-bold tabular-nums"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {c.matchScore} %
+                </span>
+              </span>
+            </div>
+
+            {/* Kernzahlen in einer Zeile — von links nach rechts lesbar */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-4 mb-5">
+              <Fact icon={Briefcase} value={`${c.erfahrungJahre} Jahre`} label="Erfahrung" />
+              <Fact icon={Route} value={`${c.distanceKm} km`} label="Anfahrt" />
+              <Fact icon={CalendarDays} value={c.verfuegbarAb.replace("Ab ", "")} label="Verfügbar" />
+              <Fact
+                icon={Euro}
+                value={`${euro(c.gehaltVon)}–${euro(c.gehaltBis)}`}
+                label="Gehaltswunsch"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-5">
+              {c.zertifikate.slice(0, 3).map((z) => (
+                <Tag key={z} tone="gold">
+                  <Award className="w-3.5 h-3.5" />
+                  {z}
+                </Tag>
+              ))}
+              {c.bereitschaft.slice(0, 2).map((b) => (
+                <Tag key={b}>{b}</Tag>
+              ))}
+            </div>
+
+            {/* Aktionen */}
+            {st ? (
+              <p
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold"
+                style={{ background: st.bg, color: st.color }}
+              >
+                {c.status === "freigegeben" ? (
+                  <Check className="w-4 h-4" strokeWidth={3} />
+                ) : c.status === "abgelehnt" ? (
+                  <X className="w-4 h-4" strokeWidth={3} />
+                ) : (
+                  <Clock3 className="w-4 h-4" />
+                )}
+                {st.text}
+              </p>
+            ) : (
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRequest(true);
+                  }}
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+                  style={{
+                    background: "#E8A838",
+                    color: "#1A1A2E",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 14px 28px -16px rgba(232,168,56,0.95)",
+                  }}
+                >
+                  <Heart className="w-4 h-4" />
+                  Interesse anmelden
+                </button>
+                <span
+                  className="inline-flex items-center gap-1.5 text-[14px] font-semibold transition-colors"
+                  style={{ color: "rgba(26,26,46,0.5)" }}
+                >
+                  <Eye className="w-4 h-4" />
+                  Profil ansehen
+                  <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            )}
           </div>
         </div>
-
-        <span
-          className="flex flex-col items-end flex-shrink-0 rounded-xl px-3 py-1.5"
-          style={{ background: "rgba(232,168,56,0.12)" }}
-        >
-          <span
-            className="inline-flex items-center gap-1.5 text-[15px] font-bold tabular-nums"
-            style={{ fontFamily: "var(--font-display)", color: "#1A1A2E" }}
-          >
-            <Target className="w-4 h-4" style={{ color: "#E8A838" }} />
-            {c.matchScore} %
-          </span>
-          <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.45)" }}>
-            Übereinstimmung
-          </span>
-        </span>
-      </div>
-
-      {/* Kennzahlen */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
-        {[
-          { label: "Erfahrung", value: `${c.erfahrungJahre} J.` },
-          { label: "Entfernung", value: `${c.distanceKm} km` },
-          { label: "Sucht bis", value: `${c.radiusKm} km` },
-          { label: "Verfügbar", value: c.verfuegbarAb.replace("Ab ", "") },
-        ].map((s) => (
-          <div key={s.label} className="rounded-2xl px-3 py-2.5" style={{ background: "var(--color-surface)" }}>
-            <p
-              className="text-[16px] font-bold tabular-nums text-primary leading-none"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {s.value}
-            </p>
-            <p className="text-[10.5px] mt-1" style={{ color: "rgba(26,26,46,0.45)" }}>
-              {s.label}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Gehaltsvorstellung */}
-      <div className="rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(232,168,56,0.09)" }}>
-        <span
-          className="inline-flex items-center gap-1.5 text-[17px] font-bold tabular-nums text-primary"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          <Euro className="w-4 h-4" style={{ color: "#E8A838" }} />
-          {euro(c.gehaltVon)} – {euro(c.gehaltBis)}
-        </span>
-        <span className="text-[11.5px] ml-2" style={{ color: "rgba(26,26,46,0.5)" }}>
-          Gehaltsvorstellung, brutto/Monat
-        </span>
-      </div>
-
-      {/* Details */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <Chip>
-          <MapPin className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-          {c.region}
-        </Chip>
-        <Chip>
-          <CalendarDays className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-          {c.verfuegbarAb}
-        </Chip>
-        {c.zertifikate.map((z) => (
-          <Chip key={z}>
-            <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-            {z}
-          </Chip>
-        ))}
-        {c.bereitschaft.map((b) => (
-          <Chip key={b}>{b}</Chip>
-        ))}
-      </div>
-
-      <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] mb-5" style={{ color: "rgba(26,26,46,0.45)" }}>
-        <span>Wichtig: {c.praeferenz}</span>
-        <span className="inline-flex items-center gap-1.5">
-          <Clock3 className="w-3.5 h-3.5" />
-          zuletzt aktiv {c.zuletztAktiv}
-        </span>
-      </p>
-
-      {/* Aktion */}
-      {st ? (
-        <p
-          className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold"
-          style={{ background: st.bg, color: st.color }}
-        >
-          {c.status === "freigegeben" ? (
-            <Check className="w-4 h-4" strokeWidth={3} />
-          ) : c.status === "abgelehnt" ? (
-            <X className="w-4 h-4" strokeWidth={3} />
-          ) : (
-            <Clock3 className="w-4 h-4" />
-          )}
-          {st.text}
-        </p>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setDialog(true)}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-3.5 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
-          style={{
-            background: "#1A1A2E",
-            color: "white",
-            fontFamily: "var(--font-display)",
-          }}
-        >
-          <Send className="w-4 h-4" />
-          Interesse — Kontakt anfragen
-        </button>
-      )}
+      </motion.article>
 
       <AnimatePresence>
-        {dialog && (
+        {profile && (
+          <ProfileDialog
+            candidate={c}
+            onClose={() => setProfile(false)}
+            onRequest={onRequest ? () => setRequest(true) : undefined}
+          />
+        )}
+        {request && (
           <RequestDialog
             candidate={c}
             busy={busy}
-            onCancel={() => setDialog(false)}
+            onCancel={() => setRequest(false)}
             onConfirm={confirm}
           />
         )}
       </AnimatePresence>
-    </motion.article>
+    </>
   );
 }

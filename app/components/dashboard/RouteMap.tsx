@@ -11,13 +11,11 @@
 
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
+import { Marker, Polyline, useMap } from "react-leaflet";
 import L from "leaflet";
 import { Car, Loader2, Ruler, AlertCircle } from "lucide-react";
 import type { Job } from "@/lib/types";
-import {
-  GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
-} from "@/lib/mapConfig";
+import MapShell, { MapAttribution } from "@/app/components/MapShell";
 
 function pin(letter: string, bg: string, fg: string) {
   return L.divIcon({
@@ -149,31 +147,25 @@ export default function RouteMap({ job }: { job: Job }) {
           </div>
         )}
 
-        <MapContainer
+        <MapShell
+          height={340}
           center={[(job.startLat + job.lat) / 2, (job.startLng + job.lng) / 2]}
           zoom={9}
-          minZoom={MIN_ZOOM}
-          maxBounds={GERMANY_BOUNDS}
-          maxBoundsViscosity={1}
           scrollWheelZoom={false}
-          zoomControl={false}
-          attributionControl={false}
-          style={{ height: 340, width: "100%", background: "#EFECE6" }}
         >
-          <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
           {route && (
             <>
               {/* Schatten unter der Route für Kontrast auf hellen Flächen */}
               <Polyline
                 positions={route.points}
-                pathOptions={{ color: "#1A1A2E", weight: 8, opacity: 0.18 }}
+                pathOptions={{ color: "#1A1A2E", weight: 9, opacity: 0.16 }}
               />
               <Polyline
                 positions={route.points}
                 pathOptions={{
                   color: "#E8A838",
                   weight: 5,
-                  opacity: 0.95,
+                  opacity: 0.98,
                   dashArray: route.real ? undefined : "8 10",
                 }}
               />
@@ -182,17 +174,9 @@ export default function RouteMap({ job }: { job: Job }) {
               <FitBounds points={route.points} />
             </>
           )}
-        </MapContainer>
+        </MapShell>
 
-        <a
-          href={OSM_COPYRIGHT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute z-[1000] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px]"
-          style={{ background: "rgba(255,255,255,0.82)", color: "rgba(26,26,46,0.5)" }}
-        >
-          © OpenStreetMap
-        </a>
+        <MapAttribution />
       </div>
 
       {route && !route.real && (

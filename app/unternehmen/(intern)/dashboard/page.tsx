@@ -1,46 +1,106 @@
 "use client";
 
 // ─── Kandidatensuche (Arbeitgeber) ───────────────────────────────────────────
-// Zielgruppe sind Betriebsinhaber, keine Bewerber: Überblick zuerst, Zahlen
-// statt Fließtext, alles in einem Bild. Deshalb ein dunkles Kommandopult mit
-// Karte und Radius oben, darunter Kennzahlen, dann die Profile.
+// Dreiteilig: Standort oben (Karte), Filter links, Kandidaten rechts über die
+// volle Breite. Chefs scannen von links nach rechts und wollen Zahlen, keine
+// Kacheln — deshalb breite Zeilen statt schmaler Karten.
 //
-// Der Standort kommt aus drei Quellen, in dieser Reihenfolge: der PLZ aus der
-// Anfrage auf /arbeitgeber, einem Klick auf die Karte, oder der Suche nach
-// PLZ / Ortsname.
+// Kein Gewerk-Filter: was gesucht wird, steht bereits in der Anfrage. Hier geht
+// es nur noch um Feinauswahl innerhalb dieses Gewerks.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Loader2, Users, FlaskConical, ShieldCheck, X, Zap, Euro, Route, Award,
-  SlidersHorizontal, MapPin,
+  Loader2, Users, FlaskConical, ShieldCheck, X, Zap, Euro, Route, MapPin,
+  SlidersHorizontal, RotateCcw, ArrowUpDown, Award, Briefcase,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import {
   searchCandidates, requestContact, getStoredPlz, storePlz,
-  EMPLOYER_DATA_IS_MOCKED, type CandidateFilters,
+  ZERTIFIKAT_OPTIONEN, BEREITSCHAFT_OPTIONEN, EMPLOYER_DATA_IS_MOCKED,
+  type CandidateFilters, type CandidateSort,
 } from "@/lib/employerService";
-import { GEWERKE } from "@/lib/constants";
 import type { Candidate } from "@/lib/types";
 import CandidateCard from "@/app/components/employer/CandidateCard";
 import SearchAreaMap, { type SearchArea } from "@/app/components/employer/SearchAreaMapDynamic";
 
-/** Schnellfilter als Schlagwörter — ein Klick statt Formular. */
-const QUICK: { key: string; label: string }[] = [
-  { key: "sofort", label: "Sofort verfügbar" },
-  { key: "meister", label: "Meisterbrief" },
-  { key: "montage", label: "Montagebereit" },
-  { key: "erfahren", label: "10+ Jahre" },
+const SORTS: { value: CandidateSort; label: string }[] = [
+  { value: "match", label: "Beste Übereinstimmung" },
+  { value: "naehe", label: "Kürzeste Anfahrt" },
+  { value: "erfahrung", label: "Meiste Erfahrung" },
+  { value: "gehalt", label: "Günstigste Gehaltsvorstellung" },
 ];
+
+const ERFAHRUNG_STUFEN = [0, 3, 5, 10];
+const GEHALT_STUFEN = [0, 3000, 3500, 4000, 5000];
+
+/** Filter-Gruppe mit Überschrift. */
+function Group({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="py-5" style={{ borderTop: "1px solid #F1EEE8" }}>
+      <p
+        className="text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
+        style={{ color: "rgba(26,26,46,0.45)" }}
+      >
+        {title}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+/** Auswahlfeld im Filterpanel. */
+function Choice({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] text-left transition-colors duration-150"
+      style={{
+        background: active ? "rgba(232,168,56,0.13)" : "transparent",
+        color: active ? "#1A1A2E" : "rgba(26,26,46,0.62)",
+        fontWeight: active ? 600 : 400,
+      }}
+    >
+      <span
+        className="w-[18px] h-[18px] rounded-md flex items-center justify-center flex-shrink-0 transition-colors"
+        style={{
+          border: `1.5px solid ${active ? "#E8A838" : "#DDD9D1"}`,
+          background: active ? "#E8A838" : "transparent",
+        }}
+      >
+        {active && (
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" strokeWidth="4" strokeLinecap="round">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </span>
+      {children}
+    </button>
+  );
+}
 
 export default function EmployerSearchPage() {
   const { user } = useAuth();
 
   const [area, setArea] = useState<SearchArea | null>(null);
   const [radius, setRadius] = useState(50);
-  const [quick, setQuick] = useState<string[]>([]);
-  const [gewerke, setGewerke] = useState<string[]>([]);
-  const [showGewerke, setShowGewerke] = useState(false);
+
+  const [minErfahrung, setMinErfahrung] = useState(0);
+  const [maxGehalt, setMaxGehalt] = useState(0);
+  const [nurSofort, setNurSofort] = useState(false);
+  const [zertifikate, setZertifikate] = useState<string[]>([]);
+  const [bereitschaft, setBereitschaft] = useState<string[]>([]);
+  const [sort, setSort] = useState<CandidateSort>("match");
+  const [mobileFilters, setMobileFilters] = useState(false);
 
   const [results, setResults] = useState<Candidate[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -56,6 +116,13 @@ export default function EmployerSearchPage() {
   const plz = area?.plz || prefilled || "";
   const ready = /^\d{5}$/.test(plz);
 
+  const activeCount =
+    (minErfahrung ? 1 : 0) +
+    (maxGehalt ? 1 : 0) +
+    (nurSofort ? 1 : 0) +
+    zertifikate.length +
+    bereitschaft.length;
+
   const run = useCallback(async () => {
     if (!ready) return;
     setLoading(true);
@@ -63,30 +130,28 @@ export default function EmployerSearchPage() {
     const f: CandidateFilters = {
       plz,
       radiusKm: radius,
-      gewerke: gewerke.length ? gewerke : undefined,
-      minErfahrung: quick.includes("erfahren") ? 10 : undefined,
-      montagebereit: quick.includes("montage") || undefined,
+      minErfahrung: minErfahrung || undefined,
+      maxGehalt: maxGehalt || undefined,
+      nurSofort: nurSofort || undefined,
+      zertifikate: zertifikate.length ? zertifikate : undefined,
+      bereitschaft: bereitschaft.length ? bereitschaft : undefined,
+      sort,
     };
     const res = await searchCandidates(f);
     setLoading(false);
-    if (res.ok) {
-      let out = res.data;
-      if (quick.includes("sofort")) out = out.filter((c) => c.verfuegbarAb === "Ab sofort");
-      if (quick.includes("meister")) out = out.filter((c) => c.zertifikate.includes("Meisterbrief"));
-      setResults(out);
-    } else {
+    if (res.ok) setResults(res.data);
+    else {
       setError(res.error);
       setResults(null);
     }
-  }, [plz, ready, radius, gewerke, quick]);
+  }, [plz, ready, radius, minErfahrung, maxGehalt, nurSofort, zertifikate, bereitschaft, sort]);
 
-  // Sobald ein Standort feststeht, automatisch suchen und nachladen.
   useEffect(() => {
     if (!ready) return;
     const t = setTimeout(() => void run(), 220);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plz, radius, gewerke, quick]);
+  }, [plz, radius, minErfahrung, maxGehalt, nurSofort, zertifikate, bereitschaft, sort]);
 
   const handleArea = (a: SearchArea) => {
     setArea(a);
@@ -97,19 +162,23 @@ export default function EmployerSearchPage() {
   const toggle = (list: string[], set: (v: string[]) => void, v: string) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 
-  // ── Kennzahlen für den schnellen Überblick ──
+  const resetFilters = () => {
+    setMinErfahrung(0);
+    setMaxGehalt(0);
+    setNurSofort(false);
+    setZertifikate([]);
+    setBereitschaft([]);
+  };
+
   const stats = useMemo(() => {
     if (!results?.length) return null;
-    const avgWeg = Math.round(results.reduce((s, c) => s + c.distanceKm, 0) / results.length);
-    const avgLohn = Math.round(
-      results.reduce((s, c) => s + (c.gehaltVon + c.gehaltBis) / 2, 0) / results.length
-    );
     return {
       total: results.length,
       sofort: results.filter((c) => c.verfuegbarAb === "Ab sofort").length,
-      meister: results.filter((c) => c.zertifikate.includes("Meisterbrief")).length,
-      avgWeg,
-      avgLohn,
+      avgWeg: Math.round(results.reduce((s, c) => s + c.distanceKm, 0) / results.length),
+      avgLohn: Math.round(
+        results.reduce((s, c) => s + (c.gehaltVon + c.gehaltBis) / 2, 0) / results.length
+      ),
     };
   }, [results]);
 
@@ -119,6 +188,91 @@ export default function EmployerSearchPage() {
     const res = await requestContact(id, position);
     if (res.ok) void run();
   };
+
+  // ── Filterpanel (geteilt zwischen Sidebar und Mobil-Auszug) ──
+  const filterPanel = (
+    <>
+      <div className="flex items-center justify-between gap-3 pb-1">
+        <p className="inline-flex items-center gap-2 text-[15px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
+          <SlidersHorizontal className="w-4 h-4" style={{ color: "#E8A838" }} />
+          Filter
+          {activeCount > 0 && (
+            <span
+              className="flex items-center justify-center rounded-full text-[11px] tabular-nums"
+              style={{ minWidth: 20, height: 20, padding: "0 6px", background: "#E8A838", color: "#1A1A2E" }}
+            >
+              {activeCount}
+            </span>
+          )}
+        </p>
+        {activeCount > 0 && (
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold"
+            style={{ color: "rgba(26,26,46,0.45)" }}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Zurücksetzen
+          </button>
+        )}
+      </div>
+
+      <Group title="Berufserfahrung">
+        <div className="space-y-0.5">
+          {ERFAHRUNG_STUFEN.map((j) => (
+            <Choice key={j} active={minErfahrung === j} onClick={() => setMinErfahrung(j)}>
+              {j === 0 ? "Egal" : `mindestens ${j} Jahre`}
+            </Choice>
+          ))}
+        </div>
+      </Group>
+
+      <Group title="Gehaltsrahmen">
+        <div className="space-y-0.5">
+          {GEHALT_STUFEN.map((g) => (
+            <Choice key={g} active={maxGehalt === g} onClick={() => setMaxGehalt(g)}>
+              {g === 0 ? "Egal" : `bis ${g.toLocaleString("de-DE")} €`}
+            </Choice>
+          ))}
+        </div>
+      </Group>
+
+      <Group title="Verfügbarkeit">
+        <Choice active={nurSofort} onClick={() => setNurSofort((v) => !v)}>
+          Nur sofort verfügbar
+        </Choice>
+      </Group>
+
+      <Group title="Qualifikation">
+        <div className="space-y-0.5">
+          {ZERTIFIKAT_OPTIONEN.map((z) => (
+            <Choice
+              key={z}
+              active={zertifikate.includes(z)}
+              onClick={() => toggle(zertifikate, setZertifikate, z)}
+            >
+              {z}
+            </Choice>
+          ))}
+        </div>
+      </Group>
+
+      <Group title="Bereitschaft">
+        <div className="space-y-0.5">
+          {BEREITSCHAFT_OPTIONEN.map((b) => (
+            <Choice
+              key={b}
+              active={bereitschaft.includes(b)}
+              onClick={() => toggle(bereitschaft, setBereitschaft, b)}
+            >
+              {b}
+            </Choice>
+          ))}
+        </div>
+      </Group>
+    </>
+  );
 
   return (
     <div>
@@ -135,14 +289,14 @@ export default function EmployerSearchPage() {
         </div>
       )}
 
-      {/* ══ Kommandopult ══ */}
+      {/* ══ Standort ══ */}
       <div className="relative overflow-hidden rounded-3xl mb-6" style={{ background: "#1A1A2E" }}>
         <div
           className="absolute -top-32 -right-24 w-[520px] h-[520px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.18) 0%, transparent 68%)" }}
+          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 68%)" }}
         />
         <div className="relative p-6 sm:p-8">
-          <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+          <div className="flex flex-wrap items-end justify-between gap-5 mb-6">
             <div>
               <span
                 className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
@@ -153,21 +307,44 @@ export default function EmployerSearchPage() {
               </span>
               <h1
                 className="text-white font-bold leading-tight"
-                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.2vw, 2.5rem)" }}
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3.4vw, 2.7rem)" }}
               >
                 Fachkräfte in Ihrem Umkreis
               </h1>
+              <p className="text-[15px] mt-2 max-w-lg" style={{ color: "rgba(255,255,255,0.5)" }}>
+                Standort auf der Karte antippen oder Ort eingeben — die Kandidaten
+                erscheinen sofort darunter.
+              </p>
             </div>
 
-            {area && (
-              <div className="rounded-2xl px-4 py-3" style={{ background: "rgba(255,255,255,0.07)" }}>
-                <p className="text-[10px] uppercase tracking-[0.16em] mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>
-                  Ihr Standort
-                </p>
-                <p className="text-white text-[15px] font-semibold">
-                  {area.label}
-                  {area.plz && <span className="tabular-nums font-normal text-white/50"> · {area.plz}</span>}
-                </p>
+            {stats && (
+              <div className="flex flex-wrap gap-2.5">
+                {[
+                  { icon: Users, v: String(stats.total), l: "Treffer" },
+                  { icon: Zap, v: String(stats.sofort), l: "sofort" },
+                  { icon: Route, v: `${stats.avgWeg} km`, l: "Ø Anfahrt" },
+                  { icon: Euro, v: `${stats.avgLohn.toLocaleString("de-DE")} €`, l: "Ø Wunsch" },
+                ].map((s) => {
+                  const Icon = s.icon;
+                  return (
+                    <div
+                      key={s.l}
+                      className="rounded-2xl px-4 py-3 min-w-[104px]"
+                      style={{ background: "rgba(255,255,255,0.07)" }}
+                    >
+                      <Icon className="w-3.5 h-3.5 mb-1.5" style={{ color: "#E8A838" }} />
+                      <p
+                        className="text-[19px] font-bold tabular-nums text-white leading-none"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
+                        {s.v}
+                      </p>
+                      <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
+                        {s.l}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -178,211 +355,170 @@ export default function EmployerSearchPage() {
               style={{ background: "rgba(232,168,56,0.14)", color: "#F6D08A" }}
             >
               <MapPin className="w-4 h-4 flex-shrink-0" />
-              PLZ <strong className="tabular-nums">{prefilled}</strong> aus Ihrer Anfrage übernommen —
-              Sie können den Standort unten jederzeit ändern.
+              PLZ <strong className="tabular-nums">{prefilled}</strong> aus Ihrer Anfrage
+              übernommen — Standort unten jederzeit änderbar.
             </div>
           )}
 
-          <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,300px)] gap-5">
-            <SearchAreaMap
-              area={area}
-              radiusKm={radius}
-              candidatePoints={points}
-              onChange={handleArea}
-              onRadiusChange={setRadius}
-              onClear={() => {
-                setArea(null);
-                setPrefilled(null);
-                setResults(null);
-              }}
-            />
+          <SearchAreaMap
+            area={area}
+            radiusKm={radius}
+            candidatePoints={points}
+            onChange={handleArea}
+            onRadiusChange={setRadius}
+            onClear={() => {
+              setArea(null);
+              setPrefilled(null);
+              setResults(null);
+            }}
+          />
+        </div>
+      </div>
 
-            <div className="flex flex-col gap-5">
-              <div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3"
-                  style={{ color: "rgba(255,255,255,0.4)" }}
-                >
-                  Schnellfilter
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {QUICK.map((q) => {
-                    const on = quick.includes(q.key);
-                    return (
-                      <button
-                        key={q.key}
-                        type="button"
-                        onClick={() => toggle(quick, setQuick, q.key)}
-                        className="rounded-full px-3.5 py-2 text-[13px] font-semibold transition-all duration-200"
-                        style={{
-                          background: on ? "rgba(232,168,56,0.9)" : "rgba(255,255,255,0.07)",
-                          color: on ? "#1A1A2E" : "rgba(255,255,255,0.7)",
-                          border: `1.5px solid ${on ? "#E8A838" : "rgba(255,255,255,0.14)"}`,
-                        }}
-                      >
-                        {q.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+      {/* ══ Filter + Ergebnisse ══ */}
+      <div className="grid lg:grid-cols-[264px_minmax(0,1fr)] gap-6 items-start">
+        {/* Filter — links, klebend */}
+        <aside
+          className="hidden lg:block rounded-3xl bg-white px-5 py-5 lg:sticky lg:top-[92px]"
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+        >
+          {filterPanel}
+        </aside>
 
+        <div>
+          {/* Kopfzeile: Anzahl + Sortierung */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <p className="text-[14px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+              {results?.length
+                ? `${results.length} ${results.length === 1 ? "Kandidat" : "Kandidaten"} im Umkreis von ${radius} km`
+                : "Noch keine Auswahl"}
+            </p>
+            <div className="flex items-center gap-2.5">
               <button
                 type="button"
-                onClick={() => setShowGewerke((v) => !v)}
-                className="inline-flex items-center gap-2 text-[13px] font-semibold self-start"
-                style={{ color: "#E8A838" }}
+                onClick={() => setMobileFilters((v) => !v)}
+                className="lg:hidden inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold"
+                style={{ background: "white", border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
               >
                 <SlidersHorizontal className="w-4 h-4" />
-                Gewerk eingrenzen{gewerke.length > 0 && ` (${gewerke.length})`}
+                Filter{activeCount > 0 && ` (${activeCount})`}
               </button>
+              <div className="relative">
+                <ArrowUpDown
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                  style={{ color: "rgba(26,26,46,0.35)" }}
+                />
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as CandidateSort)}
+                  aria-label="Sortierung"
+                  className="appearance-none rounded-full bg-white text-[13.5px] font-semibold pl-11 pr-6 py-2.5 outline-none cursor-pointer"
+                  style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
+                >
+                  {SORTS.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
-          {showGewerke && (
-            <div className="mt-5 pt-5 flex flex-wrap gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-              {GEWERKE.map((g) => {
-                const on = gewerke.includes(g);
-                return (
-                  <button
-                    key={g}
-                    type="button"
-                    onClick={() => toggle(gewerke, setGewerke, g)}
-                    className="rounded-full px-3.5 py-2 text-[13px] font-medium transition-all duration-200"
-                    style={{
-                      background: on ? "rgba(232,168,56,0.9)" : "rgba(255,255,255,0.06)",
-                      color: on ? "#1A1A2E" : "rgba(255,255,255,0.65)",
-                      border: `1.5px solid ${on ? "#E8A838" : "rgba(255,255,255,0.12)"}`,
-                    }}
-                  >
-                    {g}
-                  </button>
-                );
-              })}
+          {mobileFilters && (
+            <div
+              className="lg:hidden rounded-3xl bg-white px-5 py-5 mb-5"
+              style={{ border: "1.5px solid #E9E7E1" }}
+            >
+              {filterPanel}
             </div>
+          )}
+
+          {/* Vertrauenszeile */}
+          <div
+            className="flex items-start gap-3 rounded-2xl px-4 py-3.5 mb-5"
+            style={{ background: "rgba(26,26,46,0.035)" }}
+          >
+            <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
+            <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+              Profile sind anonymisiert. Name und Kontaktdaten sehen Sie, sobald der
+              Kandidat Ihre Anfrage annimmt — deshalb zeigen sich hier auch Fachkräfte,
+              die nicht offen suchen.
+            </p>
+          </div>
+
+          {error && (
+            <div
+              className="rounded-2xl px-4 py-3.5 mb-5 text-[13.5px]"
+              style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.25)", color: "#B91C1C" }}
+            >
+              {error}
+            </div>
+          )}
+
+          {!ready ? (
+            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
+              <MapPin className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
+              <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
+                Standort festlegen
+              </p>
+              <p className="text-[14px] max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
+                Tippen Sie oben auf die Karte oder geben Sie Postleitzahl bzw. Ort ein.
+              </p>
+            </div>
+          ) : loading ? (
+            <div className="flex items-center justify-center py-24">
+              <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+            </div>
+          ) : !results?.length ? (
+            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
+              <Users className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
+              <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
+                Keine Treffer im Umkreis von {radius} km
+              </p>
+              <p className="text-[14px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
+                Erweitern Sie den Radius am Regler oder lösen Sie die Filter.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setRadius(150);
+                  resetFilters();
+                }}
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold"
+                style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+              >
+                <X className="w-4 h-4" />
+                Filter lösen, 150 km
+              </button>
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-4"
+            >
+              {results.map((c) => (
+                <CandidateCard
+                  key={c.id}
+                  candidate={c}
+                  onRequest={(position) => handleRequest(c.id, position)}
+                />
+              ))}
+
+              <p
+                className="flex items-center justify-center gap-2 pt-4 text-[13px]"
+                style={{ color: "rgba(26,26,46,0.4)" }}
+              >
+                <Briefcase className="w-3.5 h-3.5" />
+                Weitere Fachkräfte erscheinen hier, sobald sie sich registrieren.
+                <Award className="w-3.5 h-3.5" />
+              </p>
+            </motion.div>
           )}
         </div>
       </div>
-
-      {/* ══ Kennzahlen ══ */}
-      {stats && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6"
-        >
-          {[
-            { icon: Users, value: String(stats.total), label: "Kandidaten im Umkreis" },
-            { icon: Zap, value: String(stats.sofort), label: "sofort verfügbar" },
-            { icon: Route, value: `${stats.avgWeg} km`, label: "Ø Anfahrt" },
-            { icon: Euro, value: `${stats.avgLohn.toLocaleString("de-DE")} €`, label: "Ø Gehaltswunsch" },
-          ].map((s) => {
-            const Icon = s.icon;
-            return (
-              <div
-                key={s.label}
-                className="rounded-2xl bg-white p-4"
-                style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 6px 20px -18px rgba(26,26,46,0.5)" }}
-              >
-                <Icon className="w-4 h-4 mb-2.5" style={{ color: "#E8A838" }} />
-                <p
-                  className="text-[24px] font-bold tabular-nums text-primary leading-none"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {s.value}
-                </p>
-                <p className="text-[11.5px] mt-1.5" style={{ color: "rgba(26,26,46,0.45)" }}>
-                  {s.label}
-                </p>
-              </div>
-            );
-          })}
-        </motion.div>
-      )}
-
-      {/* ══ Vertrauenszeile ══ */}
-      <div className="flex items-start gap-3 rounded-2xl px-4 py-3.5 mb-6" style={{ background: "rgba(26,26,46,0.035)" }}>
-        <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
-        <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
-          Profile sind anonymisiert. Name und Kontaktdaten sehen Sie, sobald der
-          Kandidat Ihre Anfrage annimmt — deshalb zeigen sich hier auch Fachkräfte,
-          die nicht offen suchen.
-        </p>
-      </div>
-
-      {/* ══ Ergebnisse ══ */}
-      {error && (
-        <div
-          className="rounded-2xl px-4 py-3.5 mb-6 text-[13.5px]"
-          style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.25)", color: "#B91C1C" }}
-        >
-          {error}
-        </div>
-      )}
-
-      {!ready ? (
-        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <MapPin className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[16px] font-bold text-primary mb-1.5">Standort festlegen</p>
-          <p className="text-[13.5px] max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Tippen Sie auf die Karte oder geben Sie oben Ihre Postleitzahl bzw. den Ort ein.
-          </p>
-        </div>
-      ) : loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
-        </div>
-      ) : !results?.length ? (
-        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <Users className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[16px] font-bold text-primary mb-1.5">
-            Keine Treffer im Umkreis von {radius} km
-          </p>
-          <p className="text-[13.5px] mb-5" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Erweitern Sie den Radius oder lösen Sie die Schnellfilter.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setRadius(150);
-              setQuick([]);
-              setGewerke([]);
-            }}
-            className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-          >
-            <X className="w-4 h-4" />
-            Filter lösen, 150 km
-          </button>
-        </div>
-      ) : (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.45)" }}>
-              Sortiert nach Übereinstimmung
-            </p>
-            {stats && stats.meister > 0 && (
-              <p
-                className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold rounded-full px-3 py-1.5"
-                style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
-              >
-                <Award className="w-3.5 h-3.5" />
-                {stats.meister} mit Meisterbrief
-              </p>
-            )}
-          </div>
-          <div className="grid lg:grid-cols-2 gap-4">
-            {results.map((c) => (
-              <CandidateCard
-                key={c.id}
-                candidate={c}
-                onRequest={(position) => handleRequest(c.id, position)}
-              />
-            ))}
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 }

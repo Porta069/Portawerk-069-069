@@ -159,17 +159,41 @@ function writeStates(s: StateMap) {
   }
 }
 
+export type CandidateSort = "match" | "naehe" | "erfahrung" | "gehalt";
+
 export interface CandidateFilters {
   /** Fünfstellige Postleitzahl — Ausgangspunkt der Suche. */
   plz: string;
   /** Suchradius in km. */
   radiusKm: number;
-  gewerke?: string[];
+  /** Mindest-Berufserfahrung in Jahren. */
   minErfahrung?: number;
+  /** Obergrenze der Gehaltsvorstellung (Einstiegswert). */
   maxGehalt?: number;
-  /** Nur Kandidaten, die zu Montage bereit sind. */
-  montagebereit?: boolean;
+  /** Nur sofort verfügbare Kandidaten. */
+  nurSofort?: boolean;
+  /** Geforderte Qualifikationen (alle müssen vorliegen). */
+  zertifikate?: string[];
+  /** Geforderte Bereitschaft (alle müssen vorliegen). */
+  bereitschaft?: string[];
+  sort?: CandidateSort;
 }
+
+/** Auswahlwerte für die Filter-Sektion. */
+export const ZERTIFIKAT_OPTIONEN = [
+  "Meisterbrief",
+  "Gesellenbrief",
+  "Führerschein Kl. BE",
+  "Staplerschein",
+  "Schweißerpass",
+];
+
+export const BEREITSCHAFT_OPTIONEN = [
+  "Montage / Reisetätigkeit",
+  "Schichtarbeit",
+  "Notdienst / Rufbereitschaft",
+  "Umzug für den richtigen Job",
+];
 
 /**
  * Sucht Kandidaten rund um eine PLZ. Distanz wird im Mock aus der
@@ -214,13 +238,23 @@ export async function searchCandidates(
     };
   })
     .filter((c) => c.distanceKm <= f.radiusKm)
-    .filter((c) => (f.gewerke?.length ? f.gewerke.includes(c.gewerk) : true))
     .filter((c) => (f.minErfahrung ? c.erfahrungJahre >= f.minErfahrung : true))
     .filter((c) => (f.maxGehalt ? c.gehaltVon <= f.maxGehalt : true))
-    .filter((c) =>
-      f.montagebereit ? c.bereitschaft.includes("Montage / Reisetätigkeit") : true
-    )
-    .sort((a, b) => b.matchScore - a.matchScore);
+    .filter((c) => (f.nurSofort ? c.verfuegbarAb === "Ab sofort" : true))
+    .filter((c) => (f.zertifikate ?? []).every((z) => c.zertifikate.includes(z)))
+    .filter((c) => (f.bereitschaft ?? []).every((b) => c.bereitschaft.includes(b)))
+    .sort((a, b) => {
+      switch (f.sort) {
+        case "naehe":
+          return a.distanceKm - b.distanceKm;
+        case "erfahrung":
+          return b.erfahrungJahre - a.erfahrungJahre;
+        case "gehalt":
+          return a.gehaltVon - b.gehaltVon;
+        default:
+          return b.matchScore - a.matchScore;
+      }
+    });
 
   return { ok: true, data: out };
 }

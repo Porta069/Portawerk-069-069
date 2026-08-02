@@ -60,12 +60,26 @@ export default function EmployerLayout({ children }: { children: React.ReactNode
       router.replace("/unternehmen/login");
       return;
     }
+
+    // Bekannter Betrieb aus der Sitzung → sofort rendern, Prüfung läuft
+    // parallel weiter (spart eine Serverrunde vor dem ersten Inhalt).
+    if (user) {
+      if (user.role !== "EMPLOYER") {
+        router.replace("/dashboard");
+        return;
+      }
+      setChecking(false);
+    }
+
     let active = true;
     api.me(token).then((res) => {
       if (!active) return;
       if (!res.ok) {
-        logout();
-        router.replace("/unternehmen/login");
+        // Nur bei echter Ablehnung abmelden, nicht bei Netzwerkaussetzern.
+        if (res.status === 401) {
+          logout();
+          router.replace("/unternehmen/login");
+        }
         return;
       }
       if (res.data.role !== "EMPLOYER") {

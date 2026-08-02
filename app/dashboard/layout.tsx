@@ -53,7 +53,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [badges, setBadges] = useState<NavBadges>({});
   const devPreview = useDevPreview();
 
-  // Auth-Guard + Token gegen /auth/me validieren
+  // Auth-Guard + Token gegen /auth/me validieren.
+  //
+  // Die Prüfung läuft im HINTERGRUND: liegt aus der gespeicherten Sitzung
+  // bereits ein passender Nutzer vor, wird der Bereich sofort gerendert und
+  // die Seiten laden ihre Daten parallel zur Prüfung — das spart auf dem Handy
+  // eine komplette Serverrunde vor dem ersten sichtbaren Inhalt. Schlägt die
+  // Prüfung fehl, wird wie bisher ausgeloggt und umgeleitet.
   useEffect(() => {
     if (!hydrated) return;
 
@@ -68,6 +74,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.replace("/login");
       return;
     }
+
+    // Bekannter Nutzer aus der Sitzung → sofort anzeigen (bzw. umleiten).
+    if (user) {
+      if (user.role === "EMPLOYER") {
+        router.replace("/unternehmen/dashboard");
+        return;
+      }
+      setChecking(false);
+    }
+
     let active = true;
     api.me(token).then((res) => {
       if (!active) return;
@@ -78,7 +94,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         setUser(res.data);
         setChecking(false);
-      } else {
+      } else if (res.status === 401) {
+        // Nur bei echter Ablehnung abmelden — ein Netzwerkaussetzer darf die
+        // Sitzung nicht kosten.
         logout();
         router.replace("/login");
       }

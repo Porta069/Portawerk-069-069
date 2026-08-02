@@ -25,8 +25,6 @@ import type { Candidate } from "@/lib/types";
 import CandidateCard from "@/app/components/employer/CandidateCard";
 import SearchAreaMap, { type SearchArea } from "@/app/components/employer/SearchAreaMapDynamic";
 
-const RADIUS_STEPS = [25, 50, 100, 200];
-
 /** Schnellfilter als Schlagwörter — ein Klick statt Formular. */
 const QUICK: { key: string; label: string }[] = [
   { key: "sofort", label: "Sofort verfügbar" },
@@ -191,39 +189,15 @@ export default function EmployerSearchPage() {
               radiusKm={radius}
               candidatePoints={points}
               onChange={handleArea}
+              onRadiusChange={setRadius}
+              onClear={() => {
+                setArea(null);
+                setPrefilled(null);
+                setResults(null);
+              }}
             />
 
             <div className="flex flex-col gap-5">
-              <div>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3"
-                  style={{ color: "rgba(255,255,255,0.4)" }}
-                >
-                  Umkreis
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {RADIUS_STEPS.map((r) => {
-                    const on = radius === r;
-                    return (
-                      <button
-                        key={r}
-                        type="button"
-                        onClick={() => setRadius(r)}
-                        className="rounded-2xl py-3 text-[15px] font-bold tabular-nums transition-all duration-200"
-                        style={{
-                          fontFamily: "var(--font-display)",
-                          background: on ? "#E8A838" : "rgba(255,255,255,0.07)",
-                          color: on ? "#1A1A2E" : "rgba(255,255,255,0.7)",
-                          border: `1.5px solid ${on ? "#E8A838" : "rgba(255,255,255,0.14)"}`,
-                        }}
-                      >
-                        {r} km
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
               <div>
                 <p
                   className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3"
@@ -371,7 +345,7 @@ export default function EmployerSearchPage() {
           <button
             type="button"
             onClick={() => {
-              setRadius(200);
+              setRadius(150);
               setQuick([]);
               setGewerke([]);
             }}
@@ -379,7 +353,7 @@ export default function EmployerSearchPage() {
             style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
           >
             <X className="w-4 h-4" />
-            Filter lösen, 200 km
+            Filter lösen, 150 km
           </button>
         </div>
       ) : (

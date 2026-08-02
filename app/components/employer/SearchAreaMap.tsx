@@ -10,7 +10,7 @@ import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Circle, CircleMarker, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { Search, X, Loader2, Crosshair, Plus, Minus } from "lucide-react";
+import { Search, X, Loader2, Crosshair, Plus, Minus, MapPin, Trash2 } from "lucide-react";
 import {
   GERMANY_CENTER, GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
 } from "@/lib/mapConfig";
@@ -116,12 +116,16 @@ export default function SearchAreaMap({
   radiusKm,
   candidatePoints = [],
   onChange,
+  onRadiusChange,
+  onClear,
 }: {
   area: SearchArea | null;
   radiusKm: number;
   /** Grobe Kandidatenpunkte — nur Dichte, keine Adressen. */
   candidatePoints?: { lat: number; lng: number }[];
   onChange: (a: SearchArea) => void;
+  onRadiusChange?: (km: number) => void;
+  onClear?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [hits, setHits] = useState<GeoHit[]>([]);
@@ -312,6 +316,81 @@ export default function SearchAreaMap({
           © OpenStreetMap
         </a>
       </div>
+
+      {/* ── Gewählter Bereich — identisch zur Arbeitsorte-Karte der Registrierung ── */}
+      {area && (
+        <div className="mt-4 space-y-2.5">
+          <p
+            className="text-[10px] font-semibold uppercase tracking-[0.16em]"
+            style={{ color: "rgba(255,255,255,0.4)" }}
+          >
+            Dein Suchgebiet
+          </p>
+          <div
+            className="rounded-2xl bg-white p-4"
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }}
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <span
+                className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "rgba(232,168,56,0.14)" }}
+              >
+                <MapPin className="w-4 h-4" style={{ color: "#E8A838" }} />
+              </span>
+              <span className="text-[14px] font-semibold text-primary truncate flex-1">
+                {area.label}
+                {area.plz && (
+                  <span className="font-normal tabular-nums" style={{ color: "rgba(26,26,46,0.45)" }}>
+                    {" "}· {area.plz}
+                  </span>
+                )}
+              </span>
+              <span
+                className="rounded-full px-2.5 py-1 text-[12px] font-bold tabular-nums flex-shrink-0"
+                style={{ background: "rgba(26,26,46,0.06)", color: "#1A1A2E" }}
+              >
+                {radiusKm} km
+              </span>
+              {onClear && (
+                <button
+                  type="button"
+                  onClick={onClear}
+                  aria-label="Suchgebiet entfernen"
+                  className="flex-shrink-0 transition-colors"
+                  style={{ color: "rgba(26,26,46,0.3)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#EF4444")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.3)")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <input
+              type="range"
+              min={5}
+              max={150}
+              step={5}
+              value={Math.min(150, radiusKm)}
+              aria-label={`Suchradius um ${area.label}`}
+              onChange={(e) => onRadiusChange?.(Number(e.target.value))}
+              className="w-full h-[4px] appearance-none cursor-pointer rounded-full"
+              style={{
+                accentColor: "#E8A838",
+                background: `linear-gradient(to right, #E8A838 ${
+                  ((Math.min(150, radiusKm) - 5) / 145) * 100
+                }%, #E9E7E1 ${((Math.min(150, radiusKm) - 5) / 145) * 100}%)`,
+              }}
+            />
+            <div
+              className="flex justify-between mt-1.5 text-[10px] tabular-nums"
+              style={{ color: "rgba(26,26,46,0.35)" }}
+            >
+              <span>5 km</span>
+              <span>150 km</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -19,6 +19,15 @@ function euro(n: number) {
   return n.toLocaleString("de-DE");
 }
 
+/**
+ * Nur echte http(s)-Adressen werden verlinkt. Ohne diese Schranke könnte ein
+ * Betrieb "javascript:..." als Website hinterlegen und den Code im Browser
+ * jedes Handwerkers ausführen, der darauf tippt.
+ */
+function safeUrl(url?: string | null): string | null {
+  return url && /^https?:\/\//i.test(url) ? url : null;
+}
+
 function Chip({ icon: Icon, children }: { icon: typeof MapPin; children: React.ReactNode }) {
   return (
     <span
@@ -266,9 +275,9 @@ export default function JobDetailDialog({
                       {job.companyMitarbeiter} Mitarbeiter
                     </span>
                   )}
-                  {job.companyWebsite && (
+                  {safeUrl(job.companyWebsite) && (
                     <a
-                      href={job.companyWebsite}
+                      href={safeUrl(job.companyWebsite) as string}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"

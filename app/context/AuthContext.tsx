@@ -79,7 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserState(null);
     setToken(null);
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      // Alle PortaWerk-Einträge entfernen, nicht nur die Sitzung: der
+      // Registrierungs-Entwurf enthält Name, E-Mail, Telefon und Arbeitsorte,
+      // der Partner-Schlüssel öffnet den Auszahlungsbereich. Genau das sagt
+      // auch unsere Datenschutzerklärung zu.
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith("portawerk_")) localStorage.removeItem(key);
+      }
     } catch {
       /* ignore */
     }

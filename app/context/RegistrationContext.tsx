@@ -124,7 +124,16 @@ export function RegistrationProvider({
         const parsed = JSON.parse(raw) as {
           step?: RegStep;
           data?: RegistrationData;
+          savedAt?: number;
         };
+        // Entwürfe enthalten Kontaktdaten und Arbeitsorte — nach 24 Stunden
+        // werden sie verworfen statt unbegrenzt auf dem Gerät zu liegen.
+        if (parsed.savedAt && Date.now() - parsed.savedAt > 24 * 60 * 60 * 1000) {
+          localStorage.removeItem(STORAGE_KEY);
+          setData(EMPTY);
+          setHydrated(true);
+          return;
+        }
         if (parsed.data) base = { ...EMPTY, ...parsed.data };
         // Erfolgsschritt nie wiederherstellen — sonst hängt man im "Fertig".
         // Laufende Registrierungen aus der alten Reihenfolge werden übersetzt,
@@ -182,7 +191,10 @@ export function RegistrationProvider({
       const { password: _pw, avatar: _av, ...safe } = data;
       void _pw;
       void _av;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, data: { ...safe, avatar: "" } }));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ step, data: { ...safe, avatar: "" }, savedAt: Date.now() })
+      );
     } catch {
       /* ignore quota errors */
     }

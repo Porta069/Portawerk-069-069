@@ -13,6 +13,10 @@ import ScoreExplainer from "@/app/components/ScoreExplainer";
 
 const euro = (n: number) => n.toLocaleString("de-DE");
 
+/** Nur echte http(s)-Adressen verlinken (siehe JobDetailDialog). */
+const safeUrl = (url?: string | null): string | null =>
+  url && /^https?:\/\//i.test(url) ? url : null;
+
 /** Hat der Betrieb die Leistung (Benefits des Unternehmens + Extras der Stelle)? */
 function hasPerk(job: Job, perk: string): boolean {
   const all = [...(job.benefits ?? []), ...(job.conditions.extras ?? [])];
@@ -135,9 +139,9 @@ const ROWS: Row[] = [
   {
     label: "Website",
     cell: (j) =>
-      j.companyWebsite ? (
+      safeUrl(j.companyWebsite) ? (
         <a
-          href={j.companyWebsite}
+          href={safeUrl(j.companyWebsite) as string}
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold underline-offset-2 hover:underline"

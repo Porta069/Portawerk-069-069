@@ -107,6 +107,20 @@ export default function RegisterFlow() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step]);
 
+  // Nach erfolgreicher Registrierung den Entwurf sofort aus dem Browser
+  // entfernen — er enthält Name, E-Mail, Telefon, Arbeitsorte und den
+  // Registrierungs-Token. Bisher blieb er liegen, wenn der Tab einfach
+  // geschlossen wurde.
+  useEffect(() => {
+    if (step === "success") {
+      try {
+        localStorage.removeItem("portawerk_registration_v1");
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [step]);
+
   if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">

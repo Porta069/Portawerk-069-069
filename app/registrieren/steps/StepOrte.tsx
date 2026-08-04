@@ -1,52 +1,27 @@
 "use client";
 
-// ─── Schritt 4 — Wo & wie du arbeiten willst ──────────────────────────────────
-// Region und Rahmenbedingungen gehören inhaltlich zusammen und werden deshalb
-// in einem Schritt gefragt. Das spart einen kompletten Schritt gegenüber der
-// früheren Trennung in "Arbeitsorte" und "Umfrage".
+// ─── Schritt 6 — Wo du arbeiten willst ────────────────────────────────────────
+// Nur noch die Arbeitsorte. Die früher hier gestellten Fragen nach Zielen,
+// Umfeld und Bereitschaft sind im Fachfragebogen aufgegangen — sie zweimal zu
+// stellen, in leicht anderer Formulierung, war für niemanden nachvollziehbar.
 //
-// Backend-Vertrag bleibt: Arbeitsorte → Wizard-Schritt 3, Umfrage → Schritt 1.
+// Backend-Vertrag bleibt: Arbeitsorte → Wizard-Schritt 3.
 
-import { useMemo } from "react";
 import { Compass, MapPin } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
 import { api } from "@/lib/api";
 import WorkLocationsMap from "@/app/components/WorkLocationsMapDynamic";
-import { SURVEY_QUESTIONS } from "@/lib/constants";
 import {
-  StepHeading, QuestionBlock, ChipToggle, OptionCard,
+  StepHeading, QuestionBlock,
   NextButton, SkipButton, StepActions, ValueNote,
 } from "@/app/components/wizard";
 
 export default function StepOrte() {
-  const { data, setWorkLocations, setSurveyAnswer, next } = useRegistration();
-
-  const [zielQ, umfeldQ, bereitschaftQ] = SURVEY_QUESTIONS;
-
-  const ziel = (data.surveyAnswers[zielQ.id] as string) ?? "";
-  const umfeld = (data.surveyAnswers[umfeldQ.id] as string) ?? "";
-  const bereitschaft = useMemo(
-    () =>
-      Array.isArray(data.surveyAnswers[bereitschaftQ.id])
-        ? (data.surveyAnswers[bereitschaftQ.id] as string[])
-        : [],
-    [data.surveyAnswers, bereitschaftQ.id]
-  );
-
-  const toggleBereitschaft = (v: string) =>
-    setSurveyAnswer(
-      bereitschaftQ.id,
-      bereitschaft.includes(v) ? bereitschaft.filter((x) => x !== v) : [...bereitschaft, v]
-    );
+  const { data, setWorkLocations, next } = useRegistration();
 
   const handleNext = () => {
     if (data.draftToken) {
-      // Beide Payloads behalten ihre bisherigen Schritt-Nummern.
       void api.saveStep(data.draftToken, 3, { workLocations: data.workLocations });
-      void api.saveStep(data.draftToken, 1, {
-        surveyAnswers: data.surveyAnswers,
-        surveySkipped: data.surveySkipped,
-      });
     }
     next();
   };
@@ -55,8 +30,9 @@ export default function StepOrte() {
 
   return (
     <div>
-      <StepHeading eyebrow="Wo & wie du arbeiten willst">
-        Beides zusammen entscheidet, welche Betriebe wir dir überhaupt vorschlagen.
+      <StepHeading eyebrow="Wo du arbeiten willst">
+        Deine Arbeitsorte entscheiden, welche Betriebe überhaupt in Frage kommen —
+        und wie die Fahrzeit auf jeder Stelle berechnet wird.
       </StepHeading>
 
       <QuestionBlock
@@ -66,52 +42,9 @@ export default function StepOrte() {
         <WorkLocationsMap value={data.workLocations} onChange={setWorkLocations} />
       </QuestionBlock>
 
-      <QuestionBlock
-        index={1}
-        title={bereitschaftQ.prompt}
-        hint="Mehrfachauswahl — jede Angabe öffnet dir zusätzliche Stellen."
-      >
-        <div className="flex flex-wrap gap-2">
-          {bereitschaftQ.options?.map((o) => (
-            <ChipToggle
-              key={o.value}
-              label={o.label}
-              selected={bereitschaft.includes(o.value)}
-              onClick={() => toggleBereitschaft(o.value)}
-            />
-          ))}
-        </div>
-      </QuestionBlock>
-
-      <QuestionBlock index={2} title={zielQ.prompt}>
-        <div className="grid sm:grid-cols-2 gap-2.5">
-          {zielQ.options?.map((o) => (
-            <OptionCard
-              key={o.value}
-              label={o.label}
-              selected={ziel === o.value}
-              onClick={() => setSurveyAnswer(zielQ.id, o.value)}
-            />
-          ))}
-        </div>
-      </QuestionBlock>
-
-      <QuestionBlock index={3} title={umfeldQ.prompt}>
-        <div className="grid sm:grid-cols-2 gap-2.5">
-          {umfeldQ.options?.map((o) => (
-            <OptionCard
-              key={o.value}
-              label={o.label}
-              selected={umfeld === o.value}
-              onClick={() => setSurveyAnswer(umfeldQ.id, o.value)}
-            />
-          ))}
-        </div>
-      </QuestionBlock>
-
       <ValueNote icon={Compass}>
-        Alles hier ist freiwillig und jederzeit im Profil änderbar — je mehr du
-        angibst, desto treffsicherer werden die Vorschläge.
+        Du kannst mehrere Orte eintragen — etwa Wohnort und Heimatregion. Jeder
+        bekommt seinen eigenen Radius, und wir rechnen immer vom nächsten.
       </ValueNote>
 
       <StepActions

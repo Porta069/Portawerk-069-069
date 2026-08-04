@@ -18,14 +18,18 @@ import type { WorkLocation } from "@/lib/types";
 import { useAuth } from "@/app/context/AuthContext";
 import { useI18n, LANGUAGES, type Lang } from "@/lib/i18n";
 import { api, type AuthSession, type PublicUser } from "@/lib/api";
+import {
+  getKatalog,
+  bereichVon,
+  bereichWechseln,
+  LEERES_PROFIL,
+  type Katalog,
+  type Handwerkerprofil,
+} from "@/lib/catalogService";
 import { evaluatePassword } from "@/lib/password";
 import { matchingSections, type SettingsSectionId } from "@/lib/settingsSearch";
-import { SURVEY_QUESTIONS } from "@/lib/constants";
-import { getProfileQuestions } from "@/lib/aiService";
 import PasswordStrength from "@/app/components/PasswordStrength";
-import QuestionComponent from "@/app/components/QuestionComponent";
 import { Field, PrimaryButton } from "@/app/components/ui";
-import type { AnswerMap, AnswerValue, Question } from "@/lib/types";
 
 type T = (key: string) => string;
 
@@ -154,10 +158,12 @@ function AccountSection({ token, t, user, setUser }: { token: string; t: T; user
 }
 
 // ── Profil-Antworten ──────────────────────────────────────────────────────────
+// Dieselben zehn Fragen wie in der Registrierung. Wer sie hier nachschärft,
+// verändert unmittelbar, welche Stellen er überhaupt zu sehen bekommt —
+// deshalb steht der Hinweis dabei und nicht im Kleingedruckten.
 function AnswersSection({ token, t }: { token: string; t: T }) {
-  const [survey, setSurvey] = useState<AnswerMap>({});
-  const [ai, setAi] = useState<AnswerMap>({});
-  const [aiQ, setAiQ] = useState<Question[]>([]);
+  const [profil, setProfil] = useState<Handwerkerprofil>(LEERES_PROFIL);
+  const [katalog, setKatalog] = useState<Katalog | null>(null);
   const [base, setBase] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -166,15 +172,20 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
   useEffect(() => {
     let active = true;
     (async () => {
-      const [exp, q] = await Promise.all([api.exportData(token), getProfileQuestions()]);
+      const [exp, kat] = await Promise.all([api.exportData(token), getKatalog()]);
       if (!active) return;
       if (exp.ok) {
-        const pd = (exp.data.onboardingAnswers ?? {}) as Record<string, { answers?: AnswerMap; aiAnswers?: AnswerMap }>;
+        const pd = (exp.data.onboardingAnswers ?? {}) as Record<string, unknown>;
         setBase(pd);
-        setSurvey(pd["1"]?.answers ?? {});
-        setAi(pd["4"]?.aiAnswers ?? {});
+        // Der Wizard legt das Profil unter einem Schritt-Schlüssel ab, ältere
+        // Speicherungen direkt unter `profil` — beide Wege lesen.
+        const ausSchritt = Object.values(pd).find(
+          (v) => !!v && typeof v === "object" && "profil" in (v as object)
+        ) as { profil?: Handwerkerprofil } | undefined;
+        const gefunden = (pd.profil as Handwerkerprofil | undefined) ?? ausSchritt?.profil;
+        if (gefunden) setProfil({ ...LEERES_PROFIL, ...gefunden });
       }
-      if (q.ok) setAiQ(q.data);
+      if (kat.ok) setKatalog(kat.data);
       setLoading(false);
     })();
     return () => { active = false; };
@@ -185,31 +196,158 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
     // Frischen Stand holen, damit z. B. Arbeitsorte nicht überschrieben werden.
     const cur = await api.exportData(token);
     const fresh = (cur.ok ? (cur.data.onboardingAnswers ?? base) : base) as Record<string, unknown>;
-    const profileData = {
-      ...fresh,
-      "1": { ...((fresh["1"] as object) || {}), answers: survey },
-      "4": { ...((fresh["4"] as object) || {}), aiAnswers: ai },
-    };
-    const res = await api.updateProfile(token, { profileData });
+    const res = await api.updateProfile(token, { profileData: { ...fresh, profil } });
     setSaving(false);
     if (res.ok) setBase(fresh);
     setMsg(res.ok ? { ok: true, text: t("btn.saved") } : { ok: false, text: res.error });
   };
 
-  if (loading) return <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} /></div>;
+  if (loading || !katalog) {
+    return <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} /></div>;
+  }
+
+  const bereich = bereichVon(katalog, profil.bereich);
+  const set = (p: Partial<Handwerkerprofil>) => setProfil((v) => ({ ...v, ...p }));
+
+  const Chips = ({
+    optionen,
+    gewaehlt,
+    onToggle,
+    max,
+  }: {
+    optionen: { value: string; label: string }[];
+    gewaehlt: string[];
+    onToggle: (v: string) => void;
+    max?: number;
+  }) => (
+    <div className="flex flex-wrap gap-1.5">
+      {optionen.map((o) => {
+        const an = gewaehlt.includes(o.value);
+        const gesperrt = !an && max != null && gewaehlt.length >= max;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => !gesperrt && onToggle(o.value)}
+            aria-pressed={an}
+            className="rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors"
+            style={{
+              background: an ? "#1A1A2E" : "#FFFFFF",
+              border: `1.5px solid ${an ? "#1A1A2E" : "#E9E7E1"}`,
+              color: an ? "#FFFFFF" : "rgba(26,26,46,0.65)",
+              opacity: gesperrt ? 0.4 : 1,
+            }}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const Zeile = ({ titel, children }: { titel: string; children: React.ReactNode }) => (
+    <div>
+      <p className="text-[13px] font-semibold text-primary mb-2">{titel}</p>
+      {children}
+    </div>
+  );
+
+  const auswahl = (
+    wert: string | null,
+    optionen: { value: string; label: string }[],
+    onChange: (v: string) => void
+  ) => (
+    <select
+      value={wert ?? ""}
+      onChange={(e) => onChange(e.target.value)}
+      style={{
+        border: "1.5px solid #E9E7E1", borderRadius: 12, padding: "8px 12px",
+        fontSize: 13.5, background: "#fff", color: "#1A1A2E", minWidth: 220,
+      }}
+    >
+      <option value="" disabled>Bitte wählen</option>
+      {optionen.map((o) => (
+        <option key={o.value} value={o.value}>{o.label}</option>
+      ))}
+    </select>
+  );
 
   return (
-    <div className="pt-3 space-y-8">
-      <div className="space-y-6">
-        {SURVEY_QUESTIONS.map((q, i) => (
-          <QuestionComponent key={q.id} question={q} index={i} value={survey[q.id]}
-            onChange={(v: AnswerValue) => setSurvey((s) => ({ ...s, [q.id]: v }))} />
-        ))}
-        {aiQ.map((q, i) => (
-          <QuestionComponent key={q.id} question={q} index={SURVEY_QUESTIONS.length + i} value={ai[q.id]}
-            onChange={(v: AnswerValue) => setAi((s) => ({ ...s, [q.id]: v }))} />
-        ))}
-      </div>
+    <div className="pt-3 space-y-7">
+      <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
+        Diese Angaben entscheiden, welche Stellen dir angezeigt werden. Änderst
+        du sie, ändert sich sofort deine Jobbörse.
+      </p>
+
+      <Zeile titel="Ausbildungsbereich">
+        {auswahl(profil.bereich, katalog.bereiche, (v) =>
+          setProfil((alt) => bereichWechseln(alt, v, katalog))
+        )}
+      </Zeile>
+
+      <Zeile titel="Ausbildungsstand">
+        {auswahl(profil.ausbildungsstatus, katalog.ausbildungsstatus, (v) =>
+          set({ ausbildungsstatus: v, ...(v === "keine" ? { beruf: null } : {}) })
+        )}
+      </Zeile>
+
+      {bereich && profil.ausbildungsstatus && profil.ausbildungsstatus !== "keine" && (
+        <Zeile titel="Ausbildungsberuf">
+          {auswahl(profil.beruf, bereich.berufe, (v) => set({ beruf: v }))}
+        </Zeile>
+      )}
+
+      {bereich && (
+        <Zeile titel="Aufgabenbereiche mit Erfahrung">
+          <Chips
+            optionen={bereich.aufgaben}
+            gewaehlt={profil.aufgaben}
+            onToggle={(v) =>
+              set({
+                aufgaben: profil.aufgaben.includes(v)
+                  ? profil.aufgaben.filter((x) => x !== v)
+                  : [...profil.aufgaben, v],
+              })
+            }
+          />
+        </Zeile>
+      )}
+
+      <Zeile titel="Berufserfahrung">
+        {auswahl(profil.erfahrung, katalog.erfahrung, (v) => set({ erfahrung: v }))}
+      </Zeile>
+
+      <Zeile titel={`Was dir wichtig ist (bis zu ${katalog.prioritaetenMax})`}>
+        <Chips
+          optionen={katalog.prioritaeten}
+          gewaehlt={profil.prioritaeten}
+          max={katalog.prioritaetenMax}
+          onToggle={(v) =>
+            set({
+              prioritaeten: profil.prioritaeten.includes(v)
+                ? profil.prioritaeten.filter((x) => x !== v)
+                : [...profil.prioritaeten, v],
+            })
+          }
+        />
+      </Zeile>
+
+      <Zeile titel="Montagebereitschaft">
+        {auswahl(profil.montage, katalog.montage, (v) => set({ montage: v }))}
+      </Zeile>
+
+      <Zeile titel="Führerschein">
+        {auswahl(profil.fuehrerschein, katalog.fuehrerschein, (v) => set({ fuehrerschein: v }))}
+      </Zeile>
+
+      <Zeile titel="Deutschkenntnisse">
+        {auswahl(profil.deutsch, katalog.deutsch, (v) => set({ deutsch: v }))}
+      </Zeile>
+
+      <Zeile titel="Gewünschter Start">
+        {auswahl(profil.start, katalog.start, (v) => set({ start: v }))}
+      </Zeile>
+
       <div className="flex items-center gap-3 pt-4" style={{ borderTop: "1px solid #F3F4F6" }}>
         <PrimaryButton onClick={save} loading={saving}>{t("btn.save")}</PrimaryButton>
         {msg && <Msg ok={msg.ok}>{msg.text}</Msg>}

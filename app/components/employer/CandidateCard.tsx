@@ -12,8 +12,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Euro, CalendarDays, Award, Clock3, Send, Check, Loader2,
+  MapPin, CalendarDays, Award, Clock3, Send, Check, Loader2,
   ShieldCheck, X, Route, Briefcase, Star, ChevronRight, Eye, Heart, Sparkles, Phone, Mail,
+  Truck,
 } from "lucide-react";
 import type { Candidate } from "@/lib/types";
 import ScoreExplainer from "@/app/components/ScoreExplainer";
@@ -30,10 +31,6 @@ const TRADE_IMAGE: Record<string, string> = {
   "Dachdecker": "/images/hero-team-werkstatt.jpg",
 };
 const FALLBACK_IMAGE = "/images/hero-team-werkstatt.jpg";
-
-function euro(n: number) {
-  return n.toLocaleString("de-DE");
-}
 
 function Fact({
   icon: Icon,
@@ -93,7 +90,7 @@ function ProfileDialog({
   onRequest?: () => void;
 }) {
   const c = candidate;
-  const img = TRADE_IMAGE[c.gewerk] ?? FALLBACK_IMAGE;
+  const img = TRADE_IMAGE[c.bereich] ?? FALLBACK_IMAGE;
 
   return (
     <motion.div
@@ -147,7 +144,7 @@ function ProfileDialog({
               {c.handle}
             </h2>
             <p className="text-[14px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
-              {c.gewerk} · {c.region}
+              {c.bereich} · {c.region}
             </p>
           </div>
         </div>
@@ -155,10 +152,10 @@ function ProfileDialog({
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { icon: Briefcase, value: c.erfahrungJahre != null ? `${c.erfahrungJahre} Jahre` : "—", label: "Erfahrung" },
+              { icon: Briefcase, value: c.erfahrung ?? "—", label: "Erfahrung" },
               { icon: Route, value: c.distanceKm != null ? `${c.distanceKm} km` : "—", label: "Anfahrt zu Ihnen" },
               { icon: MapPin, value: c.radiusKm != null ? `${c.radiusKm} km` : "—", label: "Sein Suchradius" },
-              { icon: CalendarDays, value: c.verfuegbarAb ? c.verfuegbarAb.replace("Ab ", "") : "—", label: "Verfügbar" },
+              { icon: CalendarDays, value: c.start ?? "—", label: "Kann starten" },
             ].map((f) => (
               <div key={f.label} className="rounded-2xl p-4" style={{ background: "var(--color-surface)" }}>
                 <Fact icon={f.icon} value={f.value} label={f.label} />
@@ -166,56 +163,55 @@ function ProfileDialog({
             ))}
           </div>
 
-          {c.gehaltVon != null && c.gehaltBis != null && (
-            <div className="rounded-2xl px-5 py-4" style={{ background: "rgba(232,168,56,0.1)" }}>
-              <p className="text-[11px] uppercase tracking-[0.16em] mb-1" style={{ color: "#8A5B0F" }}>
-                Gehaltsvorstellung
-              </p>
-              <p
-                className="text-[26px] font-bold tabular-nums text-primary leading-none"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {euro(c.gehaltVon)} – {euro(c.gehaltBis)} €
-              </p>
-              <p className="text-[12px] mt-1" style={{ color: "rgba(26,26,46,0.5)" }}>
-                brutto pro Monat
-              </p>
-            </div>
-          )}
-
           <div>
             <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
-              Qualifikationen
+              Ausbildung
             </p>
             <div className="flex flex-wrap gap-2">
-              {c.zertifikate.map((z) => (
-                <Tag key={z} tone="gold">
+              {c.ausbildung && (
+                <Tag tone="gold">
                   <Award className="w-3.5 h-3.5" />
-                  {z}
+                  {c.ausbildung}
                 </Tag>
-              ))}
+              )}
+              {c.beruf && <Tag>{c.beruf}</Tag>}
             </div>
           </div>
 
-          {c.bereitschaft.length > 0 && (
+          {c.aufgaben.length > 0 && (
             <div>
               <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
-                Bereit zu
+                Erfahrung in
               </p>
               <div className="flex flex-wrap gap-2">
-                {c.bereitschaft.map((b) => (
-                  <Tag key={b}>{b}</Tag>
+                {c.aufgaben.map((a) => (
+                  <Tag key={a}>{a}</Tag>
                 ))}
               </div>
             </div>
           )}
 
-          {c.praeferenz && (
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
+              Rahmenbedingungen
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {c.montage && <Tag>Montage: {c.montage}</Tag>}
+              {c.fuehrerschein && <Tag>{c.fuehrerschein}</Tag>}
+              {c.deutsch && <Tag>Deutsch: {c.deutsch}</Tag>}
+            </div>
+          </div>
+
+          {c.prioritaeten.length > 0 && (
             <div>
               <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
                 Worauf es ihm ankommt
               </p>
-              <p className="text-[15px] text-primary">{c.praeferenz}</p>
+              <div className="flex flex-wrap gap-2">
+                {c.prioritaeten.map((x) => (
+                  <Tag key={x}>{x}</Tag>
+                ))}
+              </div>
             </div>
           )}
 
@@ -404,7 +400,7 @@ export default function CandidateCard({
   const [request, setRequest] = useState(false);
   const [busy, setBusy] = useState(false);
   const c = candidate;
-  const img = TRADE_IMAGE[c.gewerk] ?? FALLBACK_IMAGE;
+  const img = TRADE_IMAGE[c.bereich] ?? FALLBACK_IMAGE;
 
   const confirm = async (position: string) => {
     if (!onRequest) return;
@@ -466,7 +462,7 @@ export default function CandidateCard({
                   {c.handle}
                 </p>
                 <p className="text-[12px] mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>
-                  {c.gewerk}
+                  {c.bereich}
                 </p>
               </div>
             </div>
@@ -505,37 +501,21 @@ export default function CandidateCard({
 
             {/* Kernzahlen in einer Zeile — von links nach rechts lesbar */}
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-4 mb-5">
-              <Fact
-                icon={Briefcase}
-                value={c.erfahrungJahre != null ? `${c.erfahrungJahre} Jahre` : "—"}
-                label="Erfahrung"
-              />
+              <Fact icon={Briefcase} value={c.erfahrung ?? "—"} label="Erfahrung" />
               <Fact icon={Route} value={c.distanceKm != null ? `${c.distanceKm} km` : "—"} label="Anfahrt" />
-              <Fact
-                icon={CalendarDays}
-                value={c.verfuegbarAb ? c.verfuegbarAb.replace("Ab ", "") : "—"}
-                label="Verfügbar"
-              />
-              <Fact
-                icon={Euro}
-                value={
-                  c.gehaltVon != null && c.gehaltBis != null
-                    ? `${euro(c.gehaltVon)}–${euro(c.gehaltBis)}`
-                    : "—"
-                }
-                label="Gehaltswunsch"
-              />
+              <Fact icon={CalendarDays} value={c.start ?? "—"} label="Kann starten" />
+              <Fact icon={Truck} value={c.montage ?? "—"} label="Montage" />
             </div>
 
             <div className="flex flex-wrap gap-2 mb-5">
-              {c.zertifikate.slice(0, 3).map((z) => (
-                <Tag key={z} tone="gold">
+              {c.ausbildung && (
+                <Tag tone="gold">
                   <Award className="w-3.5 h-3.5" />
-                  {z}
+                  {c.ausbildung}
                 </Tag>
-              ))}
-              {c.bereitschaft.slice(0, 2).map((b) => (
-                <Tag key={b}>{b}</Tag>
+              )}
+              {c.aufgaben.slice(0, 3).map((a) => (
+                <Tag key={a}>{a}</Tag>
               ))}
             </div>
 

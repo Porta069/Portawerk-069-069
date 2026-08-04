@@ -17,9 +17,6 @@ import type { MatchBreakdown } from "@/lib/types";
 const fmt = (n: number | null): string =>
   n === null ? "—" : Number.isInteger(n) ? String(n) : n.toLocaleString("de-DE", { maximumFractionDigits: 1 });
 
-function Range({ min, max }: { min: number; max: number }) {
-  return <span className="tabular-nums">{min === max ? fmt(min) : `${fmt(min)}–${fmt(max)}`}</span>;
-}
 
 export default function ScoreExplainer({
   breakdown,
@@ -132,40 +129,54 @@ export default function ScoreExplainer({
                         className="text-left text-[10.5px] font-bold uppercase tracking-[0.12em]"
                         style={{ color: "rgba(26,26,46,0.45)" }}
                       >
-                        <th className="py-2 pr-3 font-bold">Frage</th>
-                        <th className="py-2 px-2 font-bold text-right">Antwort</th>
-                        <th className="py-2 px-2 font-bold text-right">Erwartet</th>
-                        <th className="py-2 px-2 font-bold text-right">Differenz</th>
+                        <th className="py-2 pr-3 font-bold">Kriterium</th>
+                        <th className="py-2 px-2 font-bold">Gesucht</th>
+                        <th className="py-2 px-2 font-bold">Dein Profil</th>
+                        <th className="py-2 px-2 font-bold text-right">Erfüllt</th>
                         <th className="py-2 px-2 font-bold text-right">Gewicht</th>
-                        <th className="py-2 pl-2 font-bold text-right">Strafe</th>
+                        <th className="py-2 pl-2 font-bold text-right">Abzug</th>
                       </tr>
                     </thead>
                     <tbody>
                       {scored.map((c) => (
-                        <tr key={c.questionKey} style={{ borderTop: "1px solid #F1EEE8" }}>
-                          <td className="py-2.5 pr-3 text-primary">
-                            {c.label}
-                            {c.unit && (
-                              <span style={{ color: "rgba(26,26,46,0.4)" }}> ({c.unit})</span>
+                        <tr key={c.key} style={{ borderTop: "1px solid #F1EEE8" }}>
+                          <td className="py-2.5 pr-3 text-primary align-top">
+                            <span className="font-semibold">{c.label}</span>
+                            {c.note && (
+                              <span
+                                className="block text-[11.5px] leading-snug mt-0.5"
+                                style={{ color: "rgba(26,26,46,0.45)" }}
+                              >
+                                {c.note}
+                              </span>
                             )}
                           </td>
-                          <td className="py-2.5 px-2 text-right tabular-nums font-semibold text-primary">
-                            {fmt(c.workerValue)}
+                          <td
+                            className="py-2.5 px-2 align-top"
+                            style={{ color: "rgba(26,26,46,0.65)" }}
+                          >
+                            {c.required}
                           </td>
-                          <td className="py-2.5 px-2 text-right" style={{ color: "rgba(26,26,46,0.65)" }}>
-                            <Range min={c.rangeMin} max={c.rangeMax} />
+                          <td className="py-2.5 px-2 align-top font-semibold text-primary">
+                            {c.answer}
                           </td>
                           <td
-                            className="py-2.5 px-2 text-right tabular-nums"
-                            style={{ color: c.diff ? "#B45309" : "#15803D", fontWeight: 600 }}
+                            className="py-2.5 px-2 text-right tabular-nums align-top"
+                            style={{
+                              color: c.fulfilment >= 1 ? "#15803D" : "#B45309",
+                              fontWeight: 600,
+                            }}
                           >
-                            {fmt(c.diff)}
+                            {Math.round(c.fulfilment * 100)} %
                           </td>
-                          <td className="py-2.5 px-2 text-right tabular-nums" style={{ color: "rgba(26,26,46,0.65)" }}>
+                          <td
+                            className="py-2.5 px-2 text-right tabular-nums align-top"
+                            style={{ color: "rgba(26,26,46,0.65)" }}
+                          >
                             ×{c.weight}
                           </td>
                           <td
-                            className="py-2.5 pl-2 text-right tabular-nums font-bold"
+                            className="py-2.5 pl-2 text-right tabular-nums font-bold align-top"
                             style={{ color: c.penalty ? "#B45309" : "#15803D" }}
                           >
                             {fmt(c.penalty)}
@@ -176,14 +187,13 @@ export default function ScoreExplainer({
                         </tr>
                       ))}
                       {skipped.map((c) => (
-                        <tr key={c.questionKey} style={{ borderTop: "1px solid #F1EEE8", opacity: 0.5 }}>
+                        <tr key={c.key} style={{ borderTop: "1px solid #F1EEE8", opacity: 0.5 }}>
                           <td className="py-2.5 pr-3 text-primary">{c.label}</td>
-                          <td className="py-2.5 px-2 text-right">—</td>
-                          <td className="py-2.5 px-2 text-right" style={{ color: "rgba(26,26,46,0.65)" }}>
-                            <Range min={c.rangeMin} max={c.rangeMax} />
+                          <td className="py-2.5 px-2" style={{ color: "rgba(26,26,46,0.65)" }}>
+                            {c.required}
                           </td>
-                          <td colSpan={3} className="py-2.5 pl-2 text-right text-[12px] italic">
-                            keine Angabe — übersprungen
+                          <td colSpan={4} className="py-2.5 pl-2 text-right text-[12px] italic">
+                            nicht bewertet — zählt weder für noch gegen dich
                           </td>
                         </tr>
                       ))}
@@ -199,7 +209,7 @@ export default function ScoreExplainer({
                   <p className="flex items-center gap-2 text-[13px] text-primary">
                     <Sigma className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
                     <span>
-                      Strafpunkte gesamt:{" "}
+                      Abzüge gesamt:{" "}
                       <strong className="tabular-nums">{fmt(breakdown.totalPenalty)}</strong> von
                       maximal <strong className="tabular-nums">{fmt(breakdown.totalMaxPenalty)}</strong>
                     </span>
@@ -212,7 +222,7 @@ export default function ScoreExplainer({
                     </strong>
                   </p>
                   <p className="text-[11.5px] leading-relaxed pl-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-                    {breakdown.formula} Ohne bewertbare Kriterien gilt Score = 100.
+                    {breakdown.formula}
                   </p>
                 </div>
 

@@ -24,7 +24,6 @@ import type {
   EmployerJob,
   EmployerJobInput,
   EmployerProfile,
-  MatchQuestionInfo,
 } from "./types";
 
 /** Seit der Backend-Anbindung false — steuert die Demodaten-Hinweise im UI. */
@@ -281,9 +280,7 @@ export async function archiveJob(id: string): Promise<ApiResult<void>> {
 }
 
 /** Fragenkatalog fürs Matching — Grundlage des Kriterien-Editors. */
-export async function listMatchQuestions(): Promise<ApiResult<MatchQuestionInfo[]>> {
-  return apiRequest<MatchQuestionInfo[]>("/match-questions");
-}
+
 
 // ── Bewerbungen auf eigene Inserate ──────────────────────────────────────────
 

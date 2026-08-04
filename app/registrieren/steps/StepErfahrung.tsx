@@ -1,188 +1,125 @@
 "use client";
 
-// ─── Schritt 2 — Erfahrung & Qualifikation ────────────────────────────────────
-// Früher der letzte Schritt ("KI-Profil"). Jetzt an Position 2: fachlich, leicht
-// zu beantworten und ohne persönliche Daten — genau richtig, um Commitment
-// aufzubauen, bevor die erste echte Hürde kommt.
-//
-// Das Gewerk wurde bereits in Schritt 1 erfasst und wird hier ausgeblendet.
-// Die Fragen liegen im Context, damit ein Rücksprung dieselbe Liste zeigt.
+// ─── Schritt 2 — Erfahrung ────────────────────────────────────────────────────
+// Die beiden Fragen mit dem größten Gewicht im Matching: worin jemand
+// tatsächlich gearbeitet hat, und wie lange. Beides ist leicht zu beantworten
+// und verlangt noch keine persönlichen Daten.
 
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Loader2, RotateCcw, Sparkles, AlertCircle, TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Loader2, AlertCircle, CalendarClock, TrendingUp } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
-import { getProfileQuestions, getFollowUpQuestions } from "@/lib/aiService";
-import { api } from "@/lib/api";
-import QuestionComponent from "@/app/components/QuestionComponent";
-import { StepHeading, NextButton, StepActions, ValueNote } from "@/app/components/wizard";
-import type { AnswerValue } from "@/lib/types";
-
-/** In Schritt 1 bereits beantwortet — hier nicht noch einmal zeigen. */
-const HANDLED_ELSEWHERE = ["ai_gewerke"];
+import { getKatalog, bereichVon, type Katalog } from "@/lib/catalogService";
+import {
+  StepHeading,
+  QuestionBlock,
+  OptionCard,
+  ChipToggle,
+  NextButton,
+  StepActions,
+  ValueNote,
+} from "@/app/components/wizard";
 
 export default function StepErfahrung() {
-  const { data, setAiAnswer, setAiQuestions, addAiQuestions, next } = useRegistration();
-
-  const allQuestions = data.aiQuestions;
-  const questions = allQuestions.filter((q) => !HANDLED_ELSEWHERE.includes(q.id));
-  const followUpAdded = data.aiFollowUpAdded;
-
-  const [loading, setLoading] = useState(allQuestions.length === 0);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [newlyAdded, setNewlyAdded] = useState<string[]>([]);
-  const loadedRef = useRef(false);
-
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    const res = await getProfileQuestions(data.surveyAnswers);
-    setLoading(false);
-    if (res.ok) setAiQuestions(res.data);
-    else setError(res.error);
-  };
+  const { data, setProfil, next } = useRegistration();
+  const [katalog, setKatalog] = useState<Katalog | null>(null);
+  const [fehler, setFehler] = useState<string | null>(null);
 
   useEffect(() => {
-    if (loadedRef.current) return;
-    loadedRef.current = true;
-    if (allQuestions.length > 0) return; // bereits geladene Fragen wiederverwenden
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void getKatalog().then((res) => {
+      if (res.ok) setKatalog(res.data);
+      else setFehler(res.error);
+    });
   }, []);
 
-  const missingRequired = questions.filter((q) => {
-    if (!q.required) return false;
-    const v = data.aiAnswers[q.id];
-    if (v == null) return true;
-    if (Array.isArray(v)) return v.length === 0;
-    if (typeof v === "string") return v.trim() === "";
-    return false;
-  });
-  const canProceed = missingRequired.length === 0 && questions.length > 0;
+  const p = data.profil;
+  const bereich = bereichVon(katalog, p.bereich);
+  const weiter = p.aufgaben.length > 0 && !!p.erfahrung;
 
-  const handleContinue = async () => {
-    if (!canProceed) return;
-    setBusy(true);
+  const umschalten = (wert: string) =>
+    setProfil({
+      aufgaben: p.aufgaben.includes(wert)
+        ? p.aufgaben.filter((a) => a !== wert)
+        : [...p.aufgaben, wert],
+    });
 
-    // Adaptive Folgefragen einmalig nachladen
-    if (!followUpAdded) {
-      const follow = await getFollowUpQuestions(data.aiAnswers);
-      if (follow.ok && follow.data.length > 0) {
-        addAiQuestions(follow.data);
-        setNewlyAdded(follow.data.map((q) => q.id));
-        setBusy(false);
-        return; // Nutzer beantwortet erst die Folgefragen
-      }
-      addAiQuestions([]); // markiert den Nachlade-Schritt als erledigt
-    }
-
-    // Wizard-Schritt 4 bleibt die Adresse der KI-Antworten (Backend-Vertrag).
-    if (data.draftToken) {
-      await api.saveStep(data.draftToken, 4, { aiAnswers: data.aiAnswers });
-    }
-    setBusy(false);
-    next();
-  };
-
-  // ── Laden ──
-  if (loading) {
+  if (fehler) {
     return (
-      <div>
-        <StepHeading eyebrow="Erfahrung & Qualifikation" />
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <Loader2 className="w-6 h-6 animate-spin mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-sm" style={{ color: "#6B7280" }}>
-            Wir stellen dir passende Fragen zusammen …
-          </p>
-        </div>
+      <div
+        className="flex items-start gap-2.5 rounded-2xl px-4 py-3.5"
+        style={{
+          background: "rgba(185,28,28,0.06)",
+          border: "1px solid rgba(185,28,28,0.2)",
+        }}
+      >
+        <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#B91C1C" }} />
+        <p className="text-[13px]" style={{ color: "#B91C1C" }}>
+          {fehler}
+        </p>
       </div>
     );
   }
 
-  // ── Fehler ──
-  if (error) {
+  if (!katalog || !bereich) {
     return (
-      <div>
-        <StepHeading eyebrow="Erfahrung & Qualifikation" />
-        <div
-          className="flex items-start gap-3 rounded-2xl px-5 py-4 mb-6"
-          style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.22)" }}
-        >
-          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B91C1C" }} />
-          <p className="text-[13px] leading-relaxed" style={{ color: "#B91C1C" }}>
-            {error}
-          </p>
-        </div>
-        <button
-          onClick={load}
-          className="inline-flex items-center gap-2 text-sm font-semibold"
-          style={{ color: "#E8A838" }}
-        >
-          <RotateCcw className="w-4 h-4" />
-          Erneut versuchen
-        </button>
+      <div className="flex items-center gap-2.5 py-16 justify-center">
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+        <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+          Einen Moment …
+        </span>
       </div>
     );
   }
 
   return (
     <div>
-      <StepHeading eyebrow="Erfahrung & Qualifikation">
-        Diese Angaben entscheiden, welche Stellen du siehst — und zu welchem Gehalt
-        du vorgeschlagen wirst.
+      <StepHeading eyebrow="Deine Erfahrung">
+        Worin du gearbeitet hast, zählt im Matching am schwersten — schwerer
+        als der Titel der Ausbildung.
       </StepHeading>
 
-      <div className="space-y-9">
-        {questions.map((q, i) => {
-          const isNew = newlyAdded.includes(q.id);
-          const inner = (
-            <QuestionComponent
-              question={q}
-              index={i}
-              value={data.aiAnswers[q.id]}
-              onChange={(v: AnswerValue) => setAiAnswer(q.id, v)}
-            />
-          );
-          return isNew ? (
-            <motion.div
-              key={q.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.14em] mb-3 px-2.5 py-1"
-                style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
-              >
-                <Sparkles className="w-3 h-3" />
-                Nachfrage
-              </span>
-              {inner}
-            </motion.div>
-          ) : (
-            <div key={q.id}>{inner}</div>
-          );
-        })}
-      </div>
-
-      <div className="mt-8">
-        <ValueNote icon={TrendingUp}>
-          Profile mit Berufserfahrung und Qualifikationen werden von Betrieben
-          deutlich häufiger angeschrieben als unvollständige.
-        </ValueNote>
-      </div>
-
-      <StepActions
-        note={
-          missingRequired.length > 0
-            ? `Noch ${missingRequired.length} ${
-                missingRequired.length === 1 ? "Pflichtfrage" : "Pflichtfragen"
-              } offen.`
-            : "Alles beantwortet."
-        }
+      <QuestionBlock
+        index={4}
+        title="In welchen dieser Aufgabenbereiche hast du Berufserfahrung?"
+        hint={`Mehrfachauswahl — Bereiche aus ${bereich.label}.`}
+        required
       >
-        <NextButton onClick={handleContinue} disabled={!canProceed} loading={busy}>
+        <div className="flex flex-wrap gap-2">
+          {bereich.aufgaben.map((a) => (
+            <ChipToggle
+              key={a.value}
+              label={a.label}
+              selected={p.aufgaben.includes(a.value)}
+              onClick={() => umschalten(a.value)}
+            />
+          ))}
+        </div>
+      </QuestionBlock>
+
+      <QuestionBlock
+        index={5}
+        title="Wie viele Jahre Berufserfahrung hast du in diesen Bereichen insgesamt?"
+        required
+      >
+        <div className="grid sm:grid-cols-2 gap-2.5">
+          {katalog.erfahrung.map((e) => (
+            <OptionCard
+              key={e.value}
+              icon={CalendarClock}
+              label={e.label}
+              selected={p.erfahrung === e.value}
+              onClick={() => setProfil({ erfahrung: e.value })}
+            />
+          ))}
+        </div>
+      </QuestionBlock>
+
+      <ValueNote icon={TrendingUp}>
+        Weniger Erfahrung als gesucht kostet Punkte, mehr Erfahrung fast keine —
+        überqualifiziert zu sein schließt dich nirgends aus.
+      </ValueNote>
+
+      <StepActions>
+        <NextButton onClick={next} disabled={!weiter}>
           Weiter
         </NextButton>
       </StepActions>

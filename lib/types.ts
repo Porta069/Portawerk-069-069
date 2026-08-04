@@ -6,6 +6,8 @@
 export type QuestionType = "radio" | "checkbox" | "text" | "slider";
 
 /** Eine einzelne Auswahloption für radio/checkbox Fragen. */
+import type { Handwerkerprofil } from "./catalogService";
+
 export interface QuestionOption {
   value: string;
   label: string;
@@ -75,6 +77,8 @@ export interface LegalConsent {
 
 /** Vollständiger Registrierungs-Datensatz, der über alle Schritte hinweg gesammelt wird. */
 export interface RegistrationData {
+  /** Antworten des Fachfragebogens (zehn Fragen). */
+  profil: Handwerkerprofil;
   /** JWT der Registrierungs-Sitzung (von POST /auth/registration/start). */
   draftToken: string | null;
   surveyAnswers: AnswerMap;
@@ -128,36 +132,30 @@ export type ApiResult<T> =
 // pro Frage Antwort, Range, Gewicht, Differenz und Strafpunkte. Wird nur in
 // der Testphase angezeigt (kleines „e" am Score) und später entfernt.
 
-/** Eine Frage aus dem Matching-Katalog (GET /match-questions). */
-export interface MatchQuestionInfo {
+/** Rechenweg eines einzelnen Kriteriums im Match-Score. */
+export interface MatchCriterionBreakdown {
   key: string;
   label: string;
-  hint: string;
-  scaleMin: number;
-  scaleMax: number;
-  unit: string;
-  defaultWeight: number;
-  sortOrder: number;
-}
-
-/** Rechenweg einer einzelnen Frage im Match-Score. */
-export interface MatchCriterionBreakdown {
-  questionKey: string;
-  label: string;
-  unit: string;
-  scaleMin: number;
-  scaleMax: number;
-  /** Abgeleiteter Zahlenwert des Handwerkers (null = keine Angabe). */
-  workerValue: number | null;
-  rangeMin: number;
-  rangeMax: number;
+  /** Was der Betrieb verlangt, im Klartext. */
+  required: string;
+  /** Was im Profil steht, im Klartext. */
+  answer: string;
   weight: number;
-  diff: number | null;
-  /** Gewicht × Differenz. */
-  penalty: number | null;
-  maxDiff: number;
+  /** Erfüllungsgrad 0–1. */
+  fulfilment: number;
+  /** Gewicht × (1 − Erfüllung). */
+  penalty: number;
   maxPenalty: number;
   skipped: boolean;
+  /** Erläuterung, wenn der Wert nicht selbsterklärend ist. */
+  note?: string;
+}
+
+/** Eine nicht erfüllte Anforderung, an der die Stelle ganz scheitert. */
+export interface MatchKnockout {
+  key: string;
+  label: string;
+  reason: string;
 }
 
 /** Punktabzug aus dem Nutzerverhalten (z. B. abgelehnte Angebote). */
@@ -169,6 +167,10 @@ export interface ScoreAdjustment {
 
 /** Vollständiger Rechenweg eines Match-Scores. */
 export interface MatchBreakdown {
+  /** Falsch, wenn eine harte Anforderung nicht erfüllt ist. */
+  passed: boolean;
+  /** Woran es scheitert — leer, solange `passed` wahr ist. */
+  knockouts: MatchKnockout[];
   criteria: MatchCriterionBreakdown[];
   totalPenalty: number;
   totalMaxPenalty: number;
@@ -312,23 +314,29 @@ export interface Candidate {
   id: string;
   /** Anzeigekürzel statt Name, z.B. "Elektriker #A47". */
   handle: string;
-  gewerk: string;
-  erfahrungJahre: number;
-  zertifikate: string[];
+  /** Ausbildungsbereich, ausgeschrieben. */
+  bereich: string;
+  /** Ausbildungsberuf (null = nicht angegeben). */
+  beruf: string | null;
+  /** Ausbildungsstand. */
+  ausbildung: string | null;
+  /** Berufserfahrung als Stufe, z. B. „3 bis 5 Jahre". */
+  erfahrung: string | null;
+  /** Aufgabenbereiche mit Erfahrung. */
+  aufgaben: string[];
+  /** Was ihm im neuen Job wichtig ist. */
+  prioritaeten: string[];
+  montage: string | null;
+  fuehrerschein: string | null;
+  deutsch: string | null;
+  /** Gewünschter Startzeitpunkt. */
+  start: string | null;
   /** Ort nur grob: Kreis/Stadt, keine Adresse. */
   region: string;
   /** Entfernung zur eingegebenen PLZ in km. */
   distanceKm: number;
   /** Gewünschter Arbeitsradius des Kandidaten. */
   radiusKm: number;
-  /** Wozu er bereit ist (Montage, Schicht, Notdienst, Umzug). */
-  bereitschaft: string[];
-  /** Was ihm wichtig ist — aus der Umfrage. */
-  praeferenz: string;
-  /** Gehaltsvorstellung, brutto monatlich (null = nicht angegeben). */
-  gehaltVon: number | null;
-  gehaltBis: number | null;
-  verfuegbarAb: string | null;
   /** Wie gut das Profil zur Suche passt (0–100). */
   matchScore: number;
   /** Rechenweg des Scores — nur gefüllt, wenn gegen ein Inserat gescort wurde. */
@@ -393,20 +401,48 @@ export interface EmployerProfile {
 }
 
 // ─── Job-Inserate (Arbeitgeber-Verwaltung) ───────────────────────────────────
-// Ein Inserat trägt neben den Stellen-Eckdaten die Matching-Kriterien: pro
-// Katalogfrage eine optionale Antwort als RANGE (Einzelwert = min = max) plus
-// eine Gewichtung 0–5. Score = Σ Gewicht × Abstand der Antwort zur Range.
+// Ein Inserat trägt neben den Stellen-Eckdaten sein Anforderungsprofil. Leere
+// Felder heißen durchgehend „ist dem Betrieb egal" — das Kriterium wird dann
+// weder geprüft noch gewertet.
 
-export interface JobCriterionInput {
-  questionKey: string;
-  minValue: number;
-  maxValue: number;
-  weight: number;
+/** Gewichte je Matching-Kriterium, 0–5. Fehlt eins, gilt die Vorgabe. */
+export interface JobGewichte {
+  aufgaben?: number;
+  erfahrung?: number;
+  beruf?: number;
+  prioritaeten?: number;
+  fuehrerschein?: number;
+  start?: number;
+}
+
+/** Das Anforderungsprofil eines Inserats. */
+export interface Anforderungsprofil {
+  /** Akzeptierte Ausbildungsbereiche — Ausschlusskriterium. */
+  bereiche: string[];
+  /** Bevorzugte Ausbildungsberufe — fließt gewichtet ein. */
+  berufe: string[];
+  /** Mindest-Ausbildungsstand — Ausschlusskriterium. */
+  ausbildungMin: string | null;
+  /** Gesuchte Aufgabenbereiche. */
+  aufgaben: string[];
+  /** Wie viele davon abgedeckt sein MÜSSEN (0 = keine Pflicht). */
+  aufgabenMin: number;
+  erfahrungMin: string | null;
+  erfahrungMax: string | null;
+  /** Verlangte Montagebereitschaft — Ausschlusskriterium. */
+  montageMin: string | null;
+  fuehrerscheinMin: string | null;
+  /** Verlangtes Sprachniveau — Ausschlusskriterium. */
+  deutschMin: string | null;
+  /** Was der Betrieb bietet — trifft auf die Prioritäten des Handwerkers. */
+  gebotenes: string[];
+  startBis: string | null;
+  gewichte?: JobGewichte | null;
 }
 
 export type EmployerJobStatus = "DRAFT" | "ACTIVE" | "PAUSED" | "ARCHIVED";
 
-export interface EmployerJob {
+export interface EmployerJob extends Anforderungsprofil {
   id: string;
   title: string;
   gewerk: string;
@@ -428,7 +464,6 @@ export interface EmployerJob {
   source: "SELF" | "ADMIN" | "AI";
   createdAt: string;
   updatedAt: string;
-  criteria: (JobCriterionInput & { label: string })[];
   /** Anzahl eingegangener Bewerbungen. */
   applications?: number;
 }
@@ -449,7 +484,20 @@ export interface EmployerJobInput {
   startText?: string;
   extras?: string[];
   status?: EmployerJobStatus;
-  criteria?: JobCriterionInput[];
+  // Anforderungsprofil — alle Felder optional, weglassen heißt „egal".
+  bereiche?: string[];
+  berufe?: string[];
+  ausbildungMin?: string;
+  aufgaben?: string[];
+  aufgabenMin?: number;
+  erfahrungMin?: string;
+  erfahrungMax?: string;
+  montageMin?: string;
+  fuehrerscheinMin?: string;
+  deutschMin?: string;
+  gebotenes?: string[];
+  startBis?: string;
+  gewichte?: JobGewichte;
 }
 
 /** Eine Bewerbung aus Arbeitgeber-Sicht (anonymer Kandidat + Status). */

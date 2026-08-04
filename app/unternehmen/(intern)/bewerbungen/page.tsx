@@ -117,7 +117,7 @@ function ApplicationCard({
       <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-[13px]" style={{ color: "rgba(26,26,46,0.65)" }}>
         <span className="inline-flex items-center gap-1.5">
           <Briefcase className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-          {c.erfahrungJahre != null ? `${c.erfahrungJahre} Jahre Erfahrung` : "Erfahrung —"}
+          {c.erfahrung ? `${c.erfahrung} Erfahrung` : "Erfahrung —"}
         </span>
         {c.distanceKm != null && (
           <span className="inline-flex items-center gap-1.5">
@@ -125,10 +125,16 @@ function ApplicationCard({
             {c.distanceKm} km entfernt
           </span>
         )}
-        {c.zertifikate.slice(0, 3).map((z) => (
-          <span key={z} className="inline-flex items-center gap-1.5">
+        {c.ausbildung && (
+          <span className="inline-flex items-center gap-1.5">
             <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-            {z}
+            {c.ausbildung}
+          </span>
+        )}
+        {c.aufgaben.slice(0, 2).map((a) => (
+          <span key={a} className="inline-flex items-center gap-1.5">
+            <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+            {a}
           </span>
         ))}
       </div>

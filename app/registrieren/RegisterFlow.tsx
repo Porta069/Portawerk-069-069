@@ -14,8 +14,10 @@ import { useRegistration, type RegStep } from "@/app/context/RegistrationContext
 import { api } from "@/lib/api";
 import { StepRail } from "@/app/components/StepRail";
 
-import StepGewerk from "./steps/StepGewerk";
+import StepAusbildung from "./steps/StepAusbildung";
 import StepErfahrung from "./steps/StepErfahrung";
+import StepWuensche from "./steps/StepWuensche";
+import StepRahmen from "./steps/StepRahmen";
 import StepEmail from "./steps/StepEmail";
 import StepOrte from "./steps/StepOrte";
 import StepKonto from "./steps/StepKonto";
@@ -36,35 +38,51 @@ interface StepMeta {
 
 const STEPS: StepMeta[] = [
   {
-    key: "gewerk",
-    label: "Gewerk",
+    key: "ausbildung",
+    label: "Ausbildung",
     h: "Was ist dein Handwerk?",
-    s: "Eine Auswahl genügt — den Rest bauen wir Schritt für Schritt mit dir auf.",
+    s: "Dein Ausbildungsbereich entscheidet, welche Betriebe überhaupt in Frage kommen.",
     photo: "/images/elektriker-werkstatt.jpg",
-    tip: "Dein Gewerk ist das wichtigste Signal für Betriebe. Du kannst mehrere auswählen, wenn du in mehr als einem zu Hause bist.",
+    tip: "Betriebe suchen fast immer in genau einem Ausbildungsbereich. Wer einen anderen sucht, taucht bei dir gar nicht erst auf — das spart dir die Absagen.",
   },
   {
     key: "erfahrung",
     label: "Erfahrung",
     h: "Was bringst du mit?",
-    s: "Erfahrung und Qualifikationen — damit wir dich nicht unter Wert vermitteln.",
+    s: "Worin du gearbeitet hast und wie lange — das wiegt im Matching am schwersten.",
     photo: "/images/metallbau-schweisser.jpg",
-    tip: "Betriebe filtern zuerst nach Berufserfahrung. Auch ein Stapler- oder Führerschein bringt dir zusätzliche Angebote.",
+    tip: "Die Aufgabenbereiche zählen mehr als der Titel der Ausbildung. Wähl ruhig alle, in denen du wirklich Hand angelegt hast.",
+  },
+  {
+    key: "wuensche",
+    label: "Prioritäten",
+    h: "Was ist dir wichtig?",
+    s: "Bis zu fünf Punkte, nach denen dein nächster Betrieb ausgesucht wird.",
+    photo: "/images/tischler-hobel.jpg",
+    tip: "Betriebe hinterlegen, was sie bieten. Je mehr deiner Punkte einer abdeckt, desto weiter oben steht er bei dir.",
+  },
+  {
+    key: "rahmen",
+    label: "Rahmen",
+    h: "Wie soll es laufen?",
+    s: "Montage, Führerschein, Sprache und Startzeitpunkt — vier kurze Fragen.",
+    photo: "/images/shk-heizung.jpg",
+    tip: "Diese Angaben wirken hart: Wer nie auf Montage kann, bekommt keine Dauermontage-Stellen zu sehen. Genau so ist es gemeint.",
   },
   {
     key: "email",
     label: "E-Mail",
     h: "Wohin dürfen wir dir passende Stellen schicken?",
     s: "Nur deine E-Mail. Passwort und Telefon kommen später.",
-    photo: "/images/tischler-hobel.jpg",
+    photo: "/images/maurer-ziegel.jpg",
     tip: "Kein Spam und keine Weitergabe an Dritte. Du bekommst ausschließlich Stellen, die zu deinem Profil passen.",
   },
   {
     key: "orte",
     label: "Region",
-    h: "Wo und wie willst du arbeiten?",
-    s: "Deine Region und ein paar Rahmenbedingungen — das schärft die Vorschläge deutlich.",
-    photo: "/images/maurer-ziegel.jpg",
+    h: "Wo willst du arbeiten?",
+    s: "Deine Arbeitsorte und der Umkreis — das schärft die Vorschläge deutlich.",
+    photo: "/images/hero-team-werkstatt.jpg",
     tip: "Je größer dein Radius, desto mehr Angebote. Du kannst mehrere Orte gleichzeitig eintragen — etwa Wohnort und Heimatregion.",
   },
   {
@@ -72,7 +90,7 @@ const STEPS: StepMeta[] = [
     label: "Konto",
     h: "Dein Zugang",
     s: "Name, Telefon und ein Passwort — damit ist dein Profil gesichert.",
-    photo: "/images/hero-team-werkstatt.jpg",
+    photo: "/images/elektriker-werkstatt.jpg",
     tip: "Kein Betrieb sieht deine Kontaktdaten, bevor du zustimmst. Du entscheidest, wer dich anschreiben darf.",
   },
   {
@@ -80,7 +98,7 @@ const STEPS: StepMeta[] = [
     label: "Bestätigen",
     h: "Letzter Schritt",
     s: "Kurz bestätigen, dass wir dich erreichen — dann ist dein Profil live.",
-    photo: "/images/shk-heizung.jpg",
+    photo: "/images/metallbau-schweisser.jpg",
     tip: "Bestätigte Profile werden von Betrieben deutlich häufiger angeschrieben als unbestätigte.",
   },
 ];
@@ -340,8 +358,10 @@ export default function RegisterFlow() {
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="max-w-xl"
             >
-              {step === "gewerk" && <StepGewerk />}
+              {step === "ausbildung" && <StepAusbildung />}
               {step === "erfahrung" && <StepErfahrung />}
+              {step === "wuensche" && <StepWuensche />}
+              {step === "rahmen" && <StepRahmen />}
               {step === "email" && <StepEmail />}
               {step === "orte" && <StepOrte />}
               {step === "konto" && <StepKonto />}

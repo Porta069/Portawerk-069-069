@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import TrustCounter from "./TrustCounter";
 
 // Kompakte Vertrauens-Zeile unter dem CTA (200 € hervorgehoben).
 const TRUST: { label: string; accent?: boolean }[] = [
@@ -86,10 +87,7 @@ export default function HeroSection() {
                 className="shimmer-glint pointer-events-none absolute top-0 left-0 z-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/60 to-transparent"
               />
             </Link>
-            <p className="text-muted text-sm mt-3 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot" />
-              Dauert nur 3 Minuten · schon <span className="text-primary font-semibold">127 Handwerker</span> diese Woche
-            </p>
+            <TrustCounter />
           </motion.div>
 
           {/* Kompakte Vertrauens-Zeile inkl. 200 € */}

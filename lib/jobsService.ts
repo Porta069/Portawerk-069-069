@@ -12,7 +12,6 @@
 //   GET/PUT /me/work-locations             → getWorkLocations()/saveWorkLocations()
 //   GET   /me/contact-requests             → listContactRequests()
 //   POST  /me/contact-requests/:id/respond → respondContactRequest()
-//   GET   /match-questions                 → listMatchQuestions()
 //
 // Die Signaturen entsprechen weiterhin dem früheren Mock, damit die Seiten
 // unverändert funktionieren. Scores kommen inkl. vollständigem Rechenweg
@@ -25,7 +24,6 @@ import type {
   Job,
   JobOffer,
   MatchBreakdown,
-  MatchQuestionInfo,
   OfferStatus,
   ProfileScore,
   WorkLocation,
@@ -389,6 +387,4 @@ export async function saveWorkLocations(
 
 // ── Matching-Katalog (Transparenz) ───────────────────────────────────────────
 
-export async function listMatchQuestions(): Promise<ApiResult<MatchQuestionInfo[]>> {
-  return apiRequest<MatchQuestionInfo[]>("/match-questions");
-}
+

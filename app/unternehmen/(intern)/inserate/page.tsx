@@ -8,19 +8,20 @@
 // Antworten innerhalb der Range kosten nichts; außerhalb zählt der Abstand zur
 // nächstgelegenen Grenze.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Loader2, Pencil, Archive, FileText, Scale, ChevronLeft,
-  AlertCircle, Check, Users, Sparkles, Bot,
+  AlertCircle, Check, Users, Sparkles, Bot, AlertTriangle,
 } from "lucide-react";
 import {
-  listMyJobs, saveJob, archiveJob, listMatchQuestions,
+  listMyJobs, saveJob, archiveJob,
   MONTAGE_OPTIONEN,
 } from "@/lib/employerService";
 import { GEWERKE } from "@/lib/constants";
+import AnforderungsEditor, { LEERE_ANFORDERUNG } from "@/app/components/employer/AnforderungsEditor";
 import type {
-  EmployerJob, EmployerJobInput, JobCriterionInput, MatchQuestionInfo,
+  EmployerJob, EmployerJobInput, Anforderungsprofil,
 } from "@/lib/types";
 
 // ── Kleine Bausteine im Stil des Bereichs ────────────────────────────────────
@@ -98,177 +99,6 @@ function Segmented<T extends string | number>({
 
 // ── Kriterien-Editor ─────────────────────────────────────────────────────────
 
-type CriteriaState = Record<string, JobCriterionInput | undefined>;
-
-function CriterionRow({
-  question,
-  value,
-  onChange,
-}: {
-  question: MatchQuestionInfo;
-  value: JobCriterionInput | undefined;
-  onChange: (v: JobCriterionInput | undefined) => void;
-}) {
-  const active = !!value;
-  const binary = question.scaleMax - question.scaleMin === 1;
-
-  const enable = () =>
-    onChange({
-      questionKey: question.key,
-      minValue: binary ? question.scaleMax : question.scaleMin,
-      maxValue: question.scaleMax,
-      weight: question.defaultWeight,
-    });
-
-  const patch = (p: Partial<JobCriterionInput>) => {
-    if (!value) return;
-    onChange({ ...value, ...p });
-  };
-
-  const clamp = (n: number) =>
-    Math.min(question.scaleMax, Math.max(question.scaleMin, n));
-
-  return (
-    <div
-      className="rounded-2xl px-4 py-3.5 transition-colors"
-      style={{
-        border: `1.5px solid ${active ? "rgba(232,168,56,0.5)" : "#EEECE6"}`,
-        background: active ? "rgba(232,168,56,0.05)" : "white",
-      }}
-    >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[14px] font-semibold text-primary leading-snug">
-            {question.label}
-            {question.unit && (
-              <span style={{ color: "rgba(26,26,46,0.4)" }}> · {question.unit}</span>
-            )}
-          </p>
-          {question.hint && (
-            <p className="text-[12px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
-              {question.hint}
-            </p>
-          )}
-        </div>
-
-        {!active ? (
-          <button
-            type="button"
-            onClick={enable}
-            className="rounded-full px-4 py-2 text-[12.5px] font-bold transition-colors"
-            style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)" }}
-          >
-            + Bewerten
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => onChange(undefined)}
-            className="rounded-full px-4 py-2 text-[12.5px] font-semibold"
-            style={{ color: "rgba(26,26,46,0.45)" }}
-          >
-            Nicht bewerten
-          </button>
-        )}
-      </div>
-
-      {active && value && (
-        <div className="flex flex-wrap items-end gap-x-6 gap-y-3 mt-3 pt-3" style={{ borderTop: "1px dashed rgba(232,168,56,0.4)" }}>
-          {binary ? (
-            <div>
-              <span className="block text-[11.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.5)" }}>
-                Gewünschte Antwort
-              </span>
-              <Segmented
-                value={value.minValue === question.scaleMax ? "ja" : "nein"}
-                options={[
-                  { value: "ja", label: "Ja" },
-                  { value: "nein", label: "Nein" },
-                ]}
-                onChange={(v) =>
-                  patch(
-                    v === "ja"
-                      ? { minValue: question.scaleMax, maxValue: question.scaleMax }
-                      : { minValue: question.scaleMin, maxValue: question.scaleMin }
-                  )
-                }
-              />
-            </div>
-          ) : (
-            <div>
-              <span className="block text-[11.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.5)" }}>
-                Akzeptierte Range ({question.scaleMin}–{question.scaleMax})
-              </span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min={question.scaleMin}
-                  max={question.scaleMax}
-                  value={value.minValue}
-                  aria-label="Untere Grenze"
-                  onChange={(e) => {
-                    const n = clamp(Number(e.target.value));
-                    patch({ minValue: n, maxValue: Math.max(n, value.maxValue) });
-                  }}
-                  className="w-20 rounded-xl text-primary text-[14px] px-3 py-2 outline-none tabular-nums text-center"
-                  style={inputStyle}
-                />
-                <span style={{ color: "rgba(26,26,46,0.4)" }}>bis</span>
-                <input
-                  type="number"
-                  min={question.scaleMin}
-                  max={question.scaleMax}
-                  value={value.maxValue}
-                  aria-label="Obere Grenze"
-                  onChange={(e) => {
-                    const n = clamp(Number(e.target.value));
-                    patch({ maxValue: n, minValue: Math.min(n, value.minValue) });
-                  }}
-                  className="w-20 rounded-xl text-primary text-[14px] px-3 py-2 outline-none tabular-nums text-center"
-                  style={inputStyle}
-                />
-                <span className="text-[11.5px]" style={{ color: "rgba(26,26,46,0.4)" }}>
-                  {value.minValue === value.maxValue ? "Einzelwert" : "Range"}
-                </span>
-              </div>
-            </div>
-          )}
-
-          <div>
-            <span className="block text-[11.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.5)" }}>
-              Gewichtung
-            </span>
-            <div className="flex items-center gap-1.5">
-              {[1, 2, 3, 4, 5].map((w) => (
-                <button
-                  key={w}
-                  type="button"
-                  onClick={() => patch({ weight: w })}
-                  aria-label={`Gewichtung ${w}`}
-                  className="w-9 h-9 rounded-xl text-[13.5px] font-bold tabular-nums transition-colors"
-                  style={{
-                    background: value.weight === w ? "#E8A838" : "rgba(26,26,46,0.05)",
-                    color: value.weight === w ? "#1A1A2E" : "rgba(26,26,46,0.55)",
-                  }}
-                >
-                  {w}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <p className="text-[11.5px] leading-relaxed basis-full" style={{ color: "rgba(26,26,46,0.45)" }}>
-            Liegt die Antwort außerhalb, zählt der Abstand zur nächsten Grenze ×{" "}
-            {value.weight} als Strafpunkte.
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Editor ───────────────────────────────────────────────────────────────────
-
 const EMPTY: EmployerJobInput = {
   title: "",
   gewerk: GEWERKE[0],
@@ -283,12 +113,10 @@ const EMPTY: EmployerJobInput = {
 
 function JobEditor({
   job,
-  questions,
   onDone,
   onCancel,
 }: {
   job: EmployerJob | null;
-  questions: MatchQuestionInfo[];
   onDone: () => void;
   onCancel: () => void;
 }) {
@@ -310,27 +138,40 @@ function JobEditor({
         }
       : EMPTY
   );
-  const [criteria, setCriteria] = useState<CriteriaState>(() => {
-    const init: CriteriaState = {};
-    for (const c of job?.criteria ?? []) {
-      init[c.questionKey] = {
-        questionKey: c.questionKey,
-        minValue: c.minValue,
-        maxValue: c.maxValue,
-        weight: c.weight,
-      };
-    }
-    return init;
-  });
+  const [anforderung, setAnforderung] = useState<Anforderungsprofil>(() =>
+    job
+      ? {
+          bereiche: job.bereiche ?? [],
+          berufe: job.berufe ?? [],
+          ausbildungMin: job.ausbildungMin ?? null,
+          aufgaben: job.aufgaben ?? [],
+          aufgabenMin: job.aufgabenMin ?? 0,
+          erfahrungMin: job.erfahrungMin ?? null,
+          erfahrungMax: job.erfahrungMax ?? null,
+          montageMin: job.montageMin ?? null,
+          fuehrerscheinMin: job.fuehrerscheinMin ?? null,
+          deutschMin: job.deutschMin ?? null,
+          gebotenes: job.gebotenes ?? [],
+          startBis: job.startBis ?? null,
+          gewichte: job.gewichte ?? null,
+        }
+      : { ...LEERE_ANFORDERUNG }
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const set = <K extends keyof EmployerJobInput>(k: K, v: EmployerJobInput[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
-  const activeCriteria = Object.values(criteria).filter(
-    (c): c is JobCriterionInput => !!c
-  );
+  // Wie viele Ausschlusskriterien gesetzt sind — die Zahl steht in der
+  // Kopfzeile, damit niemand versehentlich den halben Markt aussperrt.
+  const ausschluesse = [
+    anforderung.bereiche.length > 0,
+    !!anforderung.ausbildungMin,
+    anforderung.aufgabenMin > 0,
+    !!anforderung.montageMin,
+    !!anforderung.deutschMin,
+  ].filter(Boolean).length;
 
   const submit = async () => {
     if (form.title.trim().length < 3) {
@@ -339,7 +180,25 @@ function JobEditor({
     }
     setBusy(true);
     setError(null);
-    const res = await saveJob({ ...form, criteria: activeCriteria }, job?.id);
+    const res = await saveJob(
+      {
+        ...form,
+        bereiche: anforderung.bereiche,
+        berufe: anforderung.berufe,
+        ausbildungMin: anforderung.ausbildungMin ?? undefined,
+        aufgaben: anforderung.aufgaben,
+        aufgabenMin: anforderung.aufgabenMin,
+        erfahrungMin: anforderung.erfahrungMin ?? undefined,
+        erfahrungMax: anforderung.erfahrungMax ?? undefined,
+        montageMin: anforderung.montageMin ?? undefined,
+        fuehrerscheinMin: anforderung.fuehrerscheinMin ?? undefined,
+        deutschMin: anforderung.deutschMin ?? undefined,
+        gebotenes: anforderung.gebotenes,
+        startBis: anforderung.startBis ?? undefined,
+        gewichte: anforderung.gewichte ?? undefined,
+      },
+      job?.id
+    );
     setBusy(false);
     if (res.ok) onDone();
     else setError(res.error);
@@ -538,24 +397,16 @@ function JobEditor({
               style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
             >
               <Scale className="w-3 h-3" />
-              {activeCriteria.length} bewertet
+              {ausschluesse} {ausschluesse === 1 ? "Ausschluss" : "Ausschlüsse"}
             </span>
           </div>
           <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(26,26,46,0.55)" }}>
-            Dieselben Fragen, die Handwerker bei der Registrierung beantworten.
-            Optional: Wunsch-Antwort als Einzelwert oder Range festlegen und
-            gewichten. Nicht bewertete Fragen fließen nicht in den Score ein.
+            Dieselben Angaben, die Handwerker bei der Registrierung machen. Rot
+            markierte Felder blenden das Inserat bei allen aus, die sie nicht
+            erfüllen — der Rest zählt Punkte und bestimmt die Reihenfolge.
+            Leer gelassen heißt überall: ist uns egal.
           </p>
-          <div className="space-y-3">
-            {questions.map((q) => (
-              <CriterionRow
-                key={q.key}
-                question={q}
-                value={criteria[q.key]}
-                onChange={(v) => setCriteria((c) => ({ ...c, [q.key]: v }))}
-              />
-            ))}
-          </div>
+          <AnforderungsEditor wert={anforderung} onChange={setAnforderung} />
         </section>
 
         {/* ── Status + Aktionen ── */}
@@ -624,7 +475,6 @@ const STATUS_CHIP: Record<string, { label: string; bg: string; color: string }> 
 
 export default function InseratePage() {
   const [jobs, setJobs] = useState<EmployerJob[] | null>(null);
-  const [questions, setQuestions] = useState<MatchQuestionInfo[]>([]);
   const [editing, setEditing] = useState<EmployerJob | null | "new">(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -637,15 +487,7 @@ export default function InseratePage() {
 
   useEffect(() => {
     load();
-    listMatchQuestions().then((res) => {
-      if (res.ok) setQuestions(res.data);
-    });
   }, []);
-
-  const questionLabel = useMemo(() => {
-    const m = new Map(questions.map((q) => [q.key, q.label]));
-    return (key: string) => m.get(key) ?? key;
-  }, [questions]);
 
   const handleArchive = async (id: string) => {
     const res = await archiveJob(id);
@@ -656,7 +498,6 @@ export default function InseratePage() {
     return (
       <JobEditor
         job={editing === "new" ? null : editing}
-        questions={questions}
         onDone={() => {
           setEditing(null);
           load();
@@ -811,31 +652,60 @@ export default function InseratePage() {
                     </div>
                   </div>
 
-                  {/* Kriterien-Zusammenfassung — der Kern des Inserats */}
-                  {job.criteria.length > 0 ? (
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {job.criteria.map((c) => (
-                        <span
-                          key={c.questionKey}
-                          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium tabular-nums"
-                          style={{ background: "rgba(232,168,56,0.1)", color: "#8A5B0F" }}
+                  {/* Anforderungsprofil in Kurzform — der Kern des Inserats */}
+                  {(() => {
+                    // Ausschlüsse zuerst und farblich abgesetzt: sie bestimmen,
+                    // WER das Inserat überhaupt sieht.
+                    const harte: string[] = [];
+                    if (job.bereiche?.length) harte.push(`${job.bereiche.length} Ausbildungsbereich${job.bereiche.length > 1 ? "e" : ""}`);
+                    if (job.ausbildungMin) harte.push("Mindest-Abschluss");
+                    if (job.aufgabenMin > 0) harte.push(`${job.aufgabenMin} Pflicht-Aufgabenbereich${job.aufgabenMin > 1 ? "e" : ""}`);
+                    if (job.montageMin) harte.push("Montagebereitschaft");
+                    if (job.deutschMin) harte.push("Sprachniveau");
+
+                    const weiche: string[] = [];
+                    if (job.aufgaben?.length) weiche.push(`${job.aufgaben.length} Aufgabenbereiche`);
+                    if (job.erfahrungMin || job.erfahrungMax) weiche.push("Erfahrung");
+                    if (job.berufe?.length) weiche.push("Ausbildungsberuf");
+                    if (job.gebotenes?.length) weiche.push(`${job.gebotenes.length} Angebote`);
+                    if (job.fuehrerscheinMin) weiche.push("Führerschein");
+
+                    if (harte.length === 0 && weiche.length === 0) {
+                      return (
+                        <p
+                          className="inline-flex items-center gap-1.5 text-[12.5px] mt-4"
+                          style={{ color: "rgba(26,26,46,0.45)" }}
                         >
-                          <Scale className="w-3 h-3" />
-                          {questionLabel(c.questionKey)}:{" "}
-                          {c.minValue === c.maxValue ? c.minValue : `${c.minValue}–${c.maxValue}`}{" "}
-                          · Gewicht {c.weight}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p
-                      className="inline-flex items-center gap-1.5 text-[12.5px] mt-4"
-                      style={{ color: "rgba(26,26,46,0.45)" }}
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Noch keine Matching-Kriterien — Kandidaten sehen hier Score 100.
-                    </p>
-                  )}
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Kein Anforderungsprofil — alle Handwerker sehen 100 %.
+                        </p>
+                      );
+                    }
+                    return (
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {harte.map((h) => (
+                          <span
+                            key={h}
+                            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                            style={{ background: "rgba(185,28,28,0.08)", color: "#B91C1C" }}
+                          >
+                            <AlertTriangle className="w-3 h-3" />
+                            {h}
+                          </span>
+                        ))}
+                        {weiche.map((w) => (
+                          <span
+                            key={w}
+                            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                            style={{ background: "rgba(232,168,56,0.1)", color: "#8A5B0F" }}
+                          >
+                            <Scale className="w-3 h-3" />
+                            {w}
+                          </span>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </motion.article>
               );
             })}

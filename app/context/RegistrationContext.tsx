@@ -22,7 +22,7 @@ import type {
   VerificationState,
   WorkLocation,
 } from "@/lib/types";
-import { GEWERKE } from "@/lib/constants";
+import { LEERES_PROFIL, type Handwerkerprofil } from "@/lib/catalogService";
 
 /**
  * Reihenfolge nach Conversion optimiert:
@@ -33,8 +33,10 @@ import { GEWERKE } from "@/lib/constants";
  * groessten ist.
  */
 export type RegStep =
-  | "gewerk"
+  | "ausbildung"
   | "erfahrung"
+  | "wuensche"
+  | "rahmen"
   | "email"
   | "orte"
   | "konto"
@@ -42,8 +44,10 @@ export type RegStep =
   | "success";
 
 const STEP_ORDER: RegStep[] = [
-  "gewerk",
+  "ausbildung",
   "erfahrung",
+  "wuensche",
+  "rahmen",
   "email",
   "orte",
   "konto",
@@ -51,9 +55,10 @@ const STEP_ORDER: RegStep[] = [
   "success",
 ];
 
-/** Schritt-Namen der alten Reihenfolge auf die neue abbilden. */
+/** Schritt-Namen früherer Fassungen auf die aktuelle abbilden. */
 const LEGACY_STEPS: Record<string, RegStep> = {
-  survey: "gewerk",
+  survey: "ausbildung",
+  gewerk: "ausbildung",
   contact: "email",
   ai: "erfahrung",
   legal: "konto",
@@ -63,6 +68,7 @@ const STORAGE_KEY = "portawerk_registration_v1";
 
 const EMPTY: RegistrationData = {
   draftToken: null,
+  profil: { ...LEERES_PROFIL },
   surveyAnswers: {},
   surveySkipped: false,
   contact: { firstName: "", lastName: "", email: "", phone: "" },
@@ -95,6 +101,8 @@ interface RegistrationContextValue {
   setAvatar: (dataUrl: string) => void;
   setPassword: (pw: string) => void;
   setVerification: (patch: Partial<VerificationState>) => void;
+  /** Eine Antwort des Fachfragebogens setzen. */
+  setProfil: (patch: Partial<Handwerkerprofil>) => void;
   setAiAnswer: (id: string, value: AnswerValue) => void;
   setAiAnswers: (patch: AnswerMap) => void;
   setAiQuestions: (questions: Question[]) => void;
@@ -110,7 +118,7 @@ export function RegistrationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [step, setStep] = useState<RegStep>("gewerk");
+  const [step, setStep] = useState<RegStep>("ausbildung");
   const [data, setData] = useState<RegistrationData>(EMPTY);
   const [hydrated, setHydrated] = useState(false);
   const skipPersist = useRef(false);
@@ -149,19 +157,14 @@ export function RegistrationProvider({
       /* ignore corrupt storage */
     }
 
-    // ── Gewerk aus der Startseite vorbelegen (?gewerk=…) ──
-    // Ermöglicht die Micro-Conversion im Hero: ein Klick wählt schon ein Gewerk.
+    // ── Ausbildungsbereich aus der Startseite vorbelegen (?bereich=…) ──
+    // Ermöglicht die Micro-Conversion im Hero: ein Klick setzt schon den
+    // Bereich. Ob der Wert im Katalog steht, prüft der Schritt selbst — hier
+    // ist der Katalog noch nicht geladen.
     try {
-      const param = new URLSearchParams(window.location.search).get("gewerk");
-      if (param && GEWERKE.includes(param)) {
-        const existing = base.aiAnswers.ai_gewerke;
-        const alreadySet = Array.isArray(existing) && existing.length > 0;
-        if (!alreadySet) {
-          base = {
-            ...base,
-            aiAnswers: { ...base.aiAnswers, ai_gewerke: [param] },
-          };
-        }
+      const param = new URLSearchParams(window.location.search).get("bereich");
+      if (param && !base.profil.bereich) {
+        base = { ...base, profil: { ...base.profil, bereich: param } };
       }
     } catch {
       /* ignore — Vorbelegung ist rein optional */
@@ -256,6 +259,10 @@ export function RegistrationProvider({
     setData((d) => ({ ...d, verification: { ...d.verification, ...patch } }));
   }, []);
 
+  const setProfil = useCallback((patch: Partial<Handwerkerprofil>) => {
+    setData((d) => ({ ...d, profil: { ...d.profil, ...patch } }));
+  }, []);
+
   const setAiAnswer = useCallback((id: string, value: AnswerValue) => {
     setData((d) => ({ ...d, aiAnswers: { ...d.aiAnswers, [id]: value } }));
   }, []);
@@ -289,7 +296,7 @@ export function RegistrationProvider({
       /* ignore */
     }
     setData(EMPTY);
-    setStep("gewerk");
+    setStep("ausbildung");
     // erlauben, dass künftige Änderungen wieder persistiert werden
     setTimeout(() => (skipPersist.current = false), 0);
   }, []);
@@ -312,6 +319,7 @@ export function RegistrationProvider({
     setAvatar,
     setPassword,
     setVerification,
+    setProfil,
     setAiAnswer,
     setAiAnswers,
     setAiQuestions,

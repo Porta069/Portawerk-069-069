@@ -178,10 +178,25 @@ export interface JobFilters {
 
 export type JobSort = "relevanz" | "fahrzeit" | "gehalt" | "neueste";
 
+/**
+ * Warum die Liste kürzer ist, als der Bestand hergibt: Stellen, die eine harte
+ * Anforderung nicht erfüllen, werden nicht gezeigt — aber gezählt.
+ */
+export interface AusgeblendeteStellen {
+  /** Anzahl ausgeblendeter Stellen (eine kann an mehreren Gründen scheitern). */
+  gesamt: number;
+  gruende: { key: string; label: string; anzahl: number }[];
+}
+
+export interface JobsErgebnis {
+  jobs: Job[];
+  ausgeblendet: AusgeblendeteStellen;
+}
+
 export async function listJobs(
   filters: JobFilters = {},
   sort: JobSort = "relevanz"
-): Promise<ApiResult<Job[]>> {
+): Promise<ApiResult<JobsErgebnis>> {
   const params = new URLSearchParams();
   if (filters.query?.trim()) params.set("query", filters.query.trim());
   if (filters.bereiche?.length) params.set("bereiche", filters.bereiche.join(","));
@@ -192,11 +207,15 @@ export async function listJobs(
   if (filters.fahrzeitIstArbeitszeit) params.set("fahrzeitIstArbeitszeit", "1");
   params.set("sort", sort);
 
-  const res = await apiRequest<ApiJob[]>(`/jobs?${params.toString()}`, {
-    token: token(),
-  });
+  const res = await apiRequest<{
+    jobs: ApiJob[];
+    ausgeblendet: AusgeblendeteStellen;
+  }>(`/jobs?${params.toString()}`, { token: token() });
   if (!res.ok) return res;
-  return { ok: true, data: res.data.map(toJob) };
+  return {
+    ok: true,
+    data: { jobs: res.data.jobs.map(toJob), ausgeblendet: res.data.ausgeblendet },
+  };
 }
 
 /** Bewerbung auf eine Stelle (diskret — der Betrieb sieht das Profil). */
@@ -318,7 +337,7 @@ export async function listApplications(): Promise<ApiResult<Application[]>> {
 export async function similarJobs(job: Job, limit = 3): Promise<ApiResult<Job[]>> {
   const res = await listJobs();
   if (!res.ok) return res;
-  const out = res.data
+  const out = res.data.jobs
     .filter((j) => j.id !== job.id)
     .sort((a, b) => {
       const sameA = a.gewerk === job.gewerk ? 0 : 1;

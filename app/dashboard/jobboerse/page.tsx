@@ -8,13 +8,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send, Check,
-  GitCompareArrows,
+  GitCompareArrows, EyeOff,
 } from "lucide-react";
 import {
   listJobs, getWorkLocations, saveWorkLocations, applyToJob, setFavorite,
-  type JobFilters, type JobSort,
+  type JobFilters, type JobSort, type AusgeblendeteStellen,
 } from "@/lib/jobsService";
 import { getKatalog, type Katalog } from "@/lib/catalogService";
 import type { Job, WorkLocation } from "@/lib/types";
@@ -75,6 +76,7 @@ export default function JobboersePage() {
   const [query, setQuery] = useState("");
   const [bereiche, setBereiche] = useState<string[]>([]);
   const [katalog, setKatalog] = useState<Katalog | null>(null);
+  const [ausgeblendet, setAusgeblendet] = useState<AusgeblendeteStellen | null>(null);
   const [maxTravel, setMaxTravel] = useState<number | undefined>();
   const [abendsZuhause, setAbendsZuhause] = useState(false);
   const [fahrzeitArbeitszeit, setFahrzeitArbeitszeit] = useState(false);
@@ -130,7 +132,10 @@ export default function JobboersePage() {
     const run = () =>
       listJobs(filters, sort).then((res) => {
         if (!active) return;
-        if (res.ok) setJobs(res.data);
+        if (res.ok) {
+          setJobs(res.data.jobs);
+          setAusgeblendet(res.data.ausgeblendet);
+        }
         setLoading(false);
       });
 
@@ -380,6 +385,36 @@ export default function JobboersePage() {
         </div>
       )}
 
+      {/* Warum die Liste kürzer ist: ausgeblendete Stellen benennen, statt sie
+          wortlos verschwinden zu lassen. */}
+      {!loading && ausgeblendet && ausgeblendet.gesamt > 0 && (
+        <div
+          className="rounded-2xl px-4 py-3.5 mb-4"
+          style={{ background: "var(--color-surface)", border: "1px solid #E9E7E1" }}
+        >
+          <p className="text-[13px] text-primary">
+            <EyeOff className="w-3.5 h-3.5 inline-block mr-1.5 -mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }} />
+            <strong className="font-semibold">
+              {ausgeblendet.gesamt} {ausgeblendet.gesamt === 1 ? "Stelle" : "Stellen"}
+            </strong>{" "}
+            {ausgeblendet.gesamt === 1 ? "wird" : "werden"} nicht angezeigt, weil dein
+            Profil eine Voraussetzung nicht erfüllt:
+          </p>
+          <p className="text-[12.5px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+            {ausgeblendet.gruende
+              .map((g) => `${g.anzahl}× ${g.label}`)
+              .join(" · ")}
+          </p>
+          <Link
+            href="/einstellungen"
+            className="inline-block text-[12.5px] font-semibold mt-2 underline-offset-2 hover:underline"
+            style={{ color: "#B47B18" }}
+          >
+            Angaben im Profil anpassen
+          </Link>
+        </div>
+      )}
+
       {/* Ergebnisse */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -392,7 +427,7 @@ export default function JobboersePage() {
         >
           <p className="text-[15px] font-semibold text-primary mb-1.5">Keine Stelle passt zu diesen Filtern</p>
           <p className="text-[13.5px] mb-5" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Erweiter die Fahrzeit oder nimm ein Gewerk aus dem Filter.
+            Erweiter die Fahrzeit oder nimm einen Ausbildungsbereich aus dem Filter.
           </p>
           <button
             type="button"

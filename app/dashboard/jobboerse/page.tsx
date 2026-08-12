@@ -16,7 +16,7 @@ import {
   listJobs, getWorkLocations, saveWorkLocations, applyToJob, setFavorite,
   type JobFilters, type JobSort,
 } from "@/lib/jobsService";
-import { GEWERKE } from "@/lib/constants";
+import { getKatalog, type Katalog } from "@/lib/catalogService";
 import type { Job, WorkLocation } from "@/lib/types";
 import JobCard from "@/app/components/dashboard/JobCard";
 import JobDetailDialog from "@/app/components/dashboard/JobDetailDialog";
@@ -73,7 +73,8 @@ const SORTS: { value: JobSort; label: string }[] = [
 
 export default function JobboersePage() {
   const [query, setQuery] = useState("");
-  const [gewerke, setGewerke] = useState<string[]>([]);
+  const [bereiche, setBereiche] = useState<string[]>([]);
+  const [katalog, setKatalog] = useState<Katalog | null>(null);
   const [maxTravel, setMaxTravel] = useState<number | undefined>();
   const [abendsZuhause, setAbendsZuhause] = useState(false);
   const [fahrzeitArbeitszeit, setFahrzeitArbeitszeit] = useState(false);
@@ -98,6 +99,11 @@ export default function JobboersePage() {
       if (res.ok) setLocations(res.data);
       setLocLoaded(true);
     });
+    // Der Filter zeigt dieselben Ausbildungsbereiche, nach denen das Matching
+    // arbeitet — geholt aus dem Katalog, nicht aus einer eigenen Liste.
+    void getKatalog().then((res) => {
+      if (res.ok) setKatalog(res.data);
+    });
   }, []);
 
   const updateLocations = (locs: WorkLocation[]) => {
@@ -108,12 +114,12 @@ export default function JobboersePage() {
   const filters = useMemo<JobFilters>(
     () => ({
       query,
-      gewerke: gewerke.length ? gewerke : undefined,
+      bereiche: bereiche.length ? bereiche : undefined,
       maxTravelMinutes: maxTravel,
       abendsZuhause: abendsZuhause || undefined,
       fahrzeitIstArbeitszeit: fahrzeitArbeitszeit || undefined,
     }),
-    [query, gewerke, maxTravel, abendsZuhause, fahrzeitArbeitszeit]
+    [query, bereiche, maxTravel, abendsZuhause, fahrzeitArbeitszeit]
   );
 
   // Erste Liste sofort laden; erst Tipp-/Filteränderungen werden entprellt.
@@ -142,8 +148,8 @@ export default function JobboersePage() {
     };
   }, [filters, sort]);
 
-  const toggleGewerk = (g: string) =>
-    setGewerke((cur) => (cur.includes(g) ? cur.filter((x) => x !== g) : [...cur, g]));
+  const toggleBereich = (b: string) =>
+    setBereiche((cur) => (cur.includes(b) ? cur.filter((x) => x !== b) : [...cur, b]));
 
   /** Merken/Entmerken — Zustand sofort in Liste + offener Detailansicht spiegeln. */
   const toggleFavorite = (job: Job) => {
@@ -162,7 +168,10 @@ export default function JobboersePage() {
 
   // Aktive Filter als entfernbare Chips — Transparenz statt versteckter Zustand.
   const activeChips: { label: string; clear: () => void }[] = [
-    ...gewerke.map((g) => ({ label: g, clear: () => toggleGewerk(g) })),
+    ...bereiche.map((b) => ({
+      label: katalog?.bereiche.find((x) => x.value === b)?.label ?? b,
+      clear: () => toggleBereich(b),
+    })),
     ...(maxTravel ? [{ label: `max. ${maxTravel} Min.`, clear: () => setMaxTravel(undefined) }] : []),
     ...(abendsZuhause ? [{ label: "Jeden Abend zuhause", clear: () => setAbendsZuhause(false) }] : []),
     ...(fahrzeitArbeitszeit
@@ -171,7 +180,7 @@ export default function JobboersePage() {
   ];
 
   const resetAll = () => {
-    setGewerke([]);
+    setBereiche([]);
     setMaxTravel(undefined);
     setAbendsZuhause(false);
     setFahrzeitArbeitszeit(false);
@@ -356,15 +365,15 @@ export default function JobboersePage() {
           </div>
 
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(26,26,46,0.4)" }}>
-            Gewerk
+            Ausbildungsbereich
           </p>
           <div className="flex flex-wrap gap-2">
-            {GEWERKE.map((g) => (
+            {(katalog?.bereiche ?? []).map((b) => (
               <ChipToggle
-                key={g}
-                label={g}
-                selected={gewerke.includes(g)}
-                onClick={() => toggleGewerk(g)}
+                key={b.value}
+                label={b.label}
+                selected={bereiche.includes(b.value)}
+                onClick={() => toggleBereich(b.value)}
               />
             ))}
           </div>

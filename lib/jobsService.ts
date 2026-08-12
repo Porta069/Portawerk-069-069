@@ -166,7 +166,8 @@ function toJob(j: ApiJob): Job {
 
 export interface JobFilters {
   query?: string;
-  gewerke?: string[];
+  /** Ausbildungsbereiche (Katalogwerte) — dieselbe Systematik wie im Matching. */
+  bereiche?: string[];
   /** Maximale Fahrzeit in Minuten. */
   maxTravelMinutes?: number;
   minSalary?: number;
@@ -183,7 +184,7 @@ export async function listJobs(
 ): Promise<ApiResult<Job[]>> {
   const params = new URLSearchParams();
   if (filters.query?.trim()) params.set("query", filters.query.trim());
-  if (filters.gewerke?.length) params.set("gewerke", filters.gewerke.join(","));
+  if (filters.bereiche?.length) params.set("bereiche", filters.bereiche.join(","));
   if (filters.maxTravelMinutes)
     params.set("maxTravelMinutes", String(filters.maxTravelMinutes));
   if (filters.minSalary) params.set("minSalary", String(filters.minSalary));

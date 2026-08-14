@@ -13,6 +13,7 @@ import {
 import { useRegistration } from "@/app/context/RegistrationContext";
 import { useAuth } from "@/app/context/AuthContext";
 import { api, type OtpChannel as Channel } from "@/lib/api";
+import { getReferralPartnerId } from "@/lib/referral";
 import OtpInput from "@/app/components/OtpInput";
 import VerificationStatus from "@/app/components/VerificationStatus";
 import { StepHeading, NextButton, SkipButton, StepActions } from "@/app/components/wizard";
@@ -187,6 +188,12 @@ export default function StepVerify() {
       setDraftToken(draftToken);
     }
 
+    // Die Zuordnung aus dem Empfehlungs-Link hat Vorrang vor dem von Hand
+    // eingetippten Code: Sie stammt aus einem geprüften Klick, das Textfeld
+    // aus der Erinnerung des Nutzers.
+    const werber =
+      (await getReferralPartnerId()) ?? data.referredBy.trim() ?? "";
+
     const res = await api.completeRegistration({
       draftToken,
       firstName: data.contact.firstName.trim(),
@@ -194,7 +201,7 @@ export default function StepVerify() {
       email: data.contact.email.trim(),
       phone: data.contact.phone.trim(),
       password: data.password,
-      ...(data.referredBy.trim() ? { referredBy: data.referredBy.trim() } : {}),
+      ...(werber ? { referredBy: werber } : {}),
     });
     setLoading(false);
     if (res.ok) {

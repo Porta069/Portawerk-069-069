@@ -20,7 +20,7 @@ const fmt = (n: number) => n.toLocaleString("de-DE");
 
 type Status = "geworben" | "vermittlung" | "vermittelt" | "ausgezahlt";
 const STATUS: Record<Status, { label: string; icon: typeof Check; bg: string; fg: string }> = {
-  geworben:    { label: "Geworben",         icon: UserPlus,   bg: "#EFEDE7", fg: "#5F6F6A" },
+  geworben:    { label: "Geworben",         icon: UserPlus,   bg: "#F1F1EF", fg: "#6B7280" },
   vermittlung: { label: "In Vermittlung",   icon: Clock,      bg: "#EAF2FE", fg: "#2563EB" },
   vermittelt:  { label: "Vermittelt",       icon: Check,      bg: "#E7F7EE", fg: "#15803D" },
   ausgezahlt:  { label: "Prämie ausgezahlt", icon: BadgeCheck, bg: "#E7F7EE", fg: "#15803D" },
@@ -36,9 +36,9 @@ const STATUS_FROM_BACKEND: Record<ReferralStatus, Status> = {
 const initials = (n: string) => n.split(" ").map((p) => p[0]).join("");
 
 function RankBadge({ rang }: { rang: number }) {
-  if (rang === 1) return <Crown className="w-4 h-4" style={{ color: "#F9AD07" }} strokeWidth={2.2} fill="#F9AD07" />;
-  if (rang === 2) return <Medal className="w-4 h-4" style={{ color: "#94A09B" }} strokeWidth={2.2} />;
-  if (rang === 3) return <Medal className="w-4 h-4" style={{ color: "#8A5F04" }} strokeWidth={2.2} />;
+  if (rang === 1) return <Crown className="w-4 h-4" style={{ color: "#E8A838" }} strokeWidth={2.2} fill="#E8A838" />;
+  if (rang === 2) return <Medal className="w-4 h-4" style={{ color: "#9CA3AF" }} strokeWidth={2.2} />;
+  if (rang === 3) return <Medal className="w-4 h-4" style={{ color: "#B47B18" }} strokeWidth={2.2} />;
   return <span className="text-muted text-sm font-bold tabular-nums w-4 text-center">{rang}</span>;
 }
 
@@ -148,27 +148,27 @@ export default function PartnerDashboard() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* ══ Hero (Navy, full-bleed) ══ */}
-      <header className="relative overflow-hidden bg-white text-primary">
-        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(12,51,48,1) 1px, transparent 1px), linear-gradient(90deg, rgba(12,51,48,1) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
-        <div className="absolute -top-24 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.20) 0%, transparent 65%)" }} />
+      <header className="relative overflow-hidden bg-primary text-white">
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
+        <div className="absolute -top-24 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.20) 0%, transparent 65%)" }} />
 
         <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
           {/* Topbar */}
           <div className="h-[68px] flex items-center justify-between">
             <Link href="/verdienen" className="flex items-center gap-2.5 group">
-              <Logo height={24} className="transition-transform group-hover:scale-95" />
-              <span className="text-primary/45 text-sm hidden sm:inline ml-1">· Partner</span>
+              <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
+              <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>
             <div className="flex items-center gap-2.5">
               <Link
                 href="/verdienen/einstellungen"
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#E4DFD3] text-primary/80 hover:text-primary hover:border-[#E4DFD3] hover:bg-surface text-sm font-medium px-4 py-2 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
               >
                 <Settings className="w-4 h-4" /> <span className="hidden sm:inline">Einstellungen</span>
               </Link>
               <button
                 onClick={() => setShowLogout(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#E4DFD3] text-primary/80 hover:text-primary hover:border-[#E4DFD3] hover:bg-surface text-sm font-medium px-4 py-2 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
               >
                 <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Abmelden</span>
               </button>
@@ -183,11 +183,11 @@ export default function PartnerDashboard() {
                 Hi, {NAME} <span className="inline-block">👋</span>
               </h1>
 
-              <p className="text-[11px] uppercase tracking-[0.18em] text-primary/45 mb-2">Bereits verdient</p>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/45 mb-2">Bereits verdient</p>
               <div className="flex items-end gap-4 flex-wrap">
                 <span
                   className="relative inline-flex overflow-hidden leading-none"
-                  style={{ filter: "drop-shadow(0 0 42px rgba(249, 173, 7,0.35))" }}
+                  style={{ filter: "drop-shadow(0 0 42px rgba(232,168,56,0.35))" }}
                 >
                   <span className="relative z-0 font-black text-accent" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.2rem, 8.5vw, 5rem)" }}>
                     {fmt(verdient)} €
@@ -200,30 +200,30 @@ export default function PartnerDashboard() {
                   </span>
                 )}
               </div>
-              <p className="text-primary/50 text-sm mt-4">in den letzten 6 Monaten · Auszahlung nach erfolgreicher Vermittlung</p>
+              <p className="text-white/50 text-sm mt-4">in den letzten 6 Monaten · Auszahlung nach erfolgreicher Vermittlung</p>
             </motion.div>
 
             {/* Rechts: Empfehlungs-Link */}
             <motion.div
               initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-2xl border border-[#E4DFD3] bg-white backdrop-blur-sm p-6"
+              className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm p-6"
             >
               <p className="text-[11px] uppercase tracking-[0.18em] text-accent font-semibold mb-3">Dein Empfehlungs-Link</p>
-              <div className="rounded-xl bg-surface border border-[#E4DFD3] px-4 py-3.5 mb-4">
+              <div className="rounded-xl bg-white/[0.06] border border-white/10 px-4 py-3.5 mb-4">
                 <p className="text-lg sm:text-xl font-semibold tracking-tight break-all">
-                  <span className="text-primary/45">porta-werk.de/r/</span><span className="text-primary">{SLUG}</span>
+                  <span className="text-white/45">porta-werk.de/r/</span><span className="text-white">{SLUG}</span>
                 </p>
               </div>
               <div className="flex gap-2.5">
                 <button onClick={copy} className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-accent text-primary font-bold py-3 text-sm hover:bg-amber-400 transition-colors">
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}{copied ? "Kopiert" : "Kopieren"}
                 </button>
-                <button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E4DFD3] text-primary font-semibold px-5 py-3 text-sm hover:bg-surface transition-colors">
+                <button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-white font-semibold px-5 py-3 text-sm hover:bg-white/10 transition-colors">
                   <Share2 className="w-4 h-4" /> Teilen
                 </button>
               </div>
-              <p className="text-primary/45 text-xs mt-4 flex items-center gap-1.5">
+              <p className="text-white/40 text-xs mt-4 flex items-center gap-1.5">
                 <TrendingUp className="w-3.5 h-3.5 text-accent" /> 100 € pro erfolgreicher Vermittlung
               </p>
             </motion.div>
@@ -243,7 +243,7 @@ export default function PartnerDashboard() {
                 initial={{ y: 16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
-                className="bg-white rounded-2xl border border-border p-5 shadow-[0_18px_40px_-24px_rgba(12, 51, 48,0.35)]"
+                className="bg-white rounded-2xl border border-border p-5 shadow-[0_18px_40px_-24px_rgba(26,26,46,0.35)]"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-muted text-xs font-semibold uppercase tracking-wider">{k.label}</span>
@@ -303,7 +303,7 @@ export default function PartnerDashboard() {
                 return (
                   <div key={r.name} className="flex items-center gap-3 py-3">
                     <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "var(--color-accent-soft)" }}>
-                      <span className="text-[11px] font-bold" style={{ color: "#8A5F04" }}>{initials(r.name)}</span>
+                      <span className="text-[11px] font-bold" style={{ color: "#B47B18" }}>{initials(r.name)}</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-primary text-sm font-semibold truncate">{r.name}</p>
@@ -354,7 +354,7 @@ export default function PartnerDashboard() {
             {RANGLISTE.map((p) => (
               <div key={p.rang} className="flex items-center gap-3 py-2.5 border-t border-border first:border-t-0">
                 <span className="w-6 flex justify-center"><RankBadge rang={p.rang} /></span>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#EFEDE7" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#F1F1EF" }}>
                   <span className="text-[11px] font-bold text-muted">{initials(p.name)}</span>
                 </div>
                 <span className="text-primary text-sm font-semibold flex-1 truncate">{p.name}</span>
@@ -363,13 +363,13 @@ export default function PartnerDashboard() {
 
             {/* Trenner + eigene Position */}
             <div className="flex items-center gap-2 py-2 pl-6 text-muted/60 text-xs tracking-widest select-none">· · ·</div>
-            <div className="flex items-center gap-3 py-2.5 rounded-xl px-3 -mx-1" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(249, 173, 7,0.35)" }}>
-              <span className="w-6 flex justify-center"><span className="text-sm font-bold tabular-nums" style={{ color: "#8A5F04" }}>{MEIN_RANG}</span></span>
+            <div className="flex items-center gap-3 py-2.5 rounded-xl px-3 -mx-1" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(232,168,56,0.35)" }}>
+              <span className="w-6 flex justify-center"><span className="text-sm font-bold tabular-nums" style={{ color: "#B47B18" }}>{MEIN_RANG}</span></span>
               <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-accent">
                 <span className="text-[11px] font-bold text-primary">{initials(NAME)}</span>
               </div>
               <span className="text-primary text-sm font-bold flex-1 truncate">{NAME} <span className="text-accent font-semibold">· Du</span></span>
-              <span className="text-xs font-semibold" style={{ color: "#8A5F04" }}>{vermittelt} Vermittlung{vermittelt === 1 ? "" : "en"}</span>
+              <span className="text-xs font-semibold" style={{ color: "#B47B18" }}>{vermittelt} Vermittlung{vermittelt === 1 ? "" : "en"}</span>
             </div>
           </div>
         </div>

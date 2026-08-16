@@ -148,7 +148,7 @@ export default function ArbeitgeberForm({
     return (
       <div className="bg-white rounded-2xl shadow-[0_24px_60px_-24px_rgba(0,0,0,0.4)] p-8 sm:p-10 text-center">
         <div className="w-14 h-14 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-5">
-          <CheckCircle2 className="w-7 h-7 text-[#8A5F04]" strokeWidth={2} />
+          <CheckCircle2 className="w-7 h-7 text-accent" strokeWidth={2} />
         </div>
         <h3 className="text-primary font-bold text-2xl mb-3" style={{ fontFamily: "var(--font-display)" }}>
           Anfrage bereit zum Senden
@@ -164,7 +164,7 @@ export default function ArbeitgeberForm({
             setConsent(false);
             setDone(false);
           }}
-          className="text-[#8A5F04] font-semibold text-sm hover:text-primary transition-colors"
+          className="text-accent font-semibold text-sm hover:text-amber-600 transition-colors"
         >
           Weitere Anfrage stellen
         </button>
@@ -221,7 +221,7 @@ export default function ArbeitgeberForm({
               >
                 <span>{f.fachkraft}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-muted flex-shrink-0 transition-transform duration-200 ${ddOpen ? "rotate-180 text-[#8A5F04]" : ""}`}
+                  className={`w-4 h-4 text-muted flex-shrink-0 transition-transform duration-200 ${ddOpen ? "rotate-180 text-accent" : ""}`}
                   strokeWidth={2}
                 />
               </button>
@@ -243,7 +243,7 @@ export default function ArbeitgeberForm({
             {ddOpen && (
               <ul
                 role="listbox"
-                className="absolute z-30 top-full mt-2 w-full max-h-64 overflow-auto rounded-xl border border-border bg-white shadow-[0_18px_44px_-20px_rgba(12, 51, 48,0.4)] py-1"
+                className="absolute z-30 top-full mt-2 w-full max-h-64 overflow-auto rounded-xl border border-border bg-white shadow-[0_18px_44px_-20px_rgba(26,26,46,0.4)] py-1"
               >
                 {opts.map((g) => {
                   const active = g === f.fachkraft;
@@ -256,7 +256,7 @@ export default function ArbeitgeberForm({
                           setDdOpen(false);
                         }}
                         className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                          active ? "text-[#8A5F04] font-semibold" : "text-primary hover:text-primary"
+                          active ? "text-accent font-semibold" : "text-primary hover:text-primary"
                         }`}
                         style={active ? { background: "var(--color-accent-soft)" } : undefined}
                         onMouseEnter={(e) => {
@@ -301,12 +301,12 @@ export default function ArbeitgeberForm({
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 w-4 h-4 accent-[#F9AD07] flex-shrink-0"
+          className="mt-0.5 w-4 h-4 accent-[#E8A838] flex-shrink-0"
         />
         <span className="text-muted text-xs leading-relaxed">
           Ich bin einverstanden, dass meine Daten zur Bearbeitung meiner Anfrage genutzt
           werden. Details in der{" "}
-          <a href="/rechtliches#datenschutz" className="text-[#8A5F04] underline underline-offset-2">Datenschutzerklärung</a>.
+          <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2">Datenschutzerklärung</a>.
         </span>
       </label>
 

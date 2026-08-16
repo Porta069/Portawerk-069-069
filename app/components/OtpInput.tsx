@@ -80,16 +80,16 @@ export default function OtpInput({
               height: "clamp(50px, 15vw, 64px)",
               fontSize: "clamp(1.2rem, 4vw, 1.65rem)",
               border: `2px solid ${
-                error ? "#EF4444" : active ? "#F9AD07" : filled ? "#0C3330" : "#DFE3E0"
+                error ? "#EF4444" : active ? "#E8A838" : filled ? "#1A1A2E" : "#E5E7EB"
               }`,
               boxShadow:
                 active && !error
-                  ? "0 0 0 3px rgba(249, 173, 7,0.10)"
+                  ? "0 0 0 3px rgba(232,168,56,0.10)"
                   : error
                   ? "0 0 0 3px rgba(239,68,68,0.08)"
                   : "none",
               fontFamily: "var(--font-display)",
-              color: "#0C3330",
+              color: "#1A1A2E",
             }}
           />
         );

@@ -70,7 +70,7 @@ function fieldErrors(p: EmployerProfile): Partial<Record<keyof EmployerProfile, 
 
 const inputCls =
   "w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-primary/25";
-const inputStyle = { border: "1.5px solid #E4DFD3" } as const;
+const inputStyle = { border: "1.5px solid #E9E7E1" } as const;
 
 function Label({
   children,
@@ -87,18 +87,18 @@ function Label({
     <label className="block mb-2">
       <span
         className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold"
-        style={{ color: "rgba(12, 51, 48,0.45)" }}
+        style={{ color: "rgba(26,26,46,0.45)" }}
       >
         {children}
         {required && <span style={{ color: "#EF4444" }}>*</span>}
         {optional && (
-          <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(12, 51, 48,0.32)" }}>
+          <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(26,26,46,0.32)" }}>
             (optional)
           </span>
         )}
       </span>
       {hint && (
-        <span className="block text-[12px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+        <span className="block text-[12px] mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }}>
           {hint}
         </span>
       )}
@@ -118,7 +118,7 @@ function Section({
   return (
     <section
       className="rounded-3xl bg-white p-5 sm:p-6"
-      style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -26px rgba(12, 51, 48,0.5)" }}
+      style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -26px rgba(26,26,46,0.5)" }}
     >
       <h2
         className="text-primary font-bold text-[17px] mb-1"
@@ -127,7 +127,7 @@ function Section({
         {title}
       </h2>
       {desc && (
-        <p className="text-[13px] mb-5" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+        <p className="text-[13px] mb-5" style={{ color: "rgba(26,26,46,0.5)" }}>
           {desc}
         </p>
       )}
@@ -141,9 +141,9 @@ function PreviewChip({ icon: Icon, children }: { icon?: typeof Home; children: R
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-      style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.72)" }}
+      style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.72)" }}
     >
-      {Icon && <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#F9AD07" }} />}
+      {Icon && <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />}
       {children}
     </span>
   );
@@ -242,7 +242,7 @@ export default function EmployerProfilePage() {
   if (loading || !p) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
       </div>
     );
   }
@@ -257,7 +257,7 @@ export default function EmployerProfilePage() {
     return {
       "data-invalid": bad ? "true" : undefined,
       className: `${inputCls}${bad ? " pw-field-error" : ""}`,
-      style: { border: `1.5px solid ${bad ? "#EF4444" : "#E4DFD3"}` },
+      style: { border: `1.5px solid ${bad ? "#EF4444" : "#E9E7E1"}` },
     };
   };
 
@@ -271,13 +271,13 @@ export default function EmployerProfilePage() {
           >
             <span
               className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "rgba(249, 173, 7,0.14)" }}
+              style={{ background: "rgba(232,168,56,0.14)" }}
             >
-              <Settings className="w-[20px] h-[20px]" style={{ color: "#8A5F04" }} strokeWidth={2.2} />
+              <Settings className="w-[20px] h-[20px]" style={{ color: "#B47B18" }} strokeWidth={2.2} />
             </span>
             Unternehmensprofil
           </h1>
-          <p className="text-[15px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+          <p className="text-[15px]" style={{ color: "rgba(26,26,46,0.55)" }}>
             Diese Angaben sehen Handwerker, wenn Sie ihnen ein Angebot schicken.
           </p>
         </div>
@@ -288,10 +288,10 @@ export default function EmployerProfilePage() {
           disabled={saving}
           className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
           style={{
-            background: saved ? "#16A34A" : "#F9AD07",
-            color: saved ? "white" : "#0C3330",
+            background: saved ? "#16A34A" : "#E8A838",
+            color: saved ? "white" : "#1A1A2E",
             fontFamily: "var(--font-display)",
-            boxShadow: "0 14px 28px -16px rgba(249, 173, 7,0.9)",
+            boxShadow: "0 14px 28px -16px rgba(232,168,56,0.9)",
           }}
         >
           {saving ? (
@@ -428,20 +428,20 @@ export default function EmployerProfilePage() {
             <div className="flex items-center gap-4">
               <div
                 className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden"
-                style={{ background: "rgba(12, 51, 48,0.05)" }}
+                style={{ background: "rgba(26,26,46,0.05)" }}
               >
                 {p.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={p.logo} alt="Firmenlogo" className="w-full h-full object-contain" />
                 ) : (
-                  <Building2 className="w-7 h-7" style={{ color: "rgba(12, 51, 48,0.25)" }} />
+                  <Building2 className="w-7 h-7" style={{ color: "rgba(26,26,46,0.25)" }} />
                 )}
               </div>
               <div className="min-w-0">
                 <div className="flex flex-wrap gap-2.5">
                   <label
                     className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold cursor-pointer transition-colors"
-                    style={{ border: "1.5px solid #E4DFD3", color: "rgba(12, 51, 48,0.65)" }}
+                    style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
                   >
                     {logoBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
                     {logoBusy ? "Wird verarbeitet …" : p.logo ? "Ersetzen" : "Logo hochladen"}
@@ -462,14 +462,14 @@ export default function EmployerProfilePage() {
                       type="button"
                       onClick={() => set("logo", "")}
                       className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold"
-                      style={{ color: "rgba(12, 51, 48,0.5)" }}
+                      style={{ color: "rgba(26,26,46,0.5)" }}
                     >
                       <Trash2 className="w-4 h-4" />
                       Entfernen
                     </button>
                   )}
                 </div>
-                <p className="text-[12px] mt-2" style={{ color: logoError ? "#B91C1C" : "rgba(12, 51, 48,0.45)" }}>
+                <p className="text-[12px] mt-2" style={{ color: logoError ? "#B91C1C" : "rgba(26,26,46,0.45)" }}>
                   {logoError ?? "PNG, JPG, SVG oder WebP — wird automatisch verkleinert."}
                 </p>
               </div>
@@ -538,9 +538,9 @@ export default function EmployerProfilePage() {
                         onClick={() => set("montage", on ? "" : m)}
                         className="rounded-full px-4 py-2.5 text-[13.5px] font-medium transition-all duration-200"
                         style={{
-                          background: on ? "#0C3330" : "white",
-                          color: on ? "white" : "rgba(12, 51, 48,0.6)",
-                          border: `1.5px solid ${on ? "#0C3330" : "#E4DFD3"}`,
+                          background: on ? "#1A1A2E" : "white",
+                          color: on ? "white" : "rgba(26,26,46,0.6)",
+                          border: `1.5px solid ${on ? "#1A1A2E" : "#E9E7E1"}`,
                         }}
                       >
                         {m}
@@ -577,9 +577,9 @@ export default function EmployerProfilePage() {
                     onClick={() => toggleBenefit(b)}
                     className="rounded-full px-4 py-2.5 text-[13.5px] font-medium transition-all duration-200"
                     style={{
-                      background: on ? "rgba(249, 173, 7,0.16)" : "white",
-                      color: on ? "#6E4A03" : "rgba(12, 51, 48,0.6)",
-                      border: `1.5px solid ${on ? "#F9AD07" : "#E4DFD3"}`,
+                      background: on ? "rgba(232,168,56,0.16)" : "white",
+                      color: on ? "#8A5B0F" : "rgba(26,26,46,0.6)",
+                      border: `1.5px solid ${on ? "#E8A838" : "#E9E7E1"}`,
                     }}
                   >
                     {b}
@@ -611,7 +611,7 @@ export default function EmployerProfilePage() {
           {/* Profilstärke */}
           <div
             className="rounded-3xl bg-white p-5"
-            style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -26px rgba(12, 51, 48,0.5)" }}
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -26px rgba(26,26,46,0.5)" }}
           >
             <div className="flex items-center justify-between gap-3 mb-3">
               <p className="text-[15px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
@@ -619,15 +619,15 @@ export default function EmployerProfilePage() {
               </p>
               <span
                 className="text-[19px] font-bold tabular-nums"
-                style={{ fontFamily: "var(--font-display)", color: score >= 80 ? "#15803D" : "#8A5F04" }}
+                style={{ fontFamily: "var(--font-display)", color: score >= 80 ? "#15803D" : "#B47B18" }}
               >
                 {score} %
               </span>
             </div>
-            <div className="h-2 rounded-full overflow-hidden mb-4" style={{ background: "#EDE8DE" }}>
+            <div className="h-2 rounded-full overflow-hidden mb-4" style={{ background: "#F1EEE8" }}>
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: score >= 80 ? "#16A34A" : "#F9AD07" }}
+                style={{ background: score >= 80 ? "#16A34A" : "#E8A838" }}
                 initial={{ width: 0 }}
                 animate={{ width: `${score}%` }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -643,10 +643,10 @@ export default function EmployerProfilePage() {
               <ul className="space-y-2">
                 {gaps.slice(0, 3).map((g) => (
                   <li key={g.label} className="flex items-start gap-2.5">
-                    <Sparkles className="w-3.5 h-3.5 flex-shrink-0 mt-1" style={{ color: "#F9AD07" }} />
+                    <Sparkles className="w-3.5 h-3.5 flex-shrink-0 mt-1" style={{ color: "#E8A838" }} />
                     <span className="min-w-0">
                       <span className="block text-[13.5px] font-semibold text-primary">{g.label}</span>
-                      <span className="block text-[12px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+                      <span className="block text-[12px]" style={{ color: "rgba(26,26,46,0.5)" }}>
                         {g.hint}
                       </span>
                     </span>
@@ -660,22 +660,22 @@ export default function EmployerProfilePage() {
           <div>
             <p
               className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
-              style={{ color: "rgba(12, 51, 48,0.45)" }}
+              style={{ color: "rgba(26,26,46,0.45)" }}
             >
-              <Eye className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+              <Eye className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
               So sehen Handwerker Ihr Angebot
             </p>
 
             <div
               className="overflow-hidden rounded-3xl bg-white"
-              style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 16px 40px -28px rgba(12, 51, 48,0.6)" }}
+              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 16px 40px -28px rgba(26,26,46,0.6)" }}
             >
               {/* Kopf im Stil des Jobangebots */}
               <div className="relative h-24">
                 <Image src="/images/hero-team-werkstatt.jpg" alt="" fill sizes="400px" className="object-cover" />
                 <div
                   className="absolute inset-0"
-                  style={{ background: "linear-gradient(150deg, rgba(12, 51, 48,0.6) 0%, rgba(12, 51, 48,0.92) 100%)" }}
+                  style={{ background: "linear-gradient(150deg, rgba(26,26,46,0.6) 0%, rgba(26,26,46,0.92) 100%)" }}
                 />
                 <div className="absolute inset-0 flex items-center gap-3 px-5">
                   <span
@@ -704,20 +704,20 @@ export default function EmployerProfilePage() {
               </div>
 
               <div className="p-5 space-y-4">
-                <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px]" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+                <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px]" style={{ color: "rgba(26,26,46,0.6)" }}>
                   <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                    <MapPin className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                     {p.plz || "PLZ"} {p.ort || "Ort"}
                   </span>
                   {p.mitarbeiter && (
                     <span className="inline-flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                      <Users className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                       {p.mitarbeiter} Mitarbeiter
                     </span>
                   )}
                   {p.gruendungsjahr && (
                     <span className="inline-flex items-center gap-1.5">
-                      <CalendarDays className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                      <CalendarDays className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                       seit {p.gruendungsjahr}
                     </span>
                   )}
@@ -746,53 +746,53 @@ export default function EmployerProfilePage() {
                 {p.beschreibung ? (
                   <p
                     className="text-[13px] leading-relaxed whitespace-pre-line"
-                    style={{ color: "rgba(12, 51, 48,0.65)" }}
+                    style={{ color: "rgba(26,26,46,0.65)" }}
                   >
                     {p.beschreibung}
                   </p>
                 ) : (
-                  <p className="text-[13px] italic" style={{ color: "rgba(12, 51, 48,0.35)" }}>
+                  <p className="text-[13px] italic" style={{ color: "rgba(26,26,46,0.35)" }}>
                     Hier steht Ihr &bdquo;Über uns&ldquo;-Text — aktuell sieht der Handwerker
                     an dieser Stelle nichts.
                   </p>
                 )}
 
                 {/* Ansprechpartner */}
-                <div className="pt-4" style={{ borderTop: "1px solid #EDE8DE" }}>
-                  <p className="text-[10px] uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+                <div className="pt-4" style={{ borderTop: "1px solid #F1EEE8" }}>
+                  <p className="text-[10px] uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,26,46,0.4)" }}>
                     Ansprechpartner
                   </p>
                   {p.kontaktName ? (
                     <>
                       <p className="text-[14px] font-semibold text-primary">{p.kontaktName}</p>
                       {p.kontaktPosition && (
-                        <p className="text-[12.5px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+                        <p className="text-[12.5px]" style={{ color: "rgba(26,26,46,0.5)" }}>
                           {p.kontaktPosition}
                         </p>
                       )}
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[12.5px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[12.5px]" style={{ color: "rgba(26,26,46,0.55)" }}>
                         {p.kontaktTelefon && (
                           <span className="inline-flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                            <Phone className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                             {p.kontaktTelefon}
                           </span>
                         )}
                         {p.kontaktEmail && (
                           <span className="inline-flex items-center gap-1.5 truncate">
-                            <Mail className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                            <Mail className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                             {p.kontaktEmail}
                           </span>
                         )}
                         {p.website && (
                           <span className="inline-flex items-center gap-1.5 truncate">
-                            <Globe className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                            <Globe className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                             {p.website}
                           </span>
                         )}
                       </div>
                     </>
                   ) : (
-                    <p className="text-[13px] italic" style={{ color: "rgba(12, 51, 48,0.35)" }}>
+                    <p className="text-[13px] italic" style={{ color: "rgba(26,26,46,0.35)" }}>
                       Ohne Ansprechpartner wirkt das Angebot unpersönlich.
                     </p>
                   )}
@@ -800,7 +800,7 @@ export default function EmployerProfilePage() {
               </div>
             </div>
 
-            <p className="text-[12px] mt-3 leading-relaxed" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+            <p className="text-[12px] mt-3 leading-relaxed" style={{ color: "rgba(26,26,46,0.45)" }}>
               Die Vorschau aktualisiert sich beim Tippen. Gespeichert wird erst mit dem
               Knopf oben.
             </p>

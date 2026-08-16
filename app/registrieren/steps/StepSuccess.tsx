@@ -18,9 +18,9 @@ export default function StepSuccess() {
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 16, delay: 0.1 }}
         className="w-20 h-20 flex items-center justify-center mb-8"
-        style={{ background: "#F9AD07" }}
+        style={{ background: "#E8A838" }}
       >
-        <Check className="w-10 h-10" style={{ color: "#0C3330" }} strokeWidth={3} />
+        <Check className="w-10 h-10" style={{ color: "#1A1A2E" }} strokeWidth={3} />
       </motion.div>
 
       <motion.h1
@@ -38,7 +38,7 @@ export default function StepSuccess() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.35 }}
         className="text-base leading-relaxed mb-10"
-        style={{ color: "#5F6F6A" }}
+        style={{ color: "#6B7280" }}
       >
         Dein Handwerker-Profil wurde erstellt. Unser Team gleicht dich jetzt mit
         passenden Betrieben ab und meldet sich persönlich bei dir.
@@ -50,10 +50,10 @@ export default function StepSuccess() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.45 }}
         className="w-full bg-white mb-8"
-        style={{ border: "1px solid #DFE3E0" }}
+        style={{ border: "1px solid #E5E7EB" }}
       >
-        <div className="px-6 py-4" style={{ borderBottom: "1px solid #DFE3E0" }}>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+        <div className="px-6 py-4" style={{ borderBottom: "1px solid #E5E7EB" }}>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
             Was passiert als nächstes?
           </p>
         </div>
@@ -65,12 +65,12 @@ export default function StepSuccess() {
           <div
             key={item.n}
             className="flex items-start gap-4 px-6 py-4"
-            style={{ borderBottom: i < arr.length - 1 ? "1px solid #EFF2F0" : "none" }}
+            style={{ borderBottom: i < arr.length - 1 ? "1px solid #F3F4F6" : "none" }}
           >
-            <span className="text-[11px] font-bold flex-shrink-0 mt-0.5" style={{ color: "#F9AD07", fontFamily: "var(--font-display)" }}>
+            <span className="text-[11px] font-bold flex-shrink-0 mt-0.5" style={{ color: "#E8A838", fontFamily: "var(--font-display)" }}>
               {item.n}
             </span>
-            <p className="text-sm text-left" style={{ color: "rgba(12, 51, 48,0.65)" }}>
+            <p className="text-sm text-left" style={{ color: "rgba(26,26,46,0.65)" }}>
               {item.text}
             </p>
           </div>
@@ -87,7 +87,7 @@ export default function StepSuccess() {
           href="/dashboard"
           onClick={() => reset()}
           className="group inline-flex items-center gap-3 font-semibold px-8 py-4 text-sm transition-all duration-200"
-          style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+          style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
         >
           <LayoutDashboard className="w-4 h-4" />
           Zum Dashboard
@@ -97,7 +97,7 @@ export default function StepSuccess() {
           href="/"
           onClick={() => reset()}
           className="inline-flex items-center gap-2 text-sm transition-colors duration-200"
-          style={{ color: "rgba(12, 51, 48,0.45)" }}
+          style={{ color: "rgba(26,26,46,0.45)" }}
         >
           Zurück zur Startseite
         </Link>

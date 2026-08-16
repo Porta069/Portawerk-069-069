@@ -38,50 +38,50 @@ export default function PartnerLoginPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2" style={{ fontFamily: "var(--font-sans)" }}>
       {/* ── Brand-Panel ── */}
-      <div className="relative hidden lg:flex flex-col justify-between bg-white overflow-hidden p-12 border-r border-[#E4DFD3]">
+      <div className="relative hidden lg:flex flex-col justify-between bg-primary overflow-hidden p-12">
         <div
           className="absolute -top-40 -right-40 w-[560px] h-[560px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.14) 0%, transparent 65%)" }}
+          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.14) 0%, transparent 65%)" }}
         />
         <div
-          className="absolute inset-0 opacity-[0.028] pointer-events-none"
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(12,51,48,1) 1px, transparent 1px), linear-gradient(90deg, rgba(12,51,48,1) 1px, transparent 1px)",
+              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
           }}
         />
         <Link href="/verdienen" className="relative flex items-center gap-3 w-fit">
-          <Logo height={24} priority />
-          <span className="text-primary/55 text-sm ml-1">· Partner</span>
+          <Logo height={24} variant="hell" priority />
+          <span className="text-white/40 text-sm ml-1">· Partner</span>
         </Link>
 
         <div className="relative">
-          <span className="flex items-center gap-3 text-[#8A5F04] text-xs font-medium tracking-[0.22em] uppercase mb-6">
+          <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.22em] uppercase mb-6">
             <span className="w-8 h-[2px] bg-accent" />
             Partner-Bereich
           </span>
           <h1
-            className="text-primary font-bold leading-[1.08] mb-5"
+            className="text-white font-bold leading-[1.08] mb-5"
             style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 3.5vw, 3.25rem)" }}
           >
             Willkommen zurück,
             <br />
             Partner.
           </h1>
-          <p className="text-primary/65 text-base leading-relaxed max-w-sm">
+          <p className="text-white/50 text-base leading-relaxed max-w-sm">
             Melde dich an, um dein Empfehlungs-Dashboard, deine Vermittlungen und
             deine Prämien zu sehen.
           </p>
         </div>
 
-        <p className="relative text-primary/45 text-xs">
+        <p className="relative text-white/25 text-xs">
           © {new Date().getFullYear()} PortaWerk — 100 € pro erfolgreicher Vermittlung
         </p>
       </div>
 
       {/* ── Formular ── */}
-      <div className="flex items-center justify-center px-6 py-12" style={{ background: "#F5F2EC" }}>
+      <div className="flex items-center justify-center px-6 py-12" style={{ background: "#F8F7F4" }}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,7 +96,7 @@ export default function PartnerLoginPage() {
 
           <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "var(--color-accent-soft)" }}>
             <Wallet className="w-3.5 h-3.5 text-accent" strokeWidth={2.2} />
-            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A5F04" }}>
+            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#B47B18" }}>
               Partner-Login
             </span>
           </div>
@@ -107,9 +107,9 @@ export default function PartnerLoginPage() {
           >
             Partner anmelden
           </h2>
-          <p className="text-sm mb-8" style={{ color: "#5F6F6A" }}>
+          <p className="text-sm mb-8" style={{ color: "#6B7280" }}>
             Für dein Empfehlungs-Dashboard. Nicht dein Handwerker-Konto?{" "}
-            <Link href="/login" className="font-semibold" style={{ color: "#F9AD07" }}>
+            <Link href="/login" className="font-semibold" style={{ color: "#E8A838" }}>
               Zum Haupt-Login
             </Link>
           </p>
@@ -118,7 +118,7 @@ export default function PartnerLoginPage() {
             <div>
               <label
                 className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
-                style={{ color: "rgba(12, 51, 48,0.45)" }}
+                style={{ color: "rgba(26,26,46,0.45)" }}
               >
                 Telefonnummer oder Link-Name<span className="text-accent ml-0.5">*</span>
               </label>
@@ -131,7 +131,7 @@ export default function PartnerLoginPage() {
                 required
                 className="w-full bg-white text-primary text-sm px-4 py-3.5 outline-none transition-all duration-200 placeholder:text-primary/20"
                 style={{
-                  border: `1.5px solid ${identifier ? "#0C3330" : "#DFE3E0"}`,
+                  border: `1.5px solid ${identifier ? "#1A1A2E" : "#E5E7EB"}`,
                   fontFamily: "var(--font-sans)",
                 }}
               />
@@ -141,7 +141,7 @@ export default function PartnerLoginPage() {
             <div>
               <label
                 className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
-                style={{ color: "rgba(12, 51, 48,0.45)" }}
+                style={{ color: "rgba(26,26,46,0.45)" }}
               >
                 Passwort<span className="text-accent ml-0.5">*</span>
               </label>
@@ -155,7 +155,7 @@ export default function PartnerLoginPage() {
                   required
                   className="w-full bg-white text-primary text-sm px-4 py-3.5 pr-11 outline-none transition-all duration-200 placeholder:text-primary/20"
                   style={{
-                    border: `1.5px solid ${password ? "#0C3330" : "#DFE3E0"}`,
+                    border: `1.5px solid ${password ? "#1A1A2E" : "#E5E7EB"}`,
                     fontFamily: "var(--font-sans)",
                   }}
                 />
@@ -183,7 +183,7 @@ export default function PartnerLoginPage() {
               type="submit"
               disabled={loading}
               className="group w-full flex items-center justify-center gap-3 font-semibold py-4 text-sm transition-all duration-200 disabled:opacity-60"
-              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
             >
               {loading ? (
                 <>
@@ -199,14 +199,14 @@ export default function PartnerLoginPage() {
             </button>
           </form>
 
-          <div className="flex items-center gap-2 mt-6 text-[11px]" style={{ color: "rgba(95, 111, 106,0.7)" }}>
-            <Lock className="w-3 h-3 flex-shrink-0" style={{ color: "#F9AD07" }} />
+          <div className="flex items-center gap-2 mt-6 text-[11px]" style={{ color: "rgba(107,114,128,0.7)" }}>
+            <Lock className="w-3 h-3 flex-shrink-0" style={{ color: "#E8A838" }} />
             Melde dich mit deiner Telefonnummer (oder deinem Link-Namen) und Passwort an.
           </div>
 
-          <p className="mt-8 text-sm text-center" style={{ color: "#5F6F6A" }}>
+          <p className="mt-8 text-sm text-center" style={{ color: "#6B7280" }}>
             Noch kein Partner?{" "}
-            <Link href="/verdienen/partner" className="font-semibold" style={{ color: "#F9AD07" }}>
+            <Link href="/verdienen/partner" className="font-semibold" style={{ color: "#E8A838" }}>
               Jetzt Link erstellen
             </Link>
           </p>

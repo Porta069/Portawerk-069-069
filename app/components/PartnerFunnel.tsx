@@ -173,19 +173,19 @@ export default function PartnerFunnel() {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "var(--color-surface)" }}>
       {/* Kopf */}
-      <div className="sticky top-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD]">
+      <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-2xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/verdienen" className="flex items-center gap-2.5 group">
-            <Logo height={24} className="transition-transform group-hover:scale-95" />
+            <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
           </Link>
           {step > 0 && !isSuccess && (
-            <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1.5 text-sm text-primary/70 hover:text-primary transition-colors">
+            <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Zurück
             </button>
           )}
           {step === 0 && !isSuccess && (
-            <Link href="/verdienen/login" className="text-sm text-primary/70 hover:text-primary transition-colors">
-              Schon Partner? <span className="text-[#8A5F04] font-semibold">Anmelden</span>
+            <Link href="/verdienen/login" className="text-sm text-white/50 hover:text-white transition-colors">
+              Schon Partner? <span className="text-accent font-semibold">Anmelden</span>
             </Link>
           )}
         </div>
@@ -197,7 +197,7 @@ export default function PartnerFunnel() {
         <div className="bg-primary">
           <div className="max-w-2xl mx-auto px-6 pt-10 pb-12">
             <div className="flex items-center gap-3 mb-5">
-              <span className="w-8 flex-shrink-0" style={{ display: "block", height: "2px", background: "#F9AD07" }} />
+              <span className="w-8 flex-shrink-0" style={{ display: "block", height: "2px", background: "#E8A838" }} />
               <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent">
                 Schritt {step + 1} von {CONTENT_STEPS}
               </span>
@@ -254,7 +254,7 @@ export default function PartnerFunnel() {
                   <PasswordStrength password={passwort} />
                 </div>
                 <label className="flex items-start gap-3 mt-1 cursor-pointer">
-                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#F9AD07] flex-shrink-0" />
+                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#E8A838] flex-shrink-0" />
                   <span className="text-muted text-xs leading-relaxed">
                     Ich stimme zu, dass meine Daten zur Registrierung und Auszahlung genutzt werden. Details in der{" "}
                     <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2">Datenschutzerklärung</a>.
@@ -276,7 +276,7 @@ export default function PartnerFunnel() {
                 <div>
                   <label className={label} htmlFor="p-slug">Dein Wunsch-Link</label>
                   <div className="flex items-stretch rounded-xl border overflow-hidden transition-colors"
-                    style={{ borderColor: slugStatus === "taken" ? "#EF4444" : slugStatus === "free" ? "#22C55E" : "#DFE3E0" }}>
+                    style={{ borderColor: slugStatus === "taken" ? "#EF4444" : slugStatus === "free" ? "#22C55E" : "#E5E7EB" }}>
                     <span className="flex items-center pl-4 pr-1 text-muted text-sm select-none">{BASE}</span>
                     <input id="p-slug" className="flex-1 py-3.5 pr-4 text-primary text-sm bg-transparent focus:outline-none" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="dein-name" autoComplete="off" />
                     <span className="flex items-center px-4">

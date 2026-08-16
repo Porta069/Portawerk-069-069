@@ -48,12 +48,12 @@ export default function StepEmail() {
   const borderColor = showError
     ? "#EF4444"
     : focused
-    ? "#F9AD07"
+    ? "#E8A838"
     : status === "valid"
     ? "#22C55E"
     : email
-    ? "#0C3330"
-    : "#E4DFD3";
+    ? "#1A1A2E"
+    : "#E9E7E1";
 
   return (
     <div>
@@ -63,15 +63,15 @@ export default function StepEmail() {
 
       <label
         className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold mb-2.5"
-        style={{ color: focused ? "#F9AD07" : "rgba(12, 51, 48,0.45)" }}
+        style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
       >
-        E-Mail-Adresse <span style={{ color: "#F9AD07" }}>*</span>
+        E-Mail-Adresse <span style={{ color: "#E8A838" }}>*</span>
       </label>
 
       <div className="relative">
         <Mail
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-          style={{ color: focused ? "#F9AD07" : "rgba(12, 51, 48,0.28)" }}
+          style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.28)" }}
         />
         <input
           type="email"
@@ -90,14 +90,14 @@ export default function StepEmail() {
           style={{
             border: `1.5px solid ${borderColor}`,
             boxShadow: focused
-              ? "0 0 0 4px rgba(249, 173, 7,0.12)"
-              : "0 2px 10px -6px rgba(12, 51, 48,0.12)",
+              ? "0 0 0 4px rgba(232,168,56,0.12)"
+              : "0 2px 10px -6px rgba(26,26,46,0.12)",
             fontFamily: "var(--font-sans)",
           }}
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2">
           {status === "checking" ? (
-            <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#F9AD07" }} />
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#E8A838" }} />
           ) : status === "valid" ? (
             <span
               className="w-5 h-5 rounded-full flex items-center justify-center"
@@ -121,13 +121,13 @@ export default function StepEmail() {
 
       {/* Tippfehler-Vorschlag: gmial.com → gmail.com, gxm.de → gmx.de … */}
       {suggestion && (
-        <p className="text-[13px] mt-2.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+        <p className="text-[13px] mt-2.5" style={{ color: "rgba(26,26,46,0.6)" }}>
           Meintest du{" "}
           <button
             type="button"
             onClick={() => setContact({ email: suggestion })}
             className="font-bold underline underline-offset-2"
-            style={{ color: "#8A5F04" }}
+            style={{ color: "#B47B18" }}
           >
             {suggestion}
           </button>
@@ -139,17 +139,17 @@ export default function StepEmail() {
       <div className="mt-8">
         <label
           className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold mb-2.5"
-          style={{ color: phoneFocused ? "#F9AD07" : "rgba(12, 51, 48,0.45)" }}
+          style={{ color: phoneFocused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
         >
           Handynummer
-          <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(12, 51, 48,0.35)" }}>
+          <span className="normal-case tracking-normal font-medium" style={{ color: "rgba(26,26,46,0.35)" }}>
             (optional)
           </span>
         </label>
         <div className="relative">
           <Phone
             className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-            style={{ color: phoneFocused ? "#F9AD07" : "rgba(12, 51, 48,0.28)" }}
+            style={{ color: phoneFocused ? "#E8A838" : "rgba(26,26,46,0.28)" }}
           />
           <input
             type="tel"
@@ -164,11 +164,11 @@ export default function StepEmail() {
             className="w-full rounded-2xl bg-white text-primary text-[15px] pl-12 pr-4 py-4 outline-none transition-all duration-200 placeholder:text-primary/20"
             style={{
               border: `1.5px solid ${
-                !phoneOk ? "#EF4444" : phoneFocused ? "#F9AD07" : phone ? "#0C3330" : "#E4DFD3"
+                !phoneOk ? "#EF4444" : phoneFocused ? "#E8A838" : phone ? "#1A1A2E" : "#E9E7E1"
               }`,
               boxShadow: phoneFocused
-                ? "0 0 0 4px rgba(249, 173, 7,0.12)"
-                : "0 2px 10px -6px rgba(12, 51, 48,0.12)",
+                ? "0 0 0 4px rgba(232,168,56,0.12)"
+                : "0 2px 10px -6px rgba(26,26,46,0.12)",
               fontFamily: "var(--font-sans)",
             }}
           />

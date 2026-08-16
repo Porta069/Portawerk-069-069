@@ -35,13 +35,13 @@ function fmtBytes(n: number) {
 
 function FileRow({ file, onRemove }: { file: File; onRemove: () => void }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-white" style={{ border: "1px solid #DFE3E0" }}>
-      <div className="w-8 h-8 flex items-center justify-center flex-shrink-0" style={{ background: "rgba(249, 173, 7,0.1)" }}>
-        <FileText className="w-4 h-4" style={{ color: "#F9AD07" }} />
+    <div className="flex items-center gap-3 px-4 py-3 bg-white" style={{ border: "1px solid #E5E7EB" }}>
+      <div className="w-8 h-8 flex items-center justify-center flex-shrink-0" style={{ background: "rgba(232,168,56,0.1)" }}>
+        <FileText className="w-4 h-4" style={{ color: "#E8A838" }} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate text-primary">{file.name}</p>
-        <p className="text-[11px]" style={{ color: "#5F6F6A" }}>{fmtBytes(file.size)}</p>
+        <p className="text-[11px]" style={{ color: "#6B7280" }}>{fmtBytes(file.size)}</p>
       </div>
       <button onClick={onRemove} className="text-muted hover:text-red-500 transition-colors" aria-label="Entfernen">
         <X className="w-4 h-4" />
@@ -59,17 +59,17 @@ function FilePicker({
   const ref = useRef<HTMLInputElement>(null);
   return (
     <div>
-      <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+      <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
         {label}{required && <span className="text-accent ml-0.5">*</span>}
       </p>
       <div
         onClick={() => ref.current?.click()}
         className="cursor-pointer flex flex-col items-center justify-center gap-2 py-7 transition-colors"
-        style={{ border: "2px dashed #C8CFCB", background: "white" }}
+        style={{ border: "2px dashed #D1D5DB", background: "white" }}
       >
-        <Upload className="w-5 h-5" style={{ color: "#94A09B" }} />
-        <span className="text-sm" style={{ color: "rgba(12, 51, 48,0.7)" }}>Klicken zum Auswählen</span>
-        <span className="text-[11px]" style={{ color: "#5F6F6A" }}>{accept}</span>
+        <Upload className="w-5 h-5" style={{ color: "#9CA3AF" }} />
+        <span className="text-sm" style={{ color: "rgba(26,26,46,0.7)" }}>Klicken zum Auswählen</span>
+        <span className="text-[11px]" style={{ color: "#6B7280" }}>{accept}</span>
       </div>
       <input
         ref={ref} type="file" accept={accept} multiple={multiple} className="hidden"
@@ -160,18 +160,18 @@ export default function UnterlagenPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "#F5F2EC" }}>
+      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "#F8F7F4" }}>
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 mx-auto flex items-center justify-center mb-8" style={{ background: "#F9AD07" }}>
+          <div className="w-20 h-20 mx-auto flex items-center justify-center mb-8" style={{ background: "#E8A838" }}>
             <Check className="w-10 h-10 text-primary" strokeWidth={3} />
           </div>
           <h1 className="text-primary font-bold text-3xl mb-4" style={{ fontFamily: "var(--font-display)" }}>
             Unterlagen eingegangen!
           </h1>
-          <p className="text-base mb-8" style={{ color: "#5F6F6A" }}>
+          <p className="text-base mb-8" style={{ color: "#6B7280" }}>
             Danke — dein Team prüft deine Unterlagen und meldet sich.
           </p>
-          <Link href="/dashboard" className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 text-sm" style={{ background: "#0C3330", color: "white", fontFamily: "var(--font-display)" }}>
+          <Link href="/dashboard" className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 text-sm" style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}>
             Zum Dashboard
           </Link>
         </div>
@@ -180,13 +180,13 @@ export default function UnterlagenPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#F5F2EC", fontFamily: "var(--font-sans)" }}>
-      <div className="sticky top-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD]">
+    <div className="min-h-screen" style={{ background: "#F8F7F4", fontFamily: "var(--font-sans)" }}>
+      <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-3xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <Logo height={24} />
+            <Logo height={24} variant="hell" />
           </Link>
-          <Link href="/dashboard" className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(12, 51, 48,0.75)" }}>
+          <Link href="/dashboard" className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
             <ArrowLeft className="w-3.5 h-3.5" />Dashboard
           </Link>
         </div>
@@ -201,9 +201,9 @@ export default function UnterlagenPage() {
         </h1>
 
         {/* Dev-Hinweis */}
-        <div className="flex items-start gap-3 px-4 py-3 mb-8" style={{ background: "rgba(249, 173, 7,0.07)", border: "1px solid rgba(249, 173, 7,0.25)" }}>
-          <Info className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
-          <p className="text-[12px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+        <div className="flex items-start gap-3 px-4 py-3 mb-8" style={{ background: "rgba(232,168,56,0.07)", border: "1px solid rgba(232,168,56,0.25)" }}>
+          <Info className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+          <p className="text-[12px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
             <strong>Hinweis:</strong> Für den Upload ist eine E-Mail-Verifizierung nötig. Die Zustellung der Codes wird gerade eingerichtet — im Testbetrieb kann dieser Schritt noch nicht abgeschlossen werden.
           </p>
         </div>
@@ -236,20 +236,20 @@ export default function UnterlagenPage() {
 
         {/* Verifizierung */}
         <SectionLabel>E-Mail bestätigen</SectionLabel>
-        <div className="bg-white p-6 mb-10" style={{ border: "1px solid #DFE3E0" }}>
+        <div className="bg-white p-6 mb-10" style={{ border: "1px solid #E5E7EB" }}>
           {verifToken ? (
             <p className="flex items-center gap-2 text-sm" style={{ color: "#16A34A" }}>
               <Check className="w-4 h-4" strokeWidth={3} />E-Mail bestätigt
             </p>
           ) : !otpSent ? (
-            <button onClick={sendOtp} disabled={otpBusy || !form.email} className="flex items-center gap-2 font-semibold px-6 py-3 text-sm disabled:opacity-50" style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}>
+            <button onClick={sendOtp} disabled={otpBusy || !form.email} className="flex items-center gap-2 font-semibold px-6 py-3 text-sm disabled:opacity-50" style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}>
               {otpBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}Code an E-Mail senden
             </button>
           ) : (
             <div className="space-y-4">
-              <p className="text-[13px]" style={{ color: "#5F6F6A" }}>6-stelligen Code eingeben:</p>
+              <p className="text-[13px]" style={{ color: "#6B7280" }}>6-stelligen Code eingeben:</p>
               <OtpInput value={otp} onChange={(v) => { setOtp(v); setOtpError(null); }} error={!!otpError} disabled={otpBusy} />
-              <button onClick={verify} disabled={otp.trim().length < 6 || otpBusy} className="flex items-center gap-2 font-semibold px-5 py-2.5 text-sm disabled:opacity-40" style={{ background: "#0C3330", color: "white", fontFamily: "var(--font-display)" }}>
+              <button onClick={verify} disabled={otp.trim().length < 6 || otpBusy} className="flex items-center gap-2 font-semibold px-5 py-2.5 text-sm disabled:opacity-40" style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}>
                 {otpBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}Verifizieren
               </button>
             </div>
@@ -260,18 +260,18 @@ export default function UnterlagenPage() {
         </div>
 
         {/* Einwilligung */}
-        <button onClick={() => setConsent((c) => !c)} className="flex items-start gap-3 w-full text-left px-4 py-4 mb-8" style={{ border: `1.5px solid ${consent ? "#F9AD07" : "#DFE3E0"}`, background: consent ? "rgba(249, 173, 7,0.05)" : "white" }}>
-          <span className="w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5" style={{ border: `1.5px solid ${consent ? "#F9AD07" : "#C8CFCB"}`, background: consent ? "#F9AD07" : "white" }}>
+        <button onClick={() => setConsent((c) => !c)} className="flex items-start gap-3 w-full text-left px-4 py-4 mb-8" style={{ border: `1.5px solid ${consent ? "#E8A838" : "#E5E7EB"}`, background: consent ? "rgba(232,168,56,0.05)" : "white" }}>
+          <span className="w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5" style={{ border: `1.5px solid ${consent ? "#E8A838" : "#D1D5DB"}`, background: consent ? "#E8A838" : "white" }}>
             {consent && <Check className="w-3.5 h-3.5 text-primary" strokeWidth={3} />}
           </span>
-          <span className="text-sm leading-relaxed" style={{ color: "rgba(12, 51, 48,0.75)" }}>{CONSENT_TEXT}</span>
+          <span className="text-sm leading-relaxed" style={{ color: "rgba(26,26,46,0.75)" }}>{CONSENT_TEXT}</span>
         </button>
 
         {error && (
           <div className="px-4 py-3 text-sm mb-6" style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.25)", color: "#B91C1C" }}>{error}</div>
         )}
 
-        <div className="flex justify-end pt-6" style={{ borderTop: "1px solid #DFE3E0" }}>
+        <div className="flex justify-end pt-6" style={{ borderTop: "1px solid #E5E7EB" }}>
           <PrimaryButton onClick={submit} disabled={!canSubmit} loading={submitting}>
             {submitting ? "Wird gesendet…" : "Unterlagen absenden"}
             {!submitting && <BadgeCheck className="w-4 h-4" />}

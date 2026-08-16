@@ -30,10 +30,10 @@ export function StepRail({
           const clickable = isPast && !!onStepSelect;
 
           const bar = (
-            <span className="block relative h-[3px] w-full overflow-hidden rounded-full bg-[#E4DFD3]">
+            <span className="block relative h-[3px] w-full overflow-hidden rounded-full bg-white/12">
               <motion.span
                 className="absolute inset-y-0 left-0 rounded-full"
-                style={{ background: isActive ? "#F9AD07" : "rgba(138, 95, 4,0.55)" }}
+                style={{ background: isActive ? "#E8A838" : "rgba(232,168,56,0.75)" }}
                 initial={false}
                 animate={{ width: isPast || isActive ? "100%" : "0%" }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -44,13 +44,13 @@ export function StepRail({
           const label = (
             <span className="mt-2.5 flex items-center gap-1.5">
               {isPast ? (
-                <Check className="w-3 h-3 flex-shrink-0" strokeWidth={3} style={{ color: "#8A5F04" }} />
+                <Check className="w-3 h-3 flex-shrink-0" strokeWidth={3} style={{ color: "#E8A838" }} />
               ) : (
                 <span
                   className="text-[10px] font-bold tabular-nums flex-shrink-0"
                   style={{
                     fontFamily: "var(--font-display)",
-                    color: isActive ? "#8A5F04" : "rgba(12, 51, 48,0.35)",
+                    color: isActive ? "#E8A838" : "rgba(255,255,255,0.25)",
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
@@ -60,10 +60,10 @@ export function StepRail({
                 className="hidden sm:block text-[11px] font-medium tracking-wide truncate"
                 style={{
                   color: isActive
-                    ? "#0C3330"
+                    ? "#FFFFFF"
                     : isPast
-                    ? "#8A5F04"
-                    : "rgba(12, 51, 48,0.45)",
+                    ? "rgba(232,168,56,0.85)"
+                    : "rgba(255,255,255,0.3)",
                 }}
               >
                 {s.label}

@@ -25,9 +25,9 @@ export default function VerificationStatus({ verified }: { verified: boolean }) 
     <span
       className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold"
       style={{
-        background: "rgba(249, 173, 7,0.10)",
-        color: "#8A5F04",
-        border: "1px solid rgba(249, 173, 7,0.30)",
+        background: "rgba(232,168,56,0.10)",
+        color: "#B47B18",
+        border: "1px solid rgba(232,168,56,0.30)",
       }}
     >
       <Clock className="w-3 h-3" />

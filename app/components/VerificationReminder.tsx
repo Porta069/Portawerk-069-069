@@ -42,14 +42,14 @@ function ChannelRow({
   };
 
   return (
-    <div className="p-4" style={{ border: "1px solid #DFE3E0", background: verified ? "rgba(34,197,94,0.04)" : "white" }}>
+    <div className="p-4" style={{ border: "1px solid #E5E7EB", background: verified ? "rgba(34,197,94,0.04)" : "white" }}>
       <div className="flex items-center gap-2.5 mb-3">
-        <div className="w-8 h-8 flex items-center justify-center" style={{ background: "rgba(249, 173, 7,0.1)" }}>
-          <Icon className="w-4 h-4" style={{ color: "#F9AD07" }} />
+        <div className="w-8 h-8 flex items-center justify-center" style={{ background: "rgba(232,168,56,0.1)" }}>
+          <Icon className="w-4 h-4" style={{ color: "#E8A838" }} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-primary">{label}</p>
-          <p className="text-[12px] truncate" style={{ color: "#5F6F6A" }}>{contact}</p>
+          <p className="text-[12px] truncate" style={{ color: "#6B7280" }}>{contact}</p>
         </div>
         {verified && (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold" style={{ color: "#16A34A" }}>
@@ -60,7 +60,7 @@ function ChannelRow({
 
       {!verified && (
         !sent ? (
-          <button onClick={send} disabled={sending} className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold" style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}>
+          <button onClick={send} disabled={sending} className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold" style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}>
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
             {channel === "email" ? "Bestätigungs-E-Mail senden" : "SMS-Code senden"}
           </button>
@@ -68,8 +68,8 @@ function ChannelRow({
           <div className="space-y-3">
             <OtpInput value={code} onChange={(v) => { setCode(v); setErr(null); }} error={!!err} disabled={busy} />
             <div className="flex items-center justify-between gap-2">
-              <button onClick={send} disabled={sending} className="text-[12px]" style={{ color: "#F9AD07" }}>Erneut senden</button>
-              <button onClick={verify} disabled={code.trim().length < 6 || busy} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold disabled:opacity-40" style={{ background: "#0C3330", color: "white", fontFamily: "var(--font-display)" }}>
+              <button onClick={send} disabled={sending} className="text-[12px]" style={{ color: "#E8A838" }}>Erneut senden</button>
+              <button onClick={verify} disabled={code.trim().length < 6 || busy} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold disabled:opacity-40" style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}>
                 {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}Bestätigen
               </button>
             </div>
@@ -118,13 +118,13 @@ export default function VerificationReminder({
               <ChannelRow channel="sms" contact={user.phone} verified={user.phoneVerified} token={token} onVerified={onUpdate} />
 
               <div className="flex items-start gap-2 pt-1">
-                <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
-                <p className="text-[11px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+                <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+                <p className="text-[11px] leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
                   Hinweis: Der E-Mail-/SMS-Versand wird gerade eingerichtet — im Testbetrieb kommen Codes noch nicht an. Du kannst dieses Fenster vorerst schließen.
                 </p>
               </div>
 
-              <button onClick={() => setDismissed(true)} className="w-full text-sm py-2 mt-1" style={{ color: "#5F6F6A" }}>
+              <button onClick={() => setDismissed(true)} className="w-full text-sm py-2 mt-1" style={{ color: "#6B7280" }}>
                 Später erinnern
               </button>
             </div>

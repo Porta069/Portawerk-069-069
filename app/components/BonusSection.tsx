@@ -78,7 +78,7 @@ export default function BonusSection() {
 
             <Link
               href="/registrieren"
-              className="group relative overflow-hidden self-start inline-flex items-center gap-3 rounded-full bg-primary text-white font-semibold px-8 py-4 transition-shadow duration-300 hover:shadow-[0_14px_34px_-12px_rgba(249, 173, 7,0.7)]"
+              className="group relative overflow-hidden self-start inline-flex items-center gap-3 rounded-full bg-primary text-white font-semibold px-8 py-4 transition-shadow duration-300 hover:shadow-[0_14px_34px_-12px_rgba(232,168,56,0.7)]"
             >
               <span className="relative z-10 inline-flex items-center gap-3 transition-colors duration-300 group-hover:text-primary">
                 Jetzt kostenlos starten

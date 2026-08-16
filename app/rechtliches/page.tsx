@@ -17,17 +17,17 @@ export default function RechtlichesPage() {
   const sections = legalSections();
 
   return (
-    <div className="min-h-screen" style={{ background: "#F5F2EC", fontFamily: "var(--font-sans)" }}>
+    <div className="min-h-screen" style={{ background: "#F8F7F4", fontFamily: "var(--font-sans)" }}>
       {/* ── Navbar ── */}
-      <div className="sticky top-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD]">
+      <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-4xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <Logo height={24} priority />
+            <Logo height={24} variant="hell" priority />
           </Link>
           <Link
             href="/"
             className="flex items-center gap-1.5 text-sm transition-colors"
-            style={{ color: "rgba(12, 51, 48,0.75)" }}
+            style={{ color: "rgba(255,255,255,0.5)" }}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Startseite
@@ -50,10 +50,10 @@ export default function RechtlichesPage() {
         {/* Hinweis auf die noch offenen Pflichtangaben */}
         <div
           className="flex items-start gap-3 px-5 py-4 mb-10"
-          style={{ background: "rgba(249, 173, 7,0.08)", border: "1px solid rgba(249, 173, 7,0.3)" }}
+          style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}
         >
-          <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
-          <p className="text-[13px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.65)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+          <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.65)" }}>
             <strong>Hinweis:</strong> Die folgenden Texte beschreiben den tatsächlichen
             Stand der Plattform. Angaben in eckigen Klammern fehlen uns noch und müssen
             vor dem Live-Gang ergänzt werden; die Texte sollten zusätzlich von einer
@@ -84,7 +84,7 @@ export default function RechtlichesPage() {
             >
               <h2
                 className="text-primary font-bold text-2xl md:text-3xl mb-6 pb-3"
-                style={{ fontFamily: "var(--font-display)", borderBottom: "2px solid #F9AD07" }}
+                style={{ fontFamily: "var(--font-display)", borderBottom: "2px solid #E8A838" }}
               >
                 {section.title}
               </h2>
@@ -101,7 +101,7 @@ export default function RechtlichesPage() {
                         verschmelzen. Einzeilige Texte ändert es nicht. */}
                     <p
                       className="text-sm leading-relaxed whitespace-pre-line"
-                      style={{ color: "rgba(12, 51, 48,0.75)" }}
+                      style={{ color: "rgba(26,26,46,0.6)" }}
                     >
                       {block.text}
                     </p>
@@ -112,11 +112,11 @@ export default function RechtlichesPage() {
           ))}
         </div>
 
-        <div className="mt-16 pt-8" style={{ borderTop: "1px solid #DFE3E0" }}>
+        <div className="mt-16 pt-8" style={{ borderTop: "1px solid #E5E7EB" }}>
           <Link
             href="/registrieren"
             className="inline-flex items-center gap-2 text-sm font-semibold"
-            style={{ color: "#F9AD07" }}
+            style={{ color: "#E8A838" }}
           >
             <ArrowLeft className="w-4 h-4" />
             Zurück zur Registrierung

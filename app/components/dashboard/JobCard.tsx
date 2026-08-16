@@ -76,13 +76,13 @@ function ExactTravelRow({
   };
 
   const chipStyle: React.CSSProperties = {
-    border: "1px solid rgba(249, 173, 7,0.45)",
-    background: "rgba(249, 173, 7,0.08)",
-    color: "#6E4A03",
+    border: "1px solid rgba(232,168,56,0.45)",
+    background: "rgba(232,168,56,0.08)",
+    color: "#8A5B0F",
   };
 
   return (
-    <div className="mt-1.5 text-[11.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+    <div className="mt-1.5 text-[11.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
       {exact ? (
         <span className="inline-flex flex-wrap items-center gap-x-1.5">
           <Navigation className="w-3 h-3" style={{ color: "#15803D" }} />
@@ -94,7 +94,7 @@ function ExactTravelRow({
             type="button"
             onClick={() => setChoosing(true)}
             className="font-semibold underline-offset-2 hover:underline"
-            style={{ color: "rgba(12, 51, 48,0.4)" }}
+            style={{ color: "rgba(26,26,46,0.4)" }}
           >
             ändern
           </button>
@@ -104,7 +104,7 @@ function ExactTravelRow({
           type="button"
           onClick={() => setChoosing(true)}
           className="inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline"
-          style={{ color: "#8A5F04" }}
+          style={{ color: "#B47B18" }}
         >
           <LocateFixed className="w-3 h-3" />
           Genaue Fahrzeit berechnen
@@ -145,7 +145,7 @@ function ExactTravelRow({
             type="button"
             onClick={() => setChoosing(false)}
             aria-label="Abbrechen"
-            style={{ color: "rgba(12, 51, 48,0.35)" }}
+            style={{ color: "rgba(26,26,46,0.35)" }}
           >
             <X className="w-3 h-3" />
           </button>
@@ -165,8 +165,8 @@ const RouteMap = dynamic(() => import("./RouteMap"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center gap-2 py-24">
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#F9AD07" }} />
-      <span className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+      <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
         Karte wird geladen …
       </span>
     </div>
@@ -182,9 +182,9 @@ function Cond({ icon: Icon, children }: { icon: typeof MapPin; children: React.R
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-      style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.72)" }}
+      style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.72)" }}
     >
-      <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#F9AD07" }} />
+      <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
       {children}
     </span>
   );
@@ -200,7 +200,7 @@ function SalaryContext({ job }: { job: Job }) {
     return (
       <span
         className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[14px] font-bold"
-        style={{ background: "rgba(12, 51, 48,0.06)", color: "rgba(12, 51, 48,0.6)" }}
+        style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.6)" }}
       >
         Im Marktschnitt
       </span>
@@ -213,7 +213,7 @@ function SalaryContext({ job }: { job: Job }) {
       className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[15px] font-bold"
       style={{
         background: up ? "rgba(22,163,74,0.12)" : "rgba(180,83,9,0.12)",
-        color: up ? "#15803D" : "#8A5F04",
+        color: up ? "#15803D" : "#B45309",
         fontFamily: "var(--font-display)",
       }}
     >
@@ -259,10 +259,10 @@ export default function JobCard({
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="overflow-hidden rounded-3xl bg-white"
       style={{
-        border: `1.5px solid ${highlight ? "#F9AD07" : "#E4DFD3"}`,
+        border: `1.5px solid ${highlight ? "#E8A838" : "#E9E7E1"}`,
         boxShadow: highlight
-          ? "0 24px 50px -30px rgba(249, 173, 7,0.8)"
-          : "0 10px 30px -24px rgba(12, 51, 48,0.5)",
+          ? "0 24px 50px -30px rgba(232,168,56,0.8)"
+          : "0 10px 30px -24px rgba(26,26,46,0.5)",
       }}
     >
       <div className="flex flex-col sm:flex-row">
@@ -292,7 +292,7 @@ export default function JobCard({
             >
               <Heart
                 className="w-4 h-4"
-                style={{ color: job.favorite ? "#DC2626" : "#0C3330" }}
+                style={{ color: job.favorite ? "#DC2626" : "#1A1A2E" }}
                 fill={job.favorite ? "#DC2626" : "none"}
               />
             </button>
@@ -300,7 +300,7 @@ export default function JobCard({
           {job.recommended && (
             <span
               className="absolute bottom-0 inset-x-0 flex items-center justify-center gap-1.5 py-2 text-[11px] font-bold"
-              style={{ background: "rgba(12, 51, 48,0.92)", color: "#F9AD07" }}
+              style={{ background: "rgba(26,26,46,0.92)", color: "#E8A838" }}
             >
               <Sparkles className="w-3.5 h-3.5" />
               Für dich empfohlen
@@ -313,7 +313,7 @@ export default function JobCard({
           <div className="flex items-start justify-between gap-4 mb-1">
             <h3
               className={`text-primary font-bold text-[19px] leading-snug ${
-                onOpen ? "cursor-pointer transition-colors hover:text-[#8A5F04]" : ""
+                onOpen ? "cursor-pointer transition-colors hover:text-[#B47B18]" : ""
               }`}
               style={{ fontFamily: "var(--font-display)" }}
               onClick={onOpen ? () => onOpen(job) : undefined}
@@ -326,16 +326,16 @@ export default function JobCard({
             {typeof job.matchScore === "number" && (
               <span
                 className="flex flex-col items-end rounded-xl px-3 py-1.5"
-                style={{ background: "rgba(12, 51, 48,0.05)" }}
+                style={{ background: "rgba(26,26,46,0.05)" }}
               >
                 <span
                   className="text-[15px] font-bold tabular-nums"
-                  style={{ fontFamily: "var(--font-display)", color: job.matchScore >= 70 ? "#15803D" : "#0C3330" }}
+                  style={{ fontFamily: "var(--font-display)", color: job.matchScore >= 70 ? "#15803D" : "#1A1A2E" }}
                 >
                   {job.matchScore} %
                   <ScoreExplainer breakdown={job.matchBreakdown} subject={job.title} />
                 </span>
-                <span className="text-[10px]" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+                <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.45)" }}>
                   Match
                 </span>
               </span>
@@ -346,17 +346,17 @@ export default function JobCard({
             {!job.startLabel ? (
               <span
                 className="flex flex-col items-end flex-shrink-0 rounded-xl px-3 py-1.5"
-                style={{ background: "rgba(12, 51, 48,0.04)" }}
+                style={{ background: "rgba(26,26,46,0.04)" }}
                 title="Lege zuerst deine Arbeitsorte fest"
               >
                 <span
                   className="inline-flex items-center gap-1.5 text-[15px] font-bold"
-                  style={{ fontFamily: "var(--font-display)", color: "rgba(12, 51, 48,0.4)" }}
+                  style={{ fontFamily: "var(--font-display)", color: "rgba(26,26,46,0.4)" }}
                 >
-                  <Car className="w-4 h-4" style={{ color: "rgba(249, 173, 7,0.5)" }} />
+                  <Car className="w-4 h-4" style={{ color: "rgba(232,168,56,0.5)" }} />
                   — Min.
                 </span>
-                <span className="text-[10px]" style={{ color: "rgba(12, 51, 48,0.35)" }}>
+                <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.35)" }}>
                   Orte fehlen
                 </span>
               </span>
@@ -367,20 +367,20 @@ export default function JobCard({
               title="Fahrtweg auf der Karte ansehen"
               aria-label={`Fahrtweg ansehen — ${job.travelMinutes} Minuten`}
               className="group/route flex flex-col items-end flex-shrink-0 rounded-xl px-3 py-1.5 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              style={{ background: "rgba(249, 173, 7,0.12)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(249, 173, 7,0.24)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(249, 173, 7,0.12)")}
+              style={{ background: "rgba(232,168,56,0.12)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.24)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.12)")}
             >
               <span
                 className="inline-flex items-center gap-1.5 text-[15px] font-bold tabular-nums"
-                style={{ fontFamily: "var(--font-display)", color: "#0C3330" }}
+                style={{ fontFamily: "var(--font-display)", color: "#1A1A2E" }}
               >
-                <Car className="w-4 h-4" style={{ color: "#F9AD07" }} />
+                <Car className="w-4 h-4" style={{ color: "#E8A838" }} />
                 {exactTravel ? `${exactTravel.minutes} Min.` : `~${job.travelMinutes} Min.`}
               </span>
               <span
                 className="inline-flex items-center gap-1 text-[10px] tabular-nums"
-                style={{ color: exactTravel ? "#15803D" : "rgba(12, 51, 48,0.45)" }}
+                style={{ color: exactTravel ? "#15803D" : "rgba(26,26,46,0.45)" }}
               >
                 {exactTravel ? "genau" : `${job.distanceKm.toLocaleString("de-DE")} km`}
                 <Route className="w-3 h-3 opacity-0 transition-opacity duration-200 group-hover/route:opacity-100" />
@@ -390,13 +390,13 @@ export default function JobCard({
             </div>
           </div>
 
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "rgba(26,26,46,0.6)" }}>
             <span className="inline-flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+              <Building2 className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
               {job.employer}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+              <MapPin className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
               {job.city}
             </span>
           </p>
@@ -419,12 +419,12 @@ export default function JobCard({
                 className="inline-flex items-center gap-1.5 text-[20px] font-bold tabular-nums text-primary"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                <Euro className="w-4 h-4" style={{ color: "#F9AD07" }} />
+                <Euro className="w-4 h-4" style={{ color: "#E8A838" }} />
                 {job.salaryMax > 0 ? `${euro(job.salaryMin)} – ${euro(job.salaryMax)}` : "Nach Vereinbarung"}
               </span>
               <SalaryContext job={job} />
             </div>
-            <p className="text-[11px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+            <p className="text-[11px] mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }}>
               Monatlich brutto
             </p>
           </div>
@@ -445,15 +445,15 @@ export default function JobCard({
 
           {/* Warum es passt */}
           {job.matchReasons?.length ? (
-            <p className="text-[12px] mb-2" style={{ color: "rgba(12, 51, 48,0.55)" }}>
-              <span className="font-semibold" style={{ color: "#8A5F04" }}>Passt, weil:</span>{" "}
+            <p className="text-[12px] mb-2" style={{ color: "rgba(26,26,46,0.55)" }}>
+              <span className="font-semibold" style={{ color: "#B47B18" }}>Passt, weil:</span>{" "}
               {job.matchReasons.join(" · ")}
             </p>
           ) : null}
 
           {/* Erwartungssteuerung */}
           {job.respondsInDays && (
-            <p className="inline-flex items-center gap-1.5 text-[12px]" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+            <p className="inline-flex items-center gap-1.5 text-[12px]" style={{ color: "rgba(26,26,46,0.45)" }}>
               <Clock3 className="w-3.5 h-3.5" />
               Betrieb antwortet meist in {job.respondsInDays} Tagen
             </p>
@@ -468,9 +468,9 @@ export default function JobCard({
                   onClick={() => onToggleCompare(job)}
                   className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-colors"
                   style={{
-                    border: `1.5px solid ${compareSelected ? "#F9AD07" : "#D9D3C6"}`,
-                    background: compareSelected ? "rgba(249, 173, 7,0.14)" : "white",
-                    color: compareSelected ? "#6E4A03" : "rgba(12, 51, 48,0.6)",
+                    border: `1.5px solid ${compareSelected ? "#E8A838" : "#E0DDD6"}`,
+                    background: compareSelected ? "rgba(232,168,56,0.14)" : "white",
+                    color: compareSelected ? "#8A5B0F" : "rgba(26,26,46,0.6)",
                   }}
                 >
                   <GitCompareArrows className="w-4 h-4" />
@@ -490,7 +490,7 @@ export default function JobCard({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6"
-            style={{ background: "rgba(12, 51, 48,0.55)", backdropFilter: "blur(3px)" }}
+            style={{ background: "rgba(26,26,46,0.55)", backdropFilter: "blur(3px)" }}
             onClick={() => setShowRoute(false)}
           >
             <motion.div
@@ -502,7 +502,7 @@ export default function JobCard({
               aria-modal="true"
               aria-label="Fahrtweg zur Arbeitsstelle"
               className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white"
-              style={{ boxShadow: "0 40px 80px -30px rgba(12, 51, 48,0.6)" }}
+              style={{ boxShadow: "0 40px 80px -30px rgba(26,26,46,0.6)" }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4">
@@ -513,7 +513,7 @@ export default function JobCard({
                   >
                     Dein Arbeitsweg
                   </h3>
-                  <p className="text-[13px] mt-0.5 truncate" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+                  <p className="text-[13px] mt-0.5 truncate" style={{ color: "rgba(26,26,46,0.5)" }}>
                     {job.title}
                   </p>
                 </div>
@@ -522,7 +522,7 @@ export default function JobCard({
                   onClick={() => setShowRoute(false)}
                   aria-label="Schliessen"
                   className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
-                  style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.5)" }}
+                  style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.5)" }}
                 >
                   <X className="w-4 h-4" />
                 </button>

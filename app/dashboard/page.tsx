@@ -101,10 +101,10 @@ export default function DashboardOverviewPage() {
       {JOBS_ARE_MOCKED && (
         <div
           className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-6"
-          style={{ background: "rgba(249, 173, 7,0.09)", border: "1px solid rgba(249, 173, 7,0.28)" }}
+          style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
         >
-          <FlaskConical className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
-          <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+          <FlaskConical className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+          <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
             <strong>Demodaten:</strong> Für Stellen, Angebote und Bewerbungen gibt es noch
             keine Backend-Endpunkte. Die Oberfläche arbeitet gegen einen Mock und
             verhält sich bereits wie später im Betrieb.
@@ -121,7 +121,7 @@ export default function DashboardOverviewPage() {
       >
         Willkommen, {user?.firstName || "zurück"}.
       </motion.h1>
-      <p className="text-[15px] mb-8" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+      <p className="text-[15px] mb-8" style={{ color: "rgba(26,26,46,0.55)" }}>
         {openOffers.length > 0
           ? `${openOffers.length} ${openOffers.length === 1 ? "Betrieb möchte" : "Betriebe möchten"} dich einstellen.`
           : "Dein Profil ist aktiv. Wir melden uns, sobald ein Betrieb zu dir passt."}
@@ -136,31 +136,31 @@ export default function DashboardOverviewPage() {
               key={q.href}
               href={q.href}
               className="group relative flex items-center gap-3.5 rounded-2xl bg-white p-4 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5"
-              style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 6px 20px -16px rgba(12, 51, 48,0.5)" }}
+              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 6px 20px -16px rgba(26,26,46,0.5)" }}
             >
               <span
                 className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "rgba(249, 173, 7,0.13)" }}
+                style={{ background: "rgba(232,168,56,0.13)" }}
               >
-                <Icon className="w-[18px] h-[18px]" style={{ color: "#F9AD07" }} />
+                <Icon className="w-[18px] h-[18px]" style={{ color: "#E8A838" }} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-bold text-primary">{q.label}</span>
-                <span className="block text-[12.5px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+                <span className="block text-[12.5px]" style={{ color: "rgba(26,26,46,0.5)" }}>
                   {q.desc}
                 </span>
               </span>
               {q.badge > 0 && (
                 <span
                   className="flex items-center justify-center rounded-full text-[11px] font-bold tabular-nums flex-shrink-0"
-                  style={{ minWidth: 22, height: 22, padding: "0 6px", background: "#F9AD07", color: "#0C3330" }}
+                  style={{ minWidth: 22, height: 22, padding: "0 6px", background: "#E8A838", color: "#1A1A2E" }}
                 >
                   {q.badge}
                 </span>
               )}
               <ArrowRight
                 className="w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-                style={{ color: "rgba(12, 51, 48,0.25)" }}
+                style={{ color: "rgba(26,26,46,0.25)" }}
               />
             </Link>
           );
@@ -171,9 +171,9 @@ export default function DashboardOverviewPage() {
         {/* Aktivität */}
         <section
           className="rounded-3xl bg-white overflow-hidden"
-          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
-          <div className="px-6 py-4" style={{ borderBottom: "1px solid #EDE8DE" }}>
+          <div className="px-6 py-4" style={{ borderBottom: "1px solid #F1EEE8" }}>
             <h2 className="text-primary font-bold text-[17px]" style={{ fontFamily: "var(--font-display)" }}>
               Letzte Aktivität
             </h2>
@@ -181,31 +181,31 @@ export default function DashboardOverviewPage() {
 
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#F9AD07" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
             </div>
           ) : activity.length === 0 ? (
             <div className="px-6 py-14 text-center">
-              <Sparkles className="w-6 h-6 mx-auto mb-3" style={{ color: "#F9AD07" }} />
+              <Sparkles className="w-6 h-6 mx-auto mb-3" style={{ color: "#E8A838" }} />
               <p className="text-[14px] font-semibold text-primary mb-1">Noch nichts passiert</p>
-              <p className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+              <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
                 Sobald ein Betrieb dein Profil sieht, erscheint es hier.
               </p>
             </div>
           ) : (
             <ul>
               {activity.map((a, i) => (
-                <li key={a.id} style={{ borderTop: i > 0 ? "1px solid #F2EFE7" : "none" }}>
+                <li key={a.id} style={{ borderTop: i > 0 ? "1px solid #F6F4F0" : "none" }}>
                   <Link
                     href={a.href}
                     className="flex items-start gap-3 px-6 py-4 transition-colors"
-                    style={{ background: a.unread ? "rgba(249, 173, 7,0.06)" : "transparent" }}
+                    style={{ background: a.unread ? "rgba(232,168,56,0.06)" : "transparent" }}
                   >
                     <span
                       className="rounded-full flex-shrink-0 mt-1.5"
                       style={{
                         width: 7,
                         height: 7,
-                        background: a.unread ? "#F9AD07" : "rgba(12, 51, 48,0.15)",
+                        background: a.unread ? "#E8A838" : "rgba(26,26,46,0.15)",
                       }}
                     />
                     <span className="min-w-0 flex-1">
@@ -214,7 +214,7 @@ export default function DashboardOverviewPage() {
                       </span>
                       <span
                         className="inline-flex items-center gap-1.5 text-[11.5px] mt-0.5"
-                        style={{ color: "rgba(12, 51, 48,0.42)" }}
+                        style={{ color: "rgba(26,26,46,0.42)" }}
                       >
                         <Clock3 className="w-3 h-3" />
                         {a.meta}

@@ -29,7 +29,7 @@ function Regler({
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{label}</p>
 
       <div className="flex items-baseline justify-between mt-2 mb-4">
-        <span className="text-[#A87304] font-black leading-none" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 6vw, 2.6rem)" }}>
+        <span className="text-accent font-black leading-none" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 6vw, 2.6rem)" }}>
           {deals}
         </span>
         <span className="text-muted text-xs text-right">Deals<br />{einheit}</span>
@@ -41,7 +41,7 @@ function Regler({
         max={max}
         value={deals}
         onChange={(e) => setDeals(parseInt(e.target.value, 10))}
-        className="w-full accent-[#F9AD07] cursor-pointer"
+        className="w-full accent-[#E8A838] cursor-pointer"
         aria-label={`${label} — Anzahl Deals`}
       />
 
@@ -65,7 +65,7 @@ export default function AffiliateRechner() {
   const euroWoche = euroMonat / 4.345; // Wochen pro Monat
 
   return (
-    <div className="bg-white rounded-3xl border border-border shadow-[0_28px_64px_-32px_rgba(12, 51, 48,0.4)] overflow-hidden">
+    <div className="bg-white rounded-3xl border border-border shadow-[0_28px_64px_-32px_rgba(26,26,46,0.4)] overflow-hidden">
       <div className="h-1.5 w-full bg-accent" />
       <div className="p-6 sm:p-8 lg:p-10">
         <p className="text-center text-muted text-sm mb-8">

@@ -66,17 +66,17 @@ export default function AvatarUpload({
       <div
         onClick={() => inputRef.current?.click()}
         className="relative flex-shrink-0 cursor-pointer overflow-hidden group"
-        style={{ width: size, height: size, borderRadius: "50%", border: "2px solid #DFE3E0", background: "#F5F2EC" }}
+        style={{ width: size, height: size, borderRadius: "50%", border: "2px solid #E5E7EB", background: "#F8F7F4" }}
       >
         {value ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={value} alt="Profilbild" className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <User className="w-8 h-8" style={{ color: "#C8CFCB" }} strokeWidth={1.5} />
+            <User className="w-8 h-8" style={{ color: "#D1D5DB" }} strokeWidth={1.5} />
           </div>
         )}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(12, 51, 48,0.45)" }}>
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(26,26,46,0.45)" }}>
           {busy ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : <Camera className="w-5 h-5 text-white" />}
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function AvatarUpload({
             onClick={() => inputRef.current?.click()}
             disabled={busy}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
-            style={{ border: "1.5px solid #DFE3E0", color: "rgba(12, 51, 48,0.7)" }}
+            style={{ border: "1.5px solid #E5E7EB", color: "rgba(26,26,46,0.7)" }}
           >
             <Camera className="w-3.5 h-3.5" />
             {value ? "Ändern" : "Foto hochladen"}
@@ -98,14 +98,14 @@ export default function AvatarUpload({
               type="button"
               onClick={() => onChange(null)}
               className="inline-flex items-center gap-1.5 px-3 py-2 text-sm transition-colors"
-              style={{ color: "rgba(95, 111, 106,0.8)" }}
+              style={{ color: "rgba(107,114,128,0.8)" }}
             >
               <Trash2 className="w-3.5 h-3.5" />
               Entfernen
             </button>
           )}
         </div>
-        <p className="text-[11px] mt-1.5" style={{ color: "rgba(95, 111, 106,0.7)" }}>
+        <p className="text-[11px] mt-1.5" style={{ color: "rgba(107,114,128,0.7)" }}>
           Optional · als Referenzbild · JPG/PNG
         </p>
         {err && <p className="text-[11px] mt-1" style={{ color: "#EF4444" }}>{err}</p>}

@@ -32,9 +32,9 @@ function Chip({ icon: Icon, children }: { icon: typeof MapPin; children: React.R
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium"
-      style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.72)" }}
+      style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.72)" }}
     >
-      <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#F9AD07" }} />
+      <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
       {children}
     </span>
   );
@@ -51,11 +51,11 @@ function Fact({
 }) {
   return (
     <div className="rounded-2xl p-4" style={{ background: "var(--color-surface)" }}>
-      <Icon className="w-4 h-4 mb-2" style={{ color: "#F9AD07" }} />
+      <Icon className="w-4 h-4 mb-2" style={{ color: "#E8A838" }} />
       <p className="text-[16px] font-bold text-primary leading-tight" style={{ fontFamily: "var(--font-display)" }}>
         {value}
       </p>
-      <p className="text-[11px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+      <p className="text-[11px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
         {label}
       </p>
     </div>
@@ -85,7 +85,7 @@ export default function JobDetailDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[115] flex items-center justify-center p-4 sm:p-6"
-          style={{ background: "rgba(12, 51, 48,0.55)", backdropFilter: "blur(3px)" }}
+          style={{ background: "rgba(26,26,46,0.55)", backdropFilter: "blur(3px)" }}
           onClick={onClose}
         >
           <motion.div
@@ -97,7 +97,7 @@ export default function JobDetailDialog({
             aria-modal="true"
             aria-label={`Details zu ${job.title}`}
             className="w-full max-w-3xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white"
-            style={{ boxShadow: "0 40px 80px -30px rgba(12, 51, 48,0.6)" }}
+            style={{ boxShadow: "0 40px 80px -30px rgba(26,26,46,0.6)" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* ── Kopf mit Bild ── */}
@@ -111,14 +111,14 @@ export default function JobDetailDialog({
               />
               <div
                 className="absolute inset-0"
-                style={{ background: "linear-gradient(180deg, rgba(12, 51, 48,0.25) 0%, rgba(12, 51, 48,0.85) 100%)" }}
+                style={{ background: "linear-gradient(180deg, rgba(26,26,46,0.25) 0%, rgba(26,26,46,0.85) 100%)" }}
               />
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Schliessen"
                 className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(255,255,255,0.92)", color: "#0C3330" }}
+                style={{ background: "rgba(255,255,255,0.92)", color: "#1A1A2E" }}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -134,7 +134,7 @@ export default function JobDetailDialog({
                 >
                   <Heart
                     className="w-4 h-4"
-                    style={{ color: job.favorite ? "#DC2626" : "#0C3330" }}
+                    style={{ color: job.favorite ? "#DC2626" : "#1A1A2E" }}
                     fill={job.favorite ? "#DC2626" : "none"}
                   />
                 </button>
@@ -159,11 +159,11 @@ export default function JobDetailDialog({
                   </h2>
                   <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13.5px] mt-1" style={{ color: "rgba(255,255,255,0.7)" }}>
                     <span className="inline-flex items-center gap-1.5">
-                      <Building2 className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                      <Building2 className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                       {job.employer}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                      <MapPin className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                       {job.companyStrasse ? `${job.companyStrasse}, ` : ""}
                       {job.companyPlz} {job.companyOrt || job.city}
                     </span>
@@ -186,9 +186,9 @@ export default function JobDetailDialog({
                   label={job.startLabel ? `ab „${job.startLabel}“` : "Fahrzeit"}
                 />
                 <Fact icon={Palmtree} value={c.urlaubstage ? `${c.urlaubstage} Tage` : "—"} label="Urlaub" />
-                <div className="rounded-2xl p-4" style={{ background: "rgba(249, 173, 7,0.1)" }}>
-                  <Sparkles className="w-4 h-4 mb-2" style={{ color: "#8A5F04" }} />
-                  <p className="text-[16px] font-bold leading-tight tabular-nums" style={{ fontFamily: "var(--font-display)", color: "#6E4A03" }}>
+                <div className="rounded-2xl p-4" style={{ background: "rgba(232,168,56,0.1)" }}>
+                  <Sparkles className="w-4 h-4 mb-2" style={{ color: "#B47B18" }} />
+                  <p className="text-[16px] font-bold leading-tight tabular-nums" style={{ fontFamily: "var(--font-display)", color: "#8A5B0F" }}>
                     {typeof job.matchScore === "number" ? (
                       <>
                         {job.matchScore} %
@@ -198,7 +198,7 @@ export default function JobDetailDialog({
                       "—"
                     )}
                   </p>
-                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
                     Match-Score
                   </p>
                 </div>
@@ -224,18 +224,18 @@ export default function JobDetailDialog({
 
               {/* ── Warum es passt ── */}
               {job.matchReasons?.length ? (
-                <p className="text-[13px] rounded-2xl px-4 py-3" style={{ background: "rgba(249, 173, 7,0.08)", color: "rgba(12, 51, 48,0.7)" }}>
-                  <span className="font-semibold" style={{ color: "#8A5F04" }}>Passt, weil:</span>{" "}
+                <p className="text-[13px] rounded-2xl px-4 py-3" style={{ background: "rgba(232,168,56,0.08)", color: "rgba(26,26,46,0.7)" }}>
+                  <span className="font-semibold" style={{ color: "#B47B18" }}>Passt, weil:</span>{" "}
                   {job.matchReasons.join(" · ")}
                 </p>
               ) : null}
 
               {/* ── Stellenbeschreibung ── */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
                   Über die Stelle
                 </p>
-                <p className="text-[14px] leading-relaxed whitespace-pre-line" style={{ color: "rgba(12, 51, 48,0.72)" }}>
+                <p className="text-[14px] leading-relaxed whitespace-pre-line" style={{ color: "rgba(26,26,46,0.72)" }}>
                   {jobDescription(job)}
                 </p>
               </div>
@@ -247,31 +247,31 @@ export default function JobDetailDialog({
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-1" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-1" style={{ color: "rgba(26,26,46,0.4)" }}>
                       Über das Unternehmen
                     </p>
                     <p className="text-[17px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
                       {job.employer}
                     </p>
                     {job.companySlogan && (
-                      <p className="inline-flex items-center gap-1.5 text-[13px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.55)" }}>
-                        <Quote className="w-3 h-3" style={{ color: "#F9AD07" }} />
+                      <p className="inline-flex items-center gap-1.5 text-[13px] mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                        <Quote className="w-3 h-3" style={{ color: "#E8A838" }} />
                         {job.companySlogan}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-x-6 gap-y-2 mb-3 text-[13px]" style={{ color: "rgba(12, 51, 48,0.65)" }}>
+                <div className="flex flex-wrap gap-x-6 gap-y-2 mb-3 text-[13px]" style={{ color: "rgba(26,26,46,0.65)" }}>
                   {job.companyGruendungsjahr && (
                     <span className="inline-flex items-center gap-1.5">
-                      <CalendarDays className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                      <CalendarDays className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                       gegründet {job.companyGruendungsjahr}
                     </span>
                   )}
                   {job.companyMitarbeiter && (
                     <span className="inline-flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                      <Users className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                       {job.companyMitarbeiter} Mitarbeiter
                     </span>
                   )}
@@ -281,7 +281,7 @@ export default function JobDetailDialog({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"
-                      style={{ color: "#8A5F04" }}
+                      style={{ color: "#B47B18" }}
                     >
                       <Globe className="w-3.5 h-3.5" />
                       Website
@@ -290,7 +290,7 @@ export default function JobDetailDialog({
                 </div>
 
                 {job.companyDescription && (
-                  <p className="text-[13.5px] leading-relaxed whitespace-pre-line" style={{ color: "rgba(12, 51, 48,0.65)" }}>
+                  <p className="text-[13.5px] leading-relaxed whitespace-pre-line" style={{ color: "rgba(26,26,46,0.65)" }}>
                     {job.companyDescription}
                   </p>
                 )}
@@ -306,8 +306,8 @@ export default function JobDetailDialog({
                       onClick={() => onToggleFavorite(job)}
                       className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-semibold transition-colors"
                       style={{
-                        border: `1.5px solid ${job.favorite ? "#DC2626" : "#D9D3C6"}`,
-                        color: job.favorite ? "#DC2626" : "rgba(12, 51, 48,0.6)",
+                        border: `1.5px solid ${job.favorite ? "#DC2626" : "#E0DDD6"}`,
+                        color: job.favorite ? "#DC2626" : "rgba(26,26,46,0.6)",
                         background: "white",
                       }}
                     >

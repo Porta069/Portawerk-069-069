@@ -143,13 +143,13 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
             height: 468,
             borderRadius: 20,
             background:
-              "radial-gradient(120% 80% at 100% 0%, #26263f 0%, #0C3330 55%), linear-gradient(160deg, #0C3330 0%, #14141f 100%)",
+              "radial-gradient(120% 80% at 100% 0%, #26263f 0%, #1A1A2E 55%), linear-gradient(160deg, #1A1A2E 0%, #14141f 100%)",
           }}
         >
           {/* Gitter-Textur */}
           <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
           {/* Gold-Glow */}
-          <div style={{ position: "absolute", top: -60, right: -40, width: 220, height: 220, borderRadius: "50%", background: "radial-gradient(circle, rgba(249, 173, 7,0.28) 0%, transparent 65%)" }} />
+          <div style={{ position: "absolute", top: -60, right: -40, width: 220, height: 220, borderRadius: "50%", background: "radial-gradient(circle, rgba(232,168,56,0.28) 0%, transparent 65%)" }} />
 
           {/* Handwerker (freigestellt) — plain <img>, damit html-to-image es exportiert */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -163,7 +163,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
           <div style={{ position: "absolute", inset: 0, padding: 20, display: "flex", flexDirection: "column" }}>
             {/* Logo */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ width: 26, height: 26, background: "#F9AD07", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6 }}>
+              <div style={{ width: 26, height: 26, background: "#E8A838", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/portawerk-logo-hell.png"
@@ -179,7 +179,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
             {/* 200 € */}
             <div style={{ marginTop: 18, maxWidth: "66%" }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                <span style={{ color: "#F9AD07", fontWeight: 900, fontSize: 58, lineHeight: 1, fontFamily: "var(--font-display), Georgia, serif" }}>200 €</span>
+                <span style={{ color: "#E8A838", fontWeight: 900, fontSize: 58, lineHeight: 1, fontFamily: "var(--font-display), Georgia, serif" }}>200 €</span>
               </div>
               <p style={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1.25, marginTop: 6, fontFamily: "var(--font-display), Georgia, serif" }}>
                 Belohnung, wenn du über uns deinen neuen Job findest.
@@ -190,8 +190,8 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
             <div style={{ marginTop: 14, maxWidth: "64%", display: "flex", flexDirection: "column", gap: 7 }}>
               {PUNKTE.map((p) => (
                 <div key={p} style={{ display: "flex", alignItems: "flex-start", gap: 7 }}>
-                  <span style={{ width: 15, height: 15, background: "rgba(249, 173, 7,0.2)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
-                    <Check style={{ width: 10, height: 10, color: "#F9AD07" }} strokeWidth={3.5} />
+                  <span style={{ width: 15, height: 15, background: "rgba(232,168,56,0.2)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
+                    <Check style={{ width: 10, height: 10, color: "#E8A838" }} strokeWidth={3.5} />
                   </span>
                   <span style={{ color: "rgba(255,255,255,0.88)", fontSize: 11.5, lineHeight: 1.3 }}>{p}</span>
                 </div>
@@ -201,7 +201,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
             {/* Unten: Link + WhatsApp */}
             <div style={{ marginTop: "auto", maxWidth: "72%" }}>
               <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 9.5, marginBottom: 5, letterSpacing: "0.04em", textTransform: "uppercase" }}>Jetzt kostenlos anmelden</p>
-              <div style={{ display: "inline-flex", alignItems: "center", background: "#F9AD07", color: "#0C3330", fontWeight: 800, fontSize: 12.5, padding: "8px 12px", borderRadius: 999, maxWidth: "100%" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", background: "#E8A838", color: "#1A1A2E", fontWeight: 800, fontSize: 12.5, padding: "8px 12px", borderRadius: 999, maxWidth: "100%" }}>
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{link}</span>
               </div>
               {WHATSAPP && (
@@ -218,7 +218,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
           type="button"
           onClick={download}
           disabled={!!busy}
-          className="inline-flex items-center gap-2 rounded-full bg-accent text-primary font-bold px-7 py-3.5 text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 shadow-[0_10px_28px_-12px_rgba(249, 173, 7,0.6)]"
+          className="inline-flex items-center gap-2 rounded-full bg-accent text-primary font-bold px-7 py-3.5 text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 shadow-[0_10px_28px_-12px_rgba(232,168,56,0.6)]"
         >
           {busy === "dl" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           Affiliate-Bild herunterladen

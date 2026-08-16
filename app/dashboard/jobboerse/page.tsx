@@ -58,7 +58,7 @@ function ApplyButton({ jobId }: { jobId: string }) {
       onClick={apply}
       disabled={state === "busy"}
       className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
-      style={{ background: "#0C3330", color: "white", fontFamily: "var(--font-display)" }}
+      style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}
     >
       {state === "busy" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
       Diskret bewerben
@@ -199,7 +199,7 @@ export default function JobboersePage() {
       >
         Jobbörse
       </h1>
-      <p className="text-[15px] mb-6" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+      <p className="text-[15px] mb-6" style={{ color: "rgba(26,26,46,0.55)" }}>
         Alle offenen Stellen — sortiert nach dem, was für dich zählt.
       </p>
 
@@ -208,21 +208,21 @@ export default function JobboersePage() {
         <div className="relative flex-1">
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-            style={{ color: "rgba(12, 51, 48,0.3)" }}
+            style={{ color: "rgba(26,26,46,0.3)" }}
           />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Beruf, Betrieb oder Ort suchen …"
             className="w-full rounded-full bg-white text-primary text-[15px] pl-12 pr-11 py-3.5 outline-none transition-all placeholder:text-primary/25"
-            style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 2px 10px -6px rgba(12, 51, 48,0.14)" }}
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -6px rgba(26,26,46,0.14)" }}
           />
           {query && (
             <button
               onClick={() => setQuery("")}
               aria-label="Suche leeren"
               className="absolute right-4 top-1/2 -translate-y-1/2"
-              style={{ color: "rgba(12, 51, 48,0.35)" }}
+              style={{ color: "rgba(26,26,46,0.35)" }}
             >
               <X className="w-4 h-4" />
             </button>
@@ -234,9 +234,9 @@ export default function JobboersePage() {
           onClick={() => setShowFilters((s) => !s)}
           className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[14px] font-semibold transition-colors"
           style={{
-            background: showFilters ? "#0C3330" : "white",
-            color: showFilters ? "white" : "rgba(12, 51, 48,0.65)",
-            border: `1.5px solid ${showFilters ? "#0C3330" : "#E4DFD3"}`,
+            background: showFilters ? "#1A1A2E" : "white",
+            color: showFilters ? "white" : "rgba(26,26,46,0.65)",
+            border: `1.5px solid ${showFilters ? "#1A1A2E" : "#E9E7E1"}`,
           }}
         >
           <SlidersHorizontal className="w-4 h-4" />
@@ -246,14 +246,14 @@ export default function JobboersePage() {
         <div className="relative">
           <ArrowUpDown
             className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-            style={{ color: "rgba(12, 51, 48,0.35)" }}
+            style={{ color: "rgba(26,26,46,0.35)" }}
           />
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as JobSort)}
             aria-label="Sortierung"
             className="appearance-none rounded-full bg-white text-[14px] font-semibold pl-11 pr-6 py-3.5 outline-none cursor-pointer"
-            style={{ border: "1.5px solid #E4DFD3", color: "rgba(12, 51, 48,0.65)" }}
+            style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>
@@ -268,9 +268,9 @@ export default function JobboersePage() {
       {locLoaded && locations.length === 0 && (
         <div
           className="flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3.5 mb-5"
-          style={{ background: "rgba(249, 173, 7,0.09)", border: "1px solid rgba(249, 173, 7,0.28)" }}
+          style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
         >
-          <p className="text-[13px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+          <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
             <strong>Noch keine Arbeitsorte hinterlegt.</strong> Ohne sie können
             wir keine Fahrzeiten berechnen und keine Stellen nach Nähe sortieren.
           </p>
@@ -278,7 +278,7 @@ export default function JobboersePage() {
             type="button"
             onClick={() => setShowFilters(true)}
             className="rounded-full px-4 py-2 text-[13px] font-bold"
-            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
           >
             Arbeitsorte festlegen
           </button>
@@ -294,7 +294,7 @@ export default function JobboersePage() {
               type="button"
               onClick={c.clear}
               className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-medium transition-colors"
-              style={{ background: "rgba(249, 173, 7,0.14)", color: "#0C3330", border: "1px solid rgba(249, 173, 7,0.4)" }}
+              style={{ background: "rgba(232,168,56,0.14)", color: "#1A1A2E", border: "1px solid rgba(232,168,56,0.4)" }}
             >
               {c.label}
               <X className="w-3.5 h-3.5" />
@@ -304,7 +304,7 @@ export default function JobboersePage() {
             type="button"
             onClick={resetAll}
             className="text-[12.5px] font-semibold px-2"
-            style={{ color: "rgba(12, 51, 48,0.45)" }}
+            style={{ color: "rgba(26,26,46,0.45)" }}
           >
             Alle zurücksetzen
           </button>
@@ -315,17 +315,17 @@ export default function JobboersePage() {
       {showFilters && (
         <div
           className="rounded-3xl bg-white p-5 sm:p-6 mb-6"
-          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
           <div className="flex items-baseline justify-between gap-3 mb-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
               Deine Arbeitsorte
             </p>
-            <span className="text-[11px]" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+            <span className="text-[11px]" style={{ color: "rgba(26,26,46,0.4)" }}>
               wird automatisch gespeichert
             </span>
           </div>
-          <p className="text-[13px] mb-3" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+          <p className="text-[13px] mb-3" style={{ color: "rgba(26,26,46,0.55)" }}>
             Aus deiner Registrierung übernommen. Änderungen hier gelten sofort für
             deine Stellenvorschläge — tipp auf die Karte oder such einen Ort.
           </p>
@@ -334,12 +334,12 @@ export default function JobboersePage() {
               <WorkLocationsMap value={locations} onChange={updateLocations} />
             ) : (
               <div className="flex items-center justify-center py-16">
-                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#F9AD07" }} />
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
               </div>
             )}
           </div>
 
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(26,26,46,0.4)" }}>
             Maximale Fahrzeit
           </p>
           <div className="flex flex-wrap gap-2 mb-6">
@@ -353,7 +353,7 @@ export default function JobboersePage() {
             ))}
           </div>
 
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(26,26,46,0.4)" }}>
             Rahmenbedingungen
           </p>
           <div className="flex flex-wrap gap-2 mb-6">
@@ -369,7 +369,7 @@ export default function JobboersePage() {
             />
           </div>
 
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: "rgba(26,26,46,0.4)" }}>
             Ausbildungsbereich
           </p>
           <div className="flex flex-wrap gap-2">
@@ -390,17 +390,17 @@ export default function JobboersePage() {
       {!loading && ausgeblendet && ausgeblendet.gesamt > 0 && (
         <div
           className="rounded-2xl px-4 py-3.5 mb-4"
-          style={{ background: "var(--color-surface)", border: "1px solid #E4DFD3" }}
+          style={{ background: "var(--color-surface)", border: "1px solid #E9E7E1" }}
         >
           <p className="text-[13px] text-primary">
-            <EyeOff className="w-3.5 h-3.5 inline-block mr-1.5 -mt-0.5" style={{ color: "rgba(12, 51, 48,0.4)" }} />
+            <EyeOff className="w-3.5 h-3.5 inline-block mr-1.5 -mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }} />
             <strong className="font-semibold">
               {ausgeblendet.gesamt} {ausgeblendet.gesamt === 1 ? "Stelle" : "Stellen"}
             </strong>{" "}
             {ausgeblendet.gesamt === 1 ? "wird" : "werden"} nicht angezeigt, weil dein
             Profil eine Voraussetzung nicht erfüllt:
           </p>
-          <p className="text-[12.5px] mt-1.5" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+          <p className="text-[12.5px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
             {ausgeblendet.gruende
               .map((g) => `${g.anzahl}× ${g.label}`)
               .join(" · ")}
@@ -408,7 +408,7 @@ export default function JobboersePage() {
           <Link
             href="/einstellungen"
             className="inline-block text-[12.5px] font-semibold mt-2 underline-offset-2 hover:underline"
-            style={{ color: "#8A5F04" }}
+            style={{ color: "#B47B18" }}
           >
             Angaben im Profil anpassen
           </Link>
@@ -418,29 +418,29 @@ export default function JobboersePage() {
       {/* Ergebnisse */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
         </div>
       ) : jobs.length === 0 ? (
         <div
           className="rounded-3xl bg-white px-6 py-16 text-center"
-          style={{ border: "1.5px solid #E4DFD3" }}
+          style={{ border: "1.5px solid #E9E7E1" }}
         >
           <p className="text-[15px] font-semibold text-primary mb-1.5">Keine Stelle passt zu diesen Filtern</p>
-          <p className="text-[13.5px] mb-5" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+          <p className="text-[13.5px] mb-5" style={{ color: "rgba(26,26,46,0.5)" }}>
             Erweiter die Fahrzeit oder nimm einen Ausbildungsbereich aus dem Filter.
           </p>
           <button
             type="button"
             onClick={resetAll}
             className="rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
           >
             Filter zurücksetzen
           </button>
         </div>
       ) : (
         <>
-          <p className="text-[13px] mb-4" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+          <p className="text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.45)" }}>
             {jobs.length} {jobs.length === 1 ? "Stelle" : "Stellen"}
           </p>
           <div className="space-y-4">
@@ -492,7 +492,7 @@ export default function JobboersePage() {
             exit={{ opacity: 0, y: 24 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[90] flex flex-wrap items-center justify-center gap-3 rounded-full pl-5 pr-2 py-2 max-w-[calc(100vw-24px)]"
-            style={{ background: "#0C3330", boxShadow: "0 20px 50px -20px rgba(12, 51, 48,0.8)" }}
+            style={{ background: "#1A1A2E", boxShadow: "0 20px 50px -20px rgba(26,26,46,0.8)" }}
           >
             <span className="text-white text-[13.5px] whitespace-nowrap">
               <strong className="tabular-nums">{compareIds.length}</strong>{" "}
@@ -503,7 +503,7 @@ export default function JobboersePage() {
               onClick={() => setCompareOpen(true)}
               disabled={compareIds.length < 2}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-bold disabled:opacity-50"
-              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
             >
               <GitCompareArrows className="w-4 h-4" />
               {compareIds.length < 2 ? "Noch 1 wählen" : "Vergleichen"}

@@ -15,7 +15,7 @@ export function ProgressBar({ percent }: { percent: number }) {
   return (
     <div style={{ height: "3px", background: "rgba(255,255,255,0.08)" }}>
       <motion.div
-        style={{ height: "3px", background: "#F9AD07" }}
+        style={{ height: "3px", background: "#E8A838" }}
         animate={{ width: `${Math.max(0, Math.min(100, percent))}%` }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       />
@@ -23,8 +23,8 @@ export function ProgressBar({ percent }: { percent: number }) {
   );
 }
 
-const PAST_BG = "rgba(249, 173, 7,0.18)";
-const PAST_BG_HOVER = "rgba(249, 173, 7,0.34)";
+const PAST_BG = "rgba(232,168,56,0.18)";
+const PAST_BG_HOVER = "rgba(232,168,56,0.34)";
 
 /**
  * Horizontale Schritt-Anzeige (auf dunklem Header).
@@ -65,8 +65,8 @@ export function StepIndicators({
         );
 
         const baseStyle = {
-          background: isActive ? "#F9AD07" : isPast ? PAST_BG : "rgba(255,255,255,0.06)",
-          color: isActive ? "#0C3330" : isPast ? "#F9AD07" : "rgba(255,255,255,0.28)",
+          background: isActive ? "#E8A838" : isPast ? PAST_BG : "rgba(255,255,255,0.06)",
+          color: isActive ? "#1A1A2E" : isPast ? "#E8A838" : "rgba(255,255,255,0.28)",
         };
 
         return (
@@ -103,7 +103,7 @@ export function StepIndicators({
                   width: "24px",
                   height: "2px",
                   flexShrink: 0,
-                  background: isPast ? "#F9AD07" : "rgba(255,255,255,0.1)",
+                  background: isPast ? "#E8A838" : "rgba(255,255,255,0.1)",
                 }}
               />
             )}

@@ -30,7 +30,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
-      style={{ color: "rgba(12, 51, 48,0.45)" }}
+      style={{ color: "rgba(26,26,46,0.45)" }}
     >
       {children}
     </p>
@@ -48,7 +48,7 @@ function Field({
 }) {
   return (
     <label className={`block ${grow ? "flex-1 min-w-[180px]" : ""}`}>
-      <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+      <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
         {label}
       </span>
       {children}
@@ -57,7 +57,7 @@ function Field({
 }
 
 const inputStyle: React.CSSProperties = {
-  border: "1.5px solid #E4DFD3",
+  border: "1.5px solid #E9E7E1",
   background: "white",
 };
 
@@ -77,7 +77,7 @@ function Segmented<T extends string | number>({
   return (
     <div
       className="inline-flex rounded-full p-1 gap-1"
-      style={{ background: "rgba(12, 51, 48,0.05)" }}
+      style={{ background: "rgba(26,26,46,0.05)" }}
     >
       {options.map((o) => (
         <button
@@ -86,8 +86,8 @@ function Segmented<T extends string | number>({
           onClick={() => onChange(o.value)}
           className="rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors"
           style={{
-            background: value === o.value ? "#0C3330" : "transparent",
-            color: value === o.value ? "white" : "rgba(12, 51, 48,0.55)",
+            background: value === o.value ? "#1A1A2E" : "transparent",
+            color: value === o.value ? "white" : "rgba(26,26,46,0.55)",
           }}
         >
           {o.label}
@@ -214,7 +214,7 @@ function JobEditor({
         type="button"
         onClick={onCancel}
         className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold mb-5"
-        style={{ color: "rgba(12, 51, 48,0.5)" }}
+        style={{ color: "rgba(26,26,46,0.5)" }}
       >
         <ChevronLeft className="w-4 h-4" />
         Zurück zur Übersicht
@@ -226,7 +226,7 @@ function JobEditor({
       >
         {job ? "Inserat bearbeiten" : "Neues Inserat"}
       </h1>
-      <p className="text-[14.5px] mb-7" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+      <p className="text-[14.5px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
         Eckdaten der Stelle plus Ihre Wunsch-Antworten mit Gewichtung — daraus
         entsteht der Match-Score jedes Kandidaten.
       </p>
@@ -235,7 +235,7 @@ function JobEditor({
         {/* ── Eckdaten ── */}
         <section
           className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
           <SectionTitle>Eckdaten</SectionTitle>
           <div className="space-y-4">
@@ -315,12 +315,12 @@ function JobEditor({
         {/* ── Rahmenbedingungen ── */}
         <section
           className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
           <SectionTitle>Rahmenbedingungen</SectionTitle>
           <div className="space-y-5">
             <div>
-              <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+              <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
                 Montageaufkommen
               </span>
               <Segmented
@@ -331,7 +331,7 @@ function JobEditor({
             </div>
             <div className="flex flex-wrap gap-x-10 gap-y-5">
               <div>
-                <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+                <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
                   Fahrzeit ist Arbeitszeit
                 </span>
                 <Segmented
@@ -344,7 +344,7 @@ function JobEditor({
                 />
               </div>
               <div>
-                <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+                <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
                   Arbeitstag startet
                 </span>
                 <Segmented
@@ -388,19 +388,19 @@ function JobEditor({
         {/* ── Matching-Kriterien ── */}
         <section
           className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
           <div className="flex items-start justify-between gap-4 mb-1">
             <SectionTitle>Matching-Kriterien</SectionTitle>
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
-              style={{ background: "rgba(249, 173, 7,0.14)", color: "#8A5F04" }}
+              style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
             >
               <Scale className="w-3 h-3" />
               {ausschluesse} {ausschluesse === 1 ? "Ausschluss" : "Ausschlüsse"}
             </span>
           </div>
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(26,26,46,0.55)" }}>
             Dieselben Angaben, die Handwerker bei der Registrierung machen. Rot
             markierte Felder blenden das Inserat bei allen aus, die sie nicht
             erfüllen — der Rest zählt Punkte und bestimmt die Reihenfolge.
@@ -412,11 +412,11 @@ function JobEditor({
         {/* ── Status + Aktionen ── */}
         <section
           className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+              <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
                 Status
               </span>
               <Segmented
@@ -434,7 +434,7 @@ function JobEditor({
                 type="button"
                 onClick={onCancel}
                 className="rounded-full px-5 py-3 text-[14px] font-semibold"
-                style={{ border: "1.5px solid #D9D3C6", color: "rgba(12, 51, 48,0.6)", background: "white" }}
+                style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)", background: "white" }}
               >
                 Abbrechen
               </button>
@@ -443,7 +443,7 @@ function JobEditor({
                 onClick={submit}
                 disabled={busy}
                 className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
-                style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+                style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
               >
                 {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                 {job ? "Änderungen speichern" : "Inserat veröffentlichen"}
@@ -469,8 +469,8 @@ function JobEditor({
 
 const STATUS_CHIP: Record<string, { label: string; bg: string; color: string }> = {
   ACTIVE: { label: "Aktiv", bg: "rgba(22,163,74,0.12)", color: "#15803D" },
-  PAUSED: { label: "Pausiert", bg: "rgba(249, 173, 7,0.16)", color: "#6E4A03" },
-  DRAFT: { label: "Entwurf", bg: "rgba(12, 51, 48,0.06)", color: "rgba(12, 51, 48,0.55)" },
+  PAUSED: { label: "Pausiert", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F" },
+  DRAFT: { label: "Entwurf", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" },
 };
 
 export default function InseratePage() {
@@ -517,7 +517,7 @@ export default function InseratePage() {
           >
             Ihre Inserate
           </h1>
-          <p className="text-[15px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+          <p className="text-[15px]" style={{ color: "rgba(26,26,46,0.55)" }}>
             Stellen samt Wunsch-Antworten und Gewichtungen — die Grundlage jedes
             Match-Scores.
           </p>
@@ -526,7 +526,7 @@ export default function InseratePage() {
           type="button"
           onClick={() => setEditing("new")}
           className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
-          style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+          style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
         >
           <Plus className="w-4 h-4" strokeWidth={2.6} />
           Neues Inserat
@@ -544,18 +544,18 @@ export default function InseratePage() {
 
       {jobs === null ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
         </div>
       ) : jobs.length === 0 ? (
         <div
           className="rounded-3xl bg-white px-6 py-20 text-center"
-          style={{ border: "1.5px solid #E4DFD3" }}
+          style={{ border: "1.5px solid #E9E7E1" }}
         >
-          <FileText className="w-8 h-8 mx-auto mb-4" style={{ color: "#F9AD07" }} />
+          <FileText className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
           <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
             Noch kein Inserat
           </p>
-          <p className="text-[14px] max-w-md mx-auto leading-relaxed mb-6" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+          <p className="text-[14px] max-w-md mx-auto leading-relaxed mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
             Mit einem Inserat inklusive Gewichtungen berechnet PortaWerk für jeden
             Kandidaten einen nachvollziehbaren Match-Score — und schlägt Ihre
             Stelle passenden Handwerkern vor.
@@ -564,7 +564,7 @@ export default function InseratePage() {
             type="button"
             onClick={() => setEditing("new")}
             className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold"
-            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
+            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
           >
             <Plus className="w-4 h-4" strokeWidth={2.6} />
             Erstes Inserat anlegen
@@ -584,7 +584,7 @@ export default function InseratePage() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="rounded-3xl bg-white p-5 sm:p-6"
-                  style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+                  style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0">
@@ -605,14 +605,14 @@ export default function InseratePage() {
                           <span
                             title="Von PortaWerk für Sie angelegt"
                             className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
-                            style={{ background: "rgba(12, 51, 48,0.06)", color: "rgba(12, 51, 48,0.55)" }}
+                            style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" }}
                           >
                             <Bot className="w-3 h-3" />
                             {job.source === "AI" ? "KI-angelegt" : "Von PortaWerk angelegt"}
                           </span>
                         )}
                       </div>
-                      <p className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+                      <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
                         {job.gewerk}
                         {job.city && ` · ${job.city}`}
                         {job.salaryMax != null &&
@@ -624,17 +624,17 @@ export default function InseratePage() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span
                         className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[12.5px] font-semibold tabular-nums"
-                        style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.65)" }}
+                        style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.65)" }}
                         title="Eingegangene Bewerbungen"
                       >
-                        <Users className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+                        <Users className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
                         {job.applications ?? 0}
                       </span>
                       <button
                         type="button"
                         onClick={() => setEditing(job)}
                         className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-bold transition-colors"
-                        style={{ background: "#0C3330", color: "white" }}
+                        style={{ background: "#1A1A2E", color: "white" }}
                       >
                         <Pencil className="w-3.5 h-3.5" />
                         Bearbeiten
@@ -645,7 +645,7 @@ export default function InseratePage() {
                         title="Inserat archivieren"
                         aria-label="Inserat archivieren"
                         className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-                        style={{ border: "1.5px solid #D9D3C6", color: "rgba(12, 51, 48,0.5)" }}
+                        style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.5)" }}
                       >
                         <Archive className="w-4 h-4" />
                       </button>
@@ -674,7 +674,7 @@ export default function InseratePage() {
                       return (
                         <p
                           className="inline-flex items-center gap-1.5 text-[12.5px] mt-4"
-                          style={{ color: "rgba(12, 51, 48,0.45)" }}
+                          style={{ color: "rgba(26,26,46,0.45)" }}
                         >
                           <Sparkles className="w-3.5 h-3.5" />
                           Kein Anforderungsprofil — alle Handwerker sehen 100 %.
@@ -697,7 +697,7 @@ export default function InseratePage() {
                           <span
                             key={w}
                             className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                            style={{ background: "rgba(249, 173, 7,0.1)", color: "#6E4A03" }}
+                            style={{ background: "rgba(232,168,56,0.1)", color: "#8A5B0F" }}
                           >
                             <Scale className="w-3 h-3" />
                             {w}

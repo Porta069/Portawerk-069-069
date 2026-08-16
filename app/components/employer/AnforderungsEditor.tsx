@@ -71,9 +71,9 @@ function Chip({
       aria-pressed={selected}
       className="rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
       style={{
-        background: selected ? "#0C3330" : "#FFFFFF",
-        border: `1.5px solid ${selected ? "#0C3330" : "#E4DFD3"}`,
-        color: selected ? "#FFFFFF" : "rgba(12, 51, 48,0.65)",
+        background: selected ? "#1A1A2E" : "#FFFFFF",
+        border: `1.5px solid ${selected ? "#1A1A2E" : "#E9E7E1"}`,
+        color: selected ? "#FFFFFF" : "rgba(26,26,46,0.65)",
       }}
     >
       {label}
@@ -107,7 +107,7 @@ function Feld({
         )}
       </div>
       {hinweis && (
-        <p className="text-[12px] mb-2" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+        <p className="text-[12px] mb-2" style={{ color: "rgba(26,26,46,0.5)" }}>
           {hinweis}
         </p>
       )}
@@ -117,12 +117,12 @@ function Feld({
 }
 
 const selectStyle: React.CSSProperties = {
-  border: "1.5px solid #E4DFD3",
+  border: "1.5px solid #E9E7E1",
   borderRadius: 12,
   padding: "8px 12px",
   fontSize: 13.5,
   background: "#fff",
-  color: "#0C3330",
+  color: "#1A1A2E",
   minWidth: 200,
 };
 
@@ -171,8 +171,8 @@ export default function AnforderungsEditor({
   if (!katalog) {
     return (
       <div className="flex items-center gap-2 py-8 justify-center">
-        <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#F9AD07" }} />
-        <span className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+        <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#E8A838" }} />
+        <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
           Katalog wird geladen …
         </span>
       </div>
@@ -271,7 +271,7 @@ export default function AnforderungsEditor({
               style={{ background: "rgba(185,28,28,0.04)", border: "1px solid rgba(185,28,28,0.15)" }}
             >
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B91C1C" }} />
-              <span className="text-[12.5px]" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+              <span className="text-[12.5px]" style={{ color: "rgba(26,26,46,0.7)" }}>
                 Davon zwingend erforderlich:
               </span>
               <select
@@ -299,7 +299,7 @@ export default function AnforderungsEditor({
             leerLabel="ab — egal"
             onChange={(v) => set({ erfahrungMin: v })}
           />
-          <span className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+          <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.4)" }}>
             bis
           </span>
           <Auswahl
@@ -379,10 +379,10 @@ export default function AnforderungsEditor({
         style={{ background: "var(--color-surface)" }}
       >
         <p className="flex items-center gap-2 text-[13px] font-semibold text-primary mb-1">
-          <Scale className="w-4 h-4" style={{ color: "#F9AD07" }} />
+          <Scale className="w-4 h-4" style={{ color: "#E8A838" }} />
           Gewichtung
         </p>
-        <p className="text-[12px] mb-4" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+        <p className="text-[12px] mb-4" style={{ color: "rgba(26,26,46,0.5)" }}>
           Wie stark jedes Kriterium den Wert beeinflusst. 0 nimmt es ganz aus der
           Wertung — ausgeschlossen wird dadurch niemand.
         </p>
@@ -401,11 +401,11 @@ export default function AnforderungsEditor({
                     gewichte: { ...(wert.gewichte ?? {}), [key]: Number(e.target.value) },
                   })
                 }
-                className="flex-1 accent-[#F9AD07]"
+                className="flex-1 accent-[#E8A838]"
               />
               <span
                 className="text-[13px] font-bold tabular-nums w-4 text-right"
-                style={{ color: gewicht(key) === 0 ? "rgba(12, 51, 48,0.35)" : "#6E4A03" }}
+                style={{ color: gewicht(key) === 0 ? "rgba(26,26,46,0.35)" : "#8A5B0F" }}
               >
                 {gewicht(key)}
               </span>

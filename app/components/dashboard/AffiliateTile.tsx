@@ -27,15 +27,15 @@ export function AffiliateTile({
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl p-6" style={{ background: "#0C3330" }}>
+    <div className="relative overflow-hidden rounded-3xl p-6" style={{ background: "#1A1A2E" }}>
       <div
         className="absolute -top-20 -right-16 w-64 h-64 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.22) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(232,168,56,0.22) 0%, transparent 70%)" }}
       />
       <div className="relative">
         <span
           className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3"
-          style={{ color: "#F9AD07" }}
+          style={{ color: "#E8A838" }}
         >
           <span className="w-6 h-[2px] bg-accent" />
           Verdienen
@@ -78,10 +78,10 @@ export function AffiliateTile({
           href="/dashboard/verdienen"
           className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
-            background: "#F9AD07",
-            color: "#0C3330",
+            background: "#E8A838",
+            color: "#1A1A2E",
             fontFamily: "var(--font-display)",
-            boxShadow: "0 14px 28px -14px rgba(249, 173, 7,0.9)",
+            boxShadow: "0 14px 28px -14px rgba(232,168,56,0.9)",
           }}
         >
           Zum Empfehlungsprogramm
@@ -120,24 +120,24 @@ export function AffiliateNudge({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl px-5 py-4 ${className}`}
-      style={{ background: "rgba(249, 173, 7,0.1)", border: "1px solid rgba(249, 173, 7,0.3)" }}
+      style={{ background: "rgba(232,168,56,0.1)", border: "1px solid rgba(232,168,56,0.3)" }}
     >
       <span
         className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: "rgba(249, 173, 7,0.25)" }}
+        style={{ background: "rgba(232,168,56,0.25)" }}
       >
-        <Share2 className="w-[18px] h-[18px]" style={{ color: "#8A5F04" }} />
+        <Share2 className="w-[18px] h-[18px]" style={{ color: "#B47B18" }} />
       </span>
       <div className="flex-1 min-w-0">
         <p className="text-[14px] font-bold text-primary leading-snug">{copy.title}</p>
-        <p className="text-[12.5px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+        <p className="text-[12.5px] mt-0.5" style={{ color: "rgba(26,26,46,0.6)" }}>
           {copy.body}
         </p>
       </div>
       <Link
         href="/dashboard/verdienen"
         className="group inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
-        style={{ background: "#0C3330", color: "#FFFFFF", fontFamily: "var(--font-display)" }}
+        style={{ background: "#1A1A2E", color: "#FFFFFF", fontFamily: "var(--font-display)" }}
       >
         Link holen
         <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />

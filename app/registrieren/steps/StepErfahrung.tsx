@@ -62,8 +62,8 @@ export default function StepErfahrung() {
   if (!katalog || !bereich) {
     return (
       <div className="flex items-center gap-2.5 py-16 justify-center">
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#F9AD07" }} />
-        <span className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+        <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
           Einen Moment …
         </span>
       </div>

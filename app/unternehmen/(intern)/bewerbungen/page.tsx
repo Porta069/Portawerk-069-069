@@ -23,8 +23,8 @@ const STATUS_META: Record<
   ApplicationStatus,
   { label: string; bg: string; color: string }
 > = {
-  gesendet: { label: "Neu", bg: "rgba(249, 173, 7,0.16)", color: "#6E4A03" },
-  gesehen: { label: "Gesehen", bg: "rgba(12, 51, 48,0.06)", color: "rgba(12, 51, 48,0.6)" },
+  gesendet: { label: "Neu", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F" },
+  gesehen: { label: "Gesehen", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.6)" },
   im_gespraech: { label: "Im Gespräch", bg: "rgba(59,130,246,0.12)", color: "#1D4ED8" },
   zusage: { label: "Zusage", bg: "rgba(22,163,74,0.14)", color: "#15803D" },
   abgelehnt: { label: "Abgesagt", bg: "rgba(239,68,68,0.1)", color: "#B91C1C" },
@@ -68,7 +68,7 @@ function ApplicationCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="rounded-3xl bg-white p-5 sm:p-6"
-      style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
+      style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
@@ -86,9 +86,9 @@ function ApplicationCard({
               {meta.label}
             </span>
           </div>
-          <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+          <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
             <span className="inline-flex items-center gap-1.5">
-              <Briefcase className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+              <Briefcase className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
               beworben auf „{app.jobPosting.title}“
             </span>
             <span className="inline-flex items-center gap-1.5">
@@ -102,8 +102,8 @@ function ApplicationCard({
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 flex-shrink-0 text-[15px] font-bold tabular-nums"
             style={{
-              background: c.matchScore >= 80 ? "rgba(249, 173, 7,0.2)" : "rgba(12, 51, 48,0.05)",
-              color: c.matchScore >= 80 ? "#6E4A03" : "rgba(12, 51, 48,0.6)",
+              background: c.matchScore >= 80 ? "rgba(232,168,56,0.2)" : "rgba(26,26,46,0.05)",
+              color: c.matchScore >= 80 ? "#8A5B0F" : "rgba(26,26,46,0.6)",
               fontFamily: "var(--font-display)",
             }}
           >
@@ -114,26 +114,26 @@ function ApplicationCard({
       </div>
 
       {/* Kandidaten-Fakten */}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-[13px]" style={{ color: "rgba(12, 51, 48,0.65)" }}>
+      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-[13px]" style={{ color: "rgba(26,26,46,0.65)" }}>
         <span className="inline-flex items-center gap-1.5">
-          <Briefcase className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+          <Briefcase className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
           {c.erfahrung ? `${c.erfahrung} Erfahrung` : "Erfahrung —"}
         </span>
         {c.distanceKm != null && (
           <span className="inline-flex items-center gap-1.5">
-            <Route className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+            <Route className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
             {c.distanceKm} km entfernt
           </span>
         )}
         {c.ausbildung && (
           <span className="inline-flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+            <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
             {c.ausbildung}
           </span>
         )}
         {c.aufgaben.slice(0, 2).map((a) => (
           <span key={a} className="inline-flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
+            <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
             {a}
           </span>
         ))}
@@ -149,11 +149,11 @@ function ApplicationCard({
             <Check className="w-3.5 h-3.5" strokeWidth={3} />
             {c.freigegeben.name}
           </span>
-          <span className="inline-flex items-center gap-1.5" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+          <span className="inline-flex items-center gap-1.5" style={{ color: "rgba(26,26,46,0.7)" }}>
             <Phone className="w-3.5 h-3.5" />
             {c.freigegeben.telefon || "—"}
           </span>
-          <span className="inline-flex items-center gap-1.5" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+          <span className="inline-flex items-center gap-1.5" style={{ color: "rgba(26,26,46,0.7)" }}>
             <Mail className="w-3.5 h-3.5" />
             {c.freigegeben.email}
           </span>
@@ -161,9 +161,9 @@ function ApplicationCard({
       ) : (
         <p
           className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 mt-4 text-[12.5px]"
-          style={{ background: "rgba(12, 51, 48,0.035)", color: "rgba(12, 51, 48,0.55)" }}
+          style={{ background: "rgba(26,26,46,0.035)", color: "rgba(26,26,46,0.55)" }}
         >
-          <ShieldCheck className="w-4 h-4 flex-shrink-0" style={{ color: "#F9AD07" }} />
+          <ShieldCheck className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
           Kontaktdaten erscheinen, sobald der Kandidat Ihre Kontaktanfrage annimmt.
           {c.status === "verfuegbar" && (
             <button
@@ -171,14 +171,14 @@ function ApplicationCard({
               disabled={busy !== null}
               onClick={() => void act(onRequestContact, "contact")}
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-bold disabled:opacity-50"
-              style={{ background: "#F9AD07", color: "#0C3330" }}
+              style={{ background: "#E8A838", color: "#1A1A2E" }}
             >
               {busy === "contact" && <Loader2 className="w-3 h-3 animate-spin" />}
               Kontakt anfragen
             </button>
           )}
           {c.status === "angefragt" && (
-            <span className="font-semibold" style={{ color: "#6E4A03" }}>
+            <span className="font-semibold" style={{ color: "#8A5B0F" }}>
               Anfrage läuft — Kandidat entscheidet.
             </span>
           )}
@@ -186,8 +186,8 @@ function ApplicationCard({
       )}
 
       {/* Status setzen */}
-      <div className="flex flex-wrap items-center gap-2 mt-4 pt-4" style={{ borderTop: "1px solid #EDE8DE" }}>
-        <span className="text-[11px] font-bold uppercase tracking-[0.14em] mr-1" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+      <div className="flex flex-wrap items-center gap-2 mt-4 pt-4" style={{ borderTop: "1px solid #F1EEE8" }}>
+        <span className="text-[11px] font-bold uppercase tracking-[0.14em] mr-1" style={{ color: "rgba(26,26,46,0.4)" }}>
           Status setzen
         </span>
         {ACTIONS.map((a) => {
@@ -201,8 +201,8 @@ function ApplicationCard({
               className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors disabled:cursor-default"
               style={{
                 background: active ? STATUS_META[a.status].bg : "white",
-                color: active ? STATUS_META[a.status].color : "rgba(12, 51, 48,0.6)",
-                border: `1.5px solid ${active ? "transparent" : "#D9D3C6"}`,
+                color: active ? STATUS_META[a.status].color : "rgba(26,26,46,0.6)",
+                border: `1.5px solid ${active ? "transparent" : "#E0DDD6"}`,
                 opacity: busy !== null && !active ? 0.5 : 1,
               }}
             >
@@ -260,7 +260,7 @@ export default function EmployerBewerbungenPage() {
       >
         Bewerbungen
       </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(12, 51, 48,0.55)" }}>
+      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
         Wer sich auf Ihre Inserate beworben hat — der Status, den Sie setzen,
         erscheint sofort beim Kandidaten.
       </p>
@@ -276,15 +276,15 @@ export default function EmployerBewerbungenPage() {
 
       {apps === null ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
         </div>
       ) : apps.length === 0 ? (
-        <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E4DFD3" }}>
-          <Inbox className="w-8 h-8 mx-auto mb-4" style={{ color: "#F9AD07" }} />
+        <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
+          <Inbox className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
           <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
             Noch keine Bewerbungen
           </p>
-          <p className="text-[14px] max-w-md mx-auto leading-relaxed" style={{ color: "rgba(12, 51, 48,0.5)" }}>
+          <p className="text-[14px] max-w-md mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
             Sobald sich Handwerker auf Ihre Inserate bewerben, erscheinen sie
             hier — anonymisiert, mit Match-Score und Statusverwaltung.
           </p>
@@ -293,8 +293,8 @@ export default function EmployerBewerbungenPage() {
         <div className="space-y-8">
           {neue.length > 0 && (
             <section>
-              <h2 className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: "#8A5F04" }}>
-                <span className="w-6 h-[2px]" style={{ background: "#F9AD07" }} />
+              <h2 className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: "#B47B18" }}>
+                <span className="w-6 h-[2px]" style={{ background: "#E8A838" }} />
                 Neu · {neue.length}
               </h2>
               <div className="space-y-4">
@@ -311,8 +311,8 @@ export default function EmployerBewerbungenPage() {
           )}
           {rest.length > 0 && (
             <section>
-              <h2 className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(12, 51, 48,0.4)" }}>
-                <span className="w-6 h-[2px]" style={{ background: "rgba(12, 51, 48,0.2)" }} />
+              <h2 className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,26,46,0.4)" }}>
+                <span className="w-6 h-[2px]" style={{ background: "rgba(26,26,46,0.2)" }} />
                 In Bearbeitung · {rest.length}
               </h2>
               <div className="space-y-4">

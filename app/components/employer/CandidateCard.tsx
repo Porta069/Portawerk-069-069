@@ -45,9 +45,9 @@ function Fact({
     <div className="flex items-center gap-3 min-w-0">
       <span
         className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: "rgba(249, 173, 7,0.13)" }}
+        style={{ background: "rgba(232,168,56,0.13)" }}
       >
-        <Icon className="w-[18px] h-[18px]" style={{ color: "#8A5F04" }} strokeWidth={2.2} />
+        <Icon className="w-[18px] h-[18px]" style={{ color: "#B47B18" }} strokeWidth={2.2} />
       </span>
       <span className="min-w-0">
         <span
@@ -56,7 +56,7 @@ function Fact({
         >
           {value}
         </span>
-        <span className="block text-[11.5px] mt-1" style={{ color: "rgba(12, 51, 48,0.45)" }}>
+        <span className="block text-[11.5px] mt-1" style={{ color: "rgba(26,26,46,0.45)" }}>
           {label}
         </span>
       </span>
@@ -70,8 +70,8 @@ function Tag({ children, tone = "neutral" }: { children: React.ReactNode; tone?:
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium"
       style={{
-        background: gold ? "rgba(249, 173, 7,0.15)" : "rgba(12, 51, 48,0.05)",
-        color: gold ? "#6E4A03" : "rgba(12, 51, 48,0.68)",
+        background: gold ? "rgba(232,168,56,0.15)" : "rgba(26,26,46,0.05)",
+        color: gold ? "#8A5B0F" : "rgba(26,26,46,0.68)",
       }}
     >
       {children}
@@ -98,7 +98,7 @@ function ProfileDialog({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
-      style={{ background: "rgba(12, 51, 48,0.6)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(26,26,46,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <motion.div
@@ -110,7 +110,7 @@ function ProfileDialog({
         aria-modal="true"
         aria-label={`Profil ${c.handle}`}
         className="w-full max-w-3xl my-auto overflow-hidden rounded-3xl bg-white"
-        style={{ boxShadow: "0 50px 90px -30px rgba(12, 51, 48,0.65)" }}
+        style={{ boxShadow: "0 50px 90px -30px rgba(26,26,46,0.65)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Kopf */}
@@ -118,7 +118,7 @@ function ProfileDialog({
           <Image src={img} alt="" fill sizes="768px" className="object-cover" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(160deg, rgba(12, 51, 48,0.72) 0%, rgba(12, 51, 48,0.94) 75%)" }}
+            style={{ background: "linear-gradient(160deg, rgba(26,26,46,0.72) 0%, rgba(26,26,46,0.94) 75%)" }}
           />
           <button
             type="button"
@@ -132,7 +132,7 @@ function ProfileDialog({
           <div className="absolute inset-x-0 bottom-0 p-6">
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] mb-2.5"
-              style={{ background: "rgba(249, 173, 7,0.22)", color: "#6E4A03" }}
+              style={{ background: "rgba(232,168,56,0.22)", color: "#F6D08A" }}
             >
               <ShieldCheck className="w-3 h-3" />
               Anonymes Profil
@@ -164,7 +164,7 @@ function ProfileDialog({
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
               Ausbildung
             </p>
             <div className="flex flex-wrap gap-2">
@@ -180,7 +180,7 @@ function ProfileDialog({
 
           {c.aufgaben.length > 0 && (
             <div>
-              <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+              <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
                 Erfahrung in
               </p>
               <div className="flex flex-wrap gap-2">
@@ -192,7 +192,7 @@ function ProfileDialog({
           )}
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+            <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
               Rahmenbedingungen
             </p>
             <div className="flex flex-wrap gap-2">
@@ -204,7 +204,7 @@ function ProfileDialog({
 
           {c.prioritaeten.length > 0 && (
             <div>
-              <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(12, 51, 48,0.4)" }}>
+              <p className="text-[11px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
                 Worauf es ihm ankommt
               </p>
               <div className="flex flex-wrap gap-2">
@@ -227,7 +227,7 @@ function ProfileDialog({
               <p className="text-[19px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
                 {c.freigegeben.name}
               </p>
-              <div className="flex flex-wrap gap-x-5 gap-y-1 mt-1.5 text-[14px]" style={{ color: "rgba(12, 51, 48,0.7)" }}>
+              <div className="flex flex-wrap gap-x-5 gap-y-1 mt-1.5 text-[14px]" style={{ color: "rgba(26,26,46,0.7)" }}>
                 <a href={`tel:${c.freigegeben.telefon.replace(/\s/g, "")}`} className="inline-flex items-center gap-1.5">
                   <Phone className="w-4 h-4" style={{ color: "#15803D" }} />
                   {c.freigegeben.telefon}
@@ -241,10 +241,10 @@ function ProfileDialog({
           ) : (
             <div
               className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
-              style={{ background: "rgba(12, 51, 48,0.035)" }}
+              style={{ background: "rgba(26,26,46,0.035)" }}
             >
-              <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#F9AD07" }} />
-              <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.6)" }}>
+              <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
+              <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
                 Name, Foto und Kontaktdaten sind ausgeblendet. Sie werden sichtbar, sobald
                 der Kandidat Ihre Anfrage annimmt.
               </p>
@@ -258,7 +258,7 @@ function ProfileDialog({
               type="button"
               onClick={onClose}
               className="sm:flex-1 rounded-full px-5 py-3.5 text-[14px] font-semibold"
-              style={{ border: "1.5px solid #D9D3C6", color: "rgba(12, 51, 48,0.6)", background: "white" }}
+              style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)", background: "white" }}
             >
               Zurück zur Liste
             </button>
@@ -270,10 +270,10 @@ function ProfileDialog({
               }}
               className="sm:flex-1 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
               style={{
-                background: "#F9AD07",
-                color: "#0C3330",
+                background: "#E8A838",
+                color: "#1A1A2E",
                 fontFamily: "var(--font-display)",
-                boxShadow: "0 14px 28px -14px rgba(249, 173, 7,0.9)",
+                boxShadow: "0 14px 28px -14px rgba(232,168,56,0.9)",
               }}
             >
               <Send className="w-4 h-4" />
@@ -306,7 +306,7 @@ function RequestDialog({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[130] flex items-center justify-center p-5"
-      style={{ background: "rgba(12, 51, 48,0.6)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(26,26,46,0.6)", backdropFilter: "blur(4px)" }}
       onClick={onCancel}
     >
       <motion.div
@@ -318,15 +318,15 @@ function RequestDialog({
         aria-modal="true"
         aria-label="Kontakt anfragen"
         className="w-full max-w-md overflow-hidden rounded-3xl bg-white"
-        style={{ boxShadow: "0 40px 80px -30px rgba(12, 51, 48,0.6)" }}
+        style={{ boxShadow: "0 40px 80px -30px rgba(26,26,46,0.6)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4 p-6">
           <span
             className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(249, 173, 7,0.16)" }}
+            style={{ background: "rgba(232,168,56,0.16)" }}
           >
-            <ShieldCheck className="w-5 h-5" style={{ color: "#8A5F04" }} />
+            <ShieldCheck className="w-5 h-5" style={{ color: "#B47B18" }} />
           </span>
           <div className="min-w-0">
             <h3
@@ -335,7 +335,7 @@ function RequestDialog({
             >
               Kontakt anfragen
             </h3>
-            <p className="text-[14px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.62)" }}>
+            <p className="text-[14px] leading-relaxed" style={{ color: "rgba(26,26,46,0.62)" }}>
               <strong className="text-primary">{candidate.handle}</strong> entscheidet
               selbst. Erst bei Zusage sehen Sie Name und Kontaktdaten.
             </p>
@@ -345,7 +345,7 @@ function RequestDialog({
         <div className="px-6 pb-5">
           <label
             className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
-            style={{ color: "rgba(12, 51, 48,0.45)" }}
+            style={{ color: "rgba(26,26,46,0.45)" }}
           >
             Für welche Stelle?
           </label>
@@ -354,7 +354,7 @@ function RequestDialog({
             onChange={(e) => setPosition(e.target.value)}
             placeholder="z. B. Elektriker Gebäudetechnik"
             className="w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none"
-            style={{ border: "1.5px solid #E4DFD3" }}
+            style={{ border: "1.5px solid #E9E7E1" }}
           />
         </div>
 
@@ -363,7 +363,7 @@ function RequestDialog({
             type="button"
             onClick={onCancel}
             className="flex-1 rounded-full px-5 py-3.5 text-[14px] font-semibold"
-            style={{ border: "1.5px solid #D9D3C6", color: "rgba(12, 51, 48,0.6)", background: "white" }}
+            style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)", background: "white" }}
           >
             Abbrechen
           </button>
@@ -373,10 +373,10 @@ function RequestDialog({
             disabled={busy}
             className="flex-1 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
             style={{
-              background: "#F9AD07",
-              color: "#0C3330",
+              background: "#E8A838",
+              color: "#1A1A2E",
               fontFamily: "var(--font-display)",
-              boxShadow: "0 14px 28px -14px rgba(249, 173, 7,0.9)",
+              boxShadow: "0 14px 28px -14px rgba(232,168,56,0.9)",
             }}
           >
             {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -412,9 +412,9 @@ export default function CandidateCard({
 
   const status: Record<Candidate["status"], { text: string; bg: string; color: string } | null> = {
     verfuegbar: null,
-    angefragt: { text: "Anfrage läuft — Kandidat entscheidet", bg: "rgba(249, 173, 7,0.16)", color: "#6E4A03" },
+    angefragt: { text: "Anfrage läuft — Kandidat entscheidet", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F" },
     freigegeben: { text: "Profil freigegeben", bg: "rgba(22,163,74,0.14)", color: "#15803D" },
-    abgelehnt: { text: "Kandidat hat abgelehnt", bg: "rgba(12, 51, 48,0.06)", color: "rgba(12, 51, 48,0.5)" },
+    abgelehnt: { text: "Kandidat hat abgelehnt", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.5)" },
   };
   const st = status[c.status];
   const top = c.matchScore >= 80;
@@ -428,8 +428,8 @@ export default function CandidateCard({
         onClick={() => setProfile(true)}
         className="group relative cursor-pointer overflow-hidden rounded-3xl bg-white transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1"
         style={{
-          border: `1.5px solid ${top ? "rgba(249, 173, 7,0.55)" : "#E4DFD3"}`,
-          boxShadow: "0 14px 40px -28px rgba(12, 51, 48,0.55)",
+          border: `1.5px solid ${top ? "rgba(232,168,56,0.55)" : "#E9E7E1"}`,
+          boxShadow: "0 14px 40px -28px rgba(26,26,46,0.55)",
         }}
       >
         <div className="flex flex-col sm:flex-row">
@@ -444,7 +444,7 @@ export default function CandidateCard({
             />
             <div
               className="absolute inset-0"
-              style={{ background: "linear-gradient(155deg, rgba(12, 51, 48,0.55) 0%, rgba(12, 51, 48,0.86) 100%)" }}
+              style={{ background: "linear-gradient(155deg, rgba(26,26,46,0.55) 0%, rgba(26,26,46,0.86) 100%)" }}
             />
             <div className="absolute inset-0 p-4 flex flex-col justify-between">
               <span
@@ -471,10 +471,10 @@ export default function CandidateCard({
           {/* Inhalt */}
           <div className="flex-1 min-w-0 p-5 sm:p-6">
             <div className="flex items-start justify-between gap-4 mb-5">
-              <p className="inline-flex items-center gap-1.5 text-[13.5px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
-                <MapPin className="w-4 h-4" style={{ color: "#F9AD07" }} />
+              <p className="inline-flex items-center gap-1.5 text-[13.5px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+                <MapPin className="w-4 h-4" style={{ color: "#E8A838" }} />
                 {c.region}
-                <span className="mx-1" style={{ color: "rgba(12, 51, 48,0.2)" }}>·</span>
+                <span className="mx-1" style={{ color: "rgba(26,26,46,0.2)" }}>·</span>
                 <Clock3 className="w-3.5 h-3.5" />
                 aktiv {c.zuletztAktiv}
               </p>
@@ -483,8 +483,8 @@ export default function CandidateCard({
                 <span
                   className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 flex-shrink-0"
                   style={{
-                    background: top ? "rgba(249, 173, 7,0.2)" : "rgba(12, 51, 48,0.05)",
-                    color: top ? "#6E4A03" : "rgba(12, 51, 48,0.6)",
+                    background: top ? "rgba(232,168,56,0.2)" : "rgba(26,26,46,0.05)",
+                    color: top ? "#8A5B0F" : "rgba(26,26,46,0.6)",
                   }}
                 >
                   {top ? <Star className="w-4 h-4" fill="currentColor" /> : <Sparkles className="w-4 h-4" />}
@@ -535,7 +535,7 @@ export default function CandidateCard({
                 <p className="text-[16px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
                   {c.freigegeben.name}
                 </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[13px]" style={{ color: "rgba(12, 51, 48,0.65)" }}>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[13px]" style={{ color: "rgba(26,26,46,0.65)" }}>
                   <a href={`tel:${c.freigegeben.telefon.replace(/\s/g, "")}`} className="inline-flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                     <Phone className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
                     {c.freigegeben.telefon}
@@ -570,10 +570,10 @@ export default function CandidateCard({
                   }}
                   className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
                   style={{
-                    background: "#F9AD07",
-                    color: "#0C3330",
+                    background: "#E8A838",
+                    color: "#1A1A2E",
                     fontFamily: "var(--font-display)",
-                    boxShadow: "0 14px 28px -16px rgba(249, 173, 7,0.95)",
+                    boxShadow: "0 14px 28px -16px rgba(232,168,56,0.95)",
                   }}
                 >
                   <Heart className="w-4 h-4" />
@@ -581,7 +581,7 @@ export default function CandidateCard({
                 </button>
                 <span
                   className="inline-flex items-center gap-1.5 text-[14px] font-semibold transition-colors"
-                  style={{ color: "rgba(12, 51, 48,0.5)" }}
+                  style={{ color: "rgba(26,26,46,0.5)" }}
                 >
                   <Eye className="w-4 h-4" />
                   Profil ansehen

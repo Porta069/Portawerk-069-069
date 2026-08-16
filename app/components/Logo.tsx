@@ -5,9 +5,19 @@ import Image from "next/image";
 // Nachbildung aus Hammer-Symbol und Schriftzug — die wäre bei jeder Änderung
 // wieder auseinandergelaufen.
 //
-// Zwei Fassungen, weil der Schriftzug zweifarbig ist: „WERK" ist dunkles
-// Petrol (#125E5A) und auf dunklem Grund praktisch unsichtbar. Die Fassung
-// `hell` ersetzt genau diesen Teil durch Weiß; das Gold bleibt.
+// Der Schriftzug trägt die beiden Markenfarben — Gold #F9AD07 und Grün
+// #115F5B — als exakte Volltöne. Sie sind nach dem Skalieren gesetzt, damit in
+// den ausgelieferten Dateien wirklich nur diese zwei Werte stehen und nicht
+// tausend Zwischentöne aus der JPEG-Vorlage.
+//
+// Beide Fassungen sind derzeit IDENTISCH: Auf ausdrücklichen Wunsch behält das
+// Logo auch auf dunklem Grund seine Markenfarben. Das Grün erreicht dort nur
+// einen Kontrast von 2,3:1 gegenüber 17:1 bei Weiß — „WERK" tritt also spürbar
+// zurück. Für ein Logo ist das zulässig (Logotypen sind von den
+// Kontrastanforderungen ausgenommen), aber es ist eine bewusste Entscheidung.
+// Soll auf dunklen Flächen wieder Weiß stehen, genügt es,
+// `portawerk-logo-hell.png` neu zu erzeugen — die 15 Einbaustellen bleiben
+// unberührt.
 //
 // Die Höhe wird vorgegeben, die Breite ergibt sich aus dem Seitenverhältnis
 // (7,2 : 1). So steht die Fläche vor dem Laden fest und die Seite springt

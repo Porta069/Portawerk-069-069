@@ -118,6 +118,30 @@ const LEGAL_SECTIONS: LegalSection[] = [
         text: "Rufst du einen Empfehlungslink auf, prüfen wir, ob der Code zu einem aktiven Partner gehört. Ist das der Fall, zählen wir den Klick mit einer pseudonymisierten (gehashten) IP-Adresse und speichern die Kennung des Partners für 60 Tage in einem Cookie, damit die Empfehlung einer späteren Registrierung zugeordnet werden kann. Registrierst du dich, sieht die werbende Person deinen Vornamen mit abgekürztem Nachnamen sowie deinen Ausbildungsbereich als Fortschrittsanzeige — keine Kontaktdaten. Details zum Cookie stehen im Abschnitt „Cookies & lokale Speicherung“.",
       },
       {
+        heading: "Server-Protokolle",
+        text: "Beim Aufruf der Seiten und beim Zugriff auf unsere Schnittstelle fallen bei den eingesetzten Hosting-Anbietern technische Protokolle an (IP-Adresse, Zeitpunkt, aufgerufene Adresse, Browserkennung). Sie dienen dem sicheren Betrieb und der Fehlersuche und werden vom jeweiligen Anbieter nach kurzer Frist gelöscht. In unserem eigenen Sicherheitsprotokoll speichern wir IP-Adressen ausschließlich als nicht rückrechenbaren, mit einem geheimen Schlüssel gebildeten Hashwert.",
+      },
+      {
+        heading: "E-Mail- und SMS-Versand",
+        text: "Für Bestätigungscodes und Systemnachrichten setzen wir Versanddienstleister als Auftragsverarbeiter ein, sobald der produktive Versand aktiviert ist; übermittelt werden dabei die jeweilige E-Mail-Adresse oder Mobilnummer und der Nachrichteninhalt. [VERSANDDIENSTLEISTER NAMENTLICH EINSETZEN, sobald der Versand scharf geschaltet ist — derzeit werden Codes nicht versendet.]",
+      },
+      {
+        heading: "Datensicherheit",
+        text: "Die Übertragung erfolgt durchgängig verschlüsselt (TLS). Passwörter speichern wir ausschließlich als scrypt-Hash, niemals im Klartext. Hochgeladene Unterlagen liegen in einem privaten Speicher und sind nur über kurzlebige, signierte Links erreichbar. Zugriffe auf sicherheitsrelevante Vorgänge werden protokolliert. Sitzungen lassen sich durch Passwortwechsel oder Abmelden sofort ungültig machen.",
+      },
+      {
+        heading: "Bereitstellungspflicht (Art. 13 Abs. 2 lit. e DSGVO)",
+        text: "Die Angaben zu Name, E-Mail-Adresse, Telefonnummer und Passwort sind für den Vertragsschluss erforderlich — ohne sie können wir kein Konto anlegen. Die fachlichen Angaben des Fragebogens sind rechtlich freiwillig, praktisch aber die Grundlage der Vermittlung: Ohne sie können wir dir keine passenden Stellen zuordnen, und unvollständige Profile werden seltener vorgeschlagen. Ein Profilbild ist vollständig freiwillig.",
+      },
+      {
+        heading: "Minderjährige",
+        text: "Unser Angebot richtet sich auch an Auszubildende und damit möglicherweise an Minderjährige. Wer noch nicht 18 Jahre alt ist, benötigt für den Nutzungsvertrag die Zustimmung der Erziehungsberechtigten (§§ 107 ff. BGB). Wir erheben derzeit kein Geburtsdatum bei der Registrierung und können das Alter deshalb nicht prüfen. [HINWEIS ZUR PRÜFUNG: Ob eine Altersabfrage bei der Registrierung eingeführt werden muss — auch mit Blick auf Art. 8 DSGVO und das Jugendarbeitsschutzgesetz — ist zu klären. Bis dahin gilt: Erfahren wir, dass ein Konto ohne die erforderliche Zustimmung angelegt wurde, löschen wir es.]",
+      },
+      {
+        heading: "Widerspruchsrecht (Art. 21 DSGVO)",
+        text: `Soweit wir Daten auf Grundlage berechtigter Interessen verarbeiten — das betrifft die Sicherheitsprotokolle, die Bestätigung von Kontaktdaten und die cookielose Reichweitenmessung — hast du das Recht, dieser Verarbeitung jederzeit aus Gründen zu widersprechen, die sich aus deiner besonderen Situation ergeben. Wir verarbeiten die Daten dann nicht weiter, es sei denn, wir können zwingende schutzwürdige Gründe nachweisen. Der Widerspruch genügt formlos an ${ANBIETER.emailDatenschutz}.`,
+      },
+      {
         heading: "Speicherdauer und Löschung",
         text: "Konto- und Profildaten speichern wir, solange dein Konto besteht. Du kannst es jederzeit in den Einstellungen selbst löschen; damit entfallen auch Merkliste, Bewerbungen, Angebote und Kontaktfreigaben. Bewerbungsdatensätze samt Unterlagen unterliegen einer automatisierten Löschfrist von 180 Tagen; sie trägt der zweimonatigen Klagefrist des AGG mit Sicherheitsabstand Rechnung. Einmalcodes und Registrierungsentwürfe werden nach Stunden bzw. Tagen automatisch entfernt, Sicherheitsprotokolle nach längstens einem Jahr. Gesetzliche Aufbewahrungspflichten bleiben unberührt.",
       },
@@ -176,6 +200,38 @@ const LEGAL_SECTIONS: LegalSection[] = [
         text: "Für das Empfehlungsprogramm gilt: Die Prämie entsteht erst mit erfolgreicher Vermittlung der geworbenen Person und wird nach den im Partnerbereich genannten Bedingungen ausgezahlt. Maßgeblich ist die zuletzt veröffentlichte Prämienhöhe. Missbrauch — etwa Selbstwerbung über Zweitkonten oder erfundene Personen — führt zum Verfall der Prämie und zur Sperrung. Prämien sind von der empfangenden Person selbst zu versteuern; wir übernehmen keine steuerliche Beratung. [AUSZAHLUNGSBEDINGUNGEN UND STEUERHINWEIS ANWALTLICH PRÜFEN LASSEN.]",
       },
       {
+        heading: "Mindestalter und Minderjährige",
+        text: "Für den Abschluss des Nutzungsvertrags musst du geschäftsfähig sein. Bist du noch nicht 18 Jahre alt, brauchst du die Zustimmung deiner Erziehungsberechtigten; mit der Registrierung bestätigst du, dass diese vorliegt. Erfahren wir, dass sie fehlt, können wir das Konto sperren oder löschen.",
+      },
+      {
+        heading: "Zulässige Anforderungen in Inseraten",
+        text: "Anforderungen dürfen nur gestellt werden, soweit sie für die konkrete Tätigkeit sachlich erforderlich sind. Das gilt besonders für das geforderte Sprachniveau: Es darf sich nur an dem orientieren, was die Arbeit tatsächlich verlangt — ein pauschal hoch angesetztes Niveau kann eine mittelbare Benachteiligung wegen der ethnischen Herkunft darstellen (§ 3 Abs. 2 AGG). Betriebe tragen für ihre Anforderungen die Verantwortung; wir stellen lediglich das Werkzeug bereit und behalten uns vor, offensichtlich unzulässige Inserate zu entfernen.",
+      },
+      {
+        heading: "Inhalte der Nutzer:innen",
+        text: "Für eingestellte Inhalte — Profilangaben, Inserate, Logos, Bilder und Unterlagen — bleibst du verantwortlich. Du sicherst zu, dass du die erforderlichen Rechte hast und keine Rechte Dritter verletzt. Du räumst uns das einfache, räumlich unbeschränkte und auf die Dauer der Veröffentlichung begrenzte Recht ein, diese Inhalte zum Betrieb der Plattform zu speichern, anzuzeigen und an die jeweils vorgesehenen Empfänger zu übermitteln. Weitergehende Rechte erwerben wir nicht. Nimmst du Inhalte zurück oder löschst dein Konto, endet dieses Recht.",
+      },
+      {
+        heading: "Freistellung",
+        text: "Verletzt du mit eingestellten Inhalten oder mit der Nutzung der Plattform Rechte Dritter, stellst du uns von den daraus entstehenden Ansprüchen frei, soweit du die Verletzung zu vertreten hast. Das umfasst die Kosten einer angemessenen Rechtsverteidigung. Wir informieren dich unverzüglich über geltend gemachte Ansprüche und geben dir Gelegenheit zur Stellungnahme.",
+      },
+      {
+        heading: "Vertragssprache und Vertragstext",
+        text: "Vertragssprache ist Deutsch. Den Text dieser Bedingungen speichern wir mit dem Fassungsstand, dem du zugestimmt hast; du kannst ihn jederzeit auf dieser Seite abrufen und über deinen Datenexport nachvollziehen, welcher Fassung du wann zugestimmt hast.",
+      },
+      {
+        heading: "Laufzeit und Kündigung",
+        text: "Der Nutzungsvertrag läuft auf unbestimmte Zeit. Du kannst ihn jederzeit ohne Frist beenden, indem du dein Konto löschst. Wir können ihn mit einer Frist von 30 Tagen in Textform kündigen; das Recht zur außerordentlichen Kündigung aus wichtigem Grund — insbesondere bei erheblichen Verstößen gegen diese Bedingungen — bleibt unberührt.",
+      },
+      {
+        heading: "Höhere Gewalt",
+        text: "Ereignisse außerhalb unseres Einflussbereichs — etwa Ausfälle von Strom- oder Netzinfrastruktur, Störungen bei eingesetzten Dienstleistern, Naturereignisse, Streiks oder behördliche Anordnungen — befreien uns für ihre Dauer von der Leistungspflicht. Dauert die Störung länger als 30 Tage, können beide Seiten den Vertrag beenden.",
+      },
+      {
+        heading: "Übertragung des Vertrags",
+        text: "Wir dürfen unsere Rechte und Pflichten aus diesem Vertrag auf ein verbundenes Unternehmen oder einen Rechtsnachfolger übertragen; in diesem Fall informieren wir dich rechtzeitig in Textform und du kannst den Vertrag zum Zeitpunkt der Übertragung beenden. Du kannst deine Rechte aus diesem Vertrag nur mit unserer Zustimmung übertragen; dein Konto ist nicht übertragbar.",
+      },
+      {
         heading: "Verfügbarkeit",
         text: "Wir bemühen uns um einen unterbrechungsfreien Betrieb, schulden aber keine bestimmte Verfügbarkeit. Wartungsfenster und Störungen — auch bei eingebundenen Drittdiensten wie Kartenkacheln oder Ortssuche — können die Nutzung vorübergehend einschränken.",
       },
@@ -198,6 +254,28 @@ const LEGAL_SECTIONS: LegalSection[] = [
       {
         heading: "Salvatorische Klausel und Fassungsstand",
         text: `Sollte eine Bestimmung dieser Bedingungen unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt. Fassungsstand dieser Nutzungsbedingungen: ${RECHTSTEXTE_VERSION}.`,
+      },
+    ],
+  },
+  {
+    id: "barrierefreiheit",
+    title: "Barrierefreiheit",
+    blocks: [
+      {
+        heading: "Warum das hier steht",
+        text: "Seit dem 28. Juni 2025 verpflichtet das Barrierefreiheitsstärkungsgesetz (BFSG) Anbieter bestimmter digitaler Dienstleistungen für Verbraucher:innen dazu, diese barrierefrei anzubieten und darüber zu informieren. Wir gehen davon aus, dass unser Angebot darunter fällt, und machen den Stand deshalb offen.",
+      },
+      {
+        heading: "Aktueller Stand",
+        text: "Die Plattform ist derzeit NICHT vollständig barrierefrei. Aus einer internen Prüfung sind uns Einschränkungen bekannt, unter anderem bei der Bedienbarkeit ausschließlich über die Tastatur, bei der Beschriftung einzelner Bedienelemente für Screenreader, bei Farbkontrasten und bei Rückmeldungen an Hilfstechnologien. Wir arbeiten an der Behebung. Eine vollständige Bewertung nach EN 301 549 / WCAG 2.1 AA steht noch aus. [PRÜFBERICHT UND ZEITPLAN ERGÄNZEN, sobald die Bewertung vorliegt.]",
+      },
+      {
+        heading: "Barriere melden",
+        text: `Stößt du auf eine Barriere, schreib uns an ${ANBIETER.emailAllgemein} — bitte mit der Seite, dem verwendeten Gerät und, wenn möglich, der eingesetzten Hilfstechnologie. Wir melden uns zurück und nennen dir, wie wir damit umgehen. Wird eine Barriere nicht behoben, kannst du dich an die Marktüberwachungsstelle der Länder für die Barrierefreiheit von Produkten und Dienstleistungen (MLBF) wenden.`,
+      },
+      {
+        heading: "Alternative Wege",
+        text: `Solange einzelne Funktionen nicht barrierefrei erreichbar sind, helfen wir persönlich weiter: Schreib uns an ${ANBIETER.emailAllgemein}, und wir nehmen deine Angaben auf anderem Weg auf oder führen dich telefonisch bzw. schriftlich durch den Vorgang.`,
       },
     ],
   },

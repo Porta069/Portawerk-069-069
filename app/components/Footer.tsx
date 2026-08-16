@@ -15,6 +15,9 @@ const LEGAL = [
   { href: "/rechtliches#nutzungsbedingungen", label: "Nutzungsbedingungen" },
   { href: "/rechtliches#impressum", label: "Impressum" },
   { href: "/rechtliches#cookies", label: "Cookie-Richtlinie" },
+  // Nach dem BFSG muss die Information zur Barrierefreiheit auffindbar sein —
+  // ein Abschnitt, den niemand verlinkt, erfüllt das nicht.
+  { href: "/rechtliches#barrierefreiheit", label: "Barrierefreiheit" },
 ];
 
 export default function Footer() {

@@ -132,7 +132,7 @@ function ProfileDialog({
           <div className="absolute inset-x-0 bottom-0 p-6">
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] mb-2.5"
-              style={{ background: "rgba(249, 173, 7,0.22)", color: "#FBDA9A" }}
+              style={{ background: "rgba(249, 173, 7,0.22)", color: "#6E4A03" }}
             >
               <ShieldCheck className="w-3 h-3" />
               Anonymes Profil

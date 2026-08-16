@@ -197,7 +197,7 @@ export default function RegisterFlow() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(155deg, rgba(12, 51, 48,0.82) 0%, rgba(12, 51, 48,0.94) 55%, #0C3330 100%)",
+              "linear-gradient(155deg, rgba(245,242,236,0.88) 0%, rgba(245,242,236,0.95) 55%, #F5F2EC 100%)",
           }}
         />
         <div
@@ -207,7 +207,7 @@ export default function RegisterFlow() {
 
         <div className="relative flex flex-col h-full px-6 lg:px-12 py-8 lg:py-12">
           <Link href="/" className="group inline-flex items-center gap-2.5 w-fit">
-            <Logo height={24} variant="hell" priority />
+            <Logo height={24} priority />
           </Link>
 
           <div className="flex-1 flex flex-col justify-center py-10 lg:py-0">
@@ -243,7 +243,7 @@ export default function RegisterFlow() {
                   </span>
                   <span
                     className="font-bold tracking-wide"
-                    style={{ fontFamily: "var(--font-display)", color: "#FBDA9A", fontSize: "0.95rem" }}
+                    style={{ fontFamily: "var(--font-display)", color: "#8A5F04", fontSize: "0.95rem" }}
                   >
                     von {CONTENT_STEPS}
                   </span>
@@ -253,19 +253,19 @@ export default function RegisterFlow() {
                     className="shimmer-glint absolute inset-y-0 -left-1/2 w-1/2 pointer-events-none"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent)",
+                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent)",
                     }}
                   />
                 </span>
                 <h1
-                  className="font-bold leading-[1.08] text-white mb-4"
+                  className="font-bold leading-[1.08] text-primary mb-4"
                   style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 3.4vw, 2.9rem)" }}
                 >
                   {meta.h}
                 </h1>
                 <p
                   className="text-[15px] leading-relaxed max-w-md"
-                  style={{ color: "rgba(255,255,255,0.5)" }}
+                  style={{ color: "rgba(12, 51, 48,0.65)" }}
                 >
                   {meta.s}
                 </p>
@@ -290,8 +290,8 @@ export default function RegisterFlow() {
                 transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className="hidden lg:flex items-start gap-3.5 rounded-2xl px-5 py-4"
                 style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.09)",
+                  background: "rgba(255,255,255,0.7)",
+                  border: "1px solid #E4DFD3",
                   backdropFilter: "blur(6px)",
                 }}
               >
@@ -304,11 +304,11 @@ export default function RegisterFlow() {
                 <div>
                   <p
                     className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-1"
-                    style={{ color: "rgba(249, 173, 7,0.9)" }}
+                    style={{ color: "#8A5F04" }}
                   >
                     Tipp von PortaWerk
                   </p>
-                  <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.62)" }}>
+                  <p className="text-[13px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.7)" }}>
                     {meta.tip}
                   </p>
                 </div>

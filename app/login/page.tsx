@@ -55,42 +55,42 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2" style={{ fontFamily: "var(--font-sans)" }}>
       {/* ── Brand-Panel ── */}
-      <div className="relative hidden lg:flex flex-col justify-between bg-primary overflow-hidden p-12">
+      <div className="relative hidden lg:flex flex-col justify-between bg-white overflow-hidden p-12 border-r border-[#E4DFD3]">
         <div
           className="absolute -top-40 -right-40 w-[560px] h-[560px] rounded-full pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.14) 0%, transparent 65%)" }}
         />
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute inset-0 opacity-[0.028] pointer-events-none"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+              "linear-gradient(rgba(12,51,48,1) 1px, transparent 1px), linear-gradient(90deg, rgba(12,51,48,1) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
           }}
         />
         <Link href="/" className="relative flex items-center gap-3 w-fit">
-          <Logo height={24} variant="hell" priority />
+          <Logo height={24} priority />
         </Link>
 
         <div className="relative">
-          <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.22em] uppercase mb-6">
+          <span className="flex items-center gap-3 text-[#8A5F04] text-xs font-medium tracking-[0.22em] uppercase mb-6">
             <span className="w-8 h-[2px] bg-accent" />
             Willkommen zurück
           </span>
           <h1
-            className="text-white font-bold leading-[1.08] mb-5"
+            className="text-primary font-bold leading-[1.08] mb-5"
             style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 3.5vw, 3.25rem)" }}
           >
             Dein Handwerk.
             <br />
             Deine nächste Chance.
           </h1>
-          <p className="text-white/50 text-base leading-relaxed max-w-sm">
+          <p className="text-primary/65 text-base leading-relaxed max-w-sm">
             Melde dich an, um deine Vermittlungsanfragen und dein Profil zu verwalten.
           </p>
         </div>
 
-        <p className="relative text-white/25 text-xs">
+        <p className="relative text-primary/45 text-xs">
           © {new Date().getFullYear()} PortaWerk — ein Angebot von porta-jobs.de
         </p>
       </div>

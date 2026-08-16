@@ -348,7 +348,7 @@ export default function EmployerSearchPage() {
           {prefilled && !area && (
             <div
               className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-4 text-[13.5px]"
-              style={{ background: "rgba(249, 173, 7,0.14)", color: "#FBDA9A" }}
+              style={{ background: "rgba(249, 173, 7,0.14)", color: "#6E4A03" }}
             >
               <MapPin className="w-4 h-4 flex-shrink-0" />
               PLZ <strong className="tabular-nums">{prefilled}</strong> aus Ihrer Anfrage

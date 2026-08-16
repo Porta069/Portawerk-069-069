@@ -50,46 +50,46 @@ export default function UnternehmenLoginPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2" style={{ fontFamily: "var(--font-sans)" }}>
       {/* Brand-Panel */}
-      <div className="relative hidden lg:flex flex-col justify-between bg-primary overflow-hidden p-12">
+      <div className="relative hidden lg:flex flex-col justify-between bg-white overflow-hidden p-12 border-r border-[#E4DFD3]">
         <div
           className="absolute -top-40 -right-40 w-[560px] h-[560px] rounded-full pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.14) 0%, transparent 65%)" }}
         />
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute inset-0 opacity-[0.028] pointer-events-none"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+              "linear-gradient(rgba(12,51,48,1) 1px, transparent 1px), linear-gradient(90deg, rgba(12,51,48,1) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
           }}
         />
         <Link href="/" className="relative flex items-center gap-3 w-fit">
-          <Logo height={24} variant="hell" priority />
-          <span className="text-accent text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+          <Logo height={24} priority />
+          <span className="text-[#8A5F04] text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
             Business
           </span>
         </Link>
 
         <div className="relative">
-          <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.22em] uppercase mb-6">
+          <span className="flex items-center gap-3 text-[#8A5F04] text-xs font-medium tracking-[0.22em] uppercase mb-6">
             <span className="w-8 h-[2px] bg-accent" />
             Für Betriebe
           </span>
           <h1
-            className="text-white font-bold leading-[1.08] mb-5"
+            className="text-primary font-bold leading-[1.08] mb-5"
             style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 3.5vw, 3.25rem)" }}
           >
             Vorselektierte
             <br />
             Fachkräfte, direkt.
           </h1>
-          <p className="text-white/50 text-base leading-relaxed max-w-sm">
+          <p className="text-primary/65 text-base leading-relaxed max-w-sm">
             Dein Firmenzugang zu passenden Handwerker:innen. Melde dich mit den
             Zugangsdaten an, die du nach Vertragsabschluss von uns erhalten hast.
           </p>
         </div>
 
-        <div className="relative flex items-center gap-2.5 text-white/40 text-xs">
+        <div className="relative flex items-center gap-2.5 text-primary/55 text-xs">
           <FileSignature className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#F9AD07" }} />
           Zugänge werden ausschließlich nach Vertragsabschluss vergeben.
         </div>

@@ -148,27 +148,27 @@ export default function PartnerDashboard() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* ══ Hero (Navy, full-bleed) ══ */}
-      <header className="relative overflow-hidden bg-primary text-white">
-        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
+      <header className="relative overflow-hidden bg-white text-primary">
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(12,51,48,1) 1px, transparent 1px), linear-gradient(90deg, rgba(12,51,48,1) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
         <div className="absolute -top-24 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.20) 0%, transparent 65%)" }} />
 
         <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
           {/* Topbar */}
           <div className="h-[68px] flex items-center justify-between">
             <Link href="/verdienen" className="flex items-center gap-2.5 group">
-              <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
-              <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
+              <Logo height={24} className="transition-transform group-hover:scale-95" />
+              <span className="text-primary/45 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>
             <div className="flex items-center gap-2.5">
               <Link
                 href="/verdienen/einstellungen"
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#E4DFD3] text-primary/80 hover:text-primary hover:border-[#E4DFD3] hover:bg-surface text-sm font-medium px-4 py-2 transition-colors"
               >
                 <Settings className="w-4 h-4" /> <span className="hidden sm:inline">Einstellungen</span>
               </Link>
               <button
                 onClick={() => setShowLogout(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#E4DFD3] text-primary/80 hover:text-primary hover:border-[#E4DFD3] hover:bg-surface text-sm font-medium px-4 py-2 transition-colors"
               >
                 <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Abmelden</span>
               </button>
@@ -183,7 +183,7 @@ export default function PartnerDashboard() {
                 Hi, {NAME} <span className="inline-block">👋</span>
               </h1>
 
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/45 mb-2">Bereits verdient</p>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-primary/45 mb-2">Bereits verdient</p>
               <div className="flex items-end gap-4 flex-wrap">
                 <span
                   className="relative inline-flex overflow-hidden leading-none"
@@ -200,30 +200,30 @@ export default function PartnerDashboard() {
                   </span>
                 )}
               </div>
-              <p className="text-white/50 text-sm mt-4">in den letzten 6 Monaten · Auszahlung nach erfolgreicher Vermittlung</p>
+              <p className="text-primary/50 text-sm mt-4">in den letzten 6 Monaten · Auszahlung nach erfolgreicher Vermittlung</p>
             </motion.div>
 
             {/* Rechts: Empfehlungs-Link */}
             <motion.div
               initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm p-6"
+              className="rounded-2xl border border-[#E4DFD3] bg-white backdrop-blur-sm p-6"
             >
               <p className="text-[11px] uppercase tracking-[0.18em] text-accent font-semibold mb-3">Dein Empfehlungs-Link</p>
-              <div className="rounded-xl bg-white/[0.06] border border-white/10 px-4 py-3.5 mb-4">
+              <div className="rounded-xl bg-surface border border-[#E4DFD3] px-4 py-3.5 mb-4">
                 <p className="text-lg sm:text-xl font-semibold tracking-tight break-all">
-                  <span className="text-white/45">porta-werk.de/r/</span><span className="text-white">{SLUG}</span>
+                  <span className="text-primary/45">porta-werk.de/r/</span><span className="text-primary">{SLUG}</span>
                 </p>
               </div>
               <div className="flex gap-2.5">
                 <button onClick={copy} className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-accent text-primary font-bold py-3 text-sm hover:bg-amber-400 transition-colors">
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}{copied ? "Kopiert" : "Kopieren"}
                 </button>
-                <button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-white font-semibold px-5 py-3 text-sm hover:bg-white/10 transition-colors">
+                <button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E4DFD3] text-primary font-semibold px-5 py-3 text-sm hover:bg-surface transition-colors">
                   <Share2 className="w-4 h-4" /> Teilen
                 </button>
               </div>
-              <p className="text-white/40 text-xs mt-4 flex items-center gap-1.5">
+              <p className="text-primary/45 text-xs mt-4 flex items-center gap-1.5">
                 <TrendingUp className="w-3.5 h-3.5 text-accent" /> 100 € pro erfolgreicher Vermittlung
               </p>
             </motion.div>

@@ -614,12 +614,12 @@ export default function SettingsContent() {
 
   return (
     <div className="min-h-screen" style={{ background: "#F5F2EC", fontFamily: "var(--font-sans)" }}>
-      <div className="sticky top-0 z-50 bg-primary">
+      <div className="sticky top-0 z-50 bg-white border-b border-[#E4DFD3]">
         <div className="max-w-3xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-2.5">
-            <Logo height={24} variant="hell" />
+            <Logo height={24} />
           </Link>
-          <button onClick={doLogout} className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <button onClick={doLogout} className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(12, 51, 48,0.6)" }}>
             <LogOut className="w-4 h-4" />{t("btn.logout")}
           </button>
         </div>

@@ -266,30 +266,30 @@ export default function PartnerSettings() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* ── Navy-Kopf ── */}
-      <div className="bg-primary pb-14">
+      <div className="bg-surface pb-14 border-b border-[#E4DFD3]">
         <div className="max-w-3xl mx-auto px-6">
           <div className="h-[68px] flex items-center justify-between">
             <Link href="/verdienen" className="flex items-center gap-2.5 group">
-              <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
-              <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
+              <Logo height={24} className="transition-transform group-hover:scale-95" />
+              <span className="text-primary/45 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>
             <button
               onClick={doLogout}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/5 text-sm font-medium px-4 py-2 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#C8CFCB] text-primary/80 hover:text-primary hover:border-[#C8CFCB] hover:bg-[#EDE8DE] text-sm font-medium px-4 py-2 transition-colors"
             >
               <LogOut className="w-4 h-4" /> Abmelden
             </button>
           </div>
           <Link
             href="/verdienen/dashboard"
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/25 text-white/80 hover:text-primary hover:bg-accent hover:border-accent text-[12px] font-semibold px-3.5 py-1.5 mt-4 mb-4 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#C8CFCB] text-primary/80 hover:text-primary hover:bg-accent hover:border-accent text-[12px] font-semibold px-3.5 py-1.5 mt-4 mb-4 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Zum Dashboard
           </Link>
-          <h1 className="text-white font-bold" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
+          <h1 className="text-primary font-bold" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
             Partner-Einstellungen
           </h1>
-          <p className="text-white/45 text-base mt-2">
+          <p className="text-primary/45 text-base mt-2">
             Deine Daten, deine Auszahlung, deine Sicherheit — alles an einem Ort.
           </p>
         </div>

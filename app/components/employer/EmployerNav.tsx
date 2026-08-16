@@ -38,7 +38,7 @@ export default function EmployerNav({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-white border-b border-[#E4DFD3] shadow-[0_2px_16px_rgba(12,51,48,0.10)]">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD] shadow-[0_2px_16px_rgba(12,51,48,0.10)]">
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
           <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0">
@@ -68,7 +68,7 @@ export default function EmployerNav({
                   key={a.href}
                   href={a.href}
                   className={`relative inline-flex items-center gap-1.5 px-4 py-2 text-sm transition-colors duration-200 whitespace-nowrap ${
-                    active ? "text-primary font-semibold" : "text-primary/55 hover:text-primary"
+                    active ? "text-primary font-semibold" : "text-primary/70 hover:text-primary"
                   }`}
                 >
                   {a.icon && <a.icon className="w-4 h-4 flex-shrink-0" strokeWidth={2.1} />}
@@ -89,7 +89,7 @@ export default function EmployerNav({
 
           <div className="hidden lg:flex items-center justify-end gap-5 flex-shrink-0">
             <span
-              className="text-primary/60 text-sm truncate max-w-[240px] text-right"
+              className="text-primary/70 text-sm truncate max-w-[240px] text-right"
               title={companyName}
             >
               {companyName}
@@ -120,7 +120,7 @@ export default function EmployerNav({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden overflow-hidden bg-white border-t border-[#E4DFD3]"
+            className="lg:hidden overflow-hidden bg-[#DCEAE6] border-t border-[#B9D3CD]"
             style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
           >
             <div className="max-w-[1680px] mx-auto px-6 py-4 flex flex-col">
@@ -130,7 +130,7 @@ export default function EmployerNav({
                   href={a.href}
                   onClick={() => setMobileOpen(false)}
                   className={`inline-flex items-center gap-2 py-3 text-base ${
-                    pathname.startsWith(a.href) ? "text-primary font-semibold" : "text-primary/65"
+                    pathname.startsWith(a.href) ? "text-primary font-semibold" : "text-primary/70"
                   }`}
                 >
                   {a.icon && <a.icon className="w-4 h-4 flex-shrink-0" strokeWidth={2.1} />}

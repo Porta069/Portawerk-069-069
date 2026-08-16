@@ -19,7 +19,7 @@ export default function RechtlichesPage() {
   return (
     <div className="min-h-screen" style={{ background: "#F5F2EC", fontFamily: "var(--font-sans)" }}>
       {/* ── Navbar ── */}
-      <div className="sticky top-0 z-50 bg-white border-b border-[#E4DFD3]">
+      <div className="sticky top-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD]">
         <div className="max-w-4xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <Logo height={24} priority />
@@ -27,7 +27,7 @@ export default function RechtlichesPage() {
           <Link
             href="/"
             className="flex items-center gap-1.5 text-sm transition-colors"
-            style={{ color: "rgba(12, 51, 48,0.6)" }}
+            style={{ color: "rgba(12, 51, 48,0.75)" }}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Startseite
@@ -101,7 +101,7 @@ export default function RechtlichesPage() {
                         verschmelzen. Einzeilige Texte ändert es nicht. */}
                     <p
                       className="text-sm leading-relaxed whitespace-pre-line"
-                      style={{ color: "rgba(12, 51, 48,0.6)" }}
+                      style={{ color: "rgba(12, 51, 48,0.75)" }}
                     >
                       {block.text}
                     </p>

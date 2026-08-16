@@ -62,7 +62,7 @@ export default function DashboardNav({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-white border-b border-[#E4DFD3] shadow-[0_2px_16px_rgba(12,51,48,0.10)]">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD] shadow-[0_2px_16px_rgba(12,51,48,0.10)]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="relative flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
@@ -83,7 +83,7 @@ export default function DashboardNav({
                   key={a.href}
                   href={a.href}
                   className={`relative px-4 py-2 text-sm transition-colors duration-200 whitespace-nowrap ${
-                    active ? "text-primary font-semibold" : "text-primary/55 hover:text-primary"
+                    active ? "text-primary font-semibold" : "text-primary/70 hover:text-primary"
                   }`}
                 >
                   {a.label}
@@ -98,7 +98,7 @@ export default function DashboardNav({
           <div className="hidden lg:flex items-center gap-5 flex-shrink-0">
             <Link
               href="/einstellungen"
-              className="inline-flex items-center gap-2 text-primary/55 hover:text-primary text-sm transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-primary/70 hover:text-primary text-sm transition-colors duration-200"
             >
               <Settings className="w-4 h-4" />
               Einstellungen
@@ -130,7 +130,7 @@ export default function DashboardNav({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden overflow-hidden bg-white border-t border-[#E4DFD3]"
+            className="lg:hidden overflow-hidden bg-[#DCEAE6] border-t border-[#B9D3CD]"
             style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
           >
             <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col">
@@ -143,7 +143,7 @@ export default function DashboardNav({
                     href={a.href}
                     onClick={() => setMobileOpen(false)}
                     className={`py-3 text-base transition-colors ${
-                      active ? "text-primary font-semibold" : "text-primary/65"
+                      active ? "text-primary font-semibold" : "text-primary/70"
                     }`}
                   >
                     {a.label}
@@ -155,7 +155,7 @@ export default function DashboardNav({
                 <Link
                   href="/einstellungen"
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center gap-2 text-primary/65 text-base"
+                  className="inline-flex items-center gap-2 text-primary/70 text-base"
                 >
                   <Settings className="w-4 h-4" />
                   Einstellungen

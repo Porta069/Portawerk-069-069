@@ -173,18 +173,18 @@ export default function PartnerFunnel() {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "var(--color-surface)" }}>
       {/* Kopf */}
-      <div className="sticky top-0 z-50 bg-white border-b border-[#E4DFD3]">
+      <div className="sticky top-0 z-50 bg-[#DCEAE6] border-b border-[#B9D3CD]">
         <div className="max-w-2xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/verdienen" className="flex items-center gap-2.5 group">
             <Logo height={24} className="transition-transform group-hover:scale-95" />
           </Link>
           {step > 0 && !isSuccess && (
-            <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1.5 text-sm text-primary/60 hover:text-primary transition-colors">
+            <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1.5 text-sm text-primary/70 hover:text-primary transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Zurück
             </button>
           )}
           {step === 0 && !isSuccess && (
-            <Link href="/verdienen/login" className="text-sm text-primary/60 hover:text-primary transition-colors">
+            <Link href="/verdienen/login" className="text-sm text-primary/70 hover:text-primary transition-colors">
               Schon Partner? <span className="text-[#8A5F04] font-semibold">Anmelden</span>
             </Link>
           )}

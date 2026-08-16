@@ -66,7 +66,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white border-b border-[#E4DFD3] ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#DCEAE6] border-b border-[#B9D3CD] ${
         scrolled ? "shadow-[0_2px_16px_rgba(12,51,48,0.10)]" : ""
       }`}
     >
@@ -92,7 +92,7 @@ export default function Navbar() {
                   key={a.href}
                   href={a.href}
                   className={`relative px-4 py-2 text-sm transition-colors duration-200 whitespace-nowrap ${
-                    active ? "text-primary font-semibold" : "text-primary/55 hover:text-primary"
+                    active ? "text-primary font-semibold" : "text-primary/70 hover:text-primary"
                   }`}
                 >
                   {a.label}
@@ -109,7 +109,7 @@ export default function Navbar() {
             {showDashboard ? (
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 text-primary/55 hover:text-primary text-sm transition-colors duration-200 whitespace-nowrap"
+                className="inline-flex items-center gap-2 text-primary/70 hover:text-primary text-sm transition-colors duration-200 whitespace-nowrap"
               >
                 <LayoutDashboard className="w-4 h-4" />
                 Meine Bewerbungen
@@ -117,7 +117,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href={cta.login}
-                className="text-primary/55 hover:text-primary text-sm transition-colors duration-200"
+                className="text-primary/70 hover:text-primary text-sm transition-colors duration-200"
               >
                 {cta.loginLabel}
               </Link>
@@ -147,7 +147,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden bg-white border-t border-[#E4DFD3] overflow-hidden"
+            className="lg:hidden bg-[#DCEAE6] border-t border-[#B9D3CD] overflow-hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-1">
               {AUDIENCES.map((a) => {
@@ -165,7 +165,7 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              <div className="h-px bg-[#E4DFD3] my-3" />
+              <div className="h-px bg-[#B9D3CD] my-3" />
               {showDashboard ? (
                 <Link
                   href="/dashboard"

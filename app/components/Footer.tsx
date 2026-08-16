@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Hammer, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import Logo from "@/app/components/Logo";
 
 const NAV = [
   { href: "/", label: "Für Handwerker" },
@@ -24,12 +25,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 bg-accent flex items-center justify-center">
-                <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-              </div>
-              <span className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>
-                PortaWerk
-              </span>
+              <Logo height={24} variant="hell" />
             </Link>
             <p className="text-white/35 text-sm leading-relaxed">
               Diskrete Jobvermittlung fürs Handwerk.
@@ -78,12 +74,12 @@ export default function Footer() {
               Netzwerk
             </p>
             <a
-              href="https://portajobs.de"
+              href="https://porta-jobs.de"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-white/45 text-sm hover:text-white transition-colors duration-200 mb-8"
             >
-              portajobs.de — Job-Hub
+              porta-jobs.de — Job-Hub
               <ExternalLink className="w-3 h-3" />
             </a>
 
@@ -107,7 +103,7 @@ export default function Footer() {
 
         <div className="pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <p className="text-white/20 text-xs">
-            © {new Date().getFullYear()} PortaWerk — ein Angebot von portajobs.de
+            © {new Date().getFullYear()} PortaWerk — ein Angebot von porta-jobs.de
           </p>
           <p className="text-white/15 text-xs">Handwerk · Bau · Ausbau · Elektro · SHK</p>
         </div>

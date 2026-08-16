@@ -8,13 +8,13 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Hammer, Copy, Check, Share2, Users, BadgeCheck, TrendingUp,
+import { Copy, Check, Share2, Users, BadgeCheck, TrendingUp,
   UserPlus, Clock, LogOut, ArrowUpRight, Trophy, Medal, Crown, Loader2, Settings,
 } from "lucide-react";
 import EarningsChart from "./EarningsChart";
 import Visitenkarte from "./Visitenkarte";
 import { api, partnerSession, type PartnerDashboardData, type ReferralStatus } from "@/lib/api";
+import Logo from "@/app/components/Logo";
 
 const fmt = (n: number) => n.toLocaleString("de-DE");
 
@@ -156,10 +156,7 @@ export default function PartnerDashboard() {
           {/* Topbar */}
           <div className="h-[68px] flex items-center justify-between">
             <Link href="/verdienen" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 bg-accent flex items-center justify-center rounded-md transition-transform group-hover:scale-95">
-                <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-              </div>
-              <span className="text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
+              <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
               <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>
             <div className="flex items-center gap-2.5">
@@ -215,7 +212,7 @@ export default function PartnerDashboard() {
               <p className="text-[11px] uppercase tracking-[0.18em] text-accent font-semibold mb-3">Dein Empfehlungs-Link</p>
               <div className="rounded-xl bg-white/[0.06] border border-white/10 px-4 py-3.5 mb-4">
                 <p className="text-lg sm:text-xl font-semibold tracking-tight break-all">
-                  <span className="text-white/45">portawerk.de/r/</span><span className="text-white">{SLUG}</span>
+                  <span className="text-white/45">porta-werk.de/r/</span><span className="text-white">{SLUG}</span>
                 </p>
               </div>
               <div className="flex gap-2.5">

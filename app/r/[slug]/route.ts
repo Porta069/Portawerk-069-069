@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { API_BASE_URL } from "@/lib/api";
 import { REF_COOKIE, REF_MAX_AGE_SECONDS } from "@/lib/referral";
 
-// ─── Empfehlungs-Link: portawerk.de/r/<slug> ─────────────────────────────────
+// ─── Empfehlungs-Link: porta-werk.de/r/<slug> ─────────────────────────────────
 //
 // Der Slug wird vom Backend gegen einen AKTIVEN Partner geprüft. Nur wenn er
 // einem gehört, wird der Klick gezählt und die Zuordnung gesetzt — vorher

@@ -9,8 +9,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Hammer, ArrowRight, Eye, EyeOff, Lock, Loader2, Wallet } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Loader2, Wallet } from "lucide-react";
 import { api, partnerSession } from "@/lib/api";
+import Logo from "@/app/components/Logo";
 
 export default function PartnerLoginPage() {
   const router = useRouter();
@@ -51,12 +52,7 @@ export default function PartnerLoginPage() {
           }}
         />
         <Link href="/verdienen" className="relative flex items-center gap-3 w-fit">
-          <div className="w-9 h-9 bg-accent flex items-center justify-center">
-            <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-          </div>
-          <span className="text-white text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
-            PortaWerk
-          </span>
+          <Logo height={24} variant="hell" priority />
           <span className="text-white/40 text-sm ml-1">· Partner</span>
         </Link>
 
@@ -94,12 +90,7 @@ export default function PartnerLoginPage() {
         >
           {/* Mobile Logo */}
           <Link href="/verdienen" className="lg:hidden flex items-center gap-2.5 mb-10">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-primary text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>
-              PortaWerk
-            </span>
+            <Logo height={22} />
             <span className="text-muted text-sm">· Partner</span>
           </Link>
 

@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hammer, ArrowLeft, Loader2, Lightbulb } from "lucide-react";
+import { ArrowLeft, Loader2, Lightbulb } from "lucide-react";
 import { useRegistration, type RegStep } from "@/app/context/RegistrationContext";
 import { api } from "@/lib/api";
 import { StepRail } from "@/app/components/StepRail";
@@ -23,6 +23,7 @@ import StepOrte from "./steps/StepOrte";
 import StepKonto from "./steps/StepKonto";
 import StepVerify from "./steps/StepVerify";
 import StepSuccess from "./steps/StepSuccess";
+import Logo from "@/app/components/Logo";
 
 interface StepMeta {
   key: RegStep;
@@ -206,15 +207,7 @@ export default function RegisterFlow() {
 
         <div className="relative flex flex-col h-full px-6 lg:px-12 py-8 lg:py-12">
           <Link href="/" className="group inline-flex items-center gap-2.5 w-fit">
-            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center transition-transform duration-200 group-hover:-rotate-6">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2.2} />
-            </div>
-            <span
-              className="text-white text-lg font-bold tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              PortaWerk
-            </span>
+            <Logo height={24} variant="hell" priority />
           </Link>
 
           <div className="flex-1 flex flex-col justify-center py-10 lg:py-0">

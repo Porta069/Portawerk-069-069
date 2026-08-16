@@ -1,10 +1,12 @@
 // ─── Rechtliche Informationen & Bedingungen ──────────────────────────────────
 // Scrollbare Seite mit Datenschutz, Nutzungsbedingungen, Impressum & Cookies.
-// ACHTUNG: Platzhalter-Texte — vor Live-Gang anwaltlich prüfen lassen.
+// Die Texte beschreiben das tatsächliche System (siehe lib/legal.ts). Offen
+// sind nur die Angaben in eckigen Klammern — die sind bewusst nicht erfunden.
 
 import Link from "next/link";
-import { Hammer, ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { legalSections } from "@/lib/legal";
+import Logo from "@/app/components/Logo";
 
 export const metadata = {
   title: "Rechtliches — PortaWerk",
@@ -20,12 +22,7 @@ export default function RechtlichesPage() {
       <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-4xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-              PortaWerk
-            </span>
+            <Logo height={24} variant="hell" priority />
           </Link>
           <Link
             href="/"
@@ -50,16 +47,17 @@ export default function RechtlichesPage() {
           Informationen & Bedingungen
         </h1>
 
-        {/* Platzhalter-Warnung */}
+        {/* Hinweis auf die noch offenen Pflichtangaben */}
         <div
           className="flex items-start gap-3 px-5 py-4 mb-10"
           style={{ background: "rgba(232,168,56,0.08)", border: "1px solid rgba(232,168,56,0.3)" }}
         >
           <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
           <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.65)" }}>
-            <strong>Hinweis:</strong> Alle folgenden Texte sind Platzhalter und müssen
-            vor dem Live-Gang von einer Rechtsanwältin oder einem Rechtsanwalt geprüft
-            und angepasst werden.
+            <strong>Hinweis:</strong> Die folgenden Texte beschreiben den tatsächlichen
+            Stand der Plattform. Angaben in eckigen Klammern fehlen uns noch und müssen
+            vor dem Live-Gang ergänzt werden; die Texte sollten zusätzlich von einer
+            Rechtsanwältin oder einem Rechtsanwalt geprüft werden.
           </p>
         </div>
 

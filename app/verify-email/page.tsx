@@ -6,7 +6,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Hammer, ArrowRight, Info } from "lucide-react";
+import { ArrowRight, Info } from "lucide-react";
+import Logo from "@/app/components/Logo";
 
 export default function VerifyEmailPage() {
   return (
@@ -21,12 +22,7 @@ export default function VerifyEmailPage() {
         className="w-full max-w-md text-center"
       >
         <Link href="/" className="inline-flex items-center gap-2.5 mb-12">
-          <div className="w-8 h-8 bg-accent flex items-center justify-center">
-            <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-          </div>
-          <span className="text-primary text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>
-            PortaWerk
-          </span>
+          <Logo height={24} priority />
         </Link>
 
         <div className="bg-white px-8 py-12" style={{ border: "1px solid #E5E7EB" }}>

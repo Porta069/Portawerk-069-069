@@ -10,7 +10,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hammer, Settings, LogOut, Menu, X } from "lucide-react";
+import { Settings, LogOut, Menu, X } from "lucide-react";
+import Logo from "@/app/components/Logo";
 
 export interface NavBadges {
   angebote?: number;
@@ -65,15 +66,12 @@ export default function DashboardNav({
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="relative flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-9 h-9 bg-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-95">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span
-              className="text-white text-xl font-bold tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              PortaWerk
-            </span>
+            <Logo
+              height={26}
+              variant="hell"
+              priority
+              className="transition-transform duration-300 group-hover:scale-95"
+            />
           </Link>
 
           {/* Bereiche — mittig, wie die Zielgruppen-Tabs der Hauptleiste */}

@@ -7,8 +7,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Hammer, ArrowLeft, Search, User as UserIcon, ListChecks, ShieldCheck,
+import { ArrowLeft, Search, User as UserIcon, ListChecks, ShieldCheck,
   Languages, LifeBuoy, Scale, Database, LogOut, Loader2, Check, Eye, EyeOff,
   Download, Trash2, Mail, ChevronDown, ChevronRight, Monitor, MapPin, AlertCircle,
 } from "lucide-react";
@@ -30,6 +29,7 @@ import { evaluatePassword } from "@/lib/password";
 import { matchingSections, type SettingsSectionId } from "@/lib/settingsSearch";
 import PasswordStrength from "@/app/components/PasswordStrength";
 import { Field, PrimaryButton } from "@/app/components/ui";
+import Logo from "@/app/components/Logo";
 
 type T = (key: string) => string;
 
@@ -503,7 +503,7 @@ function HelpSection({ t }: { t: T }) {
           </div>
         ))}
       </div>
-      <a href="mailto:support@portawerk.de" className="inline-flex items-center gap-2 mt-4 text-sm font-semibold" style={{ color: "#E8A838" }}>
+      <a href="mailto:support@porta-werk.de" className="inline-flex items-center gap-2 mt-4 text-sm font-semibold" style={{ color: "#E8A838" }}>
         <Mail className="w-4 h-4" />{t("help.contact")}
       </a>
       <p className="text-[11px] mt-3" style={{ color: "rgba(107,114,128,0.6)" }}>Weitere Hilfe folgt — später verbunden mit dem Admin-Bereich.</p>
@@ -617,10 +617,7 @@ export default function SettingsContent() {
       <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-3xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
+            <Logo height={24} variant="hell" />
           </Link>
           <button onClick={doLogout} className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
             <LogOut className="w-4 h-4" />{t("btn.logout")}

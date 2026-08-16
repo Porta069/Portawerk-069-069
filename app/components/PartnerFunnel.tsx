@@ -9,8 +9,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Hammer, ArrowLeft, ArrowRight, Loader2, Check, Copy, Share2,
+import { ArrowLeft, ArrowRight, Loader2, Check, Copy, Share2,
   Sparkles, Lock, Phone, User, Mail, RefreshCw, LayoutDashboard,
 } from "lucide-react";
 import { ProgressBar, StepIndicators, type StepDef } from "./ProgressBar";
@@ -18,6 +17,7 @@ import OtpInput from "./OtpInput";
 import PasswordStrength from "./PasswordStrength";
 import { evaluatePassword } from "@/lib/password";
 import { api, partnerSession } from "@/lib/api";
+import Logo from "@/app/components/Logo";
 
 const STEP_DEFS: StepDef[] = [
   { code: "01", label: "Deine Daten" },
@@ -26,7 +26,7 @@ const STEP_DEFS: StepDef[] = [
   { code: "✓", label: "Fertig" },
 ];
 const CONTENT_STEPS = 3;
-const BASE = "portawerk.de/r/";
+const BASE = "porta-werk.de/r/";
 
 const HEAD = [
   { h: "Werde Partner", s: "Deine Daten — damit wir dich erreichen und deine Prämie auszahlen können." },
@@ -176,10 +176,7 @@ export default function PartnerFunnel() {
       <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-2xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/verdienen" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center transition-transform group-hover:scale-95">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
+            <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
           </Link>
           {step > 0 && !isSuccess && (
             <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors">

@@ -134,7 +134,7 @@ export default function ArbeitgeberForm({
       /* Storage nicht verfuegbar — unkritisch */
     }
 
-    window.location.href = `mailto:kontakt@portawerk.de?subject=${encodeURIComponent(
+    window.location.href = `mailto:kontakt@porta-werk.de?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
 

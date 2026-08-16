@@ -32,7 +32,7 @@ function useDevPreview(): boolean {
 /** Anzeige-Nutzer für die Vorschau — es wird keine Session erzeugt. */
 const PREVIEW_USER = {
   id: "preview",
-  email: "vorschau@portawerk.de",
+  email: "vorschau@porta-werk.de",
   firstName: "Vorschau",
   lastName: "",
   phone: "+49 170 0000000",

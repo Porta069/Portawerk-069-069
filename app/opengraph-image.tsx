@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+import { join } from "path";
 import { ImageResponse } from "next/og";
 
 // ─── Open-Graph-Bild (Link-Vorschau) ─────────────────────────────────────────
@@ -11,6 +13,13 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OgImage() {
+  // Die Wortmarke wird als Datei eingebettet: `next/og` rendert serverseitig
+  // und kann keine Datei über einen Pfad nachladen — ein relativer `src`
+  // bliebe schlicht leer.
+  const logo = readFileSync(
+    join(process.cwd(), "public/images/portawerk-logo-hell.png"),
+  ).toString("base64");
+
   return new ImageResponse(
     (
       <div
@@ -41,35 +50,14 @@ export default function OgImage() {
         />
 
         {/* Marke */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              background: "#E8A838",
-              borderRadius: 14,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 40,
-              fontWeight: 800,
-              color: "#1A1A2E",
-              fontFamily: "Georgia, serif",
-            }}
-          >
-            P
-          </div>
-          <div
-            style={{
-              fontSize: 44,
-              fontWeight: 700,
-              color: "white",
-              display: "flex",
-              fontFamily: "Georgia, serif",
-            }}
-          >
-            PortaWerk
-          </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`data:image/png;base64,${logo}`}
+            width={504}
+            height={70}
+            alt="PortaWerk"
+          />
         </div>
 
         {/* Kernversprechen */}

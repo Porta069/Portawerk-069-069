@@ -8,8 +8,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Building2, LogOut, Menu, X, Settings } from "lucide-react";
+import { LogOut, Menu, X, Settings } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import Logo from "@/app/components/Logo";
 
 const AREAS: { href: string; label: string; icon?: LucideIcon }[] = [
   { href: "/unternehmen/dashboard", label: "Kandidaten suchen" },
@@ -41,15 +42,12 @@ export default function EmployerNav({
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
           <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-9 h-9 bg-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-95">
-              <Building2 className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span
-              className="text-white text-xl font-bold tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              PortaWerk
-            </span>
+            <Logo
+              height={26}
+              variant="hell"
+              priority
+              className="transition-transform duration-300 group-hover:scale-95"
+            />
             <span
               className="hidden sm:inline text-[11px] font-semibold uppercase tracking-[0.16em] px-2 py-1 rounded"
               style={{ background: "rgba(232,168,56,0.16)", color: "#E8A838" }}

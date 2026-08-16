@@ -8,7 +8,6 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Hammer,
   ArrowLeft,
   Upload,
   FileText,
@@ -24,6 +23,7 @@ import { api } from "@/lib/api";
 import { GEWERKE, BUNDESLAENDER } from "@/lib/constants";
 import { Field, SelectField, SectionLabel, PrimaryButton } from "@/app/components/ui";
 import OtpInput from "@/app/components/OtpInput";
+import Logo from "@/app/components/Logo";
 
 const CONSENT_VERSION = "v1-2026-07";
 const CONSENT_TEXT =
@@ -184,10 +184,7 @@ export default function UnterlagenPage() {
       <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-3xl mx-auto px-6 h-[68px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
+            <Logo height={24} variant="hell" />
           </Link>
           <Link href="/dashboard" className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
             <ArrowLeft className="w-3.5 h-3.5" />Dashboard

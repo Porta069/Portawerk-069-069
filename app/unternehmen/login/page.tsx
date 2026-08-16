@@ -8,10 +8,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Building2, ArrowRight, Eye, EyeOff, Lock, Loader2, FileSignature } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Loader2, FileSignature } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { api } from "@/lib/api";
 import { Field } from "@/app/components/ui";
+import Logo from "@/app/components/Logo";
 
 export default function UnternehmenLoginPage() {
   const router = useRouter();
@@ -63,11 +64,9 @@ export default function UnternehmenLoginPage() {
           }}
         />
         <Link href="/" className="relative flex items-center gap-3 w-fit">
-          <div className="w-9 h-9 bg-accent flex items-center justify-center">
-            <Building2 className="w-4 h-4 text-primary" strokeWidth={2} />
-          </div>
-          <span className="text-white text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
-            PortaWerk <span className="text-accent">Business</span>
+          <Logo height={24} variant="hell" priority />
+          <span className="text-accent text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+            Business
           </span>
         </Link>
 
@@ -105,11 +104,9 @@ export default function UnternehmenLoginPage() {
           className="w-full max-w-sm"
         >
           <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Building2 className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
+            <Logo height={22} />
             <span className="text-primary text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>
-              PortaWerk Business
+              Business
             </span>
           </Link>
 
@@ -181,13 +178,22 @@ export default function UnternehmenLoginPage() {
             </button>
           </form>
 
+          {/* Der Text gehört in EIN Flex-Kind: sonst wird jeder Knoten zur
+              eigenen Spalte und die Zeile zerfällt — bei der längeren Adresse
+              sogar mitten im Wort. */}
           <div className="flex items-start gap-2 mt-6 text-[11px]" style={{ color: "rgba(107,114,128,0.75)" }}>
             <Lock className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
-            Noch kein Firmenzugang? Kontaktiere uns unter{" "}
-            <a href="mailto:kontakt@portawerk.de" className="font-semibold" style={{ color: "#E8A838" }}>
-              kontakt@portawerk.de
-            </a>
-            — Zugänge vergeben wir nach Vertragsabschluss.
+            <span className="leading-relaxed">
+              Noch kein Firmenzugang? Kontaktiere uns unter{" "}
+              <a
+                href="mailto:kontakt@porta-werk.de"
+                className="font-semibold whitespace-nowrap"
+                style={{ color: "#E8A838" }}
+              >
+                kontakt@porta-werk.de
+              </a>{" "}
+              — Zugänge vergeben wir nach Vertragsabschluss.
+            </span>
           </div>
 
           <p className="mt-6 text-sm text-center" style={{ color: "#6B7280" }}>

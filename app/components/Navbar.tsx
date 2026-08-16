@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Hammer, Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/app/context/AuthContext";
+import Logo from "@/app/components/Logo";
 
 // Drei Zielgruppen-Welten, umschaltbar über die Kopfleiste.
 const AUDIENCES = [
@@ -21,7 +22,7 @@ function ctaFor(pathname: string) {
       login: "/unternehmen/login",
       loginLabel: "Unternehmen-Login",
       label: "Kontakt aufnehmen",
-      href: "mailto:kontakt@portawerk.de",
+      href: "mailto:kontakt@porta-werk.de",
     };
   }
   if (pathname.startsWith("/verdienen")) {
@@ -72,15 +73,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-9 h-9 bg-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-95">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span
-              className="text-white text-xl font-bold tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              PortaWerk
-            </span>
+            <Logo
+              height={26}
+              variant="hell"
+              priority
+              className="transition-transform duration-300 group-hover:scale-95"
+            />
           </Link>
 
           {/* Zielgruppen-Tabs */}

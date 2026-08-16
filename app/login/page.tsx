@@ -6,10 +6,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Hammer, ArrowRight, Eye, EyeOff, Lock, Loader2 } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { api } from "@/lib/api";
 import { Field } from "@/app/components/ui";
+import Logo from "@/app/components/Logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -68,12 +69,7 @@ export default function LoginPage() {
           }}
         />
         <Link href="/" className="relative flex items-center gap-3 w-fit">
-          <div className="w-9 h-9 bg-accent flex items-center justify-center">
-            <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-          </div>
-          <span className="text-white text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
-            PortaWerk
-          </span>
+          <Logo height={24} variant="hell" priority />
         </Link>
 
         <div className="relative">
@@ -95,7 +91,7 @@ export default function LoginPage() {
         </div>
 
         <p className="relative text-white/25 text-xs">
-          © {new Date().getFullYear()} PortaWerk — ein Angebot von portajobs.de
+          © {new Date().getFullYear()} PortaWerk — ein Angebot von porta-jobs.de
         </p>
       </div>
 
@@ -109,12 +105,7 @@ export default function LoginPage() {
         >
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10">
-            <div className="w-8 h-8 bg-accent flex items-center justify-center">
-              <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-            </div>
-            <span className="text-primary text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>
-              PortaWerk
-            </span>
+            <Logo height={22} />
           </Link>
 
           <h2

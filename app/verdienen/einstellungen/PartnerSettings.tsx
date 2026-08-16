@@ -9,14 +9,14 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Hammer, ArrowLeft, ChevronDown, User as UserIcon, Wallet, ShieldCheck,
+import { ArrowLeft, ChevronDown, User as UserIcon, Wallet, ShieldCheck,
   Scale, Database, Loader2, Check, Copy, LogOut, Download, Trash2,
   ExternalLink, BadgeCheck, AlertTriangle, Lock,
 } from "lucide-react";
 import { api, partnerSession, type PublicPartner } from "@/lib/api";
 import PasswordStrength from "@/app/components/PasswordStrength";
 import { evaluatePassword } from "@/lib/password";
+import Logo from "@/app/components/Logo";
 
 // ── UI-Bausteine (Muster der Bewerber-Einstellungen) ──
 const inputCls =
@@ -270,10 +270,7 @@ export default function PartnerSettings() {
         <div className="max-w-3xl mx-auto px-6">
           <div className="h-[68px] flex items-center justify-between">
             <Link href="/verdienen" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 bg-accent flex items-center justify-center rounded-md transition-transform group-hover:scale-95">
-                <Hammer className="w-4 h-4 text-primary" strokeWidth={2} />
-              </div>
-              <span className="text-white text-lg font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>PortaWerk</span>
+              <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
               <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>
             <button

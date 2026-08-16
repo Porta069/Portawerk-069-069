@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 
-const BASE = "portawerk.de/r/";
+const BASE = "porta-werk.de/r/";
 
 const slugify = (s: string) =>
   s

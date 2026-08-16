@@ -250,7 +250,7 @@ export default function JobsPreview() {
           {visibleJobs.map((job) => (
             <article
               key={job.title}
-              className="group bg-white border border-border rounded-2xl overflow-hidden hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(26,26,46,0.22)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 flex flex-col"
+              className="group bg-white border border-border rounded-2xl overflow-hidden hover:border-accent hover:shadow-[0_22px_44px_-18px_rgba(12, 51, 48,0.22)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 flex flex-col"
             >
               {/* Banner-Bild mit Tag */}
               <div className="relative h-36 w-full overflow-hidden">
@@ -359,7 +359,7 @@ export default function JobsPreview() {
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-white border border-border shadow-[0_24px_60px_-30px_rgba(26,26,46,0.3)] mb-10"
+          className="bg-white border border-border shadow-[0_24px_60px_-30px_rgba(12, 51, 48,0.3)] mb-10"
         >
           {/* Gold-Akzent oben (Konsistenz zu den Job-Karten) */}
           <div className="h-1 w-full bg-accent" />
@@ -382,7 +382,7 @@ export default function JobsPreview() {
             {/* Hochwertige Suchleiste mit Button */}
             <form
               onSubmit={handleSearch}
-              className="flex items-stretch max-w-2xl mx-auto border border-border bg-white transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 shadow-[0_12px_28px_-18px_rgba(26,26,46,0.4)]"
+              className="flex items-stretch max-w-2xl mx-auto border border-border bg-white transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 shadow-[0_12px_28px_-18px_rgba(12, 51, 48,0.4)]"
             >
               <div className="relative flex-1 flex items-center">
                 <Search

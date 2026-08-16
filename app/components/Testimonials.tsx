@@ -56,7 +56,7 @@ export default function Testimonials() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-12"
         >
-          <span className="flex items-center gap-3 text-accent text-xs font-medium tracking-[0.2em] uppercase mb-5">
+          <span className="flex items-center gap-3 text-[#8A5F04] text-xs font-medium tracking-[0.2em] uppercase mb-5">
             <span className="w-8 h-[2px] bg-accent" />
             Was andere Handwerker sagen
           </span>
@@ -76,14 +76,14 @@ export default function Testimonials() {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative bg-white rounded-2xl border border-border shadow-[0_16px_40px_-24px_rgba(26,26,46,0.28)] p-8 flex flex-col hover:shadow-[0_24px_50px_-24px_rgba(26,26,46,0.35)] transition-shadow duration-300"
+              className="relative bg-white rounded-2xl border border-border shadow-[0_16px_40px_-24px_rgba(12, 51, 48,0.28)] p-8 flex flex-col hover:shadow-[0_24px_50px_-24px_rgba(12, 51, 48,0.35)] transition-shadow duration-300"
             >
               {/* Dekoratives Anführungszeichen */}
               <div
                 className="w-11 h-11 rounded-full flex items-center justify-center mb-5"
                 style={{ background: "var(--color-accent-soft)" }}
               >
-                <Quote className="w-5 h-5 text-accent" fill="currentColor" strokeWidth={0} />
+                <Quote className="w-5 h-5 text-[#8A5F04]" fill="currentColor" strokeWidth={0} />
               </div>
 
               <blockquote className="text-primary text-lg leading-relaxed flex-1 mb-8">
@@ -105,7 +105,7 @@ export default function Testimonials() {
                     className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ring-2 ring-accent/40"
                     style={{ background: "var(--color-accent-soft)" }}
                   >
-                    <span className="text-sm font-bold" style={{ color: "#B47B18" }}>
+                    <span className="text-sm font-bold" style={{ color: "#8A5F04" }}>
                       {t.initials}
                     </span>
                   </div>
@@ -122,7 +122,7 @@ export default function Testimonials() {
         </div>
 
         <p className="text-muted text-xs mt-6 flex items-center gap-2">
-          <span className="text-accent">•</span>
+          <span className="text-[#8A5F04]">•</span>
           Nachname und Betrieb bleiben privat — Diskretion ist bei uns Prinzip, nicht Ausnahme.
         </p>
       </div>

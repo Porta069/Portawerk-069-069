@@ -26,8 +26,8 @@ export interface SearchArea {
 const homeIcon = L.divIcon({
   className: "",
   html: `<div style="position:relative;width:30px;height:30px">
-    <div style="position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#1A1A2E;border:2.5px solid #fff;box-shadow:0 6px 14px -4px rgba(26,26,46,.6)"></div>
-    <div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:2px;background:#E8A838"></div>
+    <div style="position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#0C3330;border:2.5px solid #fff;box-shadow:0 6px 14px -4px rgba(12, 51, 48,.6)"></div>
+    <div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:2px;background:#F9AD07"></div>
   </div>`,
   iconSize: [30, 30],
   iconAnchor: [15, 30],
@@ -173,7 +173,7 @@ export default function SearchAreaMap({
       <div className="relative mb-3">
         <Search
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-          style={{ color: focused ? "#E8A838" : "rgba(255,255,255,0.35)" }}
+          style={{ color: focused ? "#F9AD07" : "rgba(255,255,255,0.35)" }}
         />
         <input
           value={query}
@@ -187,13 +187,13 @@ export default function SearchAreaMap({
           className="w-full rounded-full text-[15px] pl-12 pr-11 py-3.5 outline-none transition-all"
           style={{
             background: "rgba(255,255,255,0.07)",
-            border: `1.5px solid ${focused ? "#E8A838" : "rgba(255,255,255,0.16)"}`,
+            border: `1.5px solid ${focused ? "#F9AD07" : "rgba(255,255,255,0.16)"}`,
             color: "white",
           }}
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2">
           {searching ? (
-            <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#E8A838" }} />
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#F9AD07" }} />
           ) : query ? (
             <button
               type="button"
@@ -212,7 +212,7 @@ export default function SearchAreaMap({
         {open && hits.length > 0 && (
           <div
             className="absolute z-[20] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
-            style={{ boxShadow: "0 20px 40px -18px rgba(26,26,46,0.5)" }}
+            style={{ boxShadow: "0 20px 40px -18px rgba(12, 51, 48,0.5)" }}
           >
             {hits.map((h, i) => (
               <button
@@ -220,13 +220,13 @@ export default function SearchAreaMap({
                 type="button"
                 onClick={() => pick(h)}
                 className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-[14px] transition-colors"
-                style={{ color: "rgba(26,26,46,0.82)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.09)")}
+                style={{ color: "rgba(12, 51, 48,0.82)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(249, 173, 7,0.09)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
                 <span className="truncate">{h.label}</span>
                 {h.plz && (
-                  <span className="text-[12px] tabular-nums flex-shrink-0" style={{ color: "rgba(26,26,46,0.45)" }}>
+                  <span className="text-[12px] tabular-nums flex-shrink-0" style={{ color: "rgba(12, 51, 48,0.45)" }}>
                     {h.plz}
                   </span>
                 )}
@@ -241,9 +241,9 @@ export default function SearchAreaMap({
         {locating && (
           <div
             className="absolute z-[10] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium"
-            style={{ background: "rgba(26,26,46,0.94)", color: "white" }}
+            style={{ background: "rgba(12, 51, 48,0.94)", color: "white" }}
           >
-            <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#E8A838" }} />
+            <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#F9AD07" }} />
             Standort wird ermittelt …
           </div>
         )}
@@ -251,9 +251,9 @@ export default function SearchAreaMap({
         {!area && !locating && (
           <div
             className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
-            style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)" }}
+            style={{ background: "rgba(255,255,255,0.94)", color: "rgba(12, 51, 48,0.72)" }}
           >
-            <Crosshair className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+            <Crosshair className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
             Auf die Karte tippen, um den Standort zu setzen
           </div>
         )}
@@ -273,7 +273,7 @@ export default function SearchAreaMap({
               <Circle
                 center={[area.lat, area.lng]}
                 radius={radiusKm * 1000}
-                pathOptions={{ color: "#E8A838", fillColor: "#E8A838", fillOpacity: 0.16, weight: 2, opacity: 0.85 }}
+                pathOptions={{ color: "#F9AD07", fillColor: "#F9AD07", fillOpacity: 0.16, weight: 2, opacity: 0.85 }}
               />
               <Marker position={[area.lat, area.lng]} icon={homeIcon} />
             </>
@@ -285,7 +285,7 @@ export default function SearchAreaMap({
               key={i}
               center={[p.lat, p.lng]}
               radius={6}
-              pathOptions={{ color: "#fff", weight: 2, fillColor: "#E8A838", fillOpacity: 1 }}
+              pathOptions={{ color: "#fff", weight: 2, fillColor: "#F9AD07", fillOpacity: 1 }}
             />
           ))}
         </MapShell>
@@ -304,26 +304,26 @@ export default function SearchAreaMap({
           </p>
           <div
             className="rounded-2xl bg-white p-4"
-            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }}
+            style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 2px 10px -8px rgba(12, 51, 48,0.2)" }}
           >
             <div className="flex items-center gap-3 mb-3">
               <span
                 className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: "rgba(232,168,56,0.14)" }}
+                style={{ background: "rgba(249, 173, 7,0.14)" }}
               >
-                <MapPin className="w-4 h-4" style={{ color: "#E8A838" }} />
+                <MapPin className="w-4 h-4" style={{ color: "#F9AD07" }} />
               </span>
               <span className="text-[14px] font-semibold text-primary truncate flex-1">
                 {area.label}
                 {area.plz && (
-                  <span className="font-normal tabular-nums" style={{ color: "rgba(26,26,46,0.45)" }}>
+                  <span className="font-normal tabular-nums" style={{ color: "rgba(12, 51, 48,0.45)" }}>
                     {" "}· {area.plz}
                   </span>
                 )}
               </span>
               <span
                 className="rounded-full px-2.5 py-1 text-[12px] font-bold tabular-nums flex-shrink-0"
-                style={{ background: "rgba(26,26,46,0.06)", color: "#1A1A2E" }}
+                style={{ background: "rgba(12, 51, 48,0.06)", color: "#0C3330" }}
               >
                 {radiusKm} km
               </span>
@@ -333,9 +333,9 @@ export default function SearchAreaMap({
                   onClick={onClear}
                   aria-label="Suchgebiet entfernen"
                   className="flex-shrink-0 transition-colors"
-                  style={{ color: "rgba(26,26,46,0.3)" }}
+                  style={{ color: "rgba(12, 51, 48,0.3)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#EF4444")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.3)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(12, 51, 48,0.3)")}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -351,15 +351,15 @@ export default function SearchAreaMap({
               onChange={(e) => onRadiusChange?.(Number(e.target.value))}
               className="w-full h-[4px] appearance-none cursor-pointer rounded-full"
               style={{
-                accentColor: "#E8A838",
-                background: `linear-gradient(to right, #E8A838 ${
+                accentColor: "#F9AD07",
+                background: `linear-gradient(to right, #F9AD07 ${
                   ((Math.min(150, radiusKm) - 5) / 145) * 100
-                }%, #E9E7E1 ${((Math.min(150, radiusKm) - 5) / 145) * 100}%)`,
+                }%, #E4DFD3 ${((Math.min(150, radiusKm) - 5) / 145) * 100}%)`,
               }}
             />
             <div
               className="flex justify-between mt-1.5 text-[10px] tabular-nums"
-              style={{ color: "rgba(26,26,46,0.35)" }}
+              style={{ color: "rgba(12, 51, 48,0.35)" }}
             >
               <span>5 km</span>
               <span>150 km</span>

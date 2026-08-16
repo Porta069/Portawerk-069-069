@@ -8,23 +8,23 @@ export default function NotFound() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-6"
-      style={{ background: "#1A1A2E", fontFamily: "var(--font-sans)" }}
+      style={{ background: "#0C3330", fontFamily: "var(--font-sans)" }}
     >
       <div className="relative max-w-lg w-full text-center py-16">
         <div
           className="absolute -top-24 left-1/2 -translate-x-1/2 w-[480px] h-[480px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.16) 0%, transparent 68%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.16) 0%, transparent 68%)" }}
         />
         <div className="relative">
           <span
             className="inline-flex items-center justify-center w-14 h-14 mb-8"
-            style={{ background: "#E8A838" }}
+            style={{ background: "#F9AD07" }}
           >
-            <Compass className="w-6 h-6" style={{ color: "#1A1A2E" }} />
+            <Compass className="w-6 h-6" style={{ color: "#0C3330" }} />
           </span>
           <p
             className="text-[13px] font-semibold uppercase tracking-[0.22em] mb-3"
-            style={{ color: "#E8A838" }}
+            style={{ color: "#F9AD07" }}
           >
             Fehler 404
           </p>
@@ -42,7 +42,7 @@ export default function NotFound() {
             <Link
               href="/"
               className="group inline-flex items-center gap-2 px-6 py-3.5 text-[14.5px] font-bold"
-              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
             >
               Zur Startseite
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />

@@ -66,16 +66,18 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#1A1A2E] ${
-        scrolled ? "shadow-[0_2px_16px_rgba(0,0,0,0.18)]" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white border-b border-[#E4DFD3] ${
+        scrolled ? "shadow-[0_2px_16px_rgba(12,51,48,0.10)]" : ""
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+            {/* Weiß statt dunkel: nur auf hellem Grund zeigt das Logo sein
+                Petrol (7,5:1). Auf der früheren dunklen Leiste lag es bei
+                2,3:1 — dort musste „WERK" weiß gesetzt werden. */}
             <Logo
               height={26}
-              variant="hell"
               priority
               className="transition-transform duration-300 group-hover:scale-95"
             />
@@ -90,7 +92,7 @@ export default function Navbar() {
                   key={a.href}
                   href={a.href}
                   className={`relative px-4 py-2 text-sm transition-colors duration-200 whitespace-nowrap ${
-                    active ? "text-white font-semibold" : "text-white/55 hover:text-white"
+                    active ? "text-primary font-semibold" : "text-primary/55 hover:text-primary"
                   }`}
                 >
                   {a.label}
@@ -107,7 +109,7 @@ export default function Navbar() {
             {showDashboard ? (
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 text-white/55 hover:text-white text-sm transition-colors duration-200 whitespace-nowrap"
+                className="inline-flex items-center gap-2 text-primary/55 hover:text-primary text-sm transition-colors duration-200 whitespace-nowrap"
               >
                 <LayoutDashboard className="w-4 h-4" />
                 Meine Bewerbungen
@@ -115,7 +117,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href={cta.login}
-                className="text-white/55 hover:text-white text-sm transition-colors duration-200"
+                className="text-primary/55 hover:text-primary text-sm transition-colors duration-200"
               >
                 {cta.loginLabel}
               </Link>
@@ -130,7 +132,7 @@ export default function Navbar() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-white p-1"
+            className="lg:hidden text-primary p-1"
             aria-label="Menü öffnen"
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -145,7 +147,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden bg-[#1A1A2E] border-t border-white/10 overflow-hidden"
+            className="lg:hidden bg-white border-t border-[#E4DFD3] overflow-hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-1">
               {AUDIENCES.map((a) => {
@@ -156,19 +158,19 @@ export default function Navbar() {
                     href={a.href}
                     onClick={() => setMobileOpen(false)}
                     className={`py-2.5 text-base transition-colors ${
-                      active ? "text-accent font-semibold" : "text-white/75 hover:text-white"
+                      active ? "text-[#8A5F04] font-semibold" : "text-primary/70 hover:text-primary"
                     }`}
                   >
                     {a.label}
                   </Link>
                 );
               })}
-              <div className="h-px bg-white/10 my-3" />
+              <div className="h-px bg-[#E4DFD3] my-3" />
               {showDashboard ? (
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center gap-2 py-2 text-base text-white/75 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 py-2 text-base text-primary/70 hover:text-primary transition-colors"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Meine Bewerbungen
@@ -177,7 +179,7 @@ export default function Navbar() {
                 <Link
                   href={cta.login}
                   onClick={() => setMobileOpen(false)}
-                  className="py-2 text-base text-white/75 hover:text-white transition-colors"
+                  className="py-2 text-base text-primary/70 hover:text-primary transition-colors"
                 >
                   {cta.loginLabel}
                 </Link>

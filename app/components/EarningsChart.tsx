@@ -80,9 +80,9 @@ export default function EarningsChart({ data }: { data: Pt[] }) {
       <svg width={w} height={H} className="block overflow-visible">
         <defs>
           <linearGradient id="ec-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#E8A838" stopOpacity="0.30" />
-            <stop offset="55%" stopColor="#E8A838" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#E8A838" stopOpacity="0" />
+            <stop offset="0%" stopColor="#F9AD07" stopOpacity="0.30" />
+            <stop offset="55%" stopColor="#F9AD07" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#F9AD07" stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -96,7 +96,7 @@ export default function EarningsChart({ data }: { data: Pt[] }) {
                 stroke="#EAE7E0" strokeWidth={1}
                 strokeDasharray={g === 1 ? undefined : "3 5"}
               />
-              <text x={PL - 10} y={gy + 3.5} textAnchor="end" fontSize="10.5" fill="#9AA0AA">
+              <text x={PL - 10} y={gy + 3.5} textAnchor="end" fontSize="10.5" fill="#909A96">
                 {fmt(yTop * (1 - g))}
               </text>
             </g>
@@ -105,18 +105,18 @@ export default function EarningsChart({ data }: { data: Pt[] }) {
 
         {/* Fläche + Linie */}
         {area && <path d={area} fill="url(#ec-fill)" />}
-        <path d={line} fill="none" stroke="#E8A838" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+        <path d={line} fill="none" stroke="#F9AD07" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
 
         {/* Crosshair */}
         {hover !== null && (
-          <line x1={pts[hover].x} y1={PT} x2={pts[hover].x} y2={PT + ih} stroke="#1A1A2E" strokeOpacity={0.14} strokeWidth={1} strokeDasharray="4 4" />
+          <line x1={pts[hover].x} y1={PT} x2={pts[hover].x} y2={PT + ih} stroke="#0C3330" strokeOpacity={0.14} strokeWidth={1} strokeDasharray="4 4" />
         )}
 
         {/* X-Beschriftung */}
         {pts.map((p, i) => (
           <text
             key={p.m} x={p.x} y={H - 8} textAnchor="middle" fontSize="11"
-            fill={hover === i ? "#1A1A2E" : "#9AA0AA"} fontWeight={hover === i ? 700 : 400}
+            fill={hover === i ? "#0C3330" : "#909A96"} fontWeight={hover === i ? 700 : 400}
           >
             {p.m}
           </text>
@@ -125,11 +125,11 @@ export default function EarningsChart({ data }: { data: Pt[] }) {
         {/* Punkte */}
         {pts.map((p, i) => {
           const emph = i === last || hover === i;
-          if (!emph) return <circle key={p.m} cx={p.x} cy={p.y} r={3} fill="#fff" stroke="#E8A838" strokeWidth={2} />;
+          if (!emph) return <circle key={p.m} cx={p.x} cy={p.y} r={3} fill="#fff" stroke="#F9AD07" strokeWidth={2} />;
           return (
             <g key={p.m}>
-              <circle cx={p.x} cy={p.y} r={10} fill="#E8A838" opacity={0.16} />
-              <circle cx={p.x} cy={p.y} r={5.5} fill="#E8A838" stroke="#fff" strokeWidth={2.5} />
+              <circle cx={p.x} cy={p.y} r={10} fill="#F9AD07" opacity={0.16} />
+              <circle cx={p.x} cy={p.y} r={5.5} fill="#F9AD07" stroke="#fff" strokeWidth={2.5} />
             </g>
           );
         })}

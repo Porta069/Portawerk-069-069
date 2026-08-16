@@ -101,9 +101,9 @@ export default function StepKonto() {
             className="w-full rounded-2xl bg-white text-primary text-[15px] px-4 pr-12 py-4 outline-none transition-all duration-200 placeholder:text-primary/20"
             style={{
               border: `1.5px solid ${
-                touched && errors.password ? "#EF4444" : data.password ? "#1A1A2E" : "#E9E7E1"
+                touched && errors.password ? "#EF4444" : data.password ? "#0C3330" : "#E4DFD3"
               }`,
-              boxShadow: "0 2px 10px -6px rgba(26,26,46,0.12)",
+              boxShadow: "0 2px 10px -6px rgba(12, 51, 48,0.12)",
               fontFamily: "var(--font-sans)",
             }}
           />
@@ -112,7 +112,7 @@ export default function StepKonto() {
             onClick={() => setShowPw((s) => !s)}
             aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
             className="absolute right-4 top-1/2 -translate-y-1/2"
-            style={{ color: "rgba(26,26,46,0.35)" }}
+            style={{ color: "rgba(12, 51, 48,0.35)" }}
           >
             {showPw ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
           </button>

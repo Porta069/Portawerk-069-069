@@ -42,7 +42,7 @@ function SectionCard({
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="w-full flex items-center gap-4 p-5 sm:p-6 text-left hover:bg-[#FAFAF8] transition-colors"
+        className="w-full flex items-center gap-4 p-5 sm:p-6 text-left hover:bg-[#FAF8F3] transition-colors"
       >
         <span className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "var(--color-accent-soft)" }}>
           <Icon className="w-5 h-5 text-accent" strokeWidth={2} />
@@ -386,7 +386,7 @@ export default function PartnerSettings() {
         {/* ══ Rechtliches ══ */}
         <SectionCard icon={Scale} title="Rechtliches" subtitle="Prämien-Bedingungen, Datenschutz, Nutzungsbedingungen, Impressum">
           <div className="mt-4 space-y-5">
-            <div className="rounded-xl p-4" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(232,168,56,0.3)" }}>
+            <div className="rounded-xl p-4" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(249, 173, 7,0.3)" }}>
               <p className="text-primary text-sm font-semibold mb-1.5">Deine Prämien-Bedingungen</p>
               <ul className="text-muted text-xs leading-relaxed space-y-1 list-disc list-inside">
                 <li><span className="text-primary font-medium">100 € pro erfolgreicher Vermittlung</span> — fällig, sobald dein geworbener Handwerker über PortaWerk einen Job gefunden und die Einführungsphase (8 Wochen) bestanden hat.</li>

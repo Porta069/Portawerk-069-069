@@ -106,7 +106,7 @@ export default function ArbeitgeberContent() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(700px 500px at 85% 0%, rgba(232,168,56,0.16) 0%, transparent 60%)",
+              "radial-gradient(700px 500px at 85% 0%, rgba(249, 173, 7,0.16) 0%, transparent 60%)",
           }}
         />
         <div
@@ -181,9 +181,9 @@ export default function ArbeitgeberContent() {
                 className="group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-all duration-200"
                 style={{ border: "1.5px solid rgba(255,255,255,0.28)", color: "white" }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#E8A838";
-                  e.currentTarget.style.borderColor = "#E8A838";
-                  e.currentTarget.style.color = "#1A1A2E";
+                  e.currentTarget.style.background = "#F9AD07";
+                  e.currentTarget.style.borderColor = "#F9AD07";
+                  e.currentTarget.style.color = "#0C3330";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = "transparent";
@@ -205,7 +205,7 @@ export default function ArbeitgeberContent() {
             >
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: "radial-gradient(circle at 55% 45%, rgba(232,168,56,0.20) 0%, transparent 62%)" }}
+                style={{ background: "radial-gradient(circle at 55% 45%, rgba(249, 173, 7,0.20) 0%, transparent 62%)" }}
               />
               <Image
                 src="/images/arbeitgeber-chef.png"
@@ -286,7 +286,7 @@ export default function ArbeitgeberContent() {
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-white border border-border rounded-2xl shadow-[0_24px_60px_-30px_rgba(26,26,46,0.3)] overflow-hidden"
+            className="bg-white border border-border rounded-2xl shadow-[0_24px_60px_-30px_rgba(12, 51, 48,0.3)] overflow-hidden"
           >
             <div className="h-1 w-full bg-accent" />
             <div className="px-6 sm:px-10 lg:px-14 py-12">
@@ -303,7 +303,7 @@ export default function ArbeitgeberContent() {
               {/* Suchleiste + Button */}
               <form
                 onSubmit={handleFachSearch}
-                className="flex items-stretch max-w-2xl mx-auto border border-border bg-white transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 shadow-[0_12px_28px_-18px_rgba(26,26,46,0.4)]"
+                className="flex items-stretch max-w-2xl mx-auto border border-border bg-white transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 shadow-[0_12px_28px_-18px_rgba(12, 51, 48,0.4)]"
               >
                 <div className="relative flex-1 flex items-center">
                   <Search className="absolute left-5 w-5 h-5 text-muted pointer-events-none" strokeWidth={2} />
@@ -517,7 +517,7 @@ export default function ArbeitgeberContent() {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="group h-full bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(26,26,46,0.38)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 ease-out">
+                  <div className="group h-full bg-white rounded-3xl border border-border p-8 md:p-10 flex items-start gap-6 hover:border-accent hover:shadow-[0_26px_54px_-28px_rgba(12, 51, 48,0.38)] hover:-translate-y-1 transition-[transform,box-shadow,border-color] duration-300 ease-out">
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
                       style={{ background: "var(--color-accent-soft)" }}
@@ -580,7 +580,7 @@ export default function ArbeitgeberContent() {
 
       {/* ── Abschluss-CTA ── */}
       <section className="py-20 bg-primary relative overflow-hidden">
-        <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.10) 0%, transparent 65%)" }} />
+        <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.10) 0%, transparent 65%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <h2 className="text-white font-bold text-3xl md:text-4xl leading-tight mb-5" style={{ fontFamily: "var(--font-display)" }}>
             Bereit, Ihre Stelle zu besetzen?

@@ -21,15 +21,15 @@ const STATUS: Record<
   gesendet: {
     label: "Eingegangen",
     note: "Beim Betrieb angekommen — noch nicht geöffnet.",
-    color: "rgba(26,26,46,0.6)",
-    bg: "rgba(26,26,46,0.06)",
+    color: "rgba(12, 51, 48,0.6)",
+    bg: "rgba(12, 51, 48,0.06)",
     icon: Send,
   },
   gesehen: {
     label: "Angesehen",
     note: "Der Betrieb hat deine Bewerbung geöffnet.",
-    color: "#B47B18",
-    bg: "rgba(232,168,56,0.16)",
+    color: "#8A5F04",
+    bg: "rgba(249, 173, 7,0.16)",
     icon: Eye,
   },
   im_gespraech: {
@@ -49,8 +49,8 @@ const STATUS: Record<
   abgelehnt: {
     label: "Absage",
     note: "Diesmal hat es nicht gepasst.",
-    color: "rgba(26,26,46,0.55)",
-    bg: "rgba(26,26,46,0.06)",
+    color: "rgba(12, 51, 48,0.55)",
+    bg: "rgba(12, 51, 48,0.06)",
     icon: X,
   },
 };
@@ -110,25 +110,25 @@ export default function BewerbungenPage() {
       >
         Deine Bewerbungen
       </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
+      <p className="text-[15px] mb-7" style={{ color: "rgba(12, 51, 48,0.55)" }}>
         Wo du dich beworben hast — und wie weit der Betrieb ist.
       </p>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
         </div>
       ) : apps.length === 0 ? (
-        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <FileText className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
+        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E4DFD3" }}>
+          <FileText className="w-7 h-7 mx-auto mb-4" style={{ color: "#F9AD07" }} />
           <p className="text-[16px] font-bold text-primary mb-1.5">Noch keine Bewerbung</p>
-          <p className="text-[13.5px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
+          <p className="text-[13.5px] mb-6" style={{ color: "rgba(12, 51, 48,0.5)" }}>
             Such dir in der Jobbörse eine Stelle — du bewirbst dich diskret.
           </p>
           <Link
             href="/dashboard/jobboerse"
             className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
           >
             Zur Jobbörse
             <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -171,7 +171,7 @@ export default function BewerbungenPage() {
                 >
                   {g.items.length}
                 </span>
-                <span className="text-[13px] w-full sm:w-auto sm:ml-1" style={{ color: "rgba(26,26,46,0.6)" }}>
+                <span className="text-[13px] w-full sm:w-auto sm:ml-1" style={{ color: "rgba(12, 51, 48,0.6)" }}>
                   {STATUS[g.status].note}
                 </span>
               </div>
@@ -184,7 +184,7 @@ export default function BewerbungenPage() {
                     footer={
                       <div className="flex flex-wrap items-center gap-3">
                         <StatusPill status={a.status} />
-                        <span className="text-[12px]" style={{ color: "rgba(26,26,46,0.4)" }}>
+                        <span className="text-[12px]" style={{ color: "rgba(12, 51, 48,0.4)" }}>
                           aktualisiert {a.updatedAt}
                         </span>
                       </div>
@@ -200,7 +200,7 @@ export default function BewerbungenPage() {
                   {similar.length > 0 && (
                     <div
                       className="rounded-3xl p-5"
-                      style={{ background: "white", border: "1.5px solid #E9E7E1" }}
+                      style={{ background: "white", border: "1.5px solid #E4DFD3" }}
                     >
                       <p className="text-[14px] font-bold text-primary mb-3">
                         Diese {similar.length} Stellen passen ähnlich gut
@@ -217,14 +217,14 @@ export default function BewerbungenPage() {
                                 <span className="block text-[14px] font-semibold text-primary truncate">
                                   {j.title}
                                 </span>
-                                <span className="block text-[12px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+                                <span className="block text-[12px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                                   {j.employer} · {j.travelMinutes} Min. · {j.salaryMin.toLocaleString("de-DE")}–
                                   {j.salaryMax.toLocaleString("de-DE")} €
                                 </span>
                               </span>
                               <ArrowRight
                                 className="w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-                                style={{ color: "#E8A838" }}
+                                style={{ color: "#F9AD07" }}
                               />
                             </Link>
                           </li>

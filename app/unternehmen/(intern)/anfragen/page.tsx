@@ -32,16 +32,16 @@ const GROUPS: {
     status: "angefragt",
     label: "Anfrage läuft",
     note: "Der Kandidat entscheidet noch. Bis dahin bleibt das Profil anonym.",
-    color: "#B47B18",
-    bg: "rgba(232,168,56,0.16)",
+    color: "#8A5F04",
+    bg: "rgba(249, 173, 7,0.16)",
     icon: Clock3,
   },
   {
     status: "abgelehnt",
     label: "Abgelehnt",
     note: "Diesmal kein Interesse — der Grund wird uns anonym übermittelt.",
-    color: "rgba(26,26,46,0.55)",
-    bg: "rgba(26,26,46,0.06)",
+    color: "rgba(12, 51, 48,0.55)",
+    bg: "rgba(12, 51, 48,0.06)",
     icon: X,
   },
 ];
@@ -70,25 +70,25 @@ export default function EmployerRequestsPage() {
       >
         Meine Anfragen
       </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
+      <p className="text-[15px] mb-7" style={{ color: "rgba(12, 51, 48,0.55)" }}>
         Alle Kandidaten, bei denen du Interesse angemeldet hast.
       </p>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
         </div>
       ) : requests.length === 0 ? (
-        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <Inbox className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
+        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E4DFD3" }}>
+          <Inbox className="w-7 h-7 mx-auto mb-4" style={{ color: "#F9AD07" }} />
           <p className="text-[16px] font-bold text-primary mb-1.5">Noch keine Anfrage gestellt</p>
-          <p className="text-[13.5px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
+          <p className="text-[13.5px] mb-6" style={{ color: "rgba(12, 51, 48,0.5)" }}>
             Such über deine Postleitzahl nach Handwerkern in der Umgebung.
           </p>
           <Link
             href="/unternehmen/dashboard"
             className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
           >
             <Send className="w-4 h-4" />
             Kandidaten suchen
@@ -123,7 +123,7 @@ export default function EmployerRequestsPage() {
                   >
                     {g.items.length}
                   </span>
-                  <span className="text-[13px] w-full sm:w-auto sm:ml-1" style={{ color: "rgba(26,26,46,0.6)" }}>
+                  <span className="text-[13px] w-full sm:w-auto sm:ml-1" style={{ color: "rgba(12, 51, 48,0.6)" }}>
                     {g.note}
                   </span>
                 </div>
@@ -133,7 +133,7 @@ export default function EmployerRequestsPage() {
                 <div className="space-y-5">
                   {g.items.map((r) => (
                     <div key={r.id}>
-                      <p className="text-[12.5px] mb-2 ml-1" style={{ color: "rgba(26,26,46,0.45)" }}>
+                      <p className="text-[12.5px] mb-2 ml-1" style={{ color: "rgba(12, 51, 48,0.45)" }}>
                         Angefragt für <strong className="text-primary">{r.position}</strong> · {r.sentAt}
                       </p>
                       <CandidateCard candidate={r.candidate} />

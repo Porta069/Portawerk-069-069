@@ -25,7 +25,7 @@ export default function PasswordStrength({
             <div
               key={i}
               className="flex-1 rounded-full transition-all duration-300"
-              style={{ height: 4, background: i <= res.score ? res.color : "#E5E7EB" }}
+              style={{ height: 4, background: i <= res.score ? res.color : "#DFE3E0" }}
             />
           ))}
         </div>
@@ -40,11 +40,11 @@ export default function PasswordStrength({
           {PASSWORD_CRITERIA.map((c) => {
             const ok = res.checks[c.key];
             return (
-              <li key={c.key} className="flex items-center gap-1.5 text-[11px]" style={{ color: ok ? "#16A34A" : "rgba(26,26,46,0.45)" }}>
+              <li key={c.key} className="flex items-center gap-1.5 text-[11px]" style={{ color: ok ? "#16A34A" : "rgba(12, 51, 48,0.45)" }}>
                 {ok ? (
                   <Check className="w-3 h-3 flex-shrink-0" strokeWidth={3} />
                 ) : (
-                  <X className="w-3 h-3 flex-shrink-0" style={{ color: "#D1D5DB" }} strokeWidth={2.5} />
+                  <X className="w-3 h-3 flex-shrink-0" style={{ color: "#C8CFCB" }} strokeWidth={2.5} />
                 )}
                 {c.label}
               </li>

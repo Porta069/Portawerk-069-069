@@ -16,8 +16,8 @@ const BACKEND =
 type Status = "checking" | "waking" | "ready" | "offline";
 
 const META: Record<Status, { dot: string; text: string; textColor: string }> = {
-  checking: { dot: "#9CA3AF", text: "Server wird geprüft…", textColor: "rgba(26,26,46,0.6)" },
-  waking:   { dot: "#E8A838", text: "Server startet… gleich bereit", textColor: "#B47B18" },
+  checking: { dot: "#94A09B", text: "Server wird geprüft…", textColor: "rgba(12, 51, 48,0.6)" },
+  waking:   { dot: "#F9AD07", text: "Server startet… gleich bereit", textColor: "#8A5F04" },
   ready:    { dot: "#22C55E", text: "Server bereit — Registrierung möglich", textColor: "#16A34A" },
   offline:  { dot: "#EF4444", text: "Server nicht erreichbar", textColor: "#DC2626" },
 };
@@ -73,7 +73,7 @@ export default function BackendStatus() {
     >
       <div
         className="flex items-center gap-2.5 pl-2.5 pr-3.5 py-2 bg-white/95 backdrop-blur-sm shadow-lg"
-        style={{ border: "1px solid #E5E7EB", borderRadius: 999 }}
+        style={{ border: "1px solid #DFE3E0", borderRadius: 999 }}
       >
         <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
           {(status === "waking" || status === "checking") && (

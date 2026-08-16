@@ -21,13 +21,13 @@ export function StepHeading({
       {eyebrow && (
         <p
           className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-2.5"
-          style={{ color: "rgba(26,26,46,0.35)" }}
+          style={{ color: "rgba(12, 51, 48,0.35)" }}
         >
           {eyebrow}
         </p>
       )}
       {children && (
-        <p className="text-[15px] leading-relaxed" style={{ color: "#6B7280" }}>
+        <p className="text-[15px] leading-relaxed" style={{ color: "#5F6F6A" }}>
           {children}
         </p>
       )}
@@ -55,18 +55,18 @@ export function QuestionBlock({
         {index != null && (
           <span
             className="text-[11px] font-bold tabular-nums flex-shrink-0"
-            style={{ fontFamily: "var(--font-display)", color: "#E8A838" }}
+            style={{ fontFamily: "var(--font-display)", color: "#F9AD07" }}
           >
             {String(index).padStart(2, "0")}
           </span>
         )}
         <h2 className="text-[17px] font-bold text-primary leading-snug">
           {title}
-          {required && <span style={{ color: "#E8A838" }} className="ml-1">*</span>}
+          {required && <span style={{ color: "#F9AD07" }} className="ml-1">*</span>}
         </h2>
       </div>
       {hint && (
-        <p className="text-[13px] mb-4 ml-0 sm:ml-7" style={{ color: "rgba(107,114,128,0.9)" }}>
+        <p className="text-[13px] mb-4 ml-0 sm:ml-7" style={{ color: "rgba(95, 111, 106,0.9)" }}>
           {hint}
         </p>
       )}
@@ -99,11 +99,11 @@ export function OptionCard({
       aria-pressed={selected}
       className="group relative w-full text-left rounded-2xl p-4 transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       style={{
-        background: selected ? "rgba(232,168,56,0.09)" : "#FFFFFF",
-        border: `1.5px solid ${selected ? "#E8A838" : "#E9E7E1"}`,
+        background: selected ? "rgba(249, 173, 7,0.09)" : "#FFFFFF",
+        border: `1.5px solid ${selected ? "#F9AD07" : "#E4DFD3"}`,
         boxShadow: selected
-          ? "0 12px 26px -16px rgba(232,168,56,0.75)"
-          : "0 2px 10px -6px rgba(26,26,46,0.12)",
+          ? "0 12px 26px -16px rgba(249, 173, 7,0.75)"
+          : "0 2px 10px -6px rgba(12, 51, 48,0.12)",
       }}
     >
       <div className="flex items-center gap-3.5">
@@ -111,8 +111,8 @@ export function OptionCard({
           <span
             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-200"
             style={{
-              background: selected ? "#E8A838" : "rgba(26,26,46,0.05)",
-              color: selected ? "#1A1A2E" : "rgba(26,26,46,0.45)",
+              background: selected ? "#F9AD07" : "rgba(12, 51, 48,0.05)",
+              color: selected ? "#0C3330" : "rgba(12, 51, 48,0.45)",
             }}
           >
             <Icon className="w-[18px] h-[18px]" strokeWidth={2} />
@@ -123,7 +123,7 @@ export function OptionCard({
             {label}
           </span>
           {sublabel && (
-            <span className="block text-[12px] mt-0.5" style={{ color: "rgba(107,114,128,0.9)" }}>
+            <span className="block text-[12px] mt-0.5" style={{ color: "rgba(95, 111, 106,0.9)" }}>
               {sublabel}
             </span>
           )}
@@ -134,8 +134,8 @@ export function OptionCard({
             width: 20,
             height: 20,
             borderRadius: multi ? 6 : 999,
-            border: `1.5px solid ${selected ? "#E8A838" : "#D8D5CE"}`,
-            background: selected ? "#E8A838" : "transparent",
+            border: `1.5px solid ${selected ? "#F9AD07" : "#D8D5CE"}`,
+            background: selected ? "#F9AD07" : "transparent",
           }}
         >
           {selected && <Check className="w-3 h-3 text-primary" strokeWidth={3.5} />}
@@ -164,17 +164,17 @@ export function ChipToggle({
       aria-pressed={selected}
       className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-medium transition-[transform,box-shadow,border-color,background-color,color] duration-200 ease-out hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       style={{
-        background: selected ? "#1A1A2E" : "#FFFFFF",
-        border: `1.5px solid ${selected ? "#1A1A2E" : "#E9E7E1"}`,
-        color: selected ? "#FFFFFF" : "rgba(26,26,46,0.6)",
+        background: selected ? "#0C3330" : "#FFFFFF",
+        border: `1.5px solid ${selected ? "#0C3330" : "#E4DFD3"}`,
+        color: selected ? "#FFFFFF" : "rgba(12, 51, 48,0.6)",
         boxShadow: selected
-          ? "0 10px 22px -14px rgba(26,26,46,0.85)"
-          : "0 2px 8px -6px rgba(26,26,46,0.14)",
+          ? "0 10px 22px -14px rgba(12, 51, 48,0.85)"
+          : "0 2px 8px -6px rgba(12, 51, 48,0.14)",
       }}
     >
       {Icon && <Icon className="w-3.5 h-3.5" strokeWidth={2.2} />}
       {label}
-      {selected && <Check className="w-3.5 h-3.5" strokeWidth={3} style={{ color: "#E8A838" }} />}
+      {selected && <Check className="w-3.5 h-3.5" strokeWidth={3} style={{ color: "#F9AD07" }} />}
     </button>
   );
 }
@@ -204,9 +204,9 @@ export function NextButton({
       } ${inactive ? "" : "hover:-translate-y-0.5"}`}
       style={{
         fontFamily: "var(--font-display)",
-        background: inactive ? "#E7E5DF" : "#E8A838",
-        color: inactive ? "#A8A49B" : "#1A1A2E",
-        boxShadow: inactive ? "none" : "0 16px 30px -14px rgba(232,168,56,0.85)",
+        background: inactive ? "#E7E5DF" : "#F9AD07",
+        color: inactive ? "#A8A49B" : "#0C3330",
+        boxShadow: inactive ? "none" : "0 16px 30px -14px rgba(249, 173, 7,0.85)",
       }}
     >
       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
@@ -231,9 +231,9 @@ export function SkipButton({
       type="button"
       onClick={onClick}
       className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-4 text-[14px] font-medium transition-colors duration-200"
-      style={{ color: "rgba(26,26,46,0.5)" }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = "#1A1A2E")}
-      onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.5)")}
+      style={{ color: "rgba(12, 51, 48,0.5)" }}
+      onMouseEnter={(e) => (e.currentTarget.style.color = "#0C3330")}
+      onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(12, 51, 48,0.5)")}
     >
       {children}
     </button>
@@ -251,9 +251,9 @@ export function StepActions({
   return (
     <div
       className="mt-10 pt-7 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4"
-      style={{ borderTop: "1px solid #E9E7E1" }}
+      style={{ borderTop: "1px solid #E4DFD3" }}
     >
-      <p className="text-[12px] leading-relaxed" style={{ color: "rgba(107,114,128,0.85)" }}>
+      <p className="text-[12px] leading-relaxed" style={{ color: "rgba(95, 111, 106,0.85)" }}>
         {note}
       </p>
       <div className="flex items-center gap-2 flex-shrink-0">{children}</div>
@@ -275,10 +275,10 @@ export function ValueNote({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
-      style={{ background: "rgba(26,26,46,0.035)" }}
+      style={{ background: "rgba(12, 51, 48,0.035)" }}
     >
-      <Icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
-      <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+      <Icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#F9AD07" }} />
+      <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.6)" }}>
         {children}
       </p>
     </motion.div>

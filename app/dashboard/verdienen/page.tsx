@@ -49,15 +49,15 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
   return (
     <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] gap-6 items-start">
       {/* Nutzenversprechen */}
-      <div className="relative overflow-hidden rounded-3xl p-7" style={{ background: "#1A1A2E" }}>
+      <div className="relative overflow-hidden rounded-3xl p-7" style={{ background: "#0C3330" }}>
         <div
           className="absolute -top-24 -right-20 w-72 h-72 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.22) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.22) 0%, transparent 70%)" }}
         />
         <div className="relative">
           <span
             className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3"
-            style={{ color: "#E8A838" }}
+            style={{ color: "#F9AD07" }}
           >
             <span className="w-6 h-[2px] bg-accent" />
             Empfehlungsprogramm
@@ -80,7 +80,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
               "Läuft parallel zu deinen Bewerbungen",
             ].map((t) => (
               <li key={t} className="flex items-start gap-2.5 text-[13.5px]" style={{ color: "rgba(255,255,255,0.72)" }}>
-                <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} strokeWidth={3} />
+                <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#F9AD07" }} strokeWidth={3} />
                 {t}
               </li>
             ))}
@@ -91,18 +91,18 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
       {/* Formular */}
       <div
         className="rounded-3xl bg-white p-6"
-        style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+        style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
       >
         <h3 className="text-primary font-bold text-[18px] mb-1" style={{ fontFamily: "var(--font-display)" }}>
           Partner-Anmeldung
         </h3>
-        <p className="text-[13px] mb-5" style={{ color: "rgba(26,26,46,0.55)" }}>
+        <p className="text-[13px] mb-5" style={{ color: "rgba(12, 51, 48,0.55)" }}>
           Eigene Zugangsdaten — getrennt von deinem Handwerker-Konto.
         </p>
 
         <form onSubmit={submit} className="space-y-3.5">
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
+            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(12, 51, 48,0.45)" }}>
               Telefonnummer oder Link-Name
             </label>
             <input
@@ -111,11 +111,11 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
               placeholder="+49 170 … oder max"
               autoComplete="username"
               className={field}
-              style={{ border: "1.5px solid #E9E7E1" }}
+              style={{ border: "1.5px solid #E4DFD3" }}
             />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
+            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(12, 51, 48,0.45)" }}>
               Passwort
             </label>
             <div className="relative">
@@ -125,14 +125,14 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 className={`${field} pr-12`}
-                style={{ border: "1.5px solid #E9E7E1" }}
+                style={{ border: "1.5px solid #E4DFD3" }}
               />
               <button
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
                 aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
-                style={{ color: "rgba(26,26,46,0.35)" }}
+                style={{ color: "rgba(12, 51, 48,0.35)" }}
               >
                 {showPw ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
               </button>
@@ -149,16 +149,16 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
             type="submit"
             disabled={loading || !identifier.trim() || !password}
             className="w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-45 disabled:hover:translate-y-0"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />}
             Anmelden
           </button>
         </form>
 
-        <p className="text-[13px] mt-5 pt-5 text-center" style={{ borderTop: "1px solid #F1EEE8", color: "rgba(26,26,46,0.55)" }}>
+        <p className="text-[13px] mt-5 pt-5 text-center" style={{ borderTop: "1px solid #EDE8DE", color: "rgba(12, 51, 48,0.55)" }}>
           Noch kein Partner?{" "}
-          <Link href="/verdienen/partner" className="font-bold" style={{ color: "#B47B18" }}>
+          <Link href="/verdienen/partner" className="font-bold" style={{ color: "#8A5F04" }}>
             Kostenlos registrieren
           </Link>
         </p>
@@ -197,13 +197,13 @@ function PartnerOverview({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <p className="text-[15px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+        <p className="text-[15px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
           Angemeldet als <strong className="text-primary">{data.name}</strong>
         </p>
         <button
           onClick={onLogout}
           className="inline-flex items-center gap-2 text-[13px] font-semibold rounded-full px-4 py-2 transition-colors"
-          style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.6)" }}
+          style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.6)" }}
         >
           <LogOut className="w-3.5 h-3.5" />
           Partner abmelden
@@ -218,16 +218,16 @@ function PartnerOverview({
             <div
               key={s.label}
               className="rounded-2xl bg-white p-4"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 6px 20px -18px rgba(26,26,46,0.5)" }}
+              style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 6px 20px -18px rgba(12, 51, 48,0.5)" }}
             >
-              <Icon className="w-4 h-4 mb-2.5" style={{ color: "#E8A838" }} />
+              <Icon className="w-4 h-4 mb-2.5" style={{ color: "#F9AD07" }} />
               <p
                 className="text-[22px] font-bold tabular-nums text-primary leading-none"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {s.value}
               </p>
-              <p className="text-[11.5px] mt-1.5" style={{ color: "rgba(26,26,46,0.45)" }}>
+              <p className="text-[11.5px] mt-1.5" style={{ color: "rgba(12, 51, 48,0.45)" }}>
                 {s.label}
               </p>
             </div>
@@ -236,15 +236,15 @@ function PartnerOverview({
       </div>
 
       {/* Persönlicher Link */}
-      <div className="relative overflow-hidden rounded-3xl p-6 mb-6" style={{ background: "#1A1A2E" }}>
+      <div className="relative overflow-hidden rounded-3xl p-6 mb-6" style={{ background: "#0C3330" }}>
         <div
           className="absolute -top-20 -right-16 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.2) 0%, transparent 70%)" }}
         />
         <div className="relative">
           <p
             className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3"
-            style={{ color: "#E8A838" }}
+            style={{ color: "#F9AD07" }}
           >
             <Share2 className="w-3.5 h-3.5" />
             Dein Empfehlungslink
@@ -260,7 +260,7 @@ function PartnerOverview({
             <button
               onClick={copy}
               className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-[14px] font-bold flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
-              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
             >
               {copied ? <Check className="w-4 h-4" strokeWidth={3} /> : <Copy className="w-4 h-4" />}
               {copied ? "Kopiert" : "Kopieren"}
@@ -272,16 +272,16 @@ function PartnerOverview({
       {/* Letzte Empfehlungen */}
       <div
         className="rounded-3xl bg-white overflow-hidden"
-        style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+        style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
       >
-        <div className="flex items-center justify-between gap-3 px-6 py-4" style={{ borderBottom: "1px solid #F1EEE8" }}>
+        <div className="flex items-center justify-between gap-3 px-6 py-4" style={{ borderBottom: "1px solid #EDE8DE" }}>
           <h2 className="text-primary font-bold text-[17px]" style={{ fontFamily: "var(--font-display)" }}>
             Deine Empfehlungen
           </h2>
           <Link
             href="/verdienen/dashboard"
             className="group inline-flex items-center gap-1.5 text-[13px] font-bold"
-            style={{ color: "#B47B18" }}
+            style={{ color: "#8A5F04" }}
           >
             Alle Details
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -289,7 +289,7 @@ function PartnerOverview({
         </div>
 
         {data.referrals.length === 0 ? (
-          <p className="px-6 py-12 text-center text-[13.5px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+          <p className="px-6 py-12 text-center text-[13.5px]" style={{ color: "rgba(12, 51, 48,0.5)" }}>
             Noch niemand geworben — teil deinen Link, um loszulegen.
           </p>
         ) : (
@@ -298,17 +298,17 @@ function PartnerOverview({
               <li
                 key={r.id}
                 className="flex items-center justify-between gap-3 px-6 py-3.5"
-                style={{ borderTop: i > 0 ? "1px solid #F6F4F0" : "none" }}
+                style={{ borderTop: i > 0 ? "1px solid #F2EFE7" : "none" }}
               >
                 <span className="min-w-0">
                   <span className="block text-[14px] font-semibold text-primary truncate">{r.name}</span>
-                  <span className="block text-[12px]" style={{ color: "rgba(26,26,46,0.45)" }}>
+                  <span className="block text-[12px]" style={{ color: "rgba(12, 51, 48,0.45)" }}>
                     {r.trade} · {r.date}
                   </span>
                 </span>
                 <span
                   className="text-[14px] font-bold tabular-nums flex-shrink-0"
-                  style={{ color: r.rewardCents > 0 ? "#15803D" : "rgba(26,26,46,0.4)" }}
+                  style={{ color: r.rewardCents > 0 ? "#15803D" : "rgba(12, 51, 48,0.4)" }}
                 >
                   {r.rewardCents > 0 ? `+${euro(r.rewardCents)} €` : "offen"}
                 </span>
@@ -365,14 +365,14 @@ export default function DashboardVerdienenPage() {
       >
         Verdienen
       </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
+      <p className="text-[15px] mb-7" style={{ color: "rgba(12, 51, 48,0.55)" }}>
         Empfiehl Kollegen und verdien nebenbei — deine Bewerbungen laufen unabhängig
         davon weiter.
       </p>
 
       {checking ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
         </div>
       ) : (
         <motion.div

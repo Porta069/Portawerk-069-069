@@ -1,12 +1,27 @@
 @import "tailwindcss";
 
+/* ─── Farben ──────────────────────────────────────────────────────────────────
+   Die Palette stammt aus dem Logo: Petrol #115F5B und Gold #F9AD07. Nichts
+   hier ist frei gewählt — jeder Wert ist aus einem der beiden abgeleitet oder
+   ein neutraler Ton, der zu ihnen passt.
+
+   `primary` ist NICHT das Marken-Petrol selbst, sondern eine abgedunkelte
+   Fassung. Grund: #115F5B als Fließtext erreicht auf Creme nur 6,7:1, das
+   frühere Navy lag bei 15,3:1. #0C3330 hält 12,3:1 und bleibt erkennbar
+   derselbe Farbton. Das Marken-Petrol steht als `brand` daneben und wird dort
+   eingesetzt, wo Farbe wirken soll statt zu tragen.
+
+   `accent-strong` ist Gold, das als TEXT auf hellem Grund lesbar ist — reines
+   #F9AD07 erreicht dort nur 1,7:1 und ist als Schrift unbrauchbar. */
 @theme inline {
-  --color-primary: #1A1A2E;
-  --color-accent: #E8A838;
-  --color-accent-soft: #FDF3DC;
-  --color-surface: #F8F7F4;
-  --color-muted: #6B7280;
-  --color-border: #E5E7EB;
+  --color-primary: #0C3330;
+  --color-brand: #115F5B;
+  --color-accent: #F9AD07;
+  --color-accent-strong: #8A5F04;
+  --color-accent-soft: #FDF1D6;
+  --color-surface: #F5F2EC;
+  --color-muted: #5F6F6A;
+  --color-border: #E4DFD3;
   --color-success: #22C55E;
 
   --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
@@ -25,8 +40,8 @@ html {
 
 body {
   font-family: var(--font-inter), system-ui, sans-serif;
-  background-color: #F8F7F4;
-  color: #1A1A2E;
+  background-color: #F5F2EC;
+  color: #0C3330;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -93,7 +108,7 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 .leaflet-container a {
-  color: #b47b18;
+  color: #8A5F04;
 }
 
 /* ─── Leaflet einbetten ──────────────────────────────────────────────────────
@@ -110,7 +125,7 @@ body {
 /* Umriss Deutschlands: der helle Halo bekommt einen weichen Schlagschatten,
    dadurch wirkt das Land aufgelegt statt ausgestanzt. */
 .pw-de-outline {
-  filter: drop-shadow(0 5px 14px rgba(26, 26, 46, 0.22));
+  filter: drop-shadow(0 5px 14px rgba(12, 51, 48, 0.22));
 }
 
 /* Bei reduzierter Bewegung keine Kachel-Filter animieren (rein defensiv). */

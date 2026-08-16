@@ -197,7 +197,7 @@ export default function PartnerFunnel() {
         <div className="bg-primary">
           <div className="max-w-2xl mx-auto px-6 pt-10 pb-12">
             <div className="flex items-center gap-3 mb-5">
-              <span className="w-8 flex-shrink-0" style={{ display: "block", height: "2px", background: "#E8A838" }} />
+              <span className="w-8 flex-shrink-0" style={{ display: "block", height: "2px", background: "#F9AD07" }} />
               <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent">
                 Schritt {step + 1} von {CONTENT_STEPS}
               </span>
@@ -254,7 +254,7 @@ export default function PartnerFunnel() {
                   <PasswordStrength password={passwort} />
                 </div>
                 <label className="flex items-start gap-3 mt-1 cursor-pointer">
-                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#E8A838] flex-shrink-0" />
+                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#F9AD07] flex-shrink-0" />
                   <span className="text-muted text-xs leading-relaxed">
                     Ich stimme zu, dass meine Daten zur Registrierung und Auszahlung genutzt werden. Details in der{" "}
                     <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2">Datenschutzerklärung</a>.
@@ -276,7 +276,7 @@ export default function PartnerFunnel() {
                 <div>
                   <label className={label} htmlFor="p-slug">Dein Wunsch-Link</label>
                   <div className="flex items-stretch rounded-xl border overflow-hidden transition-colors"
-                    style={{ borderColor: slugStatus === "taken" ? "#EF4444" : slugStatus === "free" ? "#22C55E" : "#E5E7EB" }}>
+                    style={{ borderColor: slugStatus === "taken" ? "#EF4444" : slugStatus === "free" ? "#22C55E" : "#DFE3E0" }}>
                     <span className="flex items-center pl-4 pr-1 text-muted text-sm select-none">{BASE}</span>
                     <input id="p-slug" className="flex-1 py-3.5 pr-4 text-primary text-sm bg-transparent focus:outline-none" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="dein-name" autoComplete="off" />
                     <span className="flex items-center px-4">

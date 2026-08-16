@@ -43,7 +43,7 @@ export function evaluatePassword(pw: string): PasswordResult {
   const valid = Object.values(checks).every(Boolean);
 
   if (!pw) {
-    return { checks, valid, score: 0, label: "", color: "#E5E7EB", percent: 0 };
+    return { checks, valid, score: 0, label: "", color: "#DFE3E0", percent: 0 };
   }
 
   const classes =
@@ -67,7 +67,7 @@ export function evaluatePassword(pw: string): PasswordResult {
 
   const meta: Record<number, { label: string; color: string; percent: number }> = {
     1: { label: "Schwach", color: "#EF4444", percent: 30 },
-    2: { label: "Mittel", color: "#E8A838", percent: 55 },
+    2: { label: "Mittel", color: "#F9AD07", percent: 55 },
     3: { label: "Gut", color: "#22C55E", percent: 80 },
     4: { label: "Stark", color: "#16A34A", percent: 100 },
   };

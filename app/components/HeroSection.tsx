@@ -26,7 +26,7 @@ export default function HeroSection() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(120% 90% at 0% 0%, rgba(232,168,56,0.10) 0%, transparent 55%)",
+              "radial-gradient(120% 90% at 0% 0%, rgba(249, 173, 7,0.10) 0%, transparent 55%)",
           }}
         />
         <div className="relative z-10 w-full max-w-xl mx-auto lg:mx-0 lg:ml-auto px-6 lg:px-14 py-16 lg:py-24">
@@ -37,7 +37,7 @@ export default function HeroSection() {
             className="flex items-center gap-3 mb-7"
           >
             <span className="w-9 h-[2px] bg-accent" />
-            <span className="text-accent text-xs font-semibold tracking-[0.2em] uppercase">
+            <span className="text-[#8A5F04] text-xs font-semibold tracking-[0.2em] uppercase">
               Kostenlose Jobvermittlung fürs Handwerk
             </span>
           </motion.div>
@@ -54,7 +54,7 @@ export default function HeroSection() {
           >
             Dein Job im Handwerk
             <br />
-            <span className="text-accent">findet dich.</span>
+            <span className="text-[#A87304]">findet dich.</span>
           </motion.h1>
 
           <motion.p
@@ -75,7 +75,7 @@ export default function HeroSection() {
           >
             <Link
               href="/registrieren"
-              className="group relative overflow-hidden inline-flex items-center justify-center gap-3 rounded-full bg-accent text-primary font-bold px-9 py-5 text-lg shadow-[0_10px_30px_-8px_rgba(232,168,56,0.6)] hover:bg-amber-400 hover:shadow-[0_14px_36px_-8px_rgba(232,168,56,0.7)] transition-all duration-200"
+              className="group relative overflow-hidden inline-flex items-center justify-center gap-3 rounded-full bg-accent text-primary font-bold px-9 py-5 text-lg shadow-[0_10px_30px_-8px_rgba(249, 173, 7,0.6)] hover:bg-amber-400 hover:shadow-[0_14px_36px_-8px_rgba(249, 173, 7,0.7)] transition-all duration-200"
             >
               <span className="relative z-10 inline-flex items-center gap-3">
                 Jetzt kostenlos registrieren
@@ -101,10 +101,10 @@ export default function HeroSection() {
               <span
                 key={t.label}
                 className={`inline-flex items-center gap-2 text-sm ${
-                  t.accent ? "text-accent font-bold" : "text-primary/80 font-medium"
+                  t.accent ? "text-[#8A5F04] font-bold" : "text-primary/80 font-medium"
                 }`}
               >
-                <Check className="w-4 h-4 text-accent" strokeWidth={2.5} />
+                <Check className="w-4 h-4 text-[#8A5F04]" strokeWidth={2.5} />
                 {t.label}
               </span>
             ))}

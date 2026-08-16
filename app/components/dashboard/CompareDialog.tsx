@@ -29,7 +29,7 @@ function YesNo({ yes }: { yes: boolean }) {
       <Check className="w-3.5 h-3.5" strokeWidth={3} /> Ja
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1" style={{ color: "rgba(26,26,46,0.4)" }}>
+    <span className="inline-flex items-center gap-1" style={{ color: "rgba(12, 51, 48,0.4)" }}>
       <Minus className="w-3.5 h-3.5" /> Nein
     </span>
   );
@@ -145,7 +145,7 @@ const ROWS: Row[] = [
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold underline-offset-2 hover:underline"
-          style={{ color: "#B47B18" }}
+          style={{ color: "#8A5F04" }}
         >
           öffnen
         </a>
@@ -176,7 +176,7 @@ export default function CompareDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[118] flex items-center justify-center p-4 sm:p-6"
-          style={{ background: "rgba(26,26,46,0.55)", backdropFilter: "blur(3px)" }}
+          style={{ background: "rgba(12, 51, 48,0.55)", backdropFilter: "blur(3px)" }}
           onClick={onClose}
         >
           <motion.div
@@ -188,23 +188,23 @@ export default function CompareDialog({
             aria-modal="true"
             aria-label="Unternehmensvergleich"
             className="w-full max-w-5xl max-h-[88vh] overflow-hidden rounded-3xl bg-white flex flex-col"
-            style={{ boxShadow: "0 40px 80px -30px rgba(26,26,46,0.6)" }}
+            style={{ boxShadow: "0 40px 80px -30px rgba(12, 51, 48,0.6)" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Kopf */}
             <div
               className="flex items-start justify-between gap-4 px-6 pt-6 pb-4 flex-shrink-0"
-              style={{ borderBottom: "1px solid #F1EEE8" }}
+              style={{ borderBottom: "1px solid #EDE8DE" }}
             >
               <div>
-                <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#B47B18" }}>
+                <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#8A5F04" }}>
                   <GitCompareArrows className="w-3.5 h-3.5" />
                   Vergleich · {jobs.length} {jobs.length === 1 ? "Betrieb" : "Betriebe"}
                 </p>
                 <h2 className="text-primary font-bold text-[20px] leading-tight" style={{ fontFamily: "var(--font-display)" }}>
                   Punkt für Punkt nebeneinander
                 </h2>
-                <p className="text-[12.5px] mt-0.5" style={{ color: "rgba(26,26,46,0.5)" }}>
+                <p className="text-[12.5px] mt-0.5" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                   Der beste Wert jeder Zeile ist gold hinterlegt.
                 </p>
               </div>
@@ -213,7 +213,7 @@ export default function CompareDialog({
                 onClick={onClose}
                 aria-label="Schliessen"
                 className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.5)" }}
+                style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.5)" }}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -226,7 +226,7 @@ export default function CompareDialog({
                   <tr>
                     <th
                       className="sticky left-0 z-10 bg-white text-left py-3 pr-4 align-bottom text-[10.5px] font-bold uppercase tracking-[0.14em]"
-                      style={{ color: "rgba(26,26,46,0.4)", minWidth: 180 }}
+                      style={{ color: "rgba(12, 51, 48,0.4)", minWidth: 180 }}
                     >
                       Kriterium
                     </th>
@@ -237,7 +237,7 @@ export default function CompareDialog({
                             <p className="text-[14.5px] font-bold text-primary leading-snug" style={{ fontFamily: "var(--font-display)" }}>
                               {j.employer}
                             </p>
-                            <p className="text-[11.5px] font-normal mt-0.5" style={{ color: "rgba(26,26,46,0.5)" }}>
+                            <p className="text-[11.5px] font-normal mt-0.5" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                               {j.title}
                             </p>
                           </div>
@@ -246,7 +246,7 @@ export default function CompareDialog({
                             onClick={() => onRemove(j.id)}
                             aria-label={`${j.employer} aus dem Vergleich entfernen`}
                             className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                            style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.45)" }}
+                            style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.45)" }}
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -271,10 +271,10 @@ export default function CompareDialog({
                       }
                     }
                     return (
-                      <tr key={row.label} style={{ borderTop: "1px solid #F1EEE8" }}>
+                      <tr key={row.label} style={{ borderTop: "1px solid #EDE8DE" }}>
                         <td
                           className="sticky left-0 z-10 bg-white py-3 pr-4 font-semibold"
-                          style={{ color: "rgba(26,26,46,0.6)" }}
+                          style={{ color: "rgba(12, 51, 48,0.6)" }}
                         >
                           {row.label}
                         </td>
@@ -284,7 +284,7 @@ export default function CompareDialog({
                             className="py-3 px-3 text-primary"
                             style={
                               winners.has(j.id)
-                                ? { background: "rgba(232,168,56,0.13)" }
+                                ? { background: "rgba(249, 173, 7,0.13)" }
                                 : undefined
                             }
                           >

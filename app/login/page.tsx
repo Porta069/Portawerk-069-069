@@ -58,7 +58,7 @@ export default function LoginPage() {
       <div className="relative hidden lg:flex flex-col justify-between bg-primary overflow-hidden p-12">
         <div
           className="absolute -top-40 -right-40 w-[560px] h-[560px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.14) 0%, transparent 65%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.14) 0%, transparent 65%)" }}
         />
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -96,7 +96,7 @@ export default function LoginPage() {
       </div>
 
       {/* ── Formular ── */}
-      <div className="flex items-center justify-center px-6 py-12" style={{ background: "#F8F7F4" }}>
+      <div className="flex items-center justify-center px-6 py-12" style={{ background: "#F5F2EC" }}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -114,7 +114,7 @@ export default function LoginPage() {
           >
             Anmelden
           </h2>
-          <p className="text-sm mb-8" style={{ color: "#6B7280" }}>
+          <p className="text-sm mb-8" style={{ color: "#5F6F6A" }}>
             Schön, dass du wieder da bist.
           </p>
 
@@ -133,7 +133,7 @@ export default function LoginPage() {
             <div>
               <label
                 className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
-                style={{ color: "rgba(26,26,46,0.45)" }}
+                style={{ color: "rgba(12, 51, 48,0.45)" }}
               >
                 Passwort<span className="text-accent ml-0.5">*</span>
               </label>
@@ -146,7 +146,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   className="w-full bg-white text-primary text-sm px-4 py-3.5 pr-11 outline-none transition-all duration-200 placeholder:text-primary/20"
                   style={{
-                    border: `1.5px solid ${password ? "#1A1A2E" : "#E5E7EB"}`,
+                    border: `1.5px solid ${password ? "#0C3330" : "#DFE3E0"}`,
                     fontFamily: "var(--font-sans)",
                   }}
                 />
@@ -166,17 +166,17 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => setRemember((r) => !r)}
                 className="flex items-center gap-2 text-sm"
-                style={{ color: "rgba(26,26,46,0.7)" }}
+                style={{ color: "rgba(12, 51, 48,0.7)" }}
               >
                 <span
                   className="w-4 h-4 flex items-center justify-center transition-all"
                   style={{
-                    border: `1.5px solid ${remember ? "#E8A838" : "#D1D5DB"}`,
-                    background: remember ? "#E8A838" : "white",
+                    border: `1.5px solid ${remember ? "#F9AD07" : "#C8CFCB"}`,
+                    background: remember ? "#F9AD07" : "white",
                   }}
                 >
                   {remember && (
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" strokeWidth="4">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0C3330" strokeWidth="4">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                   )}
@@ -186,7 +186,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 className="text-sm transition-colors"
-                style={{ color: "#E8A838" }}
+                style={{ color: "#F9AD07" }}
                 onClick={handleForgot}
               >
                 Passwort vergessen?
@@ -215,7 +215,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className="group w-full flex items-center justify-center gap-3 font-semibold py-4 text-sm transition-all duration-200 disabled:opacity-60"
-              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
             >
               {loading ? (
                 <>
@@ -231,14 +231,14 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="flex items-center gap-2 mt-6 text-[11px]" style={{ color: "rgba(107,114,128,0.7)" }}>
-            <Lock className="w-3 h-3 flex-shrink-0" style={{ color: "#E8A838" }} />
+          <div className="flex items-center gap-2 mt-6 text-[11px]" style={{ color: "rgba(95, 111, 106,0.7)" }}>
+            <Lock className="w-3 h-3 flex-shrink-0" style={{ color: "#F9AD07" }} />
             Melde dich mit den bei der Registrierung gewählten Daten an.
           </div>
 
-          <p className="mt-8 text-sm text-center" style={{ color: "#6B7280" }}>
+          <p className="mt-8 text-sm text-center" style={{ color: "#5F6F6A" }}>
             Noch kein Konto?{" "}
-            <Link href="/registrieren" className="font-semibold" style={{ color: "#E8A838" }}>
+            <Link href="/registrieren" className="font-semibold" style={{ color: "#F9AD07" }}>
               Jetzt registrieren
             </Link>
           </p>

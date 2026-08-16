@@ -62,7 +62,7 @@ export default function AffiliateGenerator() {
         <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
       </button>
       <p className="text-muted text-xs mt-3 flex items-center justify-center gap-1.5">
-        <ShieldCheck className="w-3.5 h-3.5 text-accent" /> Kostenlos · Nummer per SMS bestätigt
+        <ShieldCheck className="w-3.5 h-3.5 text-[#8A5F04]" /> Kostenlos · Nummer per SMS bestätigt
       </p>
     </form>
   );

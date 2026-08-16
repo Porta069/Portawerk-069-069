@@ -46,7 +46,7 @@ function GermanyMask() {
         pathOptions={{
           color: "transparent",
           // Exakt der Flächenton der Oberfläche (--color-surface).
-          fillColor: "#F8F7F4",
+          fillColor: "#F5F2EC",
           // Bewusst nicht deckend: die Umgebung bleibt als Andeutung erkennbar.
           fillOpacity: 0.9,
           weight: 0,
@@ -69,7 +69,7 @@ function GermanyMask() {
       <Polyline
         positions={GERMANY_OUTLINE}
         pathOptions={{
-          color: "#1A1A2E",
+          color: "#0C3330",
           weight: 1.4,
           opacity: 0.26,
           lineJoin: "round",
@@ -117,7 +117,7 @@ export default function MapShell({
       scrollWheelZoom={scrollWheelZoom}
       zoomControl={false}
       attributionControl={false}
-      style={{ height, width: "100%", background: "#F8F7F4" }}
+      style={{ height, width: "100%", background: "#F5F2EC" }}
     >
       <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
       <GermanyMask />
@@ -135,7 +135,7 @@ export function MapAttribution() {
       target="_blank"
       rel="noopener noreferrer"
       className="absolute z-[10] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"
-      style={{ background: "rgba(255,255,255,0.85)", color: "rgba(26,26,46,0.5)" }}
+      style={{ background: "rgba(255,255,255,0.85)", color: "rgba(12, 51, 48,0.5)" }}
     >
       © OpenStreetMap
     </a>
@@ -149,7 +149,7 @@ export function MapZoom() {
   return (
     <div
       className="absolute z-[10] right-3 bottom-3 flex flex-col overflow-hidden rounded-xl"
-      style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px -10px rgba(26,26,46,0.45)" }}
+      style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px -10px rgba(12, 51, 48,0.45)" }}
     >
       <button type="button" aria-label="Hineinzoomen" className={btn} onClick={() => map.zoomIn()}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">

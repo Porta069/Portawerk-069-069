@@ -47,7 +47,7 @@ function ApplyButton({ jobId }: { jobId: string }) {
       onClick={apply}
       disabled={state === "busy"}
       className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
-      style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}
+      style={{ background: "#0C3330", color: "white", fontFamily: "var(--font-display)" }}
     >
       {state === "busy" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
       Diskret bewerben
@@ -95,29 +95,29 @@ export default function MerklistePage() {
       >
         Deine Merkliste
       </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
+      <p className="text-[15px] mb-7" style={{ color: "rgba(12, 51, 48,0.55)" }}>
         Gespeicherte Stellen aus der Jobbörse — vergleichen, ansehen, bewerben.
       </p>
 
       {jobs === null ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
         </div>
       ) : jobs.length === 0 ? (
         <div
           className="rounded-3xl bg-white px-6 py-16 text-center"
-          style={{ border: "1.5px solid #E9E7E1" }}
+          style={{ border: "1.5px solid #E4DFD3" }}
         >
-          <Heart className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
+          <Heart className="w-7 h-7 mx-auto mb-4" style={{ color: "#F9AD07" }} />
           <p className="text-[16px] font-bold text-primary mb-1.5">Noch nichts gemerkt</p>
-          <p className="text-[13.5px] mb-6 max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
+          <p className="text-[13.5px] mb-6 max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(12, 51, 48,0.5)" }}>
             Tipp in der Jobbörse auf das Herz einer Stelle — sie landet dann hier
             in deinem Profilbereich.
           </p>
           <Link
             href="/dashboard/jobboerse"
             className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
           >
             Zur Jobbörse
             <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -125,7 +125,7 @@ export default function MerklistePage() {
         </div>
       ) : (
         <>
-          <p className="text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.45)" }}>
+          <p className="text-[13px] mb-4" style={{ color: "rgba(12, 51, 48,0.45)" }}>
             {jobs.length} {jobs.length === 1 ? "gemerkte Stelle" : "gemerkte Stellen"}
           </p>
           <div className="space-y-4">
@@ -173,7 +173,7 @@ export default function MerklistePage() {
             exit={{ opacity: 0, y: 24 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[90] flex flex-wrap items-center justify-center gap-3 rounded-full pl-5 pr-2 py-2 max-w-[calc(100vw-24px)]"
-            style={{ background: "#1A1A2E", boxShadow: "0 20px 50px -20px rgba(26,26,46,0.8)" }}
+            style={{ background: "#0C3330", boxShadow: "0 20px 50px -20px rgba(12, 51, 48,0.8)" }}
           >
             <span className="text-white text-[13.5px] whitespace-nowrap">
               <strong className="tabular-nums">{compareIds.length}</strong>{" "}
@@ -184,7 +184,7 @@ export default function MerklistePage() {
               onClick={() => setCompareOpen(true)}
               disabled={compareIds.length < 2}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-bold disabled:opacity-50"
-              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
             >
               <GitCompareArrows className="w-4 h-4" />
               {compareIds.length < 2 ? "Noch 1 wählen" : "Vergleichen"}

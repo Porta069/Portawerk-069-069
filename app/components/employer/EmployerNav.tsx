@@ -38,7 +38,7 @@ export default function EmployerNav({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-[#1A1A2E] shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-[#0C3330] shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
           <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0">
@@ -50,7 +50,7 @@ export default function EmployerNav({
             />
             <span
               className="hidden sm:inline text-[11px] font-semibold uppercase tracking-[0.16em] px-2 py-1 rounded"
-              style={{ background: "rgba(232,168,56,0.16)", color: "#E8A838" }}
+              style={{ background: "rgba(249, 173, 7,0.16)", color: "#F9AD07" }}
             >
               Betriebe
             </span>
@@ -77,7 +77,7 @@ export default function EmployerNav({
                   {badge > 0 && (
                     <span
                       className="ml-1.5 inline-flex items-center justify-center rounded-full text-[11px] font-bold tabular-nums align-middle"
-                      style={{ minWidth: 20, height: 20, padding: "0 6px", background: "#E8A838", color: "#1A1A2E" }}
+                      style={{ minWidth: 20, height: 20, padding: "0 6px", background: "#F9AD07", color: "#0C3330" }}
                     >
                       {badge}
                     </span>
@@ -121,7 +121,7 @@ export default function EmployerNav({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden overflow-hidden bg-[#1A1A2E]"
+            className="lg:hidden overflow-hidden bg-[#0C3330]"
             style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
           >
             <div className="max-w-[1680px] mx-auto px-6 py-4 flex flex-col">

@@ -41,7 +41,7 @@ export default function VerdienenContent() {
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to right, #1A1A2E 0%, rgba(26,26,46,0.55) 32%, rgba(26,26,46,0.15) 70%, rgba(26,26,46,0.35) 100%)",
+                "linear-gradient(to right, #0C3330 0%, rgba(12, 51, 48,0.55) 32%, rgba(12, 51, 48,0.15) 70%, rgba(12, 51, 48,0.35) 100%)",
             }}
           />
           {/* auf Mobile stärker abdunkeln für Lesbarkeit */}
@@ -132,7 +132,7 @@ export default function VerdienenContent() {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="group relative h-full overflow-hidden rounded-3xl bg-primary p-8 hover:-translate-y-2 transition-[transform,box-shadow] duration-300 ease-out shadow-[0_20px_44px_-24px_rgba(26,26,46,0.5)] hover:shadow-[0_30px_60px_-22px_rgba(232,168,56,0.5)]">
+                  <div className="group relative h-full overflow-hidden rounded-3xl bg-primary p-8 hover:-translate-y-2 transition-[transform,box-shadow] duration-300 ease-out shadow-[0_20px_44px_-24px_rgba(12, 51, 48,0.5)] hover:shadow-[0_30px_60px_-22px_rgba(249, 173, 7,0.5)]">
                     <span
                       className="absolute -top-6 right-1 font-black text-white/[0.06] leading-none select-none pointer-events-none"
                       style={{ fontFamily: "var(--font-display)", fontSize: "9rem" }}
@@ -141,7 +141,7 @@ export default function VerdienenContent() {
                     </span>
                     <div
                       className="absolute -inset-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                      style={{ background: "radial-gradient(circle at 70% 0%, rgba(232,168,56,0.2) 0%, transparent 60%)" }}
+                      style={{ background: "radial-gradient(circle at 70% 0%, rgba(249, 173, 7,0.2) 0%, transparent 60%)" }}
                     />
                     <div className="relative">
                       <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
@@ -214,7 +214,7 @@ export default function VerdienenContent() {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="group h-full rounded-3xl border border-border bg-white p-8 sm:p-10 hover:border-accent hover:-translate-y-1.5 hover:shadow-[0_26px_54px_-28px_rgba(232,168,56,0.5)] transition-[transform,box-shadow,border-color] duration-300 ease-out">
+                  <div className="group h-full rounded-3xl border border-border bg-white p-8 sm:p-10 hover:border-accent hover:-translate-y-1.5 hover:shadow-[0_26px_54px_-28px_rgba(249, 173, 7,0.5)] transition-[transform,box-shadow,border-color] duration-300 ease-out">
                     <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
                       <Icon className="w-7 h-7 text-primary" strokeWidth={2} />
                     </div>
@@ -272,7 +272,7 @@ export default function VerdienenContent() {
 
       {/* ── CTA ── */}
       <section className="py-20 bg-primary relative overflow-hidden">
-        <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.10) 0%, transparent 65%)" }} />
+        <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.10) 0%, transparent 65%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <h2 className="text-white font-bold text-3xl md:text-4xl leading-tight mb-5" style={{ fontFamily: "var(--font-display)" }}>
             Bereit zu verdienen?

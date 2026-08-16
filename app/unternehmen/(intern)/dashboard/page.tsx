@@ -36,10 +36,10 @@ const ERFAHRUNG_STUFEN = [0, 3, 5, 10];
 /** Filter-Gruppe mit Überschrift. */
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="py-5" style={{ borderTop: "1px solid #F1EEE8" }}>
+    <div className="py-5" style={{ borderTop: "1px solid #EDE8DE" }}>
       <p
         className="text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
-        style={{ color: "rgba(26,26,46,0.45)" }}
+        style={{ color: "rgba(12, 51, 48,0.45)" }}
       >
         {title}
       </p>
@@ -64,20 +64,20 @@ function Choice({
       onClick={onClick}
       className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] text-left transition-colors duration-150"
       style={{
-        background: active ? "rgba(232,168,56,0.13)" : "transparent",
-        color: active ? "#1A1A2E" : "rgba(26,26,46,0.62)",
+        background: active ? "rgba(249, 173, 7,0.13)" : "transparent",
+        color: active ? "#0C3330" : "rgba(12, 51, 48,0.62)",
         fontWeight: active ? 600 : 400,
       }}
     >
       <span
         className="w-[18px] h-[18px] rounded-md flex items-center justify-center flex-shrink-0 transition-colors"
         style={{
-          border: `1.5px solid ${active ? "#E8A838" : "#DDD9D1"}`,
-          background: active ? "#E8A838" : "transparent",
+          border: `1.5px solid ${active ? "#F9AD07" : "#DDD9D1"}`,
+          background: active ? "#F9AD07" : "transparent",
         }}
       >
         {active && (
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" strokeWidth="4" strokeLinecap="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0C3330" strokeWidth="4" strokeLinecap="round">
             <path d="M5 13l4 4L19 7" />
           </svg>
         )}
@@ -191,12 +191,12 @@ export default function EmployerSearchPage() {
     <>
       <div className="flex items-center justify-between gap-3 pb-1">
         <p className="inline-flex items-center gap-2 text-[15px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
-          <SlidersHorizontal className="w-4 h-4" style={{ color: "#E8A838" }} />
+          <SlidersHorizontal className="w-4 h-4" style={{ color: "#F9AD07" }} />
           Filter
           {activeCount > 0 && (
             <span
               className="flex items-center justify-center rounded-full text-[11px] tabular-nums"
-              style={{ minWidth: 20, height: 20, padding: "0 6px", background: "#E8A838", color: "#1A1A2E" }}
+              style={{ minWidth: 20, height: 20, padding: "0 6px", background: "#F9AD07", color: "#0C3330" }}
             >
               {activeCount}
             </span>
@@ -207,7 +207,7 @@ export default function EmployerSearchPage() {
             type="button"
             onClick={resetFilters}
             className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold"
-            style={{ color: "rgba(26,26,46,0.45)" }}
+            style={{ color: "rgba(12, 51, 48,0.45)" }}
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Zurücksetzen
@@ -261,10 +261,10 @@ export default function EmployerSearchPage() {
       {results && (
         <div
           className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-6"
-          style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
+          style={{ background: "rgba(249, 173, 7,0.09)", border: "1px solid rgba(249, 173, 7,0.28)" }}
         >
-          <Target className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
-          <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
+          <Target className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
+          <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.7)" }}>
             {scoredAgainst ? (
               <>
                 <strong>Match-Scores</strong> werden gegen Ihr Inserat{" "}
@@ -287,17 +287,17 @@ export default function EmployerSearchPage() {
       )}
 
       {/* ══ Standort ══ */}
-      <div className="relative overflow-hidden rounded-3xl mb-6" style={{ background: "#1A1A2E" }}>
+      <div className="relative overflow-hidden rounded-3xl mb-6" style={{ background: "#0C3330" }}>
         <div
           className="absolute -top-32 -right-24 w-[520px] h-[520px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 68%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.2) 0%, transparent 68%)" }}
         />
         <div className="relative p-6 sm:p-8">
           <div className="flex flex-wrap items-end justify-between gap-5 mb-6">
             <div>
               <span
                 className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
-                style={{ color: "#E8A838" }}
+                style={{ color: "#F9AD07" }}
               >
                 <span className="w-6 h-[2px] bg-accent" />
                 {user?.companyName || "Ihr Betrieb"}
@@ -328,7 +328,7 @@ export default function EmployerSearchPage() {
                       className="rounded-2xl px-4 py-3 min-w-[104px]"
                       style={{ background: "rgba(255,255,255,0.07)" }}
                     >
-                      <Icon className="w-3.5 h-3.5 mb-1.5" style={{ color: "#E8A838" }} />
+                      <Icon className="w-3.5 h-3.5 mb-1.5" style={{ color: "#F9AD07" }} />
                       <p
                         className="text-[19px] font-bold tabular-nums text-white leading-none"
                         style={{ fontFamily: "var(--font-display)" }}
@@ -348,7 +348,7 @@ export default function EmployerSearchPage() {
           {prefilled && !area && (
             <div
               className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-4 text-[13.5px]"
-              style={{ background: "rgba(232,168,56,0.14)", color: "#F6D08A" }}
+              style={{ background: "rgba(249, 173, 7,0.14)", color: "#FBDA9A" }}
             >
               <MapPin className="w-4 h-4 flex-shrink-0" />
               PLZ <strong className="tabular-nums">{prefilled}</strong> aus Ihrer Anfrage
@@ -376,7 +376,7 @@ export default function EmployerSearchPage() {
         {/* Filter — links, klebend */}
         <aside
           className="hidden lg:block rounded-3xl bg-white px-5 py-5 lg:sticky lg:top-[92px]"
-          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+          style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 10px 30px -24px rgba(12, 51, 48,0.5)" }}
         >
           {filterPanel}
         </aside>
@@ -384,7 +384,7 @@ export default function EmployerSearchPage() {
         <div>
           {/* Kopfzeile: Anzahl + Sortierung */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <p className="text-[14px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+            <p className="text-[14px]" style={{ color: "rgba(12, 51, 48,0.55)" }}>
               {results?.length
                 ? `${results.length} ${results.length === 1 ? "Kandidat" : "Kandidaten"} im Umkreis von ${radius} km`
                 : "Noch keine Auswahl"}
@@ -394,7 +394,7 @@ export default function EmployerSearchPage() {
                 type="button"
                 onClick={() => setMobileFilters((v) => !v)}
                 className="lg:hidden inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px] font-semibold"
-                style={{ background: "white", border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
+                style={{ background: "white", border: "1.5px solid #E4DFD3", color: "rgba(12, 51, 48,0.65)" }}
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 Filter{activeCount > 0 && ` (${activeCount})`}
@@ -402,14 +402,14 @@ export default function EmployerSearchPage() {
               <div className="relative">
                 <ArrowUpDown
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                  style={{ color: "rgba(26,26,46,0.35)" }}
+                  style={{ color: "rgba(12, 51, 48,0.35)" }}
                 />
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value as CandidateSort)}
                   aria-label="Sortierung"
                   className="appearance-none rounded-full bg-white text-[13.5px] font-semibold pl-11 pr-6 py-2.5 outline-none cursor-pointer"
-                  style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
+                  style={{ border: "1.5px solid #E4DFD3", color: "rgba(12, 51, 48,0.65)" }}
                 >
                   {SORTS.map((s) => (
                     <option key={s.value} value={s.value}>
@@ -424,7 +424,7 @@ export default function EmployerSearchPage() {
           {mobileFilters && (
             <div
               className="lg:hidden rounded-3xl bg-white px-5 py-5 mb-5"
-              style={{ border: "1.5px solid #E9E7E1" }}
+              style={{ border: "1.5px solid #E4DFD3" }}
             >
               {filterPanel}
             </div>
@@ -433,10 +433,10 @@ export default function EmployerSearchPage() {
           {/* Vertrauenszeile */}
           <div
             className="flex items-start gap-3 rounded-2xl px-4 py-3.5 mb-5"
-            style={{ background: "rgba(26,26,46,0.035)" }}
+            style={{ background: "rgba(12, 51, 48,0.035)" }}
           >
-            <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
-            <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+            <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#F9AD07" }} />
+            <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.6)" }}>
               Profile sind anonymisiert. Name und Kontaktdaten sehen Sie, sobald der
               Kandidat Ihre Anfrage annimmt — deshalb zeigen sich hier auch Fachkräfte,
               die nicht offen suchen.
@@ -453,26 +453,26 @@ export default function EmployerSearchPage() {
           )}
 
           {!ready ? (
-            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-              <MapPin className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
+            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E4DFD3" }}>
+              <MapPin className="w-8 h-8 mx-auto mb-4" style={{ color: "#F9AD07" }} />
               <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
                 Standort festlegen
               </p>
-              <p className="text-[14px] max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
+              <p className="text-[14px] max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                 Tippen Sie oben auf die Karte oder geben Sie Postleitzahl bzw. Ort ein.
               </p>
             </div>
           ) : loading ? (
             <div className="flex items-center justify-center py-24">
-              <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+              <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
             </div>
           ) : !results?.length ? (
-            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-              <Users className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
+            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E4DFD3" }}>
+              <Users className="w-8 h-8 mx-auto mb-4" style={{ color: "#F9AD07" }} />
               <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
                 Keine Treffer im Umkreis von {radius} km
               </p>
-              <p className="text-[14px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
+              <p className="text-[14px] mb-6" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                 Erweitern Sie den Radius am Regler oder lösen Sie die Filter.
               </p>
               <button
@@ -482,7 +482,7 @@ export default function EmployerSearchPage() {
                   resetFilters();
                 }}
                 className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold"
-                style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+                style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
               >
                 <X className="w-4 h-4" />
                 Filter lösen, 150 km
@@ -505,7 +505,7 @@ export default function EmployerSearchPage() {
 
               <p
                 className="flex items-center justify-center gap-2 pt-4 text-[13px]"
-                style={{ color: "rgba(26,26,46,0.4)" }}
+                style={{ color: "rgba(12, 51, 48,0.4)" }}
               >
                 <Briefcase className="w-3.5 h-3.5" />
                 Weitere Fachkräfte erscheinen hier, sobald sie sich registrieren.

@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!hydrated || checking || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
       </div>
     );
   }

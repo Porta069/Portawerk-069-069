@@ -21,7 +21,7 @@ function pin(letter: string, bg: string, fg: string) {
   return L.divIcon({
     className: "",
     html: `<div style="position:relative;width:30px;height:30px">
-      <div style="position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${bg};border:2.5px solid #fff;box-shadow:0 6px 14px -4px rgba(26,26,46,.55)"></div>
+      <div style="position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${bg};border:2.5px solid #fff;box-shadow:0 6px 14px -4px rgba(12, 51, 48,.55)"></div>
       <span style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font:700 13px/1 system-ui;color:${fg}">${letter}</span>
     </div>`,
     iconSize: [30, 30],
@@ -29,8 +29,8 @@ function pin(letter: string, bg: string, fg: string) {
   });
 }
 
-const startIcon = pin("A", "#1A1A2E", "#FFFFFF");
-const endIcon = pin("B", "linear-gradient(145deg,#F0B94A,#E8A838)", "#1A1A2E");
+const startIcon = pin("A", "#0C3330", "#FFFFFF");
+const endIcon = pin("B", "linear-gradient(145deg,#FBBF3C,#F9AD07)", "#0C3330");
 
 /** Passt den Ausschnitt auf die gesamte Route an. */
 function FitBounds({ points }: { points: [number, number][] }) {
@@ -101,9 +101,9 @@ export default function RouteMap({ job }: { job: Job }) {
       <div className="flex flex-wrap items-center gap-2.5 mb-4">
         <span
           className="inline-flex items-center gap-2 rounded-full px-4 py-2.5"
-          style={{ background: "rgba(232,168,56,0.14)" }}
+          style={{ background: "rgba(249, 173, 7,0.14)" }}
         >
-          <Car className="w-4 h-4" style={{ color: "#E8A838" }} />
+          <Car className="w-4 h-4" style={{ color: "#F9AD07" }} />
           <span
             className="text-[17px] font-bold tabular-nums text-primary"
             style={{ fontFamily: "var(--font-display)" }}
@@ -113,16 +113,16 @@ export default function RouteMap({ job }: { job: Job }) {
         </span>
         <span
           className="inline-flex items-center gap-2 rounded-full px-4 py-2.5"
-          style={{ background: "rgba(26,26,46,0.05)" }}
+          style={{ background: "rgba(12, 51, 48,0.05)" }}
         >
-          <Ruler className="w-4 h-4" style={{ color: "rgba(26,26,46,0.4)" }} />
-          <span className="text-[14px] font-semibold tabular-nums" style={{ color: "rgba(26,26,46,0.65)" }}>
+          <Ruler className="w-4 h-4" style={{ color: "rgba(12, 51, 48,0.4)" }} />
+          <span className="text-[14px] font-semibold tabular-nums" style={{ color: "rgba(12, 51, 48,0.65)" }}>
             {loading ? "…" : `${route?.km.toLocaleString("de-DE")} km`}
           </span>
         </span>
       </div>
 
-      <p className="text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.55)" }}>
+      <p className="text-[13px] mb-4" style={{ color: "rgba(12, 51, 48,0.55)" }}>
         Von <strong className="text-primary">{job.startLabel}</strong> zu{" "}
         <strong className="text-primary">{job.employer}</strong> in {job.city}
         {job.conditions.fahrzeitIstArbeitszeit && (
@@ -133,15 +133,15 @@ export default function RouteMap({ job }: { job: Job }) {
       {/* Karte */}
       <div
         className="relative overflow-hidden rounded-2xl"
-        style={{ boxShadow: "0 16px 40px -26px rgba(26,26,46,0.6)" }}
+        style={{ boxShadow: "0 16px 40px -26px rgba(12, 51, 48,0.6)" }}
       >
         {loading && (
           <div
             className="absolute inset-0 z-[10] flex items-center justify-center gap-2"
             style={{ background: "rgba(255,255,255,0.75)" }}
           >
-            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
-            <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.6)" }}>
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#F9AD07" }} />
+            <span className="text-[13px]" style={{ color: "rgba(12, 51, 48,0.6)" }}>
               Route wird berechnet …
             </span>
           </div>
@@ -158,12 +158,12 @@ export default function RouteMap({ job }: { job: Job }) {
               {/* Schatten unter der Route für Kontrast auf hellen Flächen */}
               <Polyline
                 positions={route.points}
-                pathOptions={{ color: "#1A1A2E", weight: 9, opacity: 0.16 }}
+                pathOptions={{ color: "#0C3330", weight: 9, opacity: 0.16 }}
               />
               <Polyline
                 positions={route.points}
                 pathOptions={{
-                  color: "#E8A838",
+                  color: "#F9AD07",
                   weight: 5,
                   opacity: 0.98,
                   dashArray: route.real ? undefined : "8 10",
@@ -182,9 +182,9 @@ export default function RouteMap({ job }: { job: Job }) {
       {route && !route.real && (
         <p
           className="flex items-start gap-2 text-[12px] mt-3"
-          style={{ color: "rgba(26,26,46,0.55)" }}
+          style={{ color: "rgba(12, 51, 48,0.55)" }}
         >
-          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
           Der Routendienst war nicht erreichbar — gezeigt ist die Luftlinie, die Zeit
           ist ein Schätzwert.
         </p>

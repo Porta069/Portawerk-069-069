@@ -53,7 +53,7 @@ export default function UnternehmenLoginPage() {
       <div className="relative hidden lg:flex flex-col justify-between bg-primary overflow-hidden p-12">
         <div
           className="absolute -top-40 -right-40 w-[560px] h-[560px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.14) 0%, transparent 65%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.14) 0%, transparent 65%)" }}
         />
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -90,13 +90,13 @@ export default function UnternehmenLoginPage() {
         </div>
 
         <div className="relative flex items-center gap-2.5 text-white/40 text-xs">
-          <FileSignature className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
+          <FileSignature className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#F9AD07" }} />
           Zugänge werden ausschließlich nach Vertragsabschluss vergeben.
         </div>
       </div>
 
       {/* Formular */}
-      <div className="flex items-center justify-center px-6 py-12" style={{ background: "#F8F7F4" }}>
+      <div className="flex items-center justify-center px-6 py-12" style={{ background: "#F5F2EC" }}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -113,7 +113,7 @@ export default function UnternehmenLoginPage() {
           <h2 className="text-primary font-bold text-2xl mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
             Firmen-Login
           </h2>
-          <p className="text-sm mb-8" style={{ color: "#6B7280" }}>
+          <p className="text-sm mb-8" style={{ color: "#5F6F6A" }}>
             Zugang für Partnerbetriebe.
           </p>
 
@@ -130,7 +130,7 @@ export default function UnternehmenLoginPage() {
             <div>
               <label
                 className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
-                style={{ color: "rgba(26,26,46,0.45)" }}
+                style={{ color: "rgba(12, 51, 48,0.45)" }}
               >
                 Passwort<span className="text-accent ml-0.5">*</span>
               </label>
@@ -142,7 +142,7 @@ export default function UnternehmenLoginPage() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   className="w-full bg-white text-primary text-sm px-4 py-3.5 pr-11 outline-none transition-all duration-200 placeholder:text-primary/20"
-                  style={{ border: `1.5px solid ${password ? "#1A1A2E" : "#E5E7EB"}`, fontFamily: "var(--font-sans)" }}
+                  style={{ border: `1.5px solid ${password ? "#0C3330" : "#DFE3E0"}`, fontFamily: "var(--font-sans)" }}
                 />
                 <button
                   type="button"
@@ -168,7 +168,7 @@ export default function UnternehmenLoginPage() {
               type="submit"
               disabled={loading}
               className="group w-full flex items-center justify-center gap-3 font-semibold py-4 text-sm transition-all duration-200 disabled:opacity-60"
-              style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+              style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
             >
               {loading ? (
                 <><Loader2 className="w-4 h-4 animate-spin" />Anmelden…</>
@@ -181,14 +181,14 @@ export default function UnternehmenLoginPage() {
           {/* Der Text gehört in EIN Flex-Kind: sonst wird jeder Knoten zur
               eigenen Spalte und die Zeile zerfällt — bei der längeren Adresse
               sogar mitten im Wort. */}
-          <div className="flex items-start gap-2 mt-6 text-[11px]" style={{ color: "rgba(107,114,128,0.75)" }}>
-            <Lock className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
+          <div className="flex items-start gap-2 mt-6 text-[11px]" style={{ color: "rgba(95, 111, 106,0.75)" }}>
+            <Lock className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "#F9AD07" }} />
             <span className="leading-relaxed">
               Noch kein Firmenzugang? Kontaktiere uns unter{" "}
               <a
                 href="mailto:kontakt@porta-werk.de"
                 className="font-semibold whitespace-nowrap"
-                style={{ color: "#E8A838" }}
+                style={{ color: "#F9AD07" }}
               >
                 kontakt@porta-werk.de
               </a>{" "}
@@ -196,9 +196,9 @@ export default function UnternehmenLoginPage() {
             </span>
           </div>
 
-          <p className="mt-6 text-sm text-center" style={{ color: "#6B7280" }}>
+          <p className="mt-6 text-sm text-center" style={{ color: "#5F6F6A" }}>
             Du bist Handwerker:in?{" "}
-            <Link href="/login" className="font-semibold" style={{ color: "#E8A838" }}>
+            <Link href="/login" className="font-semibold" style={{ color: "#F9AD07" }}>
               Zum normalen Login
             </Link>
           </p>

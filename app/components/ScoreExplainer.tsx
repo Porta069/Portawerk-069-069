@@ -50,8 +50,8 @@ export default function ScoreExplainer({
           fontSize: 10,
           lineHeight: 1,
           marginLeft: 2,
-          background: "rgba(232,168,56,0.2)",
-          color: "#B47B18",
+          background: "rgba(249, 173, 7,0.2)",
+          color: "#8A5F04",
           fontStyle: "italic",
           fontFamily: "Georgia, serif",
         }}
@@ -66,7 +66,7 @@ export default function ScoreExplainer({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6"
-            style={{ background: "rgba(26,26,46,0.55)", backdropFilter: "blur(3px)" }}
+            style={{ background: "rgba(12, 51, 48,0.55)", backdropFilter: "blur(3px)" }}
             onClick={(ev) => {
               ev.stopPropagation();
               setOpen(false);
@@ -81,18 +81,18 @@ export default function ScoreExplainer({
               aria-modal="true"
               aria-label="Rechenweg des Match-Scores"
               className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white"
-              style={{ boxShadow: "0 40px 80px -30px rgba(26,26,46,0.6)" }}
+              style={{ boxShadow: "0 40px 80px -30px rgba(12, 51, 48,0.6)" }}
               onClick={(ev) => ev.stopPropagation()}
             >
               {/* Kopf */}
               <div
                 className="sticky top-0 z-10 flex items-start justify-between gap-4 px-6 pt-6 pb-4 bg-white"
-                style={{ borderBottom: "1px solid #F1EEE8" }}
+                style={{ borderBottom: "1px solid #EDE8DE" }}
               >
                 <div className="min-w-0">
                   <span
                     className="inline-flex items-center gap-1.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.14em] mb-2 px-2.5 py-1"
-                    style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
+                    style={{ background: "rgba(249, 173, 7,0.14)", color: "#8A5F04" }}
                   >
                     <FlaskConical className="w-3 h-3" />
                     Transparenz · Testphase
@@ -104,7 +104,7 @@ export default function ScoreExplainer({
                     So entsteht der Score von {breakdown.score} %
                   </h3>
                   {subject && (
-                    <p className="text-[13px] mt-0.5 truncate" style={{ color: "rgba(26,26,46,0.5)" }}>
+                    <p className="text-[13px] mt-0.5 truncate" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                       {subject}
                     </p>
                   )}
@@ -114,7 +114,7 @@ export default function ScoreExplainer({
                   onClick={() => setOpen(false)}
                   aria-label="Schliessen"
                   className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
-                  style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.5)" }}
+                  style={{ background: "rgba(12, 51, 48,0.05)", color: "rgba(12, 51, 48,0.5)" }}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -127,7 +127,7 @@ export default function ScoreExplainer({
                     <thead>
                       <tr
                         className="text-left text-[10.5px] font-bold uppercase tracking-[0.12em]"
-                        style={{ color: "rgba(26,26,46,0.45)" }}
+                        style={{ color: "rgba(12, 51, 48,0.45)" }}
                       >
                         <th className="py-2 pr-3 font-bold">Kriterium</th>
                         <th className="py-2 px-2 font-bold">Gesucht</th>
@@ -139,13 +139,13 @@ export default function ScoreExplainer({
                     </thead>
                     <tbody>
                       {scored.map((c) => (
-                        <tr key={c.key} style={{ borderTop: "1px solid #F1EEE8" }}>
+                        <tr key={c.key} style={{ borderTop: "1px solid #EDE8DE" }}>
                           <td className="py-2.5 pr-3 text-primary align-top">
                             <span className="font-semibold">{c.label}</span>
                             {c.note && (
                               <span
                                 className="block text-[11.5px] leading-snug mt-0.5"
-                                style={{ color: "rgba(26,26,46,0.45)" }}
+                                style={{ color: "rgba(12, 51, 48,0.45)" }}
                               >
                                 {c.note}
                               </span>
@@ -153,7 +153,7 @@ export default function ScoreExplainer({
                           </td>
                           <td
                             className="py-2.5 px-2 align-top"
-                            style={{ color: "rgba(26,26,46,0.65)" }}
+                            style={{ color: "rgba(12, 51, 48,0.65)" }}
                           >
                             {c.required}
                           </td>
@@ -163,7 +163,7 @@ export default function ScoreExplainer({
                           <td
                             className="py-2.5 px-2 text-right tabular-nums align-top"
                             style={{
-                              color: c.fulfilment >= 1 ? "#15803D" : "#B45309",
+                              color: c.fulfilment >= 1 ? "#15803D" : "#8A5F04",
                               fontWeight: 600,
                             }}
                           >
@@ -171,25 +171,25 @@ export default function ScoreExplainer({
                           </td>
                           <td
                             className="py-2.5 px-2 text-right tabular-nums align-top"
-                            style={{ color: "rgba(26,26,46,0.65)" }}
+                            style={{ color: "rgba(12, 51, 48,0.65)" }}
                           >
                             ×{c.weight}
                           </td>
                           <td
                             className="py-2.5 pl-2 text-right tabular-nums font-bold align-top"
-                            style={{ color: c.penalty ? "#B45309" : "#15803D" }}
+                            style={{ color: c.penalty ? "#8A5F04" : "#15803D" }}
                           >
                             {fmt(c.penalty)}
-                            <span style={{ color: "rgba(26,26,46,0.35)", fontWeight: 400 }}>
+                            <span style={{ color: "rgba(12, 51, 48,0.35)", fontWeight: 400 }}>
                               {" "}/ {fmt(c.maxPenalty)}
                             </span>
                           </td>
                         </tr>
                       ))}
                       {skipped.map((c) => (
-                        <tr key={c.key} style={{ borderTop: "1px solid #F1EEE8", opacity: 0.5 }}>
+                        <tr key={c.key} style={{ borderTop: "1px solid #EDE8DE", opacity: 0.5 }}>
                           <td className="py-2.5 pr-3 text-primary">{c.label}</td>
-                          <td className="py-2.5 px-2" style={{ color: "rgba(26,26,46,0.65)" }}>
+                          <td className="py-2.5 px-2" style={{ color: "rgba(12, 51, 48,0.65)" }}>
                             {c.required}
                           </td>
                           <td colSpan={4} className="py-2.5 pl-2 text-right text-[12px] italic">
@@ -207,7 +207,7 @@ export default function ScoreExplainer({
                   style={{ background: "var(--color-surface)" }}
                 >
                   <p className="flex items-center gap-2 text-[13px] text-primary">
-                    <Sigma className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
+                    <Sigma className="w-4 h-4 flex-shrink-0" style={{ color: "#F9AD07" }} />
                     <span>
                       Abzüge gesamt:{" "}
                       <strong className="tabular-nums">{fmt(breakdown.totalPenalty)}</strong> von
@@ -221,7 +221,7 @@ export default function ScoreExplainer({
                       {breakdown.baseScore ?? breakdown.score} %
                     </strong>
                   </p>
-                  <p className="text-[11.5px] leading-relaxed pl-6" style={{ color: "rgba(26,26,46,0.5)" }}>
+                  <p className="text-[11.5px] leading-relaxed pl-6" style={{ color: "rgba(12, 51, 48,0.5)" }}>
                     {breakdown.formula}
                   </p>
                 </div>
@@ -232,20 +232,20 @@ export default function ScoreExplainer({
                     className="rounded-2xl px-4 py-3.5 mt-3 space-y-1"
                     style={{ background: "rgba(180,83,9,0.06)", border: "1px solid rgba(180,83,9,0.2)" }}
                   >
-                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: "#B45309" }}>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: "#8A5F04" }}>
                       Abzüge aus deinen Absagen
                     </p>
                     {breakdown.adjustments.map((a) => (
-                      <p key={a.id} className="flex items-baseline justify-between gap-3 text-[13px]" style={{ color: "rgba(26,26,46,0.7)" }}>
+                      <p key={a.id} className="flex items-baseline justify-between gap-3 text-[13px]" style={{ color: "rgba(12, 51, 48,0.7)" }}>
                         <span>{a.label}</span>
-                        <span className="tabular-nums font-bold flex-shrink-0" style={{ color: "#B45309" }}>
+                        <span className="tabular-nums font-bold flex-shrink-0" style={{ color: "#8A5F04" }}>
                           −{a.points}
                         </span>
                       </p>
                     ))}
                     <p className="text-[13px] tabular-nums text-primary pt-1" style={{ borderTop: "1px dashed rgba(180,83,9,0.25)" }}>
                       Endscore = {breakdown.baseScore} − {breakdown.adjustments.reduce((s, a) => s + a.points, 0)} ={" "}
-                      <strong className="text-[15px]" style={{ fontFamily: "var(--font-display)", color: "#B47B18" }}>
+                      <strong className="text-[15px]" style={{ fontFamily: "var(--font-display)", color: "#8A5F04" }}>
                         {breakdown.score} %
                       </strong>
                     </p>
@@ -253,7 +253,7 @@ export default function ScoreExplainer({
                 ) : null}
 
                 {/* Platzhalter KI-Score */}
-                <p className="text-[12px] mt-3" style={{ color: "rgba(26,26,46,0.45)" }}>
+                <p className="text-[12px] mt-3" style={{ color: "rgba(12, 51, 48,0.45)" }}>
                   KI-Bewertung:{" "}
                   {breakdown.aiScore === null
                     ? "folgt — die KI-Fragerunde ist noch nicht integriert."

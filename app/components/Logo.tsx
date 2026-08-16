@@ -10,14 +10,14 @@ import Image from "next/image";
 // den ausgelieferten Dateien wirklich nur diese zwei Werte stehen und nicht
 // tausend Zwischentöne aus der JPEG-Vorlage.
 //
-// Beide Fassungen sind derzeit IDENTISCH: Auf ausdrücklichen Wunsch behält das
-// Logo auch auf dunklem Grund seine Markenfarben. Das Grün erreicht dort nur
-// einen Kontrast von 2,3:1 gegenüber 17:1 bei Weiß — „WERK" tritt also spürbar
-// zurück. Für ein Logo ist das zulässig (Logotypen sind von den
-// Kontrastanforderungen ausgenommen), aber es ist eine bewusste Entscheidung.
-// Soll auf dunklen Flächen wieder Weiß stehen, genügt es,
-// `portawerk-logo-hell.png` neu zu erzeugen — die 15 Einbaustellen bleiben
-// unberührt.
+// Die Farbwahl der Website richtet sich nach diesen beiden Werten, nicht
+// umgekehrt — deshalb steht das Logo auf Kopfleiste, Fußzeile und allen hellen
+// Flächen in seinen Originalfarben (Petrol auf Weiß: 7,5:1).
+//
+// `hell` ist die NEGATIVFASSUNG für die tiefen Petrol-Flächen (Login-Panels,
+// interne Kopfleisten). Dort steht „WERK" in Creme statt Petrol — nicht aus
+// Geschmack, sondern weil #115F5B auf #0C3330 einen Kontrast von 1,7:1 hat und
+// schlicht verschwindet. „PORTA" bleibt in beiden Fassungen Marken-Gold.
 //
 // Die Höhe wird vorgegeben, die Breite ergibt sich aus dem Seitenverhältnis
 // (7,2 : 1). So steht die Fläche vor dem Laden fest und die Seite springt

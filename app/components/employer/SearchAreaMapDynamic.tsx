@@ -15,7 +15,7 @@ const SearchAreaMapDynamic = dynamic(() => import("./SearchAreaMap"), {
       className="flex items-center justify-center gap-2 rounded-2xl py-24"
       style={{ background: "rgba(255,255,255,0.05)" }}
     >
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#F9AD07" }} />
       <span className="text-[13px]" style={{ color: "rgba(255,255,255,0.55)" }}>
         Karte wird geladen …
       </span>

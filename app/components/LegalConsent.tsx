@@ -23,20 +23,20 @@ function ConsentRow({
       onClick={onToggle}
       className="flex items-start gap-3.5 w-full text-left px-4 py-4 transition-all duration-200"
       style={{
-        border: `1.5px solid ${checked ? "#E8A838" : "#E5E7EB"}`,
-        background: checked ? "rgba(232,168,56,0.05)" : "white",
+        border: `1.5px solid ${checked ? "#F9AD07" : "#DFE3E0"}`,
+        background: checked ? "rgba(249, 173, 7,0.05)" : "white",
       }}
     >
       <span
         className="w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200"
         style={{
-          border: `1.5px solid ${checked ? "#E8A838" : "#D1D5DB"}`,
-          background: checked ? "#E8A838" : "white",
+          border: `1.5px solid ${checked ? "#F9AD07" : "#C8CFCB"}`,
+          background: checked ? "#F9AD07" : "white",
         }}
       >
         {checked && <Check className="w-3.5 h-3.5 text-primary" strokeWidth={3} />}
       </span>
-      <span className="text-sm leading-relaxed" style={{ color: "rgba(26,26,46,0.75)" }}>
+      <span className="text-sm leading-relaxed" style={{ color: "rgba(12, 51, 48,0.75)" }}>
         {children}
       </span>
     </button>
@@ -52,7 +52,7 @@ export default function LegalConsentBox({
 }) {
   return (
     <div className="space-y-3">
-      <p className="text-[11.5px]" style={{ color: "rgba(26,26,46,0.45)" }}>
+      <p className="text-[11.5px]" style={{ color: "rgba(12, 51, 48,0.45)" }}>
         Fassung {RECHTSTEXTE_VERSION}. Zeitpunkt und Fassung deiner
         Zustimmung halten wir bei deinem Konto fest; du findest sie in deinem
         Datenexport.

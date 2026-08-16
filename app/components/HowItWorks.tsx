@@ -99,7 +99,7 @@ export default function HowItWorks() {
         >
           <Link
             href="/registrieren"
-            className="group relative overflow-hidden inline-flex items-center gap-3 rounded-full bg-accent text-primary font-bold px-9 py-5 text-lg transition-shadow duration-300 shadow-[0_10px_28px_-10px_rgba(232,168,56,0.55)] hover:shadow-[0_16px_36px_-10px_rgba(26,26,46,0.45)]"
+            className="group relative overflow-hidden inline-flex items-center gap-3 rounded-full bg-accent text-primary font-bold px-9 py-5 text-lg transition-shadow duration-300 shadow-[0_10px_28px_-10px_rgba(249, 173, 7,0.55)] hover:shadow-[0_16px_36px_-10px_rgba(12, 51, 48,0.45)]"
           >
             <span className="relative z-10 inline-flex items-center gap-3 transition-colors duration-300 group-hover:text-white">
               Jetzt kostenlos starten

@@ -69,17 +69,17 @@ function OtpPanel({
     <div
       className="rounded-2xl bg-white p-5 transition-[border-color,box-shadow] duration-300"
       style={{
-        border: `1.5px solid ${verified ? "rgba(34,197,94,0.45)" : "#E9E7E1"}`,
-        boxShadow: "0 2px 12px -8px rgba(26,26,46,0.16)",
+        border: `1.5px solid ${verified ? "rgba(34,197,94,0.45)" : "#E4DFD3"}`,
+        boxShadow: "0 2px 12px -8px rgba(12, 51, 48,0.16)",
       }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: verified ? "rgba(34,197,94,0.12)" : "rgba(232,168,56,0.12)" }}
+            style={{ background: verified ? "rgba(34,197,94,0.12)" : "rgba(249, 173, 7,0.12)" }}
           >
-            <Icon className="w-[18px] h-[18px]" style={{ color: verified ? "#16A34A" : "#E8A838" }} />
+            <Icon className="w-[18px] h-[18px]" style={{ color: verified ? "#16A34A" : "#F9AD07" }} />
           </div>
           <span className="text-[15px] font-semibold text-primary">{label}</span>
         </div>
@@ -93,7 +93,7 @@ function OtpPanel({
         </p>
       ) : !sent ? (
         <>
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#6B7280" }}>
+          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#5F6F6A" }}>
             Wir senden einen 6-stelligen Code an{" "}
             <strong className="text-primary break-all">{contact || "—"}</strong>.
           </p>
@@ -101,7 +101,7 @@ function OtpPanel({
             onClick={sendCode}
             disabled={sending || !contact}
             className="w-full flex items-center justify-center gap-2 rounded-full font-bold py-3.5 text-[14px] transition-all duration-200 disabled:opacity-50"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+            style={{ background: "#F9AD07", color: "#0C3330", fontFamily: "var(--font-display)" }}
           >
             {sending ? (
               <><Loader2 className="w-4 h-4 animate-spin" />Wird gesendet…</>
@@ -113,7 +113,7 @@ function OtpPanel({
         </>
       ) : (
         <div className="space-y-4">
-          <p className="text-[13px]" style={{ color: "#6B7280" }}>6-stelligen Code eingeben:</p>
+          <p className="text-[13px]" style={{ color: "#5F6F6A" }}>6-stelligen Code eingeben:</p>
           <OtpInput
             value={code}
             onChange={(v) => { setCode(v); setError(null); }}
@@ -134,14 +134,14 @@ function OtpPanel({
             )}
           </AnimatePresence>
           <div className="flex items-center justify-between gap-3">
-            <button onClick={sendCode} disabled={sending} className="text-[13px] font-medium" style={{ color: "#E8A838" }}>
+            <button onClick={sendCode} disabled={sending} className="text-[13px] font-medium" style={{ color: "#F9AD07" }}>
               Code erneut senden
             </button>
             <button
               onClick={verify}
               disabled={code.trim().length < 6 || verifying}
               className="flex items-center gap-2 rounded-full font-bold px-5 py-2.5 text-[13px] transition-all disabled:opacity-40"
-              style={{ background: "#1A1A2E", color: "white", fontFamily: "var(--font-display)" }}
+              style={{ background: "#0C3330", color: "white", fontFamily: "var(--font-display)" }}
             >
               {verifying ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
               Verifizieren
@@ -231,10 +231,10 @@ export default function StepVerify() {
 
       <div
         className="flex items-start gap-3 rounded-2xl px-4 py-3.5 mb-6"
-        style={{ background: "rgba(232,168,56,0.07)", border: "1px solid rgba(232,168,56,0.22)" }}
+        style={{ background: "rgba(249, 173, 7,0.07)", border: "1px solid rgba(249, 173, 7,0.22)" }}
       >
-        <Info className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
-        <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
+        <Info className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#8A5F04" }} />
+        <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(12, 51, 48,0.7)" }}>
           <strong>Test-Modus:</strong> E-Mail-/SMS-Versand ist noch nicht aktiv (Provider
           folgen). Codes werden serverseitig erzeugt, aber nicht zugestellt — du kannst
           diesen Schritt vorerst überspringen.

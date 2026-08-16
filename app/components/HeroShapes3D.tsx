@@ -54,11 +54,11 @@ function Cube({
               position: "absolute",
               inset: 0,
               transform,
-              border: "1.5px solid rgba(232,168,56,0.38)",
+              border: "1.5px solid rgba(249, 173, 7,0.38)",
               background:
                 i < 2
-                  ? "rgba(232,168,56,0.05)"
-                  : "rgba(26,26,46,0.2)",
+                  ? "rgba(249, 173, 7,0.05)"
+                  : "rgba(12, 51, 48,0.2)",
             }}
           />
         ))}
@@ -88,8 +88,8 @@ function Ring({
           width: size,
           height: size,
           borderRadius: "50%",
-          border: `${strokeWidth}px solid rgba(232,168,56,0.32)`,
-          boxShadow: "inset 0 0 20px rgba(232,168,56,0.04)",
+          border: `${strokeWidth}px solid rgba(249, 173, 7,0.32)`,
+          boxShadow: "inset 0 0 20px rgba(249, 173, 7,0.04)",
         }}
       />
     </motion.div>
@@ -116,9 +116,9 @@ function Diamond({
         style={{
           width: size,
           height: size,
-          border: "1.5px solid rgba(232,168,56,0.45)",
+          border: "1.5px solid rgba(249, 173, 7,0.45)",
           transform: "rotate(45deg)",
-          background: "rgba(232,168,56,0.03)",
+          background: "rgba(249, 173, 7,0.03)",
         }}
       />
     </motion.div>
@@ -150,8 +150,8 @@ function TiltPlane({
           rotateY: rotY,
           rotateX: rotX,
           y,
-          border: "1px solid rgba(232,168,56,0.28)",
-          background: "rgba(232,168,56,0.04)",
+          border: "1px solid rgba(249, 173, 7,0.28)",
+          background: "rgba(249, 173, 7,0.04)",
         }}
       />
     </div>

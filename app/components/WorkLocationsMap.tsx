@@ -24,8 +24,8 @@ import MapShell, { MapAttribution, MapZoom } from "./MapShell";
 const markerIcon = L.divIcon({
   className: "",
   html: `<div style="position:relative;width:28px;height:28px">
-    <div style="position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(145deg,#F0B94A,#E8A838);border:2.5px solid #fff;box-shadow:0 6px 14px -4px rgba(26,26,46,.55)"></div>
-    <div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:#1A1A2E"></div>
+    <div style="position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(145deg,#FBBF3C,#F9AD07);border:2.5px solid #fff;box-shadow:0 6px 14px -4px rgba(12, 51, 48,.55)"></div>
+    <div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:#0C3330"></div>
   </div>`,
   iconSize: [28, 28],
   iconAnchor: [14, 28],
@@ -187,7 +187,7 @@ export default function WorkLocationsMap({
       <div className="relative mb-3">
         <Search
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-          style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.3)" }}
+          style={{ color: focused ? "#F9AD07" : "rgba(12, 51, 48,0.3)" }}
         />
         <input
           value={query}
@@ -200,16 +200,16 @@ export default function WorkLocationsMap({
           placeholder="Ort oder PLZ suchen — z. B. München oder 80331"
           className="w-full rounded-full bg-white text-primary text-[14px] pl-12 pr-11 py-3.5 outline-none transition-all duration-200 placeholder:text-primary/25"
           style={{
-            border: `1.5px solid ${focused ? "#E8A838" : "#E9E7E1"}`,
+            border: `1.5px solid ${focused ? "#F9AD07" : "#E4DFD3"}`,
             boxShadow: focused
-              ? "0 0 0 4px rgba(232,168,56,0.12)"
-              : "0 2px 10px -6px rgba(26,26,46,0.14)",
+              ? "0 0 0 4px rgba(249, 173, 7,0.12)"
+              : "0 2px 10px -6px rgba(12, 51, 48,0.14)",
             fontFamily: "var(--font-sans)",
           }}
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2">
           {searching ? (
-            <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#E8A838" }} />
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#F9AD07" }} />
           ) : query ? (
             <button
               type="button"
@@ -218,7 +218,7 @@ export default function WorkLocationsMap({
                 setResults([]);
               }}
               aria-label="Suche leeren"
-              style={{ color: "rgba(26,26,46,0.35)" }}
+              style={{ color: "rgba(12, 51, 48,0.35)" }}
             >
               <X className="w-4 h-4" />
             </button>
@@ -228,7 +228,7 @@ export default function WorkLocationsMap({
         {showResults && results.length > 0 && (
           <div
             className="absolute z-[20] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
-            style={{ border: "1px solid #E9E7E1", boxShadow: "0 20px 40px -18px rgba(26,26,46,0.4)" }}
+            style={{ border: "1px solid #E4DFD3", boxShadow: "0 20px 40px -18px rgba(12, 51, 48,0.4)" }}
           >
             {results.map((r, i) => (
               <button
@@ -236,15 +236,15 @@ export default function WorkLocationsMap({
                 type="button"
                 onClick={() => pickResult(r)}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-[14px] transition-colors"
-                style={{ color: "rgba(26,26,46,0.82)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.08)")}
+                style={{ color: "rgba(12, 51, 48,0.82)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(249, 173, 7,0.08)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
                 <span
                   className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(232,168,56,0.14)" }}
+                  style={{ background: "rgba(249, 173, 7,0.14)" }}
                 >
-                  <Plus className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+                  <Plus className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
                 </span>
                 {r.label}
               </button>
@@ -256,14 +256,14 @@ export default function WorkLocationsMap({
       {/* ── Karte ── */}
       <div
         className="relative overflow-hidden rounded-3xl"
-        style={{ boxShadow: "0 18px 44px -26px rgba(26,26,46,0.55)" }}
+        style={{ boxShadow: "0 18px 44px -26px rgba(12, 51, 48,0.55)" }}
       >
         {adding && (
           <div
             className="absolute z-[10] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium"
-            style={{ background: "rgba(26,26,46,0.94)", color: "white" }}
+            style={{ background: "rgba(12, 51, 48,0.94)", color: "white" }}
           >
-            <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#E8A838" }} />
+            <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#F9AD07" }} />
             Ort wird ermittelt…
           </div>
         )}
@@ -271,9 +271,9 @@ export default function WorkLocationsMap({
         {value.length === 0 && !adding && (
           <div
             className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
-            style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)", boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)" }}
+            style={{ background: "rgba(255,255,255,0.94)", color: "rgba(12, 51, 48,0.72)", boxShadow: "0 8px 20px -12px rgba(12, 51, 48,0.5)" }}
           >
-            <Crosshair className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+            <Crosshair className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
             Tipp auf die Karte, um einen Arbeitsort zu setzen
           </div>
         )}
@@ -288,8 +288,8 @@ export default function WorkLocationsMap({
                 center={[l.lat, l.lng]}
                 radius={l.radiusKm * 1000}
                 pathOptions={{
-                  color: "#E8A838",
-                  fillColor: "#E8A838",
+                  color: "#F9AD07",
+                  fillColor: "#F9AD07",
                   fillOpacity: 0.16,
                   weight: 2,
                   opacity: 0.85,
@@ -309,7 +309,7 @@ export default function WorkLocationsMap({
         <div className="mt-4 space-y-2.5">
           <p
             className="text-[10px] font-semibold uppercase tracking-[0.16em]"
-            style={{ color: "rgba(26,26,46,0.4)" }}
+            style={{ color: "rgba(12, 51, 48,0.4)" }}
           >
             Deine Arbeitsorte ({value.length})
           </p>
@@ -317,21 +317,21 @@ export default function WorkLocationsMap({
             <div
               key={l.id}
               className="rounded-2xl bg-white p-4"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }}
+              style={{ border: "1.5px solid #E4DFD3", boxShadow: "0 2px 10px -8px rgba(12, 51, 48,0.2)" }}
             >
               <div className="flex items-center gap-3 mb-3">
                 <span
                   className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(232,168,56,0.14)" }}
+                  style={{ background: "rgba(249, 173, 7,0.14)" }}
                 >
-                  <MapPin className="w-4 h-4" style={{ color: "#E8A838" }} />
+                  <MapPin className="w-4 h-4" style={{ color: "#F9AD07" }} />
                 </span>
                 <span className="text-[14px] font-semibold text-primary truncate flex-1">
                   {l.label}
                 </span>
                 <span
                   className="rounded-full px-2.5 py-1 text-[12px] font-bold tabular-nums flex-shrink-0"
-                  style={{ background: "rgba(26,26,46,0.06)", color: "#1A1A2E" }}
+                  style={{ background: "rgba(12, 51, 48,0.06)", color: "#0C3330" }}
                 >
                   {l.radiusKm} km
                 </span>
@@ -340,9 +340,9 @@ export default function WorkLocationsMap({
                   onClick={() => remove(l.id)}
                   aria-label={`${l.label} entfernen`}
                   className="flex-shrink-0 transition-colors"
-                  style={{ color: "rgba(26,26,46,0.3)" }}
+                  style={{ color: "rgba(12, 51, 48,0.3)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#EF4444")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.3)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(12, 51, 48,0.3)")}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -357,13 +357,13 @@ export default function WorkLocationsMap({
                 onChange={(e) => setRadius(l.id, Number(e.target.value))}
                 className="w-full h-[4px] appearance-none cursor-pointer rounded-full"
                 style={{
-                  accentColor: "#E8A838",
-                  background: `linear-gradient(to right, #E8A838 ${
+                  accentColor: "#F9AD07",
+                  background: `linear-gradient(to right, #F9AD07 ${
                     ((l.radiusKm - 5) / 145) * 100
-                  }%, #E9E7E1 ${((l.radiusKm - 5) / 145) * 100}%)`,
+                  }%, #E4DFD3 ${((l.radiusKm - 5) / 145) * 100}%)`,
                 }}
               />
-              <div className="flex justify-between mt-1.5 text-[10px] tabular-nums" style={{ color: "rgba(26,26,46,0.35)" }}>
+              <div className="flex justify-between mt-1.5 text-[10px] tabular-nums" style={{ color: "rgba(12, 51, 48,0.35)" }}>
                 <span>5 km</span>
                 <span>150 km</span>
               </div>

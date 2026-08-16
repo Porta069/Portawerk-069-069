@@ -33,7 +33,7 @@ export function StepRail({
             <span className="block relative h-[3px] w-full overflow-hidden rounded-full bg-white/12">
               <motion.span
                 className="absolute inset-y-0 left-0 rounded-full"
-                style={{ background: isActive ? "#E8A838" : "rgba(232,168,56,0.75)" }}
+                style={{ background: isActive ? "#F9AD07" : "rgba(249, 173, 7,0.75)" }}
                 initial={false}
                 animate={{ width: isPast || isActive ? "100%" : "0%" }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -44,13 +44,13 @@ export function StepRail({
           const label = (
             <span className="mt-2.5 flex items-center gap-1.5">
               {isPast ? (
-                <Check className="w-3 h-3 flex-shrink-0" strokeWidth={3} style={{ color: "#E8A838" }} />
+                <Check className="w-3 h-3 flex-shrink-0" strokeWidth={3} style={{ color: "#F9AD07" }} />
               ) : (
                 <span
                   className="text-[10px] font-bold tabular-nums flex-shrink-0"
                   style={{
                     fontFamily: "var(--font-display)",
-                    color: isActive ? "#E8A838" : "rgba(255,255,255,0.25)",
+                    color: isActive ? "#F9AD07" : "rgba(255,255,255,0.25)",
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
@@ -62,7 +62,7 @@ export function StepRail({
                   color: isActive
                     ? "#FFFFFF"
                     : isPast
-                    ? "rgba(232,168,56,0.85)"
+                    ? "rgba(249, 173, 7,0.85)"
                     : "rgba(255,255,255,0.3)",
                 }}
               >

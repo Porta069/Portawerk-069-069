@@ -20,7 +20,7 @@ const fmt = (n: number) => n.toLocaleString("de-DE");
 
 type Status = "geworben" | "vermittlung" | "vermittelt" | "ausgezahlt";
 const STATUS: Record<Status, { label: string; icon: typeof Check; bg: string; fg: string }> = {
-  geworben:    { label: "Geworben",         icon: UserPlus,   bg: "#F1F1EF", fg: "#6B7280" },
+  geworben:    { label: "Geworben",         icon: UserPlus,   bg: "#EFEDE7", fg: "#5F6F6A" },
   vermittlung: { label: "In Vermittlung",   icon: Clock,      bg: "#EAF2FE", fg: "#2563EB" },
   vermittelt:  { label: "Vermittelt",       icon: Check,      bg: "#E7F7EE", fg: "#15803D" },
   ausgezahlt:  { label: "Prämie ausgezahlt", icon: BadgeCheck, bg: "#E7F7EE", fg: "#15803D" },
@@ -36,9 +36,9 @@ const STATUS_FROM_BACKEND: Record<ReferralStatus, Status> = {
 const initials = (n: string) => n.split(" ").map((p) => p[0]).join("");
 
 function RankBadge({ rang }: { rang: number }) {
-  if (rang === 1) return <Crown className="w-4 h-4" style={{ color: "#E8A838" }} strokeWidth={2.2} fill="#E8A838" />;
-  if (rang === 2) return <Medal className="w-4 h-4" style={{ color: "#9CA3AF" }} strokeWidth={2.2} />;
-  if (rang === 3) return <Medal className="w-4 h-4" style={{ color: "#B47B18" }} strokeWidth={2.2} />;
+  if (rang === 1) return <Crown className="w-4 h-4" style={{ color: "#F9AD07" }} strokeWidth={2.2} fill="#F9AD07" />;
+  if (rang === 2) return <Medal className="w-4 h-4" style={{ color: "#94A09B" }} strokeWidth={2.2} />;
+  if (rang === 3) return <Medal className="w-4 h-4" style={{ color: "#8A5F04" }} strokeWidth={2.2} />;
   return <span className="text-muted text-sm font-bold tabular-nums w-4 text-center">{rang}</span>;
 }
 
@@ -150,7 +150,7 @@ export default function PartnerDashboard() {
       {/* ══ Hero (Navy, full-bleed) ══ */}
       <header className="relative overflow-hidden bg-primary text-white">
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
-        <div className="absolute -top-24 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.20) 0%, transparent 65%)" }} />
+        <div className="absolute -top-24 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.20) 0%, transparent 65%)" }} />
 
         <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
           {/* Topbar */}
@@ -187,7 +187,7 @@ export default function PartnerDashboard() {
               <div className="flex items-end gap-4 flex-wrap">
                 <span
                   className="relative inline-flex overflow-hidden leading-none"
-                  style={{ filter: "drop-shadow(0 0 42px rgba(232,168,56,0.35))" }}
+                  style={{ filter: "drop-shadow(0 0 42px rgba(249, 173, 7,0.35))" }}
                 >
                   <span className="relative z-0 font-black text-accent" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(3.2rem, 8.5vw, 5rem)" }}>
                     {fmt(verdient)} €
@@ -243,7 +243,7 @@ export default function PartnerDashboard() {
                 initial={{ y: 16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
-                className="bg-white rounded-2xl border border-border p-5 shadow-[0_18px_40px_-24px_rgba(26,26,46,0.35)]"
+                className="bg-white rounded-2xl border border-border p-5 shadow-[0_18px_40px_-24px_rgba(12, 51, 48,0.35)]"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-muted text-xs font-semibold uppercase tracking-wider">{k.label}</span>
@@ -303,7 +303,7 @@ export default function PartnerDashboard() {
                 return (
                   <div key={r.name} className="flex items-center gap-3 py-3">
                     <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "var(--color-accent-soft)" }}>
-                      <span className="text-[11px] font-bold" style={{ color: "#B47B18" }}>{initials(r.name)}</span>
+                      <span className="text-[11px] font-bold" style={{ color: "#8A5F04" }}>{initials(r.name)}</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-primary text-sm font-semibold truncate">{r.name}</p>
@@ -354,7 +354,7 @@ export default function PartnerDashboard() {
             {RANGLISTE.map((p) => (
               <div key={p.rang} className="flex items-center gap-3 py-2.5 border-t border-border first:border-t-0">
                 <span className="w-6 flex justify-center"><RankBadge rang={p.rang} /></span>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#F1F1EF" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#EFEDE7" }}>
                   <span className="text-[11px] font-bold text-muted">{initials(p.name)}</span>
                 </div>
                 <span className="text-primary text-sm font-semibold flex-1 truncate">{p.name}</span>
@@ -363,13 +363,13 @@ export default function PartnerDashboard() {
 
             {/* Trenner + eigene Position */}
             <div className="flex items-center gap-2 py-2 pl-6 text-muted/60 text-xs tracking-widest select-none">· · ·</div>
-            <div className="flex items-center gap-3 py-2.5 rounded-xl px-3 -mx-1" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(232,168,56,0.35)" }}>
-              <span className="w-6 flex justify-center"><span className="text-sm font-bold tabular-nums" style={{ color: "#B47B18" }}>{MEIN_RANG}</span></span>
+            <div className="flex items-center gap-3 py-2.5 rounded-xl px-3 -mx-1" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(249, 173, 7,0.35)" }}>
+              <span className="w-6 flex justify-center"><span className="text-sm font-bold tabular-nums" style={{ color: "#8A5F04" }}>{MEIN_RANG}</span></span>
               <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-accent">
                 <span className="text-[11px] font-bold text-primary">{initials(NAME)}</span>
               </div>
               <span className="text-primary text-sm font-bold flex-1 truncate">{NAME} <span className="text-accent font-semibold">· Du</span></span>
-              <span className="text-xs font-semibold" style={{ color: "#B47B18" }}>{vermittelt} Vermittlung{vermittelt === 1 ? "" : "en"}</span>
+              <span className="text-xs font-semibold" style={{ color: "#8A5F04" }}>{vermittelt} Vermittlung{vermittelt === 1 ? "" : "en"}</span>
             </div>
           </div>
         </div>

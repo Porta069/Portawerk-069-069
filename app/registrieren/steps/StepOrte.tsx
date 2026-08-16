@@ -51,7 +51,7 @@ export default function StepOrte() {
         note={
           locCount > 0 ? (
             <span className="inline-flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+              <MapPin className="w-3.5 h-3.5" style={{ color: "#F9AD07" }} />
               {locCount} {locCount === 1 ? "Arbeitsort" : "Arbeitsorte"} gewählt.
             </span>
           ) : (

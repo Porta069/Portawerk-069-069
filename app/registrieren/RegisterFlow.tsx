@@ -143,7 +143,7 @@ export default function RegisterFlow() {
   if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#F9AD07" }} />
       </div>
     );
   }
@@ -197,12 +197,12 @@ export default function RegisterFlow() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(155deg, rgba(26,26,46,0.82) 0%, rgba(26,26,46,0.94) 55%, #1A1A2E 100%)",
+              "linear-gradient(155deg, rgba(12, 51, 48,0.82) 0%, rgba(12, 51, 48,0.94) 55%, #0C3330 100%)",
           }}
         />
         <div
           className="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.18) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(249, 173, 7,0.18) 0%, transparent 70%)" }}
         />
 
         <div className="relative flex flex-col h-full px-6 lg:px-12 py-8 lg:py-12">
@@ -223,8 +223,8 @@ export default function RegisterFlow() {
                 <span
                   className="relative inline-flex items-center gap-3 overflow-hidden rounded-full pl-2.5 pr-5 py-2 mb-6"
                   style={{
-                    background: "rgba(232,168,56,0.14)",
-                    border: "1px solid rgba(232,168,56,0.4)",
+                    background: "rgba(249, 173, 7,0.14)",
+                    border: "1px solid rgba(249, 173, 7,0.4)",
                     backdropFilter: "blur(4px)",
                   }}
                 >
@@ -232,8 +232,8 @@ export default function RegisterFlow() {
                     className="flex items-center justify-center rounded-full font-bold tabular-nums"
                     style={{
                       fontFamily: "var(--font-display)",
-                      background: "#E8A838",
-                      color: "#1A1A2E",
+                      background: "#F9AD07",
+                      color: "#0C3330",
                       width: 34,
                       height: 34,
                       fontSize: "1rem",
@@ -243,7 +243,7 @@ export default function RegisterFlow() {
                   </span>
                   <span
                     className="font-bold tracking-wide"
-                    style={{ fontFamily: "var(--font-display)", color: "#F6D08A", fontSize: "0.95rem" }}
+                    style={{ fontFamily: "var(--font-display)", color: "#FBDA9A", fontSize: "0.95rem" }}
                   >
                     von {CONTENT_STEPS}
                   </span>
@@ -297,14 +297,14 @@ export default function RegisterFlow() {
               >
                 <span
                   className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(232,168,56,0.16)" }}
+                  style={{ background: "rgba(249, 173, 7,0.16)" }}
                 >
-                  <Lightbulb className="w-4 h-4" style={{ color: "#E8A838" }} />
+                  <Lightbulb className="w-4 h-4" style={{ color: "#F9AD07" }} />
                 </span>
                 <div>
                   <p
                     className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-1"
-                    style={{ color: "rgba(232,168,56,0.9)" }}
+                    style={{ color: "rgba(249, 173, 7,0.9)" }}
                   >
                     Tipp von PortaWerk
                   </p>
@@ -325,14 +325,14 @@ export default function RegisterFlow() {
             <button
               onClick={back}
               className="group inline-flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-full transition-all duration-200"
-              style={{ color: "rgba(26,26,46,0.6)", background: "rgba(26,26,46,0.05)" }}
+              style={{ color: "rgba(12, 51, 48,0.6)", background: "rgba(12, 51, 48,0.05)" }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(26,26,46,0.09)";
-                e.currentTarget.style.color = "#1A1A2E";
+                e.currentTarget.style.background = "rgba(12, 51, 48,0.09)";
+                e.currentTarget.style.color = "#0C3330";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(26,26,46,0.05)";
-                e.currentTarget.style.color = "rgba(26,26,46,0.6)";
+                e.currentTarget.style.background = "rgba(12, 51, 48,0.05)";
+                e.currentTarget.style.color = "rgba(12, 51, 48,0.6)";
               }}
             >
               <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" />

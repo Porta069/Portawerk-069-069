@@ -29,7 +29,7 @@ export default function StickyMobileCTA() {
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="md:hidden fixed bottom-0 left-0 right-0 z-50 p-3"
           style={{
-            background: "rgba(26,26,46,0.96)",
+            background: "rgba(12, 51, 48,0.96)",
             backdropFilter: "blur(8px)",
             borderTop: "1px solid rgba(255,255,255,0.1)",
             paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))",

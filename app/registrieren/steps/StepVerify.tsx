@@ -14,6 +14,7 @@ import { useRegistration } from "@/app/context/RegistrationContext";
 import { useAuth } from "@/app/context/AuthContext";
 import { api, type OtpChannel as Channel } from "@/lib/api";
 import { getReferralPartnerId } from "@/lib/referral";
+import { RECHTSTEXTE_VERSION } from "@/lib/legal";
 import OtpInput from "@/app/components/OtpInput";
 import VerificationStatus from "@/app/components/VerificationStatus";
 import { StepHeading, NextButton, SkipButton, StepActions } from "@/app/components/wizard";
@@ -202,6 +203,11 @@ export default function StepVerify() {
       phone: data.contact.phone.trim(),
       password: data.password,
       ...(werber ? { referredBy: werber } : {}),
+      // Die Zustimmung wurde im Konto-Schritt gegeben; sie wird hier mit dem
+      // Fassungsstand übertragen und im Backend am Konto festgehalten.
+      agbAccepted: data.legal.termsAccepted,
+      datenschutzAccepted: data.legal.privacyAccepted,
+      rechtstexteVersion: RECHTSTEXTE_VERSION,
     });
     setLoading(false);
     if (res.ok) {

@@ -226,6 +226,10 @@ export const api = {
     password: string;
     /** Optionaler Werber-Name/-Code (Affiliate). */
     referredBy?: string;
+    /** Zustimmung — vom Backend zwingend verlangt und dort gespeichert. */
+    agbAccepted: boolean;
+    datenschutzAccepted: boolean;
+    rechtstexteVersion: string;
   }) {
     return request<AuthSession>("/auth/registration/complete", {
       method: "POST",

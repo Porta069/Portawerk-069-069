@@ -35,6 +35,15 @@ export const ANBIETER = {
   dachDomain: "porta-jobs.de",
 } as const;
 
+/**
+ * Fassungsstand der Rechtstexte.
+ *
+ * Wird bei der Registrierung mit der Zustimmung gespeichert. Nur so lässt sich
+ * später belegen, WELCHEM Text jemand zugestimmt hat — ohne das ist eine
+ * Zustimmung im Streitfall wertlos. Bei jeder inhaltlichen Änderung erhöhen.
+ */
+export const RECHTSTEXTE_VERSION = "2026-08-16";
+
 const ANSCHRIFT = `${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}, ${ANBIETER.land}`;
 
 const LEGAL_SECTIONS: LegalSection[] = [
@@ -127,6 +136,10 @@ const LEGAL_SECTIONS: LegalSection[] = [
         text: `Diese Bedingungen gelten für die Nutzung von PortaWerk (${ANBIETER.domain}), einem Angebot der ${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}. PortaWerk ist das Handwerks-Angebot innerhalb des Portfolios Porta Jobs (${ANBIETER.dachDomain}) und tritt eigenständig auf; Vertragspartner ist die ${ANBIETER.name}.`,
       },
       {
+        heading: "Zustandekommen des Nutzungsvertrags",
+        text: "Der Nutzungsvertrag kommt zustande, wenn du die Registrierung abschließt und dabei diesen Bedingungen sowie der Datenschutzerklärung zustimmst. Zeitpunkt und Fassungsstand der Zustimmung werden bei deinem Konto gespeichert; den Fassungsstand findest du am Ende dieser Bedingungen. Ändern wir die Bedingungen, teilen wir das mit angemessener Frist mit.",
+      },
+      {
         heading: "Leistung von PortaWerk",
         text: "PortaWerk ist eine Vermittlungsplattform: Wir bringen Handwerker:innen und Betriebe zusammen, berechnen die Übereinstimmung zwischen Profil und Stellenanforderungen und ermöglichen eine diskrete Kontaktaufnahme. Für Handwerker:innen ist die Nutzung kostenlos. Wir sind weder Arbeitsvermittler im Sinne einer Arbeitsverwaltung noch Vertragspartei eines etwaigen Arbeitsverhältnisses.",
       },
@@ -143,6 +156,22 @@ const LEGAL_SECTIONS: LegalSection[] = [
         text: "Betriebe sichern zu, Angaben in Inseraten — insbesondere zu Vergütung, Montageanteil, Urlaubstagen und Leistungen — wahrheitsgemäß zu machen. Anforderungen dürfen nicht gegen das Allgemeine Gleichbehandlungsgesetz verstoßen; unzulässig sind namentlich Ausschlüsse, die an Alter, Geschlecht, Herkunft, Religion, Behinderung oder sexuelle Identität anknüpfen. Freigegebene Kontaktdaten sind vertraulich zu behandeln und nach Abschluss oder Abbruch des Verfahrens zu löschen, soweit keine gesetzliche Aufbewahrungspflicht besteht.",
       },
       {
+        heading: "Nachweis der Vermittlung",
+        text: "Als Nachweis gilt jede über die Plattform vermittelte Kenntnisnahme einer Kandidatin oder eines Kandidaten durch den Betrieb — insbesondere die Freigabe von Kontaktdaten, der Eingang einer Bewerbung oder ein über die Plattform übermitteltes Jobangebot. Der Zeitpunkt des Nachweises wird protokolliert und ist dem Betrieb im Betriebsbereich einsehbar.",
+      },
+      {
+        heading: "Umgehungsverbot (gilt für Betriebe)",
+        text: "Kommt es innerhalb von zwölf Monaten nach dem Nachweis zu einer Beschäftigung der nachgewiesenen Person durch den Betrieb, entsteht die vereinbarte Vermittlungsvergütung — und zwar unabhängig davon, ob der weitere Kontakt oder der Vertragsschluss über die Plattform oder außerhalb davon erfolgt ist. Das gilt ebenso, wenn die Beschäftigung bei einem mit dem Betrieb verbundenen Unternehmen im Sinne der §§ 15 ff. AktG zustande kommt, wenn sie in anderer Form als einem Arbeitsverhältnis erfolgt (etwa freie Mitarbeit, Werkvertrag, Arbeitnehmerüberlassung oder Übernahme in ein Ausbildungsverhältnis) oder wenn der Betrieb die über die Plattform erhaltenen Kandidatendaten an Dritte weitergibt und dort eine Beschäftigung zustande kommt. Der Betrieb ist verpflichtet, uns eine solche Beschäftigung innerhalb von 14 Tagen nach Vertragsschluss in Textform anzuzeigen. Diese Regelung dient allein dem Schutz unserer Vergütung; sie beschränkt weder die Auswahlfreiheit des Betriebs noch die Bewerbungs- und Arbeitsplatzwahlfreiheit der Kandidat:innen.",
+      },
+      {
+        heading: "Was Handwerker:innen betrifft — und was nicht",
+        text: "Für Handwerker:innen ist die Nutzung kostenlos; von ihnen wird in keinem Fall eine Vermittlungsvergütung verlangt (vgl. § 296 SGB III). Ein Umgehungsverbot im obigen Sinne trifft sie ausdrücklich nicht: Du darfst jede Stelle annehmen, die du willst, auch außerhalb der Plattform und auch bei einem Betrieb, den du hier kennengelernt hast. Wir bitten dich lediglich, uns eine zustande gekommene Vermittlung mitzuteilen — das kostet dich nichts, hilft uns aber bei der Abrechnung und beim Empfehlungsprogramm. Kontaktdaten von Betrieben, die du über die Plattform erhältst, verwendest du bitte nur zur Anbahnung deiner eigenen Beschäftigung und gibst sie nicht an Dritte weiter.",
+      },
+      {
+        heading: "Vermittlungsvergütung",
+        text: "Die Vergütung schuldet ausschließlich der Betrieb. Höhe und Fälligkeit ergeben sich aus der mit dem Betrieb getroffenen Vereinbarung bzw. der bei Vertragsschluss geltenden Preisliste. Wird ein Beschäftigungsverhältnis innerhalb der Probezeit aus Gründen beendet, die nicht der Betrieb zu vertreten hat, gilt die jeweils vereinbarte Regelung zur anteiligen Rückerstattung. [KONKRETE PREISE, FÄLLIGKEIT UND RÜCKERSTATTUNGSREGELUNG HIER ODER IN DER PREISLISTE VERBINDLICH FESTLEGEN.]",
+      },
+      {
         heading: "Empfehlungsprämie",
         text: "Für das Empfehlungsprogramm gilt: Die Prämie entsteht erst mit erfolgreicher Vermittlung der geworbenen Person und wird nach den im Partnerbereich genannten Bedingungen ausgezahlt. Maßgeblich ist die zuletzt veröffentlichte Prämienhöhe. Missbrauch — etwa Selbstwerbung über Zweitkonten oder erfundene Personen — führt zum Verfall der Prämie und zur Sperrung. Prämien sind von der empfangenden Person selbst zu versteuern; wir übernehmen keine steuerliche Beratung. [AUSZAHLUNGSBEDINGUNGEN UND STEUERHINWEIS ANWALTLICH PRÜFEN LASSEN.]",
       },
@@ -151,12 +180,24 @@ const LEGAL_SECTIONS: LegalSection[] = [
         text: "Wir bemühen uns um einen unterbrechungsfreien Betrieb, schulden aber keine bestimmte Verfügbarkeit. Wartungsfenster und Störungen — auch bei eingebundenen Drittdiensten wie Kartenkacheln oder Ortssuche — können die Nutzung vorübergehend einschränken.",
       },
       {
+        heading: "Widerrufsrecht für Verbraucher:innen",
+        text: "Du hast das Recht, diesen Vertrag binnen 14 Tagen ohne Angabe von Gründen zu widerrufen. Die Frist beginnt mit dem Tag des Vertragsschlusses. Um dein Widerrufsrecht auszuüben, genügt eine eindeutige Erklärung in Textform an " + ANBIETER.emailAllgemein + " oder an " + ANSCHRIFT + ". Zur Wahrung der Frist reicht die rechtzeitige Absendung. Da die Nutzung für dich kostenlos ist, entstehen dir durch den Widerruf keine Kosten; dein Konto und deine Daten werden gelöscht. Unabhängig vom Widerrufsrecht kannst du dein Konto jederzeit in den Einstellungen selbst löschen — das ist der schnellere Weg. [HINWEIS ZUR PRÜFUNG: Seit § 312 Abs. 1a BGB gelten Verbraucherschutzvorschriften auch für Verträge, bei denen statt eines Entgelts personenbezogene Daten bereitgestellt werden. Ob daraus eine Pflicht zur förmlichen Widerrufsbelehrung samt Muster-Widerrufsformular folgt, ist anwaltlich zu klären.]",
+      },
+      {
         heading: "Haftung",
         text: "Wir haften unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei der Verletzung von Leben, Körper und Gesundheit. Bei einfacher Fahrlässigkeit haften wir nur für die Verletzung wesentlicher Vertragspflichten (Kardinalpflichten) und begrenzt auf den vertragstypisch vorhersehbaren Schaden. Die Haftung nach dem Produkthaftungsgesetz bleibt unberührt.",
       },
       {
         heading: "Sperrung, Kündigung, Änderungen",
-        text: "Bei Verstößen gegen diese Bedingungen können wir Profile und Inserate sperren oder löschen. Du kannst dein Konto jederzeit ohne Frist löschen. Änderungen dieser Bedingungen kündigen wir mit angemessener Frist an; widersprichst du nicht, gelten sie als angenommen. [SCHLUSSBESTIMMUNGEN, GERICHTSSTAND UND RECHTSWAHL ANWALTLICH ERGÄNZEN LASSEN.]",
+        text: "Bei Verstößen gegen diese Bedingungen können wir Profile und Inserate sperren oder löschen; bei schweren oder wiederholten Verstößen auch dauerhaft. Du kannst dein Konto jederzeit ohne Frist selbst löschen. Änderungen dieser Bedingungen teilen wir mindestens 30 Tage vor Wirksamwerden in Textform mit; widersprichst du nicht bis zum Wirksamwerden, gelten sie als angenommen. Auf dieses Recht und die Folgen des Schweigens weisen wir in der Mitteilung gesondert hin. Widersprichst du, können wir den Vertrag zum Wirksamwerden der Änderung beenden.",
+      },
+      {
+        heading: "Anwendbares Recht und Gerichtsstand",
+        text: "Es gilt deutsches Recht. Bist du Verbraucher:in, bleiben zwingende Verbraucherschutzvorschriften deines Aufenthaltsstaates unberührt und es gilt der gesetzliche Gerichtsstand. Ist der Vertragspartner Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen, ist ausschließlicher Gerichtsstand für alle Streitigkeiten aus diesem Vertrag unser Sitz.",
+      },
+      {
+        heading: "Salvatorische Klausel und Fassungsstand",
+        text: `Sollte eine Bestimmung dieser Bedingungen unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt. Fassungsstand dieser Nutzungsbedingungen: ${RECHTSTEXTE_VERSION}.`,
       },
     ],
   },

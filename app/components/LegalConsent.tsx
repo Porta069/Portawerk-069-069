@@ -53,7 +53,7 @@ export default function LegalConsentBox({
   return (
     <div className="space-y-3">
       <p className="text-[11.5px]" style={{ color: "rgba(26,26,46,0.45)" }}>
-        Fassung vom {RECHTSTEXTE_VERSION}. Zeitpunkt und Fassung deiner
+        Fassung {RECHTSTEXTE_VERSION}. Zeitpunkt und Fassung deiner
         Zustimmung halten wir bei deinem Konto fest; du findest sie in deinem
         Datenexport.
       </p>

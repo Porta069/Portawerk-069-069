@@ -96,7 +96,13 @@ export default function RechtlichesPage() {
                         {block.heading}
                       </h3>
                     )}
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+                    {/* `whitespace-pre-line`: mehrere Absätze in einem Block
+                        bleiben als Absätze stehen, statt zu einer Wand zu
+                        verschmelzen. Einzeilige Texte ändert es nicht. */}
+                    <p
+                      className="text-sm leading-relaxed whitespace-pre-line"
+                      style={{ color: "rgba(26,26,46,0.6)" }}
+                    >
                       {block.text}
                     </p>
                   </div>

@@ -11,6 +11,20 @@
 //
 // Vor dem Livegang anwaltlich prüfen lassen.
 //
+// ZWEI TRANSPARENZPFLICHTEN AUS ART. 50 KI-VO (gilt ab 02.08.2026) hängen an
+// Funktionen, die es derzeit NICHT gibt. Sie stehen hier, damit sie beim
+// Einbau nicht vergessen werden — beide sind Bedingung, nicht Kür:
+//
+//   1. KI-Chat für Nutzer: Zu Beginn jeder Konversation sichtbar anzeigen
+//      „Sie kommunizieren mit einem automatisierten KI-Assistenten." Nicht im
+//      Impressum, nicht in der Datenschutzerklärung — im Chatfenster selbst,
+//      vor der ersten Nachricht. Im Code gibt es aktuell keinen Chatbot.
+//
+//   2. KI-generierte Bilder, Videos oder Audios: sichtbar am Medium selbst als
+//      „KI-generiert" kennzeichnen. Ob unsere Fotos unter public/images/ davon
+//      betroffen sind, lässt sich aus dem Code nicht feststellen — das weiß
+//      nur, wer sie beschafft hat.
+//
 //   GET /api/legal/terms → getLegalTerms()
 
 import type { ApiResult } from "./types";
@@ -42,7 +56,7 @@ export const ANBIETER = {
  * später belegen, WELCHEM Text jemand zugestimmt hat — ohne das ist eine
  * Zustimmung im Streitfall wertlos. Bei jeder inhaltlichen Änderung erhöhen.
  */
-export const RECHTSTEXTE_VERSION = "2026-08-16";
+export const RECHTSTEXTE_VERSION = "2026-08-16-2";
 
 const ANSCHRIFT = `${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}, ${ANBIETER.land}`;
 
@@ -98,12 +112,24 @@ const LEGAL_SECTIONS: LegalSection[] = [
         text: "Das Matching läuft in zwei Stufen. Zuerst prüfen wir Anforderungen, bei denen es kein Dazwischen gibt: Ausbildungsbereich, Mindest-Ausbildungsstand, geforderte Aufgabenbereiche, Montagebereitschaft, Sprachniveau und — falls für die Stelle nötig — das Vorhandensein eines Führerscheins. Außerdem berücksichtigen wir den Arbeitsradius, den du selbst angegeben hast. Erfüllst du eine dieser Anforderungen nicht, wird dir die Stelle nicht vorgeschlagen; die Jobbörse weist die Zahl der ausgeblendeten Stellen und den jeweiligen Grund aus. In der zweiten Stufe berechnen wir aus den übrigen Angaben einen Übereinstimmungswert, der nur die Reihenfolge bestimmt. Den vollständigen Rechenweg jedes Werts kannst du in der Anwendung einsehen. Es findet keine automatisierte Entscheidung im Sinne des Art. 22 DSGVO statt: Ob es zu Kontakt, Gespräch oder Vertrag kommt, entscheiden ausschließlich Menschen — du und der Betrieb.",
       },
       {
+        heading: "Einsatz von Künstlicher Intelligenz (KI)",
+        text: `Zur effizienteren Erbringung unserer Vermittlungsleistungen setzen wir KI-gestützte Systeme (auf Basis großer Sprachmodelle; Anbieter: Anthropic) ein. Diese unterstützen uns insbesondere dabei, passende Stellen für Bewerber vorzuschlagen und zu priorisieren (Matching), Kommunikationsentwürfe (z. B. E-Mails) für unsere Mitarbeiter zu erstellen sowie Informationen zusammenzufassen.
+
+Verarbeitet werden die von Ihnen bereitgestellten Profil- und Bewerbungsdaten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung/Erfüllung des Vertrags) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer effizienten Vermittlung).
+
+Alle KI-Ergebnisse werden vor einer Verwendung durch unsere Mitarbeiter geprüft und freigegeben. Eine ausschließlich automatisierte Entscheidung mit rechtlicher oder ähnlich erheblicher Wirkung Ihnen gegenüber im Sinne von Art. 22 DSGVO findet nicht statt — über Vermittlungen entscheidet stets ein Mensch.
+
+Der KI-Anbieter verarbeitet die Daten als Auftragsverarbeiter auf Grundlage eines Vertrags zur Auftragsverarbeitung; eine Nutzung Ihrer Daten zum Training der KI-Modelle erfolgt nicht. Ihre Rechte (Auskunft, Berichtigung, Löschung, Widerspruch) bleiben unberührt.
+
+Verantwortlich: ${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}.`,
+      },
+      {
         heading: "Diskretionsprinzip: Weitergabe an Betriebe",
         text: "Betriebe sehen von dir zunächst nur ein anonymisiertes Profil: ein Kürzel statt deines Namens, eine Region statt einer Adresse, dazu die fachlichen Angaben. Deinen Namen und deine Kontaktdaten erhält ein Betrieb erst, wenn du dessen Kontaktanfrage ausdrücklich freigibst oder ein Jobangebot annimmst. Die Freigabe kannst du in jedem Einzelfall verweigern.",
       },
       {
         heading: "Auftragsverarbeiter und Hosting",
-        text: "Wir setzen folgende Dienstleister als Auftragsverarbeiter nach Art. 28 DSGVO ein: Vercel Inc. (Auslieferung der Website; Sitz USA — Übermittlung auf Grundlage des EU-US Data Privacy Framework bzw. Standardvertragsklauseln), Render Services Inc. (Anwendungsserver, Region Frankfurt) und Supabase Inc. (Datenbank und Dateispeicher, AWS-Region Irland). Hochgeladene Unterlagen liegen in einem privaten, nicht öffentlich abrufbaren Speicher; Zugriff erfolgt nur über kurzlebige, signierte Links.",
+        text: "Wir setzen folgende Dienstleister als Auftragsverarbeiter nach Art. 28 DSGVO ein: Vercel Inc. (Auslieferung der Website; Sitz USA — Übermittlung auf Grundlage des EU-US Data Privacy Framework bzw. Standardvertragsklauseln), Render Services Inc. (Anwendungsserver, Region Frankfurt) und Supabase Inc. (Datenbank und Dateispeicher, AWS-Region Irland) und Anthropic PBC (KI-gestützte Auswertung und Textentwürfe — siehe Abschnitt „Einsatz von Künstlicher Intelligenz (KI)“). Hochgeladene Unterlagen liegen in einem privaten, nicht öffentlich abrufbaren Speicher; Zugriff erfolgt nur über kurzlebige, signierte Links.",
       },
       {
         heading: "Karten, Ortssuche und Fahrzeiten",

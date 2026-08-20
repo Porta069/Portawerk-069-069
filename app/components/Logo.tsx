@@ -29,6 +29,7 @@ export default function Logo({
   height = 28,
   variant = "dunkel",
   priority = false,
+  halo = false,
   className,
 }: {
   /** Höhe in Pixeln; die Breite folgt dem Seitenverhältnis. */
@@ -36,10 +37,21 @@ export default function Logo({
   /** `hell` = für dunkle Untergründe, `dunkel` = für helle. */
   variant?: "hell" | "dunkel";
   priority?: boolean;
+  /**
+   * Weicher weißer Schein hinter dem Schriftzug — für dunkle Kopfleisten.
+   *
+   * Das Grün des Wortteils „WERK" erreicht auf Navy nur 2,3:1 Kontrast und
+   * tritt dadurch spürbar zurück. Der Schein hebt den Schriftzug an, ohne
+   * ihn in einen sichtbaren Kasten zu setzen: eine Ellipse, die zur Mitte
+   * hin fast deckend ist und nach außen vollständig ausläuft, zusätzlich
+   * weichgezeichnet. Dadurch gibt es keine Kante, an der die Leiste bricht.
+   */
+  halo?: boolean;
   className?: string;
 }) {
   const width = Math.round(height * VERHAELTNIS);
-  return (
+
+  const bild = (
     <Image
       src={
         variant === "hell"
@@ -54,6 +66,35 @@ export default function Logo({
       // Feste Maße statt `fill`: kein Umbruch, kein Nachspringen des Layouts.
       style={{ height, width, objectFit: "contain" }}
     />
+  );
+
+  if (!halo) return bild;
+
+  // Der Schein wächst mit der Logohöhe mit, damit er bei 22 px genauso sitzt
+  // wie bei 40 px.
+  const luftX = Math.round(height * 1.15);
+  const luftY = Math.round(height * 0.95);
+
+  return (
+    <span className="relative inline-flex items-center justify-center">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute"
+        style={{
+          left: -luftX,
+          right: -luftX,
+          top: -luftY,
+          bottom: -luftY,
+          // Flacher Verlauf mit vielen Stufen: so entsteht keine sichtbare
+          // Kante, an der die Leiste bricht. Deckkraft bewusst unter 0,8 —
+          // es soll aufhellen, nicht als Flaeche auffallen.
+          background:
+            "radial-gradient(ellipse at center, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.80) 28%, rgba(255,255,255,0.52) 46%, rgba(255,255,255,0.24) 60%, rgba(255,255,255,0.10) 74%, rgba(255,255,255,0.03) 86%, rgba(255,255,255,0) 100%)",
+          filter: `blur(${Math.max(8, Math.round(height * 0.5))}px)`,
+        }}
+      />
+      <span className="relative">{bild}</span>
+    </span>
   );
 }
 

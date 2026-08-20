@@ -46,6 +46,7 @@ export default function EmployerNav({
               height={26}
               variant="hell"
               priority
+              halo
               className="transition-transform duration-300 group-hover:scale-95"
             />
             <span

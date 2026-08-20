@@ -20,21 +20,26 @@ import { Info } from "lucide-react";
 const PRAEMIE = 100;
 
 /**
- * Alles wird ueber die WOCHE umgerechnet, nicht ueber das Jahr.
+ * Umrechnung bewusst ueber GANZE Zahlen.
  *
- * Vorher lief die Rechnung ueber 250 Arbeitstage im Jahr, geteilt durch 52
- * Kalenderwochen — das ergab bei "1 pro Tag" 4,81 pro Woche und damit 481 EUR
- * statt der erwarteten 500. Rechnerisch korrekt, aber niemand rechnet so.
- * Mit der Woche als Anker gilt die intuitive Kette: 1 am Tag = 5 in der Woche.
+ * Zuvor lief die Rechnung ueber 52/12 = 4,33 Wochen pro Monat. Der Eurobetrag
+ * nutzte die 4,33, die Beschriftung rundete auf 4 — auf derselben Karte stand
+ * dann "4 Vermittlungen" und "433 EUR". Bruchteile einer Vermittlung gibt es
+ * aber nicht, und niemand glaubt einem Rechner, dessen eigene Karte sich
+ * widerspricht.
+ *
+ * Deshalb feste, runde Faktoren: 22 Arbeitstage und 4 Wochen im Monat, 12
+ * Monate im Jahr. Jede angezeigte Zahl ist damit ganzzahlig, Anzahl mal
+ * Praemie ergibt exakt den Eurobetrag, und Monat mal 12 exakt das Jahr.
  */
-const ARBEITSTAGE_PRO_WOCHE = 5;
-const WOCHEN_PRO_MONAT = 52 / 12; // 4,33 — so bleibt Monat x 12 = Jahr exakt
-const WOCHEN_PRO_JAHR = 52;
+const ARBEITSTAGE_PRO_MONAT = 22;
+const WOCHEN_PRO_MONAT = 4;
+const MONATE_PRO_JAHR = 12;
 
 const EINHEITEN = [
-  { key: "tag", label: "pro Tag", kurz: "am Tag", max: 5, proWoche: ARBEITSTAGE_PRO_WOCHE, standard: 1 },
-  { key: "woche", label: "pro Woche", kurz: "pro Woche", max: 15, proWoche: 1, standard: 1 },
-  { key: "monat", label: "pro Monat", kurz: "im Monat", max: 40, proWoche: 1 / WOCHEN_PRO_MONAT, standard: 2 },
+  { key: "tag", label: "pro Tag", kurz: "am Tag", max: 5, proMonat: ARBEITSTAGE_PRO_MONAT, standard: 1 },
+  { key: "woche", label: "pro Woche", kurz: "pro Woche", max: 15, proMonat: WOCHEN_PRO_MONAT, standard: 1 },
+  { key: "monat", label: "pro Monat", kurz: "im Monat", max: 40, proMonat: 1, standard: 2 },
 ] as const;
 
 type EinheitKey = (typeof EINHEITEN)[number]["key"];
@@ -87,10 +92,9 @@ export default function AffiliateRechner() {
 
   const e = EINHEITEN.find((x) => x.key === einheit)!;
 
-  // Alles aus einer Zahl ableiten — so kann sich nichts mehr widersprechen.
-  const proWoche = anzahl * e.proWoche;
-  const proMonat = proWoche * WOCHEN_PRO_MONAT;
-  const proJahr = proWoche * WOCHEN_PRO_JAHR;
+  // Alles aus einer Zahl ableiten — beides ganzzahlig, nichts zu runden.
+  const proMonat = anzahl * e.proMonat;
+  const proJahr = proMonat * MONATE_PRO_JAHR;
 
   const wechsle = (key: EinheitKey) => {
     const neu = EINHEITEN.find((x) => x.key === key)!;
@@ -186,11 +190,7 @@ export default function AffiliateRechner() {
             <p className="text-center text-[13px] text-muted mt-4">
               {anzahl} {e.kurz} sind{" "}
               <span className="text-primary font-semibold">
-                {fmt(proWoche)} {proWoche < 1.5 ? "Vermittlung" : "Vermittlungen"} pro Woche
-              </span>{" "}
-              und rund{" "}
-              <span className="text-primary font-semibold">
-                {fmt(proMonat)} im Monat
+                {fmt(proMonat)} {proMonat === 1 ? "Vermittlung" : "Vermittlungen"} im Monat
               </span>
               .
             </p>
@@ -198,22 +198,17 @@ export default function AffiliateRechner() {
         </div>
 
         {/* ── Ergebnis ── */}
-        <div className="grid sm:grid-cols-3 gap-4">
-          <Ergebnis
-            periode="Pro Woche"
-            euro={proWoche * PRAEMIE}
-            deals={`${proWoche < 1 ? proWoche.toFixed(1).replace(".", ",") : fmt(proWoche)} Vermittlungen`}
-          />
+        <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
           <Ergebnis
             gross
             periode="Pro Monat"
             euro={proMonat * PRAEMIE}
-            deals={`${fmt(proMonat)} Vermittlungen`}
+            deals={`${fmt(proMonat)} ${proMonat === 1 ? "Vermittlung" : "Vermittlungen"} × ${PRAEMIE} €`}
           />
           <Ergebnis
             periode="Pro Jahr"
             euro={proJahr * PRAEMIE}
-            deals={`${fmt(proJahr)} Vermittlungen`}
+            deals={`${fmt(proJahr)} Vermittlungen × ${PRAEMIE} €`}
           />
         </div>
 
@@ -229,7 +224,7 @@ export default function AffiliateRechner() {
             ausgezahlt wird pro Vermittlung, die tatsächlich zustande kommt.
             <br />
             <span className="text-[12px]">
-              Gerechnet mit 5 Arbeitstagen pro Woche und 52 Wochen im Jahr.
+              Gerechnet mit 22 Arbeitstagen und 4 Wochen im Monat.
             </span>
           </p>
         </div>

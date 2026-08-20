@@ -172,7 +172,7 @@ export default function VerdienenContent() {
               Was kannst DU <span className="text-accent">verdienen</span>?
             </h2>
             <p className="text-muted text-lg">
-              Stell ein, wie viele Deals du machst — und sieh sofort, was dabei rauskommt.
+              Sag uns, wie oft du einen Kollegen vermittelst — den Rest rechnen wir aus.
             </p>
           </motion.div>
           <motion.div

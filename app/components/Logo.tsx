@@ -72,8 +72,17 @@ export default function Logo({
 
   // Der Schein wächst mit der Logohöhe mit, damit er bei 22 px genauso sitzt
   // wie bei 40 px.
-  const luftX = Math.round(height * 1.15);
-  const luftY = Math.round(height * 0.95);
+  // Weichgezeichnete Pille statt Verlauf.
+  //
+  // Ein radialer Verlauf ist zur Mitte hin immer heller als aussen — die
+  // aeusseren Buchstaben lagen dadurch auf schwaecherem Grund als die
+  // mittleren. Eine weisse Flaeche mit voller Rundung und starkem Weichzeichner
+  // ist innen gleichmaessig hell und laeuft nur an den Raendern aus. Genau das
+  // ist hier gewollt: alle Buchstaben gleich gut lesbar, trotzdem kein
+  // sichtbarer Kasten.
+  const luftX = Math.round(height * 0.95);
+  const luftY = Math.round(height * 0.42);
+  const weiche = Math.max(9, Math.round(height * 0.52));
 
   return (
     <span className="relative inline-flex items-center justify-center">
@@ -85,12 +94,9 @@ export default function Logo({
           right: -luftX,
           top: -luftY,
           bottom: -luftY,
-          // Flacher Verlauf mit vielen Stufen: so entsteht keine sichtbare
-          // Kante, an der die Leiste bricht. Deckkraft bewusst unter 0,8 —
-          // es soll aufhellen, nicht als Flaeche auffallen.
-          background:
-            "radial-gradient(ellipse at center, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.80) 28%, rgba(255,255,255,0.52) 46%, rgba(255,255,255,0.24) 60%, rgba(255,255,255,0.10) 74%, rgba(255,255,255,0.03) 86%, rgba(255,255,255,0) 100%)",
-          filter: `blur(${Math.max(8, Math.round(height * 0.5))}px)`,
+          background: "rgba(255,255,255,0.93)",
+          borderRadius: 9999,
+          filter: `blur(${weiche}px)`,
         }}
       />
       <span className="relative">{bild}</span>

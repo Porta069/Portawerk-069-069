@@ -52,9 +52,14 @@ export default function HeroSection() {
               fontSize: "clamp(2.4rem, 5.2vw, 4rem)",
             }}
           >
-            Dein Job im Handwerk
+            {/* Der Slogan aus der Wortmarke. Hervorgehoben sind dieselben zwei
+                Wörter wie im Logo — „bewirbt" und „Handwerk" —, damit
+                Überschrift und Marke dieselbe Betonung tragen. Der Umbruch ist
+                gesetzt statt dem Zufall überlassen: „bewirbt sich" und
+                „Handwerk bei DIR!" gehören jeweils zusammen. */}
+            ab jetzt <span className="text-accent">bewirbt</span> sich
             <br />
-            <span className="text-accent">findet dich.</span>
+            das <span className="text-accent">Handwerk</span> bei DIR!
           </motion.h1>
 
           <motion.p

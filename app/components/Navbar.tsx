@@ -73,14 +73,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            {/* Fassung mit Slogan. Sie ist flacher im Verhältnis als die
-                reine Wortmarke und braucht deshalb Höhe: Bei 46 px bleibt der
-                Slogan rund 9 px hoch — die Untergrenze, ab der er noch zu
-                lesen ist. Die Leiste ist 80 px hoch, das geht sich aus. */}
+            {/* Reine Wortmarke ohne Slogan — der steht jetzt als Überschrift
+                im Hero, wo er die Größe bekommt, die er braucht. */}
             <Logo
-              height={46}
+              height={26}
               variant="hell"
-              slogan
               priority
               className="transition-transform duration-300 group-hover:scale-95"
             />

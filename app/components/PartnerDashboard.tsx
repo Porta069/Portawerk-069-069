@@ -212,7 +212,7 @@ export default function PartnerDashboard() {
               <p className="text-[11px] uppercase tracking-[0.18em] text-accent font-semibold mb-3">Dein Empfehlungs-Link</p>
               <div className="rounded-xl bg-white/[0.06] border border-white/10 px-4 py-3.5 mb-4">
                 <p className="text-lg sm:text-xl font-semibold tracking-tight break-all">
-                  <span className="text-white/45">porta-werk.de/r/</span><span className="text-white">{SLUG}</span>
+                  <span className="text-white/45">werkpair.de/r/</span><span className="text-white">{SLUG}</span>
                 </p>
               </div>
               <div className="flex gap-2.5">

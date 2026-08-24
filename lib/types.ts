@@ -1,5 +1,5 @@
 // ─── Shared Domain Types ─────────────────────────────────────────────────────
-// Zentrale Typdefinitionen für die Handwerker-Plattform (PortaWerk).
+// Zentrale Typdefinitionen für die Handwerker-Plattform (WerkPair).
 // Frontend-only — das Backend-Team spiegelt diese Shapes serverseitig.
 
 /** Antworttyp einer dynamischen (KI-)Frage. */

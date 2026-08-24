@@ -91,7 +91,7 @@ export default function LoginPage() {
         </div>
 
         <p className="relative text-white/25 text-xs">
-          © {new Date().getFullYear()} PortaWerk — ein Angebot von porta-jobs.de
+          © {new Date().getFullYear()} WerkPair — ein Angebot der E&H Group
         </p>
       </div>
 

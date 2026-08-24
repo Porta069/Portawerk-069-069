@@ -556,7 +556,7 @@ export default function InseratePage() {
             Noch kein Inserat
           </p>
           <p className="text-[14px] max-w-md mx-auto leading-relaxed mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Mit einem Inserat inklusive Gewichtungen berechnet PortaWerk für jeden
+            Mit einem Inserat inklusive Gewichtungen berechnet WerkPair für jeden
             Kandidaten einen nachvollziehbaren Match-Score — und schlägt Ihre
             Stelle passenden Handwerkern vor.
           </p>
@@ -603,12 +603,12 @@ export default function InseratePage() {
                         </span>
                         {job.source !== "SELF" && (
                           <span
-                            title="Von PortaWerk für Sie angelegt"
+                            title="Von WerkPair für Sie angelegt"
                             className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
                             style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" }}
                           >
                             <Bot className="w-3 h-3" />
-                            {job.source === "AI" ? "KI-angelegt" : "Von PortaWerk angelegt"}
+                            {job.source === "AI" ? "KI-angelegt" : "Von WerkPair angelegt"}
                           </span>
                         )}
                       </div>

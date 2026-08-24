@@ -20,24 +20,24 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   // Basis für absolute OG-/Canonical-URLs (Link-Vorschau in WhatsApp & Co.).
-  metadataBase: new URL("https://portawerk-two.vercel.app"),
+  metadataBase: new URL("https://werkpair-two.vercel.app"),
   title: {
-    default: "PortaWerk — Handwerker-Jobs finden, ohne dich zu bewerben",
-    template: "%s · PortaWerk",
+    default: "WerkPair — Handwerker-Jobs finden, ohne dich zu bewerben",
+    template: "%s · WerkPair",
   },
   description:
     "Kostenlose Jobvermittlung fürs Handwerk: Wir suchen die Jobs für dich, die Betriebe bewerben sich bei dir. Lebenslauf gratis, diskret & anonym, 200 € Startprämie. Elektriker, SHK, Maler, Tischler & mehr.",
   openGraph: {
     type: "website",
     locale: "de_DE",
-    siteName: "PortaWerk",
-    title: "PortaWerk — Der Job findet dich",
+    siteName: "WerkPair",
+    title: "WerkPair — Der Job findet dich",
     description:
       "Betriebe bewerben sich bei Handwerkern — diskret, anonym, kostenlos. Jetzt Profil anlegen und Angebote erhalten.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PortaWerk — Der Job findet dich",
+    title: "WerkPair — Der Job findet dich",
     description:
       "Betriebe bewerben sich bei Handwerkern — diskret, anonym, kostenlos.",
   },
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     "Maler Job",
     "Tischler Job",
     "Handwerk Stellenangebote",
-    "PortaWerk",
+    "WerkPair",
   ],
 };
 

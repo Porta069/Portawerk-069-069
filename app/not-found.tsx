@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Compass } from "lucide-react";
 
-// ─── 404 im PortaWerk-Design ─────────────────────────────────────────────────
+// ─── 404 im WerkPair-Design ─────────────────────────────────────────────────
 // Statt der Next.js-Standardseite: Navy-Bühne, goldene Marke, klare Auswege.
 
 export default function NotFound() {

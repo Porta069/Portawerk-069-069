@@ -28,7 +28,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
   // Auf dem Partner-Dashboard steht der echte Slug fest; sonst wird er aus dem
   // eingegebenen Namen erzeugt.
   const slug = fixedSlug || slugify(name) || "dein-name";
-  const link = `porta-werk.de/r/${slug}`;
+  const link = `werkpair.de/r/${slug}`;
 
   const render = () =>
     cardRef.current ? toBlob(cardRef.current, { pixelRatio: 3, cacheBust: true }) : Promise.resolve(null);
@@ -40,7 +40,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
       const dataUrl = await toPng(cardRef.current, { pixelRatio: 3, cacheBust: true });
       const a = document.createElement("a");
       a.href = dataUrl;
-      a.download = `portawerk-${slug}.png`;
+      a.download = `werkpair-${slug}.png`;
       a.click();
     } finally {
       setBusy(null);
@@ -69,7 +69,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
     setBusy("share");
     try {
       const blob = await render();
-      const file = blob ? new File([blob], `portawerk-${slug}.png`, { type: "image/png" }) : null;
+      const file = blob ? new File([blob], `werkpair-${slug}.png`, { type: "image/png" }) : null;
       const nav = navigator as Navigator & { canShare?: (d: unknown) => boolean };
       if (file && nav.share && nav.canShare?.({ files: [file] })) {
         await nav.share({ files: [file], text: `Such einen Job im Handwerk? https://${link}` });
@@ -95,7 +95,7 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
           {fixedSlug ? "Dein Link auf der Karte" : "Dein Name auf der Karte"}
         </label>
         <div className="flex items-stretch rounded-xl border border-border overflow-hidden focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25 transition-colors max-w-sm mb-2">
-          <span className="flex items-center pl-4 pr-1 text-muted text-sm select-none">porta-werk.de/r/</span>
+          <span className="flex items-center pl-4 pr-1 text-muted text-sm select-none">werkpair.de/r/</span>
           {fixedSlug ? (
             <span className="flex-1 py-3 pr-4 text-primary text-sm font-semibold truncate flex items-center">{slug}</span>
           ) : (
@@ -166,8 +166,8 @@ export default function Visitenkarte({ fixedSlug }: { fixedSlug?: string } = {})
               <div style={{ width: 26, height: 26, background: "#E8A838", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/portawerk-logo-hell.png"
-                  alt="PortaWerk"
+                  src="/images/werkpair-logo-hell.png"
+                  alt="WerkPair"
                   style={{ height: 17, width: 122, objectFit: "contain" }}
                 />
               </div>

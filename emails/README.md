@@ -1,4 +1,4 @@
-# Transaktionsmails PortaWerk
+# Transaktionsmails WerkPair
 
 Neun Systemmails in einheitlichem Stil, je in zwei Fassungen: **du** für
 Handwerker, **Sie** für Betriebe — genau wie in der Anwendung.
@@ -71,8 +71,8 @@ Teil der HTML-Datei und müssen beim Versand separat gesetzt werden.
 
 ## Technische Hinweise für den Versand
 
-- **Logo:** wird über `https://porta-werk.de/images/portawerk-logo.png`
-  geladen. Die Datei liegt unter `public/images/portawerk-logo.png` und ist
+- **Logo:** wird über `https://werkpair.de/images/werkpair-logo.png`
+  geladen. Die Datei liegt unter `public/images/werkpair-logo.png` und ist
   nach dem Deployment dort erreichbar. Kein Base64 — das blockieren Gmail und
   Outlook.
 - **Preheader:** die versteckte Zeile ganz oben erscheint in der Inbox-Vorschau
@@ -86,7 +86,7 @@ Teil der HTML-Datei und müssen beim Versand separat gesetzt werden.
 
 - **IP-Adresse und Gerät** in Sicherheitsmails — so entschieden; das Backend
   muss dafür kein zusätzliches Feld liefern. Nachrüstbar.
-- **Fotos** im Kopfbereich. Alle neun Mails sollen sofort als PortaWerk
+- **Fotos** im Kopfbereich. Alle neun Mails sollen sofort als WerkPair
   erkennbar sein; ein Motiv in der Sperrmail und keines in der Passwortmail
   hätte diesen Zusammenhalt gebrochen. Der Wiedererkennungswert liegt auf
   Logo, Gold-Petrol-Kante und Fußzeile.

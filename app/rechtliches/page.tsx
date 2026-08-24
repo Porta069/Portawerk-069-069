@@ -9,7 +9,7 @@ import { legalSections } from "@/lib/legal";
 import Logo from "@/app/components/Logo";
 
 export const metadata = {
-  title: "Rechtliches — PortaWerk",
+  title: "Rechtliches — WerkPair",
   description: "Datenschutzerklärung, Nutzungsbedingungen, Impressum und Cookie-Richtlinie.",
 };
 

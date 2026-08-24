@@ -102,20 +102,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Netzwerk — der Dachbezug bleibt beiläufig, wie besprochen */}
-        <p className="mt-16 text-white/85 text-[15px]">
-          PortaWerk ist das Handwerks-Angebot von{" "}
-          <a
-            href={`https://${ANBIETER.dachDomain}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-4 hover:text-white transition-colors"
-          >
-            {ANBIETER.dachDomain}
-          </a>
-          .
-        </p>
-
         {/* Schlusszeile: Copyright und Pflichtangaben, durch Striche getrennt.
             Bewusst INLINE und nicht als Flex-Zeile: Flex-Kinder schrumpfen
             nicht unter ihre Inhaltsbreite, dadurch schob „Allgemeine

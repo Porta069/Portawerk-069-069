@@ -82,7 +82,7 @@ interface I18nValue {
 }
 
 const I18nContext = createContext<I18nValue | null>(null);
-const STORAGE_KEY = "portawerk_lang";
+const STORAGE_KEY = "werkpair_lang";
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("de");

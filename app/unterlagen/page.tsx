@@ -27,7 +27,7 @@ import Logo from "@/app/components/Logo";
 
 const CONSENT_VERSION = "v1-2026-07";
 const CONSENT_TEXT =
-  "Ich willige ein, dass PortaWerk meine Angaben und hochgeladenen Unterlagen zur Jobvermittlung verarbeitet. Eine Weitergabe an Betriebe erfolgt nur mit meiner ausdrücklichen Zustimmung.";
+  "Ich willige ein, dass WerkPair meine Angaben und hochgeladenen Unterlagen zur Jobvermittlung verarbeitet. Eine Weitergabe an Betriebe erfolgt nur mit meiner ausdrücklichen Zustimmung.";
 
 function fmtBytes(n: number) {
   return n < 1024 * 1024 ? `${(n / 1024).toFixed(0)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`;

@@ -3,7 +3,7 @@
 import { RotateCcw, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 
-// ─── Laufzeitfehler im PortaWerk-Design ──────────────────────────────────────
+// ─── Laufzeitfehler im WerkPair-Design ──────────────────────────────────────
 // Fängt unerwartete Client-Fehler statt der weißen Next.js-Standardseite.
 // Bewusst ohne technische Details — die landen in der Konsole, nicht beim Nutzer.
 

@@ -26,7 +26,7 @@ const STEP_DEFS: StepDef[] = [
   { code: "✓", label: "Fertig" },
 ];
 const CONTENT_STEPS = 3;
-const BASE = "porta-werk.de/r/";
+const BASE = "werkpair.de/r/";
 
 const HEAD = [
   { h: "Werde Partner", s: "Deine Daten — damit wir dich erreichen und deine Prämie auszahlen können." },

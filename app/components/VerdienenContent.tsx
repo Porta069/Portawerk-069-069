@@ -58,7 +58,7 @@ export default function VerdienenContent() {
             >
               <span className="w-9 h-[2px] bg-accent" />
               <span className="text-accent text-xs font-semibold tracking-[0.2em] uppercase">
-                Verdienen mit PortaWerk
+                Verdienen mit WerkPair
               </span>
             </motion.div>
             <motion.h1

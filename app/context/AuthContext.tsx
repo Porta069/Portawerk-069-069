@@ -15,7 +15,7 @@ import {
 import { warmup } from "@/lib/api";
 import type { AuthSession, PublicUser } from "@/lib/api";
 
-const STORAGE_KEY = "portawerk_session_v1";
+const STORAGE_KEY = "werkpair_session_v1";
 
 interface AuthContextValue {
   user: PublicUser | null;
@@ -79,12 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserState(null);
     setToken(null);
     try {
-      // Alle PortaWerk-Einträge entfernen, nicht nur die Sitzung: der
+      // Alle WerkPair-Einträge entfernen, nicht nur die Sitzung: der
       // Registrierungs-Entwurf enthält Name, E-Mail, Telefon und Arbeitsorte,
       // der Partner-Schlüssel öffnet den Auszahlungsbereich. Genau das sagt
       // auch unsere Datenschutzerklärung zu.
       for (const key of Object.keys(localStorage)) {
-        if (key.startsWith("portawerk_")) localStorage.removeItem(key);
+        if (key.startsWith("werkpair_")) localStorage.removeItem(key);
       }
     } catch {
       /* ignore */

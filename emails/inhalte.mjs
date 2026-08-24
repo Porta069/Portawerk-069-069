@@ -13,8 +13,8 @@ export const MAILS = [
     slug: "passwort-zuruecksetzen",
     name: "Passwort zurücksetzen",
     betreff: {
-      du: "Passwort zurücksetzen — dein Link von PortaWerk",
-      sie: "Passwort zurücksetzen — Ihr Link von PortaWerk",
+      du: "Passwort zurücksetzen — dein Link von WerkPair",
+      sie: "Passwort zurücksetzen — Ihr Link von WerkPair",
     },
     preheader: {
       du: "Der Link ist {{gueltig_minuten}} Minuten gültig.",
@@ -24,7 +24,7 @@ export const MAILS = [
       eyebrow: "Passwort",
       titel: "Setz dein Passwort neu",
       absaetze: [
-        "Hallo {{vorname}}, für dein PortaWerk-Konto wurde am {{zeitpunkt}} ein neues Passwort angefordert.",
+        "Hallo {{vorname}}, für dein WerkPair-Konto wurde am {{zeitpunkt}} ein neues Passwort angefordert.",
         "Klick auf den Knopf, dann kannst du direkt ein neues vergeben.",
       ],
       cta: { label: "Neues Passwort vergeben", platzhalter: "{{link}}" },
@@ -36,7 +36,7 @@ export const MAILS = [
       eyebrow: "Passwort",
       titel: "Setzen Sie Ihr Passwort neu",
       absaetze: [
-        "Guten Tag {{vorname}}, für Ihr PortaWerk-Konto wurde am {{zeitpunkt}} ein neues Passwort angefordert.",
+        "Guten Tag {{vorname}}, für Ihr WerkPair-Konto wurde am {{zeitpunkt}} ein neues Passwort angefordert.",
         "Klicken Sie auf den Knopf, um ein neues Passwort zu vergeben.",
       ],
       cta: { label: "Neues Passwort vergeben", platzhalter: "{{link}}" },
@@ -62,7 +62,7 @@ export const MAILS = [
       eyebrow: "Sicherheit",
       titel: "Dein Passwort wurde geändert",
       absaetze: [
-        "Hallo {{vorname}}, das Passwort deines PortaWerk-Kontos wurde am {{zeitpunkt}} geändert.",
+        "Hallo {{vorname}}, das Passwort deines WerkPair-Kontos wurde am {{zeitpunkt}} geändert.",
         "Wenn du das selbst warst, ist alles in Ordnung — du musst nichts weiter tun.",
       ],
       warnung:
@@ -74,7 +74,7 @@ export const MAILS = [
       eyebrow: "Sicherheit",
       titel: "Ihr Passwort wurde geändert",
       absaetze: [
-        "Guten Tag {{vorname}}, das Passwort Ihres PortaWerk-Kontos wurde am {{zeitpunkt}} geändert.",
+        "Guten Tag {{vorname}}, das Passwort Ihres WerkPair-Kontos wurde am {{zeitpunkt}} geändert.",
         "Waren Sie das selbst, ist alles in Ordnung — es sind keine weiteren Schritte nötig.",
       ],
       warnung:
@@ -138,7 +138,7 @@ export const MAILS = [
       eyebrow: "Sicherheit",
       titel: "Deine E-Mail-Adresse wurde geändert",
       absaetze: [
-        "Hallo {{vorname}}, die E-Mail-Adresse deines PortaWerk-Kontos wurde am {{zeitpunkt}} geändert.",
+        "Hallo {{vorname}}, die E-Mail-Adresse deines WerkPair-Kontos wurde am {{zeitpunkt}} geändert.",
         "Ab sofort erreichen wir dich unter {{email_neu}}. Diese Nachricht geht zur Sicherheit auch an deine bisherige Adresse {{email_alt}}.",
       ],
       warnung:
@@ -149,7 +149,7 @@ export const MAILS = [
       eyebrow: "Sicherheit",
       titel: "Ihre E-Mail-Adresse wurde geändert",
       absaetze: [
-        "Guten Tag {{vorname}}, die E-Mail-Adresse Ihres PortaWerk-Kontos wurde am {{zeitpunkt}} geändert.",
+        "Guten Tag {{vorname}}, die E-Mail-Adresse Ihres WerkPair-Kontos wurde am {{zeitpunkt}} geändert.",
         "Ab sofort erreichen wir Sie unter {{email_neu}}. Diese Nachricht geht zur Sicherheit auch an Ihre bisherige Adresse {{email_alt}}.",
       ],
       warnung:
@@ -222,19 +222,19 @@ export const MAILS = [
       cta: { label: "E-Mail-Adresse bestätigen", platzhalter: "{{link}}" },
       ablauf: "Der Link ist {{gueltig_stunden}} Stunden gültig.",
       hinweis:
-        "Du hast dich nicht bei PortaWerk registriert? Dann ignorier diese E-Mail — ohne Bestätigung wird kein Profil aktiv.",
+        "Du hast dich nicht bei WerkPair registriert? Dann ignorier diese E-Mail — ohne Bestätigung wird kein Profil aktiv.",
     },
     sie: {
       eyebrow: "Willkommen",
       titel: "Nur noch ein Klick",
       absaetze: [
-        "Guten Tag {{vorname}}, willkommen bei PortaWerk. Bestätigen Sie kurz Ihre E-Mail-Adresse, dann ist Ihr Zugang aktiv.",
+        "Guten Tag {{vorname}}, willkommen bei WerkPair. Bestätigen Sie kurz Ihre E-Mail-Adresse, dann ist Ihr Zugang aktiv.",
         "Danach können Sie Fachkräfte in Ihrem Umkreis suchen und anfragen.",
       ],
       cta: { label: "E-Mail-Adresse bestätigen", platzhalter: "{{link}}" },
       ablauf: "Der Link ist {{gueltig_stunden}} Stunden gültig.",
       hinweis:
-        "Sie haben sich nicht bei PortaWerk registriert? Dann ignorieren Sie diese E-Mail — ohne Bestätigung wird kein Zugang aktiv.",
+        "Sie haben sich nicht bei WerkPair registriert? Dann ignorieren Sie diese E-Mail — ohne Bestätigung wird kein Zugang aktiv.",
     },
   },
 
@@ -243,8 +243,8 @@ export const MAILS = [
     slug: "account-gesperrt",
     name: "Konto gesperrt (Verstoß)",
     betreff: {
-      du: "Dein PortaWerk-Konto wurde gesperrt",
-      sie: "Ihr PortaWerk-Konto wurde gesperrt",
+      du: "Dein WerkPair-Konto wurde gesperrt",
+      sie: "Ihr WerkPair-Konto wurde gesperrt",
     },
     preheader: {
       du: "Grund, Regel und Widerspruchsweg in dieser Nachricht.",
@@ -254,7 +254,7 @@ export const MAILS = [
       eyebrow: "Kontostatus",
       titel: "Dein Konto wurde gesperrt",
       absaetze: [
-        "Hallo {{vorname}}, wir haben dein PortaWerk-Konto am {{zeitpunkt}} gesperrt.",
+        "Hallo {{vorname}}, wir haben dein WerkPair-Konto am {{zeitpunkt}} gesperrt.",
         "Grund: {{grund}}",
         "Damit verstößt die Nutzung gegen {{regel}} unserer Nutzungsbedingungen.",
       ],
@@ -273,7 +273,7 @@ export const MAILS = [
       eyebrow: "Kontostatus",
       titel: "Ihr Konto wurde gesperrt",
       absaetze: [
-        "Guten Tag {{vorname}}, wir haben Ihr PortaWerk-Konto am {{zeitpunkt}} gesperrt.",
+        "Guten Tag {{vorname}}, wir haben Ihr WerkPair-Konto am {{zeitpunkt}} gesperrt.",
         "Grund: {{grund}}",
         "Damit verstößt die Nutzung gegen {{regel}} unserer Nutzungsbedingungen.",
       ],
@@ -295,8 +295,8 @@ export const MAILS = [
     slug: "account-geloescht",
     name: "Konto gelöscht (mit Grund)",
     betreff: {
-      du: "Dein PortaWerk-Konto wurde gelöscht",
-      sie: "Ihr PortaWerk-Konto wurde gelöscht",
+      du: "Dein WerkPair-Konto wurde gelöscht",
+      sie: "Ihr WerkPair-Konto wurde gelöscht",
     },
     preheader: {
       du: "Was gelöscht wurde, was bleibt — und warum.",
@@ -306,7 +306,7 @@ export const MAILS = [
       eyebrow: "Kontostatus",
       titel: "Dein Konto wurde gelöscht",
       absaetze: [
-        "Hallo {{vorname}}, dein PortaWerk-Konto wurde am {{zeitpunkt}} gelöscht.",
+        "Hallo {{vorname}}, dein WerkPair-Konto wurde am {{zeitpunkt}} gelöscht.",
         "Grund: {{grund}}",
       ],
       liste: [
@@ -324,7 +324,7 @@ export const MAILS = [
       eyebrow: "Kontostatus",
       titel: "Ihr Konto wurde gelöscht",
       absaetze: [
-        "Guten Tag {{vorname}}, Ihr PortaWerk-Konto wurde am {{zeitpunkt}} gelöscht.",
+        "Guten Tag {{vorname}}, Ihr WerkPair-Konto wurde am {{zeitpunkt}} gelöscht.",
         "Grund: {{grund}}",
       ],
       liste: [

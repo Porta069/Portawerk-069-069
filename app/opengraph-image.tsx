@@ -3,12 +3,12 @@ import { join } from "path";
 import { ImageResponse } from "next/og";
 
 // ─── Open-Graph-Bild (Link-Vorschau) ─────────────────────────────────────────
-// Das Bild, das WhatsApp, iMessage & Co. beim Teilen eines PortaWerk-Links
+// Das Bild, das WhatsApp, iMessage & Co. beim Teilen eines WerkPair-Links
 // zeigen — für eine Plattform, die über Empfehlungslinks wächst, ist das
 // Werbefläche: Navy-Grund, goldene Marke, das Kernversprechen als Headline.
 
 export const alt =
-  "PortaWerk — Der Job findet dich. Betriebe bewerben sich bei Handwerkern.";
+  "WerkPair — Der Job findet dich. Betriebe bewerben sich bei Handwerkern.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,7 +17,7 @@ export default function OgImage() {
   // und kann keine Datei über einen Pfad nachladen — ein relativer `src`
   // bliebe schlicht leer.
   const logo = readFileSync(
-    join(process.cwd(), "public/images/portawerk-logo-hell.png"),
+    join(process.cwd(), "public/images/werkpair-logo-hell.png"),
   ).toString("base64");
 
   return new ImageResponse(
@@ -56,7 +56,7 @@ export default function OgImage() {
             src={`data:image/png;base64,${logo}`}
             width={504}
             height={70}
-            alt="PortaWerk"
+            alt="WerkPair"
           />
         </div>
 

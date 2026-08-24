@@ -486,7 +486,7 @@ function SecuritySection({ token, t, lang, onSession, onLogout }: {
 function HelpSection({ t }: { t: T }) {
   const faqs = [
     { q: "Wie werde ich vermittelt?", a: "Nach der Registrierung prüft unser Team dein Profil und stellt dich passenden Betrieben diskret vor — erst mit deiner Zustimmung." },
-    { q: "Ist das kostenlos?", a: "Ja, für Handwerker:innen ist PortaWerk komplett kostenlos." },
+    { q: "Ist das kostenlos?", a: "Ja, für Handwerker:innen ist WerkPair komplett kostenlos." },
     { q: "Wer sieht meine Daten?", a: "Niemand ohne deine Zustimmung. Betriebe sehen dein Profil erst, wenn du pro Betrieb zustimmst." },
   ];
   const [open, setOpen] = useState<number | null>(0);
@@ -527,7 +527,7 @@ function DataSection({ token, t, onDeleted }: { token: string; t: T; onDeleted: 
       const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url; a.download = "portawerk-daten.json"; a.click();
+      a.href = url; a.download = "werkpair-daten.json"; a.click();
       URL.revokeObjectURL(url);
     }
   };

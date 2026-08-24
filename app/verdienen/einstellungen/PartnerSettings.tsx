@@ -209,7 +209,7 @@ export default function PartnerSettings() {
       const blob = new Blob([JSON.stringify(r.data, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `portawerk-partner-daten-${partner?.slug ?? "export"}.json`;
+      a.download = `werkpair-partner-daten-${partner?.slug ?? "export"}.json`;
       a.click();
       URL.revokeObjectURL(a.href);
     }
@@ -389,7 +389,7 @@ export default function PartnerSettings() {
             <div className="rounded-xl p-4" style={{ background: "var(--color-accent-soft)", border: "1px solid rgba(232,168,56,0.3)" }}>
               <p className="text-primary text-sm font-semibold mb-1.5">Deine Prämien-Bedingungen</p>
               <ul className="text-muted text-xs leading-relaxed space-y-1 list-disc list-inside">
-                <li><span className="text-primary font-medium">100 € pro erfolgreicher Vermittlung</span> — fällig, sobald dein geworbener Handwerker über PortaWerk einen Job gefunden und die Einführungsphase (8 Wochen) bestanden hat.</li>
+                <li><span className="text-primary font-medium">100 € pro erfolgreicher Vermittlung</span> — fällig, sobald dein geworbener Handwerker über WerkPair einen Job gefunden und die Einführungsphase (8 Wochen) bestanden hat.</li>
                 <li>Auszahlung per Banküberweisung auf das hier hinterlegte Konto.</li>
                 <li>Die Teilnahme ist kostenlos; Eigenwerbung über den eigenen Link wird nicht vergütet.</li>
               </ul>
@@ -444,7 +444,7 @@ export default function PartnerSettings() {
           </div>
         </SectionCard>
 
-        <p className="text-muted text-xs text-center pt-4">Made in Germany 🇩🇪 · PortaWerk Partner-Programm</p>
+        <p className="text-muted text-xs text-center pt-4">Made in Germany 🇩🇪 · WerkPair Partner-Programm</p>
       </div>
 
       {/* ══ Lösch-Bestätigung ══ */}

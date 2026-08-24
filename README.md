@@ -1,4 +1,4 @@
-# PortaWerk — Handwerker-Plattform (Frontend)
+# WerkPair — Handwerker-Plattform (Frontend)
 
 Diskrete Jobvermittlung fürs Handwerk. Next.js 14 (App Router) · TypeScript · Tailwind v4 · framer-motion.
 

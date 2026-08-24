@@ -27,11 +27,11 @@ const PAPIER = "#F4F1EA";
 const LINIE = "#E4E0D6";
 
 /** Logo im Netz — muss unter dieser Adresse erreichbar sein. */
-const LOGO_URL = "https://porta-werk.de/images/portawerk-logo.png";
+const LOGO_URL = "https://werkpair.de/images/werkpair-logo.png";
 /** Fürs PDF eingebettet, damit die Vorschau auch offline stimmt. */
 const LOGO_BASE64 =
   "data:image/png;base64," +
-  readFileSync(join(WURZEL, "public/images/portawerk-logo.png")).toString("base64");
+  readFileSync(join(WURZEL, "public/images/werkpair-logo.png")).toString("base64");
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
@@ -94,7 +94,7 @@ function kasten(text, ton) {
 function kopf(logo) {
   return `<tr>
     <td align="center" style="background:#FFFFFF;padding:30px 32px 24px;">
-      <img src="${logo}" width="200" alt="PortaWerk" style="display:block;border:0;width:200px;max-width:200px;height:auto;">
+      <img src="${logo}" width="200" alt="WerkPair" style="display:block;border:0;width:200px;max-width:200px;height:auto;">
     </td>
   </tr>
   <tr>
@@ -114,15 +114,15 @@ function fuss(duzen) {
     ? "Diese E-Mail wurde automatisch versendet. Antworten auf diese Adresse werden nicht gelesen — schreib uns stattdessen an {{email_support}}."
     : "Diese E-Mail wurde automatisch versendet. Antworten auf diese Adresse werden nicht gelesen — schreiben Sie uns stattdessen an {{email_support}}.";
   const phishing = duzen
-    ? "PortaWerk fragt dich niemals per E-Mail oder Telefon nach deinem Passwort."
-    : "PortaWerk fragt Sie niemals per E-Mail oder Telefon nach Ihrem Passwort.";
+    ? "WerkPair fragt dich niemals per E-Mail oder Telefon nach deinem Passwort."
+    : "WerkPair fragt Sie niemals per E-Mail oder Telefon nach Ihrem Passwort.";
 
   return `<tr>
     <td style="background:${PETROL};padding:26px 32px;">
       <p style="margin:0 0 10px;font-size:13px;line-height:1.6;color:rgba(255,255,255,0.72);">${esc(anrede)}</p>
       <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:${GOLD};">${esc(phishing)}</p>
       <p style="margin:0 0 14px;font-size:12px;line-height:1.7;color:rgba(255,255,255,0.55);">
-        PortaWerk — eine Marke der {{firma_name}}<br>
+        WerkPair — eine Marke der {{firma_name}}<br>
         {{firma_strasse}}, {{firma_plz}} {{firma_ort}}<br>
         Rechtsform: {{firma_rechtsform}} &middot; Vertreten durch: {{firma_vertretung}}<br>
         Registergericht: {{firma_registergericht}} &middot; {{firma_registernummer}}<br>
@@ -157,7 +157,7 @@ function rendern(mail, variante, { logo, standalone }) {
     f.warnung ? kasten(f.warnung, "warnung") : "",
     f.hinweis ? kasten(f.hinweis, "info") : "",
     `<p style="margin:18px 0 0;font-size:15px;line-height:1.65;color:${TEXT_LEISE};">${
-      duzen ? "Dein Team von PortaWerk" : "Ihr Team von PortaWerk"
+      duzen ? "Dein Team von WerkPair" : "Ihr Team von WerkPair"
     }</p>`,
   ].join("\n");
 
@@ -222,7 +222,7 @@ function vorschau(mail) {
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${PAPIER};font-family:Helvetica,Arial,sans-serif;">
   <tr><td align="center" style="padding:30px 16px 0;">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;">
-      <tr><td style="padding:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${TEXT_LEISE};">PortaWerk &middot; Transaktionsmail</td></tr>
+      <tr><td style="padding:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${TEXT_LEISE};">WerkPair &middot; Transaktionsmail</td></tr>
       <tr><td style="padding:0 0 18px;font-size:24px;font-weight:bold;color:${PETROL_DUNKEL};">${esc(mail.name)}</td></tr>
     </table>
   </td></tr>

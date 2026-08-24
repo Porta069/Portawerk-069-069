@@ -502,7 +502,7 @@ export function apiRequest<T>(
 }
 
 // ── Bewerber-/Arbeitgeber-Session (gleicher Speicher wie AuthContext) ──
-const USER_SESSION_KEY = "portawerk_session_v1";
+const USER_SESSION_KEY = "werkpair_session_v1";
 
 export const userSession = {
   /** JWT der angemeldeten Nutzer-Session, oder null. */
@@ -519,7 +519,7 @@ export const userSession = {
 };
 
 // ── Partner-Session im Browser (getrennt von der Bewerber-Session) ──
-const PARTNER_TOKEN_KEY = "portawerk_partner_v1";
+const PARTNER_TOKEN_KEY = "werkpair_partner_v1";
 
 export const partnerSession = {
   get(): string | null {

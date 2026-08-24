@@ -1,8 +1,8 @@
 "use client";
 
 // ─── Registrierungs-Shell ─────────────────────────────────────────────────────
-// Zweispaltig: links ein Schritt-Visual (echtes Foto + PortaWerk-Tipp), rechts
-// der Formularinhalt. Die Tipp-Karte spricht bewusst als PortaWerk — es wird
+// Zweispaltig: links ein Schritt-Visual (echtes Foto + WerkPair-Tipp), rechts
+// der Formularinhalt. Die Tipp-Karte spricht bewusst als WerkPair — es wird
 // keine Aussage einer abgebildeten Person zugeschrieben (UWG).
 
 import { useEffect, useRef } from "react";
@@ -33,7 +33,7 @@ interface StepMeta {
   s: string;
   /** Echtes Foto aus public/images — keine KI-Bilder. */
   photo: string;
-  /** Tipp mit Absender PortaWerk, kein Zitat der abgebildeten Person. */
+  /** Tipp mit Absender WerkPair, kein Zitat der abgebildeten Person. */
   tip: string;
 }
 
@@ -133,7 +133,7 @@ export default function RegisterFlow() {
   useEffect(() => {
     if (step === "success") {
       try {
-        localStorage.removeItem("portawerk_registration_v1");
+        localStorage.removeItem("werkpair_registration_v1");
       } catch {
         /* ignore */
       }
@@ -280,7 +280,7 @@ export default function RegisterFlow() {
               onStepSelect={(i) => goTo(STEPS[i].key)}
             />
 
-            {/* Tipp-Karte — Absender ist PortaWerk, kein Zitat der Person im Bild */}
+            {/* Tipp-Karte — Absender ist WerkPair, kein Zitat der Person im Bild */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={`tip-${step}`}
@@ -306,7 +306,7 @@ export default function RegisterFlow() {
                     className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-1"
                     style={{ color: "rgba(232,168,56,0.9)" }}
                   >
-                    Tipp von PortaWerk
+                    Tipp von WerkPair
                   </p>
                   <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.62)" }}>
                     {meta.tip}

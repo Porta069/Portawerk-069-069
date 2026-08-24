@@ -35,7 +35,7 @@ const token = () => userSession.get() ?? undefined;
  * PLZ aus der Anfrage auf /arbeitgeber. Wird dort beim Absenden gesetzt und
  * belegt die Kandidatensuche vor — der Betrieb tippt sie nicht zweimal.
  */
-export const EMPLOYER_PLZ_KEY = "portawerk_employer_plz_v1";
+export const EMPLOYER_PLZ_KEY = "werkpair_employer_plz_v1";
 
 export function getStoredPlz(): string {
   try {

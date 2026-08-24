@@ -1,33 +1,34 @@
 import Image from "next/image";
 
-// ─── Wortmarke PORTAWERK ──────────────────────────────────────────────────────
+// ─── Wortmarke WERKPAIR ───────────────────────────────────────────────────────
 // Eine Stelle für das Logo. Vorher stand an zwei Dutzend Orten dieselbe
-// Nachbildung aus Hammer-Symbol und Schriftzug — die wäre bei jeder Änderung
-// wieder auseinandergelaufen.
+// Nachbildung — die wäre bei jeder Änderung wieder auseinandergelaufen.
 //
-// Der Schriftzug trägt die beiden Markenfarben — Gold #F9AD07 und Grün
-// #115F5B — als exakte Volltöne. Sie sind nach dem Skalieren gesetzt, damit in
-// den ausgelieferten Dateien wirklich nur diese zwei Werte stehen und nicht
-// tausend Zwischentöne aus der JPEG-Vorlage.
+// Die Marke trägt zwei Farben als exakte Volltöne: Orange #FF9400 („WERK",
+// Schraubenschlüssel im K) und Petrol #005C5B („PAIR", Handschlag im R). Sie
+// sind nach dem Skalieren gesetzt, damit in den ausgelieferten Dateien wirklich
+// nur diese Werte stehen und nicht tausend Zwischentöne aus der JPEG-Vorlage.
 //
-// Beide Fassungen sind derzeit IDENTISCH: Auf ausdrücklichen Wunsch behält das
-// Logo auch auf dunklem Grund seine Markenfarben. Das Grün erreicht dort nur
-// einen Kontrast von 2,3:1 gegenüber 17:1 bei Weiß — „WERK" tritt also spürbar
-// zurück. Für ein Logo ist das zulässig (Logotypen sind von den
-// Kontrastanforderungen ausgenommen), aber es ist eine bewusste Entscheidung.
-// Soll auf dunklen Flächen wieder Weiß stehen, genügt es,
-// `portawerk-logo-hell.png` neu zu erzeugen — die 15 Einbaustellen bleiben
-// unberührt.
+// `hell` ist die Negativfassung für dunkle Flächen: dort steht „PAIR" in Creme
+// statt Petrol — nicht aus Geschmack, sondern weil #005C5B auf dem Navy der
+// Kopfleiste bei 1,7:1 liegt und verschwindet. „WERK" bleibt in beiden
+// Fassungen Orange.
 //
-// Die Höhe wird vorgegeben, die Breite ergibt sich aus dem Seitenverhältnis
-// (7,2 : 1). So steht die Fläche vor dem Laden fest und die Seite springt
-// beim Erscheinen des Bildes nicht.
+// `slogan` schaltet auf die Fassung mit „ab jetzt bewirbt sich das Handwerk bei
+// DIR!". Sie ist deutlich flacher im Verhältnis (5:1 statt 8,8:1) und braucht
+// entsprechend mehr Höhe — der Slogan nimmt rund 19 % davon ein. Unter etwa
+// 40 px Gesamthöhe ist er nicht mehr zu lesen.
+//
+// Die Höhe wird vorgegeben, die Breite ergibt sich aus dem Seitenverhältnis.
+// So steht die Fläche vor dem Laden fest und die Seite springt nicht.
 
-const VERHAELTNIS = 1555 / 216;
+const VERHAELTNIS_WORT = 1442 / 163; // 8,85 : 1
+const VERHAELTNIS_SLOGAN = 1590 / 319; // 4,98 : 1
 
 export default function Logo({
   height = 28,
   variant = "dunkel",
+  slogan = false,
   priority = false,
   className,
 }: {
@@ -35,18 +36,24 @@ export default function Logo({
   height?: number;
   /** `hell` = für dunkle Untergründe, `dunkel` = für helle. */
   variant?: "hell" | "dunkel";
+  /** Fassung mit Slogan. Braucht mindestens 40 px Höhe, sonst ist er unlesbar. */
+  slogan?: boolean;
   priority?: boolean;
   className?: string;
 }) {
-  const width = Math.round(height * VERHAELTNIS);
+  const width = Math.round(height * (slogan ? VERHAELTNIS_SLOGAN : VERHAELTNIS_WORT));
+  const datei = slogan
+    ? variant === "hell"
+      ? "/images/werkpair-logo-slogan-hell.png"
+      : "/images/werkpair-logo-slogan.png"
+    : variant === "hell"
+      ? "/images/werkpair-logo-hell.png"
+      : "/images/werkpair-logo.png";
+
   return (
     <Image
-      src={
-        variant === "hell"
-          ? "/images/portawerk-logo-hell.png"
-          : "/images/portawerk-logo.png"
-      }
-      alt="PortaWerk"
+      src={datei}
+      alt="WerkPair"
       width={width}
       height={height}
       priority={priority}
@@ -57,7 +64,7 @@ export default function Logo({
   );
 }
 
-/** Das Bildzeichen allein (Lupe mit Handwerkern) — quadratisch. */
+/** Das Bildzeichen allein (Schraubenschlüssel aus dem K) — quadratisch. */
 export function LogoZeichen({
   size = 36,
   className,
@@ -67,7 +74,7 @@ export function LogoZeichen({
 }) {
   return (
     <Image
-      src="/images/portawerk-zeichen.png"
+      src="/images/werkpair-zeichen.png"
       alt=""
       aria-hidden
       width={size}

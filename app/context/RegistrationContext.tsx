@@ -64,7 +64,7 @@ const LEGACY_STEPS: Record<string, RegStep> = {
   legal: "konto",
 };
 
-const STORAGE_KEY = "portawerk_registration_v1";
+const STORAGE_KEY = "werkpair_registration_v1";
 
 const EMPTY: RegistrationData = {
   draftToken: null,

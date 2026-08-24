@@ -45,8 +45,7 @@ export const ANBIETER = {
   land: "Deutschland",
   emailAllgemein: "kontakt@porta-werk.de",
   emailDatenschutz: "datenschutz@porta-werk.de",
-  domain: "porta-werk.de",
-  dachDomain: "porta-jobs.de",
+  domain: "werkpair.de",
 } as const;
 
 /**
@@ -56,7 +55,7 @@ export const ANBIETER = {
  * später belegen, WELCHEM Text jemand zugestimmt hat — ohne das ist eine
  * Zustimmung im Streitfall wertlos. Bei jeder inhaltlichen Änderung erhöhen.
  */
-export const RECHTSTEXTE_VERSION = "2026-08-16-2";
+export const RECHTSTEXTE_VERSION = "2026-08-24";
 
 const ANSCHRIFT = `${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}, ${ANBIETER.land}`;
 
@@ -79,7 +78,7 @@ const LEGAL_SECTIONS: LegalSection[] = [
       },
       {
         heading: "Einordnung des Angebots",
-        text: `PortaWerk (${ANBIETER.domain}) ist ein Angebot der ${ANBIETER.name} und richtet sich ausschließlich an das Handwerk. Es gehört zum Portfolio von Porta Jobs (${ANBIETER.dachDomain}), tritt aber eigenständig auf; Vertragspartner ist in jedem Fall die ${ANBIETER.name}.`,
+        text: `WerkPair (${ANBIETER.domain}) ist ein Angebot der ${ANBIETER.name} und richtet sich ausschließlich an das Handwerk. Vertragspartner ist in jedem Fall die ${ANBIETER.name}.`,
       },
       {
         heading: "Streitbeilegung",
@@ -183,15 +182,15 @@ Verantwortlich: ${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETE
     blocks: [
       {
         heading: "Anbieter und Geltungsbereich",
-        text: `Diese Bedingungen gelten für die Nutzung von PortaWerk (${ANBIETER.domain}), einem Angebot der ${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}. PortaWerk ist das Handwerks-Angebot innerhalb des Portfolios Porta Jobs (${ANBIETER.dachDomain}) und tritt eigenständig auf; Vertragspartner ist die ${ANBIETER.name}.`,
+        text: `Diese Bedingungen gelten für die Nutzung von WerkPair (${ANBIETER.domain}), einem Angebot der ${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}. Vertragspartner ist die ${ANBIETER.name}.`,
       },
       {
         heading: "Zustandekommen des Nutzungsvertrags",
         text: "Der Nutzungsvertrag kommt zustande, wenn du die Registrierung abschließt und dabei diesen Bedingungen sowie der Datenschutzerklärung zustimmst. Zeitpunkt und Fassungsstand der Zustimmung werden bei deinem Konto gespeichert; den Fassungsstand findest du am Ende dieser Bedingungen. Ändern wir die Bedingungen, teilen wir das mit angemessener Frist mit.",
       },
       {
-        heading: "Leistung von PortaWerk",
-        text: "PortaWerk ist eine Vermittlungsplattform: Wir bringen Handwerker:innen und Betriebe zusammen, berechnen die Übereinstimmung zwischen Profil und Stellenanforderungen und ermöglichen eine diskrete Kontaktaufnahme. Für Handwerker:innen ist die Nutzung kostenlos. Wir sind weder Arbeitsvermittler im Sinne einer Arbeitsverwaltung noch Vertragspartei eines etwaigen Arbeitsverhältnisses.",
+        heading: "Leistung von WerkPair",
+        text: "WerkPair ist eine Vermittlungsplattform: Wir bringen Handwerker:innen und Betriebe zusammen, berechnen die Übereinstimmung zwischen Profil und Stellenanforderungen und ermöglichen eine diskrete Kontaktaufnahme. Für Handwerker:innen ist die Nutzung kostenlos. Wir sind weder Arbeitsvermittler im Sinne einer Arbeitsverwaltung noch Vertragspartei eines etwaigen Arbeitsverhältnisses.",
       },
       {
         heading: "Kein Anspruch auf Vermittlung",
@@ -311,7 +310,7 @@ Verantwortlich: ${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETE
     blocks: [
       {
         heading: "Keine Werbe- oder Tracking-Cookies",
-        text: "PortaWerk setzt keine Werbe-Cookies, kein geräteübergreifendes Tracking und keine Profilbildung zu Werbezwecken. Die Reichweitenmessung (Vercel Web Analytics) arbeitet ohne Cookies.",
+        text: "WerkPair setzt keine Werbe-Cookies, kein geräteübergreifendes Tracking und keine Profilbildung zu Werbezwecken. Die Reichweitenmessung (Vercel Web Analytics) arbeitet ohne Cookies.",
       },
       {
         heading: "Cookie für Empfehlungslinks",

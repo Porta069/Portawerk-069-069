@@ -76,7 +76,7 @@ export default function PartnerLoginPage() {
         </div>
 
         <p className="relative text-white/25 text-xs">
-          © {new Date().getFullYear()} PortaWerk — 100 € pro erfolgreicher Vermittlung
+          © {new Date().getFullYear()} WerkPair — 100 € pro erfolgreicher Vermittlung
         </p>
       </div>
 

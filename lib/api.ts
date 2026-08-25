@@ -198,6 +198,23 @@ async function request<T>(
   };
 }
 
+/**
+ * Schneidet umgebenden Leerraum ab.
+ *
+ * Ein Leerzeichen vor oder hinter der E-Mail-Adresse ist der häufigste Grund
+ * für ein „Bitte gültige E-Mail angeben" bei einer Adresse, die völlig korrekt
+ * aussieht — Mobiltastaturen hängen nach dem Autovervollständigen eines an,
+ * und beim Kopieren kommt regelmäßig eines mit. Beim Passwort führt dasselbe
+ * dazu, dass jemand nicht mehr in sein eigenes Konto kommt.
+ *
+ * Das Backend trimmt ebenfalls (`@Trimmed()` in den DTOs) — hier geschieht es
+ * noch einmal, damit gar nicht erst eine Anfrage rausgeht, die abgewiesen
+ * würde, und damit die Live-Prüfung der Adresse denselben Wert sieht wie der
+ * spätere Versand. Leerzeichen INNERHALB bleiben unangetastet; die gehören bei
+ * einem Passwort dazu und machen eine Adresse ohnehin ungültig.
+ */
+const ohneLeerraum = (wert: string) => wert.trim();
+
 export const api = {
   // ── Registrierungs-Wizard ──
   /** POST /auth/registration/start */
@@ -233,7 +250,11 @@ export const api = {
   }) {
     return request<AuthSession>("/auth/registration/complete", {
       method: "POST",
-      body: payload,
+      body: {
+        ...payload,
+        email: ohneLeerraum(payload.email),
+        password: ohneLeerraum(payload.password),
+      },
       retries: 7,
     });
   },
@@ -243,7 +264,7 @@ export const api = {
   login(email: string, password: string) {
     return request<AuthSession>("/auth/login", {
       method: "POST",
-      body: { email, password },
+      body: { email: ohneLeerraum(email), password: ohneLeerraum(password) },
       retries: 7,
     });
   },
@@ -287,7 +308,10 @@ export const api = {
     return request<AuthSession>("/auth/password/change", {
       method: "POST",
       token,
-      body: { currentPassword, newPassword },
+      body: {
+        currentPassword: ohneLeerraum(currentPassword),
+        newPassword: ohneLeerraum(newPassword),
+      },
     });
   },
 
@@ -296,7 +320,7 @@ export const api = {
     return request<PublicUser>("/auth/email/change", {
       method: "POST",
       token,
-      body: { password, newEmail },
+      body: { password: ohneLeerraum(password), newEmail: ohneLeerraum(newEmail) },
     });
   },
 
@@ -305,7 +329,7 @@ export const api = {
     return request<void>("/auth/account/delete", {
       method: "POST",
       token,
-      body: { password },
+      body: { password: ohneLeerraum(password) },
     });
   },
 
@@ -326,7 +350,7 @@ export const api = {
   checkEmail(email: string) {
     return request<{ deliverable: boolean; reason: string }>("/auth/email/check", {
       method: "POST",
-      body: { email },
+      body: { email: ohneLeerraum(email) },
       retries: 0,
     });
   },
@@ -335,7 +359,7 @@ export const api = {
   forgotPassword(email: string) {
     return request<{ status: string }>("/auth/password/forgot", {
       method: "POST",
-      body: { email },
+      body: { email: ohneLeerraum(email) },
     });
   },
 
@@ -402,7 +426,11 @@ export const api = {
   }) {
     return request<PartnerSession>("/partner/register", {
       method: "POST",
-      body: payload,
+      body: {
+        ...payload,
+        email: payload.email ? ohneLeerraum(payload.email) : payload.email,
+        password: ohneLeerraum(payload.password),
+      },
       retries: 3,
     });
   },
@@ -411,7 +439,10 @@ export const api = {
   partnerLogin(identifier: string, password: string) {
     return request<PartnerSession>("/partner/login", {
       method: "POST",
-      body: { identifier, password },
+      body: {
+        identifier: ohneLeerraum(identifier),
+        password: ohneLeerraum(password),
+      },
       retries: 3,
     });
   },
@@ -466,7 +497,10 @@ export const api = {
     return request<PartnerSession>("/partner/password/change", {
       method: "POST",
       token,
-      body: { currentPassword, newPassword },
+      body: {
+        currentPassword: ohneLeerraum(currentPassword),
+        newPassword: ohneLeerraum(newPassword),
+      },
     });
   },
 
@@ -475,7 +509,7 @@ export const api = {
     return request<void>("/partner/account/delete", {
       method: "POST",
       token,
-      body: { password },
+      body: { password: ohneLeerraum(password) },
     });
   },
 

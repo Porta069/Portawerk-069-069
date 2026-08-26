@@ -103,28 +103,6 @@ body {
   animation: goldlauf 3.6s linear infinite;
 }
 
-/* Funken um die Prämie. Richtung und Verzögerung kommen je Funke als
-   --fx/--fy/--verzug aus dem Markup, damit eine einzige Regel für alle
-   reicht und sie trotzdem nicht im Gleichschritt springen. */
-@keyframes funke {
-  0% {
-    transform: translate(0, 0) scale(0);
-    opacity: 0;
-  }
-  15% {
-    transform: translate(calc(var(--fx) * 0.2), calc(var(--fy) * 0.2)) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--fx), var(--fy)) scale(0.1);
-    opacity: 0;
-  }
-}
-.funke {
-  animation: funke 1.9s ease-out infinite;
-  animation-delay: var(--verzug);
-}
-
 /* Glühender Statuspunkt — "hier passiert gerade etwas".
    Zwei Schatten übereinander: der äussere Ring läuft nach aussen weg und
    verschwindet, der innere bleibt als konstanter Schein am Punkt. Ein Punkt,
@@ -223,7 +201,6 @@ body {
   .shimmer-sweep-2,
   .pulse-dot,
   .gold-schimmer,
-  .funke,
   .punkt-glut,
   .text-glut {
     animation: none;
@@ -233,10 +210,6 @@ body {
   }
   .punkt-glut {
     box-shadow: 0 0 10px 2px rgba(232, 168, 56, 0.85);
-  }
-  /* Ohne Lauf keine Funken — sie wären sonst als starre Punkte zu sehen. */
-  .funke {
-    opacity: 0;
   }
 }
 

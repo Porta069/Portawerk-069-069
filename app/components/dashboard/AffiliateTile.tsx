@@ -168,7 +168,7 @@ export function AffiliateTile({
 
         <Link
           href="/dashboard/verdienen"
-          className="group relative mt-7 lg:mt-auto flex items-center justify-center gap-2 overflow-hidden rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+          className="group mt-7 lg:mt-auto flex items-center justify-center gap-2 rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
             background: "#E8A838",
             color: "#1A1A2E",
@@ -176,15 +176,8 @@ export function AffiliateTile({
             boxShadow: "0 18px 36px -16px rgba(232,168,56,0.85)",
           }}
         >
-          <span className="relative z-10 inline-flex items-center gap-2">
-            {laeuftBereits ? "Zu deinen Vermittlungen" : "Link holen"}
-            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </span>
-          {/* Glanz-Sweep wie bei den übrigen Haupt-CTAs der Plattform. */}
-          <span
-            aria-hidden
-            className="shimmer-glint pointer-events-none absolute top-0 left-0 z-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/55 to-transparent"
-          />
+          {laeuftBereits ? "Zu deinen Vermittlungen" : "Link holen"}
+          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
         </Link>
       </div>
     </div>

@@ -301,7 +301,7 @@ export default function DashboardOverviewPage() {
               Bewerbungen selbst, sobald welche da sind. Solange nicht, erklärt
               derselbe Bereich, warum noch nichts da ist und was als Nächstes
               passiert. */}
-          <div className="mt-10">
+          <div className="mt-10 lg:mt-14">
             <Verlauf ereignisse={ereignisse} laedt={laedt} />
           </div>
         </div>
@@ -310,7 +310,7 @@ export default function DashboardOverviewPage() {
             navy, der Übergang verläuft weich, und aus zwei getrennten Kästen
             wird eine Fläche, die aus dem Kopf der Seite nach unten läuft.
             Nur ab lg — darunter steht die Spalte ohnehin unter dem Banner. */}
-        <aside className="space-y-6 lg:-mt-[8.5rem] lg:-mr-2 xl:-mr-4">
+        <aside className="space-y-6 lg:-mt-[8.5rem] lg:-mr-4 xl:-mr-8">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

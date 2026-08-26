@@ -135,7 +135,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-surface" style={{ fontFamily: "var(--font-sans)" }}>
+    // `overflow-x: clip` erlaubt Seiten, mit `.vollbreite` aus dem zentrierten
+    // Inhaltsbereich auszubrechen, ohne dass ein waagerechter Balken entsteht.
+    // Bewusst clip statt hidden: hidden würde einen Scrollcontainer aufmachen
+    // und die klebende Kopfleiste stünde nicht mehr.
+    <div
+      className="min-h-screen bg-surface overflow-x-clip"
+      style={{ fontFamily: "var(--font-sans)" }}
+    >
       {token && !devPreview && (
         <VerificationReminder user={user} token={token} onUpdate={setUser} />
       )}

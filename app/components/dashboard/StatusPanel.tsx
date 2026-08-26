@@ -29,24 +29,6 @@ export interface Lage {
   dringend: boolean;
 }
 
-/** Eckwinkel — technischer Rahmen statt Vollkontur. */
-function Winkel({ ecke }: { ecke: "ol" | "or" | "ul" | "ur" }) {
-  const kante = "1px solid rgba(232,168,56,0.45)";
-  const seiten = {
-    ol: { top: 0, left: 0, borderTop: kante, borderLeft: kante },
-    or: { top: 0, right: 0, borderTop: kante, borderRight: kante },
-    ul: { bottom: 0, left: 0, borderBottom: kante, borderLeft: kante },
-    ur: { bottom: 0, right: 0, borderBottom: kante, borderRight: kante },
-  }[ecke];
-  return (
-    <span
-      aria-hidden
-      className="absolute pointer-events-none"
-      style={{ width: 22, height: 22, ...seiten }}
-    />
-  );
-}
-
 /**
  * Vollständigkeitsring.
  *
@@ -121,7 +103,10 @@ export default function StatusPanel({
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden"
+      // Randlos über die volle Fensterbreite und ohne Abstand zur Kopfleiste:
+      // das Foto soll die Seite oben abschliessen, nicht als Kachel darin
+      // schwimmen. Das `-mt-10` hebt die Polsterung des Inhaltsbereichs auf.
+      className="vollbreite relative overflow-hidden -mt-10 mb-10"
       style={{ background: "#1A1A2E" }}
     >
       {/* Feines Raster — gibt der Fläche Textur, ohne ein Muster zu werden.
@@ -159,12 +144,10 @@ export default function StatusPanel({
         />
       </div>
 
-      <Winkel ecke="ol" />
-      <Winkel ecke="or" />
-      <Winkel ecke="ul" />
-      <Winkel ecke="ur" />
-
-      <div className="relative px-7 sm:px-10 py-9 sm:py-11">
+      {/* Der Inhalt bleibt in der Spaltenbreite der Seite, obwohl die Fläche
+          über das ganze Fenster läuft — sonst stünde die Überschrift am
+          Fensterrand statt bündig zu allem darunter. */}
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-10 sm:py-14">
         <div className="flex items-center justify-between gap-8">
           <div className="min-w-0 max-w-[42rem]">
             {/* Statuszeile — der pulsierende Punkt signalisiert: es läuft.

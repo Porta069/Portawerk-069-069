@@ -71,12 +71,82 @@ body {
   animation: pulse 2s ease-in-out infinite;
 }
 
+/* Goldlauf über eine Schrift — der Glanz wandert durch die Buchstaben selbst,
+   nicht als Streifen darüber. Dafür läuft der Verlauf im Hintergrund und wird
+   auf die Glyphen beschnitten. Der Volltongoldwert steht doppelt am Anfang und
+   am Ende, damit nur die helle Mitte durchzieht und der Rest ruhig bleibt.
+
+   Fällt background-clip aus, greift die Grundfarbe der Regel — die Zahl ist
+   dann golden statt unsichtbar. */
+@keyframes goldlauf {
+  0% {
+    background-position: -150% center;
+  }
+  100% {
+    background-position: 250% center;
+  }
+}
+.gold-schimmer {
+  color: #e8a838;
+  background-image: linear-gradient(
+    100deg,
+    #e8a838 0%,
+    #e8a838 36%,
+    #fff6e0 50%,
+    #e8a838 64%,
+    #e8a838 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldlauf 3.6s linear infinite;
+}
+
+/* Funken um die Prämie. Richtung und Verzögerung kommen je Funke als
+   --fx/--fy/--verzug aus dem Markup, damit eine einzige Regel für alle
+   reicht und sie trotzdem nicht im Gleichschritt springen. */
+@keyframes funke {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  15% {
+    transform: translate(calc(var(--fx) * 0.2), calc(var(--fy) * 0.2)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--fx), var(--fy)) scale(0.1);
+    opacity: 0;
+  }
+}
+.funke {
+  animation: funke 1.9s ease-out infinite;
+  animation-delay: var(--verzug);
+}
+
+/* Volle Fensterbreite aus einem zentrierten, gepolsterten Inhaltsbereich
+   heraus. Der Elternbaum braucht dafür `overflow-x: clip` — clip und nicht
+   hidden, weil hidden einen Scrollcontainer erzeugt und damit die klebende
+   Kopfleiste ausser Kraft setzt. */
+.vollbreite {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shimmer-glint,
   .shimmer-sweep-1,
   .shimmer-sweep-2,
-  .pulse-dot {
+  .pulse-dot,
+  .gold-schimmer,
+  .funke {
     animation: none;
+  }
+  /* Ohne Lauf keine Funken — sie wären sonst als starre Punkte zu sehen. */
+  .funke {
+    opacity: 0;
   }
 }
 

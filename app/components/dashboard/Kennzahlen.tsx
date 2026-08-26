@@ -1,25 +1,27 @@
 "use client";
 
-// ─── Kennzahlenzeile ──────────────────────────────────────────────────────────
-// Vier Zahlen, durch Haarlinien getrennt — bewusst OHNE Kästen.
+// ─── Kennzahlen ───────────────────────────────────────────────────────────────
+// Vier Karten, die aussehen wie das, was sie sind: Knöpfe zu vier Seiten.
 //
-// Vorher waren das drei weiße Karten mit je einem Symbol in einem getönten
-// Quadrat und Texten wie "Nichts Neues" oder "Stellen durchsuchen". Das sind
-// Beschreibungen der Navigation, keine Angaben zur eigenen Lage. Hier steht
-// jetzt nur, was tatsächlich der Fall ist: wie viele Angebote, Bewerbungen,
-// Gespräche, Merkzettel.
+// Zuvor standen die Zahlen nur durch Haarlinien getrennt auf dem Hintergrund.
+// Sachlich richtig, aber nichts daran sagte "hier kannst du klicken" — es sah
+// aus wie eine Kopfzeile. Jetzt trägt jede Karte unten die Handlung im
+// Klartext ("Angebote ansehen") mit Pfeil, hebt beim Überfahren ab und
+// bekommt eine goldene Kante.
 //
-// Ein Rahmen um eine Zahl macht sie nicht wichtiger, nur enger. Die Trennung
-// über 1-px-Linien reicht vollkommen und wirkt wie ein Instrument statt wie
-// eine Kachelsammlung.
+// Abgerundet wie die übrigen Karten der Anwendung. Die scharfen Kanten waren
+// auf dieser einen Seite und nirgends sonst.
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 export interface Kennzahl {
   label: string;
   wert: number;
   href: string;
+  /** Text der Handlungszeile — sagt, was der Klick zeigt. */
+  aktion: string;
   /** Hebt den Wert in Gold hervor — für alles, was auf eine Reaktion wartet. */
   betont?: boolean;
 }
@@ -32,49 +34,77 @@ export default function Kennzahlen({
   laedt?: boolean;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.45, delay: 0.12 }}
-      className="grid grid-cols-2 md:grid-cols-4"
-      style={{ borderBottom: "1px solid #E4E1DA" }}
-    >
-      {zahlen.map((z) => (
-        <Link
-          key={z.label}
-          href={z.href}
-          // Linien nur ZWISCHEN den Feldern, nie außen herum — sonst entsteht
-          // wieder ein Kasten. Die Regeln sorgen dafür, dass das erste Feld
-          // jeder Zeile keine linke Kante bekommt, zweispaltig wie vierspaltig.
-          className="group px-5 sm:px-7 py-6 transition-colors duration-200 hover:bg-white
-                     border-l border-[#E4E1DA] odd:border-l-0 md:odd:border-l md:first:border-l-0
-                     [&:nth-child(n+3)]:border-t [&:nth-child(n+3)]:border-[#E4E1DA]
-                     md:[&:nth-child(n+3)]:border-t-0"
-        >
-          <p
-            className="text-[9.5px] font-semibold uppercase mb-2.5"
-            style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {zahlen.map((z, i) => {
+        const wartet = !!z.betont && z.wert > 0;
+        return (
+          <motion.div
+            key={z.label}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.08 + i * 0.05 }}
           >
-            {z.label}
-          </p>
-          {laedt ? (
-            <span
-              className="block animate-pulse"
-              style={{ width: 38, height: 30, background: "#E9E7E1" }}
-            />
-          ) : (
-            <p
-              className="text-[32px] font-bold tabular-nums leading-none transition-colors duration-200"
+            <Link
+              href={z.href}
+              className="group flex h-full flex-col justify-between rounded-2xl bg-white p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1"
               style={{
-                fontFamily: "var(--font-display)",
-                color: z.betont && z.wert > 0 ? "#B47B18" : z.wert > 0 ? "#1A1A2E" : "rgba(26,26,46,0.22)",
+                // Wartet etwas auf eine Reaktion, ist die Kante schon im
+                // Ruhezustand golden — die Karte meldet sich von selbst.
+                border: `1.5px solid ${wartet ? "rgba(232,168,56,0.55)" : "#E9E7E1"}`,
+                boxShadow: wartet
+                  ? "0 14px 30px -20px rgba(232,168,56,0.75)"
+                  : "0 8px 22px -18px rgba(26,26,46,0.55)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#E8A838";
+                e.currentTarget.style.boxShadow = "0 18px 34px -18px rgba(232,168,56,0.6)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = wartet ? "rgba(232,168,56,0.55)" : "#E9E7E1";
+                e.currentTarget.style.boxShadow = wartet
+                  ? "0 14px 30px -20px rgba(232,168,56,0.75)"
+                  : "0 8px 22px -18px rgba(26,26,46,0.55)";
               }}
             >
-              {z.wert}
-            </p>
-          )}
-        </Link>
-      ))}
-    </motion.div>
+              <div>
+                <p
+                  className="text-[9.5px] font-semibold uppercase mb-2"
+                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+                >
+                  {z.label}
+                </p>
+                {laedt ? (
+                  <span
+                    className="block animate-pulse rounded"
+                    style={{ width: 40, height: 32, background: "#EDEAE4" }}
+                  />
+                ) : (
+                  <p
+                    className="text-[34px] font-bold tabular-nums leading-none"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      color: wartet ? "#B47B18" : z.wert > 0 ? "#1A1A2E" : "rgba(26,26,46,0.25)",
+                    }}
+                  >
+                    {z.wert}
+                  </p>
+                )}
+              </div>
+
+              {/* Die Handlungszeile ist der eigentliche Klick-Hinweis. */}
+              <span
+                className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-semibold transition-colors duration-200"
+                style={{ color: wartet ? "#B47B18" : "rgba(26,26,46,0.45)" }}
+              >
+                <span className="group-hover:text-[#B47B18] transition-colors duration-200">
+                  {z.aktion}
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[#B47B18]" />
+              </span>
+            </Link>
+          </motion.div>
+        );
+      })}
+    </div>
   );
 }

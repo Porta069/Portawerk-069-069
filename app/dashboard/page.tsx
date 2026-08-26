@@ -36,7 +36,7 @@ import type {
   WorkerContactRequest,
 } from "@/lib/types";
 import StatusPanel, { type Lage } from "@/app/components/dashboard/StatusPanel";
-import Kennzahlen from "@/app/components/dashboard/Kennzahlen";
+import Kennzahlen, { type Kennzahl } from "@/app/components/dashboard/Kennzahlen";
 import Verlauf, { type Ereignis } from "@/app/components/dashboard/Verlauf";
 import { AffiliateTile } from "@/app/components/dashboard/AffiliateTile";
 
@@ -205,28 +205,32 @@ export default function DashboardOverviewPage() {
 
   const lage = bestimmeLage(daten);
 
-  const zahlen = [
+  const zahlen: Kennzahl[] = [
     {
       label: "Angebote",
       wert: daten.offers.filter((o) => o.status === "neu").length,
       href: "/dashboard/angebote",
+      aktion: "Angebote ansehen",
       betont: true,
     },
     {
       label: "Bewerbungen",
       wert: daten.apps.filter((a) => a.status !== "abgelehnt").length,
       href: "/dashboard/bewerbungen",
+      aktion: "Stand ansehen",
     },
     {
       label: "Im Gespräch",
       wert: daten.apps.filter((a) => a.status === "im_gespraech").length,
       href: "/dashboard/bewerbungen",
+      aktion: "Gespräche ansehen",
       betont: true,
     },
     {
       label: "Gemerkt",
       wert: daten.favorites.length,
       href: "/dashboard/merkliste",
+      aktion: "Merkliste öffnen",
     },
   ];
 
@@ -281,14 +285,26 @@ export default function DashboardOverviewPage() {
 
       <Kennzahlen zahlen={zahlen} laedt={laedt} />
 
+      {/* Verdienen direkt unter die Zahlen und über die volle Breite: in der
+          schmalen rechten Spalte ging das Empfehlungsprogramm unter, obwohl es
+          der strukturelle Unterschied zu einer reinen Jobbörse ist. */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="mt-4 sm:mt-5"
+      >
+        <AffiliateTile />
+      </motion.div>
+
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)] gap-10 lg:gap-14 items-start mt-12">
         <Verlauf ereignisse={ereignisse} laedt={laedt} />
 
-        <aside className="space-y-10">
+        <aside>
           {/* Offene Schritte — nur wenn es welche gibt. Eine Überschrift über
               einer leeren Liste ist schlimmer als gar keine Überschrift. */}
           {luecken.length > 0 && (
-            <section>
+            <section className="rounded-2xl bg-white p-6" style={{ border: "1.5px solid #E9E7E1" }}>
               <h2
                 className="text-primary font-bold text-[18px] mb-1"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -329,14 +345,6 @@ export default function DashboardOverviewPage() {
               </ul>
             </section>
           )}
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-          >
-            <AffiliateTile />
-          </motion.div>
         </aside>
       </div>
     </div>

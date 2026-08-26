@@ -17,6 +17,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Search } from "lucide-react";
+import Funken from "@/app/components/dashboard/Funken";
 
 export interface Lage {
   /** Der Satz, der die Lage beschreibt. Steht groß im Panel. */
@@ -183,20 +184,31 @@ export default function StatusPanel({
               </span>
             </p>
 
-            <Link
-              href={lage.aktion.href}
-              className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
-              style={{
-                background: "#E8A838",
-                color: "#1A1A2E",
-                fontFamily: "var(--font-display)",
-                boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
-              }}
-            >
-              {lage.zweiWege && <Search className="w-4 h-4" />}
-              {lage.aktion.label}
-              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-            </Link>
+            {/* Funken um den Knopf. Sie sassen vorher an der Prämie im
+                Verdienen-Bereich — dort konkurrierten sie mit dem Goldlauf
+                durch die Ziffern. Hier haben sie eine Aufgabe: den einzigen
+                Knopf des Banners aus der ruhigen dunklen Fläche holen.
+
+                Der umschliessende Rahmen ist `inline-block`, damit er genau
+                die Knopfbreite hat — die Funken werden in Prozent davon
+                gesetzt und lägen sonst irgendwo in der Spalte. */}
+            <span className="relative inline-block">
+              <Funken />
+              <Link
+                href={lage.aktion.href}
+                className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: "#E8A838",
+                  color: "#1A1A2E",
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                }}
+              >
+                {lage.zweiWege && <Search className="w-4 h-4" />}
+                {lage.aktion.label}
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+            </span>
           </div>
 
           {/* Nur im Wartezustand — liegt ein Angebot vor, wäre "Suche läuft"

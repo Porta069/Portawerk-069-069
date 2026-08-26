@@ -9,53 +9,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import type { CSSProperties } from "react";
 import { ArrowRight, Share2 } from "lucide-react";
-
-/**
- * Funken um die Prämie.
- *
- * Sechs Punkte, die in unterschiedliche Richtungen wegspringen. Richtung und
- * Verzögerung stehen als CSS-Variablen am Element, damit eine einzige Regel in
- * globals.css für alle reicht und sie trotzdem nicht im Gleichschritt fliegen.
- * Rein schmückend, deshalb aria-hidden — und bei reduzierter Bewegung aus.
- */
-const FUNKEN = [
-  { x: 8, y: 30, fx: "-30px", fy: "-26px", verzug: "0s", groesse: 5 },
-  { x: 30, y: 12, fx: "14px", fy: "-34px", verzug: "0.3s", groesse: 4 },
-  { x: 52, y: 70, fx: "-10px", fy: "32px", verzug: "0.6s", groesse: 5 },
-  { x: 76, y: 22, fx: "30px", fy: "-24px", verzug: "0.9s", groesse: 4 },
-  { x: 94, y: 52, fx: "36px", fy: "10px", verzug: "1.2s", groesse: 5 },
-  { x: 18, y: 78, fx: "-24px", fy: "28px", verzug: "1.5s", groesse: 4 },
-  { x: 64, y: 8, fx: "8px", fy: "-30px", verzug: "1.8s", groesse: 4 },
-  { x: 44, y: 88, fx: "18px", fy: "26px", verzug: "2.1s", groesse: 5 },
-];
-
-function Funken() {
-  return (
-    <span aria-hidden className="absolute -inset-6 pointer-events-none">
-      {FUNKEN.map((f, i) => (
-        <span
-          key={i}
-          className="funke absolute rounded-full"
-          style={
-            {
-              left: `${f.x}%`,
-              top: `${f.y}%`,
-              width: f.groesse,
-              height: f.groesse,
-              background: "#FFF6E0",
-              boxShadow: "0 0 8px 2px rgba(232,168,56,0.95)",
-              "--fx": f.fx,
-              "--fy": f.fy,
-              "--verzug": f.verzug,
-            } as CSSProperties
-          }
-        />
-      ))}
-    </span>
-  );
-}
 
 /** Drei Schritte, je drei Wörter. Mehr braucht es nicht. */
 const SCHRITTE = ["Link an Kollegen schicken", "Er findet einen Job", "Du bekommst 100 €"];
@@ -157,9 +111,8 @@ export function AffiliateTile({
           Verdienen
         </span>
 
-        {/* Die Prämie mit Goldlauf und Funken — der Blickfang der Spalte. */}
+        {/* Die Prämie mit Goldlauf — der Blickfang der Spalte. */}
         <div className="relative inline-block">
-          <Funken />
           <p
             className="gold-schimmer font-bold leading-none relative"
             style={{ fontFamily: "var(--font-display)", fontSize: "4.2rem" }}
@@ -215,7 +168,7 @@ export function AffiliateTile({
 
         <Link
           href="/dashboard/verdienen"
-          className="group mt-7 lg:mt-auto flex items-center justify-center gap-2 rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+          className="group relative mt-7 lg:mt-auto flex items-center justify-center gap-2 overflow-hidden rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
             background: "#E8A838",
             color: "#1A1A2E",
@@ -223,8 +176,15 @@ export function AffiliateTile({
             boxShadow: "0 18px 36px -16px rgba(232,168,56,0.85)",
           }}
         >
-          {laeuftBereits ? "Zu deinen Vermittlungen" : "Link holen"}
-          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+          <span className="relative z-10 inline-flex items-center gap-2">
+            {laeuftBereits ? "Zu deinen Vermittlungen" : "Link holen"}
+            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </span>
+          {/* Glanz-Sweep wie bei den übrigen Haupt-CTAs der Plattform. */}
+          <span
+            aria-hidden
+            className="shimmer-glint pointer-events-none absolute top-0 left-0 z-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/55 to-transparent"
+          />
         </Link>
       </div>
     </div>

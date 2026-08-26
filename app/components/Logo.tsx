@@ -4,10 +4,16 @@ import Image from "next/image";
 // Eine Stelle für das Logo. Vorher stand an zwei Dutzend Orten dieselbe
 // Nachbildung — die wäre bei jeder Änderung wieder auseinandergelaufen.
 //
-// Die Marke trägt zwei Farben als exakte Volltöne: Orange #FF9400 („WERK",
+// Die Marke trägt zwei Farben als exakte Volltöne: Gold #E8A838 („WERK",
 // Schraubenschlüssel im K) und Petrol #005C5B („PAIR", Handschlag im R). Sie
 // sind nach dem Skalieren gesetzt, damit in den ausgelieferten Dateien wirklich
 // nur diese Werte stehen und nicht tausend Zwischentöne aus der JPEG-Vorlage.
+//
+// Das Gold ist derselbe Wert wie `--color-accent` in globals.css — dieselbe
+// Farbe wie Abmelden-Knopf, Regler und Zähler-Badges. Vorher stand hier das
+// Orange #FF9400 der Ursprungsvorlage; direkt neben dem goldenen Knopf in der
+// Kopfleiste sahen die beiden Töne nach Versehen aus statt nach System.
+// Die JPEG-Vorlagen (`*-original.jpeg`) tragen weiterhin das alte Orange.
 //
 // `hell` ist die Negativfassung für dunkle Flächen: dort steht „PAIR" in Creme
 // statt Petrol — nicht aus Geschmack, sondern weil #005C5B auf dem Navy der

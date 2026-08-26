@@ -70,7 +70,10 @@ export default function Navbar() {
         scrolled ? "shadow-[0_2px_16px_rgba(0,0,0,0.18)]" : ""
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      {/* Gleiche Maße wie Dashboard- und Arbeitgeber-Leiste — das Logo sitzt in
+          allen drei Bereichen an derselben Stelle und springt beim Wechsel
+          nicht. Bewusst breiter als der Inhalt darunter. */}
+      <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
             {/* Reine Wortmarke ohne Slogan — der steht jetzt als Überschrift

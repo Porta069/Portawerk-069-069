@@ -63,7 +63,11 @@ export default function DashboardNav({
 
   return (
     <header className="sticky top-0 left-0 right-0 z-50 bg-[#1A1A2E] shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      {/* Breiter als der Inhalt darunter (max-w-7xl) und mit schmalerem Rand:
+          so steht das Logo weiter aussen und die Bereiche in der Mitte haben
+          Luft. Gleiche Maße wie die Arbeitgeber-Leiste, damit das Logo beim
+          Wechsel zwischen den Bereichen nicht springt. */}
+      <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="relative flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
             <Logo
@@ -134,7 +138,7 @@ export default function DashboardNav({
             className="lg:hidden overflow-hidden bg-[#1A1A2E]"
             style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
           >
-            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col">
+            <div className="max-w-[1680px] mx-auto px-6 py-4 flex flex-col">
               {AREAS.map((a) => {
                 const active = isActive(pathname, a.href);
                 const count = a.key ? badges[a.key] ?? 0 : 0;

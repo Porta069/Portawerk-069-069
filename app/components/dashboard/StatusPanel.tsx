@@ -27,9 +27,9 @@ export interface Lage {
   /** Wartet etwas auf eine Entscheidung? Dann Gold statt Weiß. */
   dringend: boolean;
   /**
-   * Zeigt die beiden Wege nebeneinander: der eine läuft von allein, der andere
-   * steht offen. Nur im Wartezustand sinnvoll — liegt eine Zusage vor, wäre der
-   * Hinweis "Betriebe melden sich" eine Ablenkung von der Entscheidung.
+   * Wartezustand: die Statuszeile meldet dann, dass Betriebe gerade suchen,
+   * und der Knopf bekommt eine Lupe. Liegt eine Zusage vor, wäre beides eine
+   * Ablenkung von der Entscheidung.
    */
   zweiWege?: boolean;
 }
@@ -152,9 +152,9 @@ export default function StatusPanel({
       {/* Der Inhalt bleibt in der Spaltenbreite der Seite, obwohl die Fläche
           über das ganze Fenster läuft — sonst stünde die Überschrift am
           Fensterrand statt bündig zu allem darunter. */}
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-10 sm:py-14">
+      <div className="relative max-w-[1680px] mx-auto px-6 lg:px-10 py-10 sm:py-14">
         <div className="flex items-center justify-between gap-8">
-          <div className="min-w-0 max-w-[42rem]">
+          <div className="min-w-0 max-w-[46rem]">
             {/* Statuszeile — der pulsierende Punkt signalisiert: es läuft.
                 Wichtiger als es klingt: ohne Angebote sieht ein leeres
                 Dashboard sonst kaputt aus statt wartend. */}
@@ -167,7 +167,7 @@ export default function StatusPanel({
                 className="text-[10px] font-semibold uppercase"
                 style={{ color: "#E8A838", letterSpacing: "0.22em" }}
               >
-                Profil aktiv
+                {lage.zweiWege ? "Betriebe suchen gerade" : "Profil aktiv"}
               </span>
               {seit && (
                 <>
@@ -194,60 +194,26 @@ export default function StatusPanel({
             </h1>
 
             <p
-              className="text-[14.5px] leading-relaxed mb-7 max-w-[34rem]"
+              className="text-[15px] leading-relaxed mb-7 max-w-[36rem]"
               style={{ color: "rgba(255,255,255,0.55)" }}
             >
               {lage.unterzeile}
             </p>
 
-            {/* Die beiden Wege sichtbar nebeneinander statt nur im Fließtext:
-                links das, was ohne Zutun läuft, rechts das, was der Nutzer
-                selbst tun kann. Vorher stand beides nur im Absatz darüber und
-                ging unter — man sah eine Schaltfläche und hielt Suchen für den
-                einzigen Weg. */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
-              {lage.zweiWege && (
-                <>
-                  <span
-                    className="inline-flex items-center gap-3 rounded-full px-4 py-3"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.13)",
-                    }}
-                  >
-                    <span
-                      className="pulse-dot rounded-full flex-shrink-0"
-                      style={{ width: 7, height: 7, background: "#E8A838" }}
-                    />
-                    <span className="text-[13px] leading-snug" style={{ color: "rgba(255,255,255,0.62)" }}>
-                      <strong className="text-white font-semibold">Läuft schon:</strong> Betriebe
-                      sehen dein Profil und bewerben sich bei dir
-                    </span>
-                  </span>
-                  <span
-                    className="text-[13px] flex-shrink-0"
-                    style={{ color: "rgba(255,255,255,0.4)" }}
-                  >
-                    oder
-                  </span>
-                </>
-              )}
-
-              <Link
-                href={lage.aktion.href}
-                className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
-                style={{
-                  background: "#E8A838",
-                  color: "#1A1A2E",
-                  fontFamily: "var(--font-display)",
-                  boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
-                }}
-              >
-                {lage.zweiWege && <Search className="w-4 h-4" />}
-                {lage.aktion.label}
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
-            </div>
+            <Link
+              href={lage.aktion.href}
+              className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "#E8A838",
+                color: "#1A1A2E",
+                fontFamily: "var(--font-display)",
+                boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+              }}
+            >
+              {lage.zweiWege && <Search className="w-4 h-4" />}
+              {lage.aktion.label}
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
           </div>
 
           {prozent !== null && (

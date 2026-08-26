@@ -15,7 +15,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Info } from "lucide-react";
 
 export interface Ereignis {
   id: string;
@@ -32,34 +32,15 @@ interface Schritt {
   stand: "erledigt" | "laeuft" | "offen";
 }
 
-// Der Ablauf ist die Umkehrung des üblichen Bewerbens — das muss in jedem
-// Schritt stehen, nicht nur in der Überschrift. Vorher hieß es neutral
-// "Betriebe sehen dich"; das klang nach einer Jobbörse wie jede andere.
-//
-// Die Botschaft ist bewusst Entwarnung statt Aufforderung: das Profil ist
-// fertig, der Nutzer muss nichts mehr tun und nicht ständig nachsehen — er
-// bekommt Bescheid, sobald sich ein Betrieb bei ihm bewirbt.
+// Vier Schritte, je zwei bis vier Wörter. Vorher standen hier ganze Sätze mit
+// Nebensätzen — auf einem Bildschirm, den ein Handwerker zwischen zwei
+// Baustellen aufmacht. Wer den Ablauf genauer wissen will, findet ihn auf der
+// Startseite; hier reicht der Merksatz.
 const ABLAUF: Schritt[] = [
-  {
-    titel: "Profil fertig und freigeschaltet",
-    text: "Können, Region und Lohnwunsch liegen den Betrieben vor. Mehr brauchen sie nicht von dir.",
-    stand: "erledigt",
-  },
-  {
-    titel: "Du läufst in der Suche mit",
-    text: "Betriebe in deiner Nähe sehen dein Profil — ohne Namen, ohne Foto, ohne Nummer.",
-    stand: "erledigt",
-  },
-  {
-    titel: "Du bekommst Bescheid",
-    text: "Bewirbt sich ein Betrieb bei dir, meldet sich WerkPair zeitnah. Du musst hier nicht ständig nachsehen — das Angebot steht dann oben unter „Angebote“.",
-    stand: "laeuft",
-  },
-  {
-    titel: "Du entscheidest",
-    text: "Erst wenn du zusagst, erfährt der Betrieb deinen Namen und deine Nummer. Vorher nicht.",
-    stand: "offen",
-  },
+  { titel: "Profil fertig", text: "Alles eingetragen", stand: "erledigt" },
+  { titel: "Betriebe sehen dich", text: "Anonym, ohne Namen", stand: "erledigt" },
+  { titel: "Betrieb meldet sich", text: "Du bekommst Bescheid", stand: "laeuft" },
+  { titel: "Du entscheidest", text: "Dann bekommt er deine Nummer", stand: "offen" },
 ];
 
 // Die Liste hat 34 px Innenabstand links, die Schiene liegt auf deren
@@ -77,12 +58,12 @@ const versatz = (groesse: number) => -(SCHIENE + groesse / 2);
  * Ring, offene eine hohle Scheibe.
  */
 function Zeichen({ stand }: { stand: Schritt["stand"] }) {
+  const gemeinsam = "relative z-10 flex-shrink-0 rounded-full flex items-center justify-center";
+  const masse = { width: 22, height: 22 };
+
   if (stand === "erledigt") {
     return (
-      <span
-        className="absolute rounded-full flex items-center justify-center"
-        style={{ left: versatz(22), top: 1, width: 22, height: 22, background: "#E8A838" }}
-      >
+      <span className={gemeinsam} style={{ ...masse, background: "#E8A838" }}>
         <Check className="w-3.5 h-3.5" strokeWidth={3.4} style={{ color: "#1A1A2E" }} />
       </span>
     );
@@ -90,15 +71,12 @@ function Zeichen({ stand }: { stand: Schritt["stand"] }) {
   if (stand === "laeuft") {
     return (
       <span
-        className="absolute rounded-full flex items-center justify-center"
+        className={gemeinsam}
         style={{
-          left: versatz(22),
-          top: 1,
-          width: 22,
-          height: 22,
+          ...masse,
           background: "#FFFFFF",
           border: "2px solid #E8A838",
-          boxShadow: "0 0 0 5px rgba(232,168,56,0.16)",
+          boxShadow: "0 0 0 5px rgba(232,168,56,0.18)",
         }}
       >
         <span
@@ -110,15 +88,8 @@ function Zeichen({ stand }: { stand: Schritt["stand"] }) {
   }
   return (
     <span
-      className="absolute rounded-full"
-      style={{
-        left: versatz(22),
-        top: 1,
-        width: 22,
-        height: 22,
-        background: "#F8F7F4",
-        border: "2px dashed #DBD7CE",
-      }}
+      className={gemeinsam}
+      style={{ ...masse, background: "#F8F7F4", border: "2px dashed #DBD7CE" }}
     />
   );
 }
@@ -190,80 +161,70 @@ export default function Verlauf({
     );
   }
 
-  // ── Nichts passiert: die Schiene zeigt den Ablauf statt einer leeren Fläche ──
+  // ── Nichts passiert: der Ablauf als Informationsstreifen ───────────────────
+  //
+  // Vorher war das eine senkrechte Schiene mit ganzen Sätzen — sie sah aus wie
+  // Inhalt, war aber Erklärung, und nahm einen halben Bildschirm ein. Jetzt ein
+  // waagerechter Streifen in einem abgesetzten Kasten: vier Schritte, je zwei
+  // bis vier Wörter, mit Beschriftung "So läuft's". Man erkennt in einer
+  // Sekunde, dass hier erklärt und nicht aufgelistet wird.
   if (ereignisse.length === 0) {
     return (
-      <section>
-        <Kopf titel="Dein Profil ist bereit" />
-        <p className="text-[13.5px] leading-relaxed mb-7 -mt-3 max-w-[38rem]" style={{ color: "rgba(26,26,46,0.55)" }}>
-          Ab hier läuft es von allein. Du musst keine Bewerbungen schreiben und hier
-          auch nicht ständig nachsehen — sobald sich ein Betrieb bei dir bewirbt,
-          bekommst du zeitnah Bescheid.
-        </p>
-        <ol className="pl-[34px]" style={{ borderLeft: "1.5px solid #E4E1DA" }}>
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+        className="rounded-2xl px-6 py-6"
+        style={{ background: "rgba(232,168,56,0.07)", border: "1.5px solid rgba(232,168,56,0.28)" }}
+      >
+        <div className="flex items-center gap-2.5 mb-6">
+          <Info className="w-4 h-4 flex-shrink-0" style={{ color: "#B47B18" }} />
+          <span
+            className="text-[9.5px] font-semibold uppercase"
+            style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+          >
+            So läuft&rsquo;s
+          </span>
+          <span className="h-px flex-1" style={{ background: "rgba(232,168,56,0.3)" }} />
+        </div>
+
+        <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {ABLAUF.map((s, i) => (
-            <motion.li
-              key={s.titel}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.32, delay: 0.05 + i * 0.055 }}
-              className="relative"
-              style={{ paddingBottom: i === ABLAUF.length - 1 ? 0 : 26 }}
-            >
-              <Zeichen stand={s.stand} />
-              <div
-                className="rounded-xl px-4 py-3"
-                style={{
-                  // Erledigtes bekommt eine goldene Tönung — man sieht auf einen
-                  // Blick, was schon steht, statt es aus der Farbe des Punktes
-                  // ableiten zu müssen.
-                  background:
-                    s.stand === "erledigt"
-                      ? "rgba(232,168,56,0.09)"
-                      : s.stand === "laeuft"
-                        ? "#FFFFFF"
-                        : "transparent",
-                  border:
-                    s.stand === "laeuft"
-                      ? "1.5px solid rgba(232,168,56,0.4)"
-                      : "1.5px solid transparent",
-                  boxShadow:
-                    s.stand === "laeuft" ? "0 12px 26px -20px rgba(26,26,46,0.6)" : "none",
-                }}
-              >
-                <div className="flex items-center gap-2.5">
-                  <p
-                    className="text-[14.5px] font-bold leading-snug"
-                    style={{ color: s.stand === "offen" ? "rgba(26,26,46,0.45)" : "#1A1A2E" }}
-                  >
-                    {s.titel}
-                  </p>
-                  {s.stand === "laeuft" && (
-                    <span
-                      className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
-                      style={{
-                        background: "#E8A838",
-                        color: "#1A1A2E",
-                        letterSpacing: "0.14em",
-                      }}
-                    >
-                      läuft
-                    </span>
-                  )}
-                </div>
-                <p
-                  className="text-[13px] leading-relaxed mt-1 max-w-[30rem]"
+            <li key={s.titel} className="relative flex gap-3 lg:block">
+              {/* Verbindungslinie zum nächsten Schritt — macht aus vier Kästen
+                  einen Ablauf. Nur ab lg, darunter stehen sie untereinander. */}
+              {i < ABLAUF.length - 1 && (
+                <span
+                  aria-hidden
+                  className="hidden lg:block absolute h-px"
                   style={{
-                    color: s.stand === "offen" ? "rgba(26,26,46,0.35)" : "rgba(26,26,46,0.6)",
+                    left: 30,
+                    right: -20,
+                    top: 11,
+                    background:
+                      s.stand === "erledigt" ? "rgba(232,168,56,0.5)" : "rgba(26,26,46,0.12)",
                   }}
+                />
+              )}
+              <Zeichen stand={s.stand} />
+              <div className="min-w-0 lg:mt-3">
+                <p
+                  className="text-[13.5px] font-bold leading-snug"
+                  style={{ color: s.stand === "offen" ? "rgba(26,26,46,0.45)" : "#1A1A2E" }}
+                >
+                  {s.titel}
+                </p>
+                <p
+                  className="text-[12.5px] leading-snug mt-0.5"
+                  style={{ color: s.stand === "offen" ? "rgba(26,26,46,0.35)" : "rgba(26,26,46,0.55)" }}
                 >
                   {s.text}
                 </p>
               </div>
-            </motion.li>
+            </li>
           ))}
         </ol>
-      </section>
+      </motion.section>
     );
   }
 

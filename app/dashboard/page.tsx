@@ -73,7 +73,7 @@ function bestimmeLage(d: Daten): Lage {
     return {
       ueberschrift: zusagen === 1 ? "Du hast eine Zusage." : `Du hast ${zusagen} Zusagen.`,
       unterzeile:
-        "Schau sie dir in Ruhe an. Du musst dich zu nichts sofort entscheiden — die Stelle läuft dir nicht weg.",
+        "Lass dir Zeit — die Stelle läuft dir nicht weg.",
       aktion: { label: "Zusage ansehen", href: "/dashboard/bewerbungen" },
       dringend: true,
     };
@@ -86,7 +86,7 @@ function bestimmeLage(d: Daten): Lage {
           ? "Ein Betrieb möchte deine Kontaktdaten."
           : `${anfragen} Betriebe möchten deine Kontaktdaten.`,
       unterzeile:
-        "Bisher kennt er nur dein Können und deine Region. Erst wenn du freigibst, erfährt er, wer du bist — und ruft an.",
+        "Erst wenn du freigibst, erfährt er, wer du bist.",
       aktion: { label: "Anfrage entscheiden", href: "/dashboard/angebote" },
       dringend: true,
     };
@@ -99,7 +99,7 @@ function bestimmeLage(d: Daten): Lage {
           ? "Ein Betrieb bietet dir eine Stelle an."
           : `${neueAngebote} Betriebe bieten dir eine Stelle an.`,
       unterzeile:
-        "Du hast dich nirgends beworben — die kamen auf dich zu. Lohn, Fahrzeit und Bedingungen stehen im Angebot.",
+        "Lohn, Fahrzeit und Bedingungen stehen im Angebot.",
       aktion: { label: "Angebote ansehen", href: "/dashboard/angebote" },
       dringend: true,
     };
@@ -111,7 +111,7 @@ function bestimmeLage(d: Daten): Lage {
         gespraeche === 1
           ? "Du bist bei einem Betrieb im Gespräch."
           : `Du bist bei ${gespraeche} Betrieben im Gespräch.`,
-      unterzeile: "Der Stand steht bei deinen Bewerbungen. Melden sich die Betriebe, siehst du es hier.",
+      unterzeile: "Melden sich die Betriebe, siehst du es hier.",
       aktion: { label: "Bewerbungen ansehen", href: "/dashboard/bewerbungen" },
       dringend: false,
     };
@@ -122,22 +122,18 @@ function bestimmeLage(d: Daten): Lage {
       ueberschrift:
         laufend === 1 ? "Deine Bewerbung läuft." : `${laufend} Bewerbungen laufen.`,
       unterzeile:
-        "Solange du wartest, kannst du weitersuchen. Mehrere Eisen im Feuer schaden nie.",
+        "Mehrere Eisen im Feuer schaden nie.",
       aktion: { label: "Weitere Stellen ansehen", href: "/dashboard/jobboerse" },
       dringend: false,
     };
   }
 
-  // Der Normalfall am Anfang. Bewusst kein Alarm und kein Jubel: die Seite sagt,
-  // dass es läuft — und dass es daneben einen zweiten Weg gibt.
-  //
-  // Beide Wege müssen hier stehen. Nur "Betriebe kommen auf dich zu" klingt nach
-  // Warten ohne Zutun; nur "such dir was" wäre die übliche Jobbörse. Der Nutzer
-  // soll wissen, dass das eine von allein läuft und das andere ihm offensteht.
+  // Der Normalfall am Anfang: der Slogan der Marke, ein Satz Erklärung, ein
+  // Knopf. Vorher standen hier drei Zeilen Fließtext plus eine Pille plus ein
+  // "oder" — zu viel für den Moment, in dem jemand die Seite aufschlägt.
   return {
-    ueberschrift: "Betriebe bewerben sich bei dir.",
-    unterzeile:
-      "Dein Profil läuft in der Suche mit — du musst dich nirgends bewerben. Und wenn du nicht warten willst, schau selbst, welche Betriebe in deiner Nähe gerade Leute suchen.",
+    ueberschrift: "Ab jetzt bewirbt sich das Handwerk bei DIR!",
+    unterzeile: "Dein Profil ist bereit. Betriebe suchen gerade nach dir.",
     aktion: { label: "Stellen in der Nähe suchen", href: "/dashboard/jobboerse" },
     dringend: false,
     zweiWege: true,
@@ -288,10 +284,17 @@ export default function DashboardOverviewPage() {
         seit={aktivSeit(user?.createdAt)}
       />
 
-      {/* Zwei Spalten: links alles, was den eigenen Stand betrifft — rechts das
-          Verdienen, das hochkant nebenherläuft. Als Querband über die volle
-          Breite hat es den Lesefluss zerschnitten. */}
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,340px)] gap-10 lg:gap-12 items-start">
+      {/* Der Bereich bricht aus der 1280er-Spalte des Layouts aus und nutzt die
+          1680 der Kopfleiste. Damit läuft die Kartenleiste fast über die ganze
+          Seite und das Verdienen sitzt aussen rechts, bündig unter "Abmelden".
+          Vorher war die Seite schmaler als ihre eigene Kopfleiste — das
+          verschenkte auf breiten Bildschirmen zweimal 200 px. */}
+      {/* Getrennte Ebenen: aussen der Ausbruch auf Fensterbreite, innen der
+          eigene Container. `.vollbreite` setzt selbst margin-left/right — mit
+          `mx-auto` am selben Element würde eines von beiden gewinnen, je nach
+          Reihenfolge im Stylesheet. */}
+      <div className="vollbreite">
+        <div className="max-w-[1680px] mx-auto px-6 lg:px-10 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,340px)] gap-10 lg:gap-12 items-start">
         <div>
           {/* Kurze Einordnung über den Karten — ohne sie sind es vier Zahlen
               ohne Zusammenhang, mit ihr ist klar, was der Bereich kann. */}
@@ -301,13 +304,8 @@ export default function DashboardOverviewPage() {
           >
             Deine Angebote und Bewerbungen
           </h2>
-          <p
-            className="text-[13.5px] leading-relaxed mb-6 max-w-[38rem]"
-            style={{ color: "rgba(26,26,46,0.55)" }}
-          >
-            Hier läuft alles zusammen: Stellen, die Betriebe dir anbieten, deine
-            laufenden Bewerbungen und was du dir gemerkt hast. Ein Klick auf eine
-            Karte öffnet die passende Liste.
+          <p className="text-[13.5px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
+            Klick eine Karte an, um die Liste zu öffnen.
           </p>
 
           <Kennzahlen zahlen={zahlen} laedt={laedt} />
@@ -375,6 +373,7 @@ export default function DashboardOverviewPage() {
             </section>
           )}
         </aside>
+        </div>
       </div>
     </div>
   );

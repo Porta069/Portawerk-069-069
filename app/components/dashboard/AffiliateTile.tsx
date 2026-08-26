@@ -56,12 +56,8 @@ function Funken() {
   );
 }
 
-/** Die drei Schritte — beantwortet "und wie genau?", ohne eine Seite Text. */
-const SCHRITTE = [
-  "Du teilst deinen Link mit einem Kollegen.",
-  "Er meldet sich darüber an und findet einen Job.",
-  "Du bekommst 100 € — er einen besseren Arbeitsplatz.",
-];
+/** Drei Schritte, je drei Wörter. Mehr braucht es nicht. */
+const SCHRITTE = ["Link an Kollegen schicken", "Er findet einen Job", "Du bekommst 100 €"];
 
 /**
  * Verdienen-Kachel für die rechte Spalte der Übersicht.
@@ -130,21 +126,21 @@ export function AffiliateTile({
         </div>
 
         <h2
-          className="text-white font-bold leading-snug mt-4 mb-3"
-          style={{ fontFamily: "var(--font-display)", fontSize: "1.35rem" }}
+          className="text-white font-bold leading-snug mt-4 mb-2"
+          style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem" }}
         >
-          für jeden Kollegen, der über dich einen Job findet
+          pro vermitteltem Kollegen
         </h2>
 
-        <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <p className="text-[13.5px] leading-snug" style={{ color: "rgba(255,255,255,0.5)" }}>
           {laeuftBereits ? (
             <>
-              Du hast schon {geworben} {geworben === 1 ? "Kollegen" : "Kollegen"} vermittelt —{" "}
-              <strong style={{ color: "#E8A838" }}>{offenEuro + ausgezahltEuro} €</strong>{" "}
-              zusammen, davon {offenEuro} € noch offen.
+              {geworben} vermittelt —{" "}
+              <strong style={{ color: "#E8A838" }}>{offenEuro + ausgezahltEuro} €</strong>, davon{" "}
+              {offenEuro} € offen.
             </>
           ) : (
-            <>Keine Obergrenze, keine Frist, kein Aufwand.</>
+            <>Ohne Obergrenze.</>
           )}
         </p>
 

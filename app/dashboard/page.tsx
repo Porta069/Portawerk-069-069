@@ -286,7 +286,7 @@ export default function DashboardOverviewPage() {
           {/* Kurze Einordnung über den Karten — ohne sie sind es vier Zahlen
               ohne Zusammenhang, mit ihr ist klar, was der Bereich kann. */}
           <h2
-            className="text-primary font-bold text-[19px] mb-1.5"
+            className="text-primary font-black text-[26px] leading-tight mb-2"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Deine Angebote und Bewerbungen

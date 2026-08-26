@@ -128,17 +128,16 @@ export function AffiliateTile({
           pro vermitteltem Kollegen
         </h2>
 
-        <p className="text-[13.5px] leading-snug" style={{ color: "rgba(255,255,255,0.5)" }}>
-          {laeuftBereits ? (
-            <>
-              {geworben} vermittelt —{" "}
-              <strong style={{ color: "#E8A838" }}>{offenEuro + ausgezahltEuro} €</strong>, davon{" "}
-              {offenEuro} € offen.
-            </>
-          ) : (
-            <>Ohne Obergrenze.</>
-          )}
-        </p>
+        {/* Nur wenn es etwas zu berichten gibt. Vorher stand hier sonst
+            "Ohne Obergrenze." — ein Versprechen, das die drei Schritte
+            darunter ohnehin nicht einschränken. */}
+        {laeuftBereits && (
+          <p className="text-[13.5px] leading-snug" style={{ color: "rgba(255,255,255,0.5)" }}>
+            {geworben} vermittelt —{" "}
+            <strong style={{ color: "#E8A838" }}>{offenEuro + ausgezahltEuro} €</strong>, davon{" "}
+            {offenEuro} € offen.
+          </p>
+        )}
 
         {!laeuftBereits && (
           <ol className="mt-6 space-y-3">

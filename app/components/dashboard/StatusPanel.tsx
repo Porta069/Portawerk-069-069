@@ -9,15 +9,14 @@
 // Kacheln wiederholten exakt die Navigation zwei Zentimeter darüber — sechs
 // Wege zu drei Seiten auf einem Bildschirm.
 //
-// Dunkel und scharfkantig, weil die Plattform das ist: Kopfleiste, Knöpfe und
-// Startseite arbeiten ohne Eckenradius. Die Übersicht war mit ihren durchweg
-// abgerundeten weißen Karten der einzige Bereich mit einer eigenen, weicheren
-// Formensprache — genau das ließ sie wie ein Fremdkörper wirken.
+// Randlos über die volle Fensterbreite, direkt unter der Kopfleiste: das Foto
+// soll die Seite oben abschliessen. Als Kachel mit Rand ringsum schwamm es in
+// der Fläche und wirkte wie ein Aushang statt wie der Kopf der Seite.
 
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 
 export interface Lage {
   /** Der Satz, der die Lage beschreibt. Steht groß im Panel. */
@@ -27,6 +26,12 @@ export interface Lage {
   aktion: { label: string; href: string };
   /** Wartet etwas auf eine Entscheidung? Dann Gold statt Weiß. */
   dringend: boolean;
+  /**
+   * Zeigt die beiden Wege nebeneinander: der eine läuft von allein, der andere
+   * steht offen. Nur im Wartezustand sinnvoll — liegt eine Zusage vor, wäre der
+   * Hinweis "Betriebe melden sich" eine Ablenkung von der Entscheidung.
+   */
+  zweiWege?: boolean;
 }
 
 /**
@@ -195,20 +200,54 @@ export default function StatusPanel({
               {lage.unterzeile}
             </p>
 
-            {/* Genau eine Handlung. Vorher standen hier drei gleichrangige
-                Kacheln — wer alles gleich wichtig macht, führt niemanden. */}
-            <Link
-              href={lage.aktion.href}
-              className="group inline-flex items-center gap-2.5 px-6 py-3.5 text-[14px] font-bold transition-colors duration-200"
-              style={{
-                background: "#E8A838",
-                color: "#1A1A2E",
-                fontFamily: "var(--font-display)",
-              }}
-            >
-              {lage.aktion.label}
-              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-            </Link>
+            {/* Die beiden Wege sichtbar nebeneinander statt nur im Fließtext:
+                links das, was ohne Zutun läuft, rechts das, was der Nutzer
+                selbst tun kann. Vorher stand beides nur im Absatz darüber und
+                ging unter — man sah eine Schaltfläche und hielt Suchen für den
+                einzigen Weg. */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+              {lage.zweiWege && (
+                <>
+                  <span
+                    className="inline-flex items-center gap-3 rounded-full px-4 py-3"
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.13)",
+                    }}
+                  >
+                    <span
+                      className="pulse-dot rounded-full flex-shrink-0"
+                      style={{ width: 7, height: 7, background: "#E8A838" }}
+                    />
+                    <span className="text-[13px] leading-snug" style={{ color: "rgba(255,255,255,0.62)" }}>
+                      <strong className="text-white font-semibold">Läuft schon:</strong> Betriebe
+                      sehen dein Profil und bewerben sich bei dir
+                    </span>
+                  </span>
+                  <span
+                    className="text-[13px] flex-shrink-0"
+                    style={{ color: "rgba(255,255,255,0.4)" }}
+                  >
+                    oder
+                  </span>
+                </>
+              )}
+
+              <Link
+                href={lage.aktion.href}
+                className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: "#E8A838",
+                  color: "#1A1A2E",
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                }}
+              >
+                {lage.zweiWege && <Search className="w-4 h-4" />}
+                {lage.aktion.label}
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
 
           {prozent !== null && (

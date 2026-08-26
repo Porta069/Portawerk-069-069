@@ -35,25 +35,29 @@ interface Schritt {
 // Der Ablauf ist die Umkehrung des üblichen Bewerbens — das muss in jedem
 // Schritt stehen, nicht nur in der Überschrift. Vorher hieß es neutral
 // "Betriebe sehen dich"; das klang nach einer Jobbörse wie jede andere.
+//
+// Die Botschaft ist bewusst Entwarnung statt Aufforderung: das Profil ist
+// fertig, der Nutzer muss nichts mehr tun und nicht ständig nachsehen — er
+// bekommt Bescheid, sobald sich ein Betrieb bei ihm bewirbt.
 const ABLAUF: Schritt[] = [
   {
-    titel: "Dein Profil steht",
-    text: "Können, Region und Lohnwunsch sind hinterlegt. Ab hier musst du nichts mehr tun.",
+    titel: "Profil fertig und freigeschaltet",
+    text: "Können, Region und Lohnwunsch liegen den Betrieben vor. Mehr brauchen sie nicht von dir.",
     stand: "erledigt",
   },
   {
-    titel: "Du bist im Rennen",
-    text: "Dein Profil läuft in der Suche der Betriebe mit — ohne Namen, ohne Foto, ohne Nummer.",
+    titel: "Du läufst in der Suche mit",
+    text: "Betriebe in deiner Nähe sehen dein Profil — ohne Namen, ohne Foto, ohne Nummer.",
     stand: "erledigt",
   },
   {
-    titel: "Der Betrieb macht den ersten Schritt",
-    text: "Nicht du bewirbst dich. Passt du zu einer Stelle, meldet er sich bei dir — mit Lohn, Fahrzeit und Bedingungen.",
+    titel: "Du bekommst Bescheid",
+    text: "Bewirbt sich ein Betrieb bei dir, meldet sich WerkPair zeitnah. Du musst hier nicht ständig nachsehen — das Angebot steht dann oben unter „Angebote“.",
     stand: "laeuft",
   },
   {
     titel: "Du entscheidest",
-    text: "Erst wenn du zusagst, erfährt er deinen Namen und deine Nummer. Vorher nicht.",
+    text: "Erst wenn du zusagst, erfährt der Betrieb deinen Namen und deine Nummer. Vorher nicht.",
     stand: "offen",
   },
 ];
@@ -190,10 +194,11 @@ export default function Verlauf({
   if (ereignisse.length === 0) {
     return (
       <section>
-        <Kopf titel="Die Betriebe kommen zu dir" />
-        <p className="text-[13.5px] leading-relaxed mb-7 -mt-3 max-w-[34rem]" style={{ color: "rgba(26,26,46,0.55)" }}>
-          Umgekehrt als sonst: du schreibst keine Bewerbungen und wartest auf keine
-          Absagen. Zwei Schritte sind erledigt, den dritten machen die Betriebe.
+        <Kopf titel="Dein Profil ist bereit" />
+        <p className="text-[13.5px] leading-relaxed mb-7 -mt-3 max-w-[38rem]" style={{ color: "rgba(26,26,46,0.55)" }}>
+          Ab hier läuft es von allein. Du musst keine Bewerbungen schreiben und hier
+          auch nicht ständig nachsehen — sobald sich ein Betrieb bei dir bewirbt,
+          bekommst du zeitnah Bescheid.
         </p>
         <ol className="pl-[34px]" style={{ borderLeft: "1.5px solid #E4E1DA" }}>
           {ABLAUF.map((s, i) => (

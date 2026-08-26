@@ -129,13 +129,18 @@ function bestimmeLage(d: Daten): Lage {
   }
 
   // Der Normalfall am Anfang. Bewusst kein Alarm und kein Jubel: die Seite sagt,
-  // dass es läuft, und gibt eine Sache zu tun.
+  // dass es läuft — und dass es daneben einen zweiten Weg gibt.
+  //
+  // Beide Wege müssen hier stehen. Nur "Betriebe kommen auf dich zu" klingt nach
+  // Warten ohne Zutun; nur "such dir was" wäre die übliche Jobbörse. Der Nutzer
+  // soll wissen, dass das eine von allein läuft und das andere ihm offensteht.
   return {
-    ueberschrift: "Dein Profil liegt bei den Betrieben.",
+    ueberschrift: "Betriebe bewerben sich bei dir.",
     unterzeile:
-      "Du musst dich nicht bewerben — Betriebe kommen auf dich zu. Bis dahin kannst du selbst schauen, was in deiner Nähe frei ist.",
-    aktion: { label: "Stellen in deiner Nähe", href: "/dashboard/jobboerse" },
+      "Dein Profil läuft in der Suche mit — du musst dich nirgends bewerben. Und wenn du nicht warten willst, schau selbst, welche Betriebe in deiner Nähe gerade Leute suchen.",
+    aktion: { label: "Stellen in der Nähe suchen", href: "/dashboard/jobboerse" },
     dringend: false,
+    zweiWege: true,
   };
 }
 
@@ -283,24 +288,48 @@ export default function DashboardOverviewPage() {
         seit={aktivSeit(user?.createdAt)}
       />
 
-      <Kennzahlen zahlen={zahlen} laedt={laedt} />
+      {/* Zwei Spalten: links alles, was den eigenen Stand betrifft — rechts das
+          Verdienen, das hochkant nebenherläuft. Als Querband über die volle
+          Breite hat es den Lesefluss zerschnitten. */}
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,340px)] gap-10 lg:gap-12 items-start">
+        <div>
+          {/* Kurze Einordnung über den Karten — ohne sie sind es vier Zahlen
+              ohne Zusammenhang, mit ihr ist klar, was der Bereich kann. */}
+          <h2
+            className="text-primary font-bold text-[19px] mb-1.5"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Deine Angebote und Bewerbungen
+          </h2>
+          <p
+            className="text-[13.5px] leading-relaxed mb-6 max-w-[38rem]"
+            style={{ color: "rgba(26,26,46,0.55)" }}
+          >
+            Hier läuft alles zusammen: Stellen, die Betriebe dir anbieten, deine
+            laufenden Bewerbungen und was du dir gemerkt hast. Ein Klick auf eine
+            Karte öffnet die passende Liste.
+          </p>
 
-      {/* Verdienen direkt unter die Zahlen und über die volle Breite: in der
-          schmalen rechten Spalte ging das Empfehlungsprogramm unter, obwohl es
-          der strukturelle Unterschied zu einer reinen Jobbörse ist. */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-4 sm:mt-5"
-      >
-        <AffiliateTile />
-      </motion.div>
+          <Kennzahlen zahlen={zahlen} laedt={laedt} />
 
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)] gap-10 lg:gap-14 items-start mt-12">
-        <Verlauf ereignisse={ereignisse} laedt={laedt} />
+          {/* Der Platz unter den Karten: hier stehen die Angebote und
+              Bewerbungen selbst, sobald welche da sind. Solange nicht, erklärt
+              derselbe Bereich, warum noch nichts da ist und was als Nächstes
+              passiert. */}
+          <div className="mt-10">
+            <Verlauf ereignisse={ereignisse} laedt={laedt} />
+          </div>
+        </div>
 
-        <aside>
+        <aside className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.18 }}
+          >
+            <AffiliateTile />
+          </motion.div>
+
           {/* Offene Schritte — nur wenn es welche gibt. Eine Überschrift über
               einer leeren Liste ist schlimmer als gar keine Überschrift. */}
           {luecken.length > 0 && (

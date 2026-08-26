@@ -56,13 +56,20 @@ function Funken() {
   );
 }
 
+/** Die drei Schritte — beantwortet "und wie genau?", ohne eine Seite Text. */
+const SCHRITTE = [
+  "Du teilst deinen Link mit einem Kollegen.",
+  "Er meldet sich darüber an und findet einen Job.",
+  "Du bekommst 100 € — er einen besseren Arbeitsplatz.",
+];
+
 /**
- * Verdienen-Band für die Übersicht.
+ * Verdienen-Kachel für die rechte Spalte der Übersicht.
  *
- * Lag vorher als schmale Kachel in der rechten Spalte und ging dort unter.
- * Jetzt über die volle Breite, mit der Prämie als größtem Element der Seite —
- * das Empfehlungsprogramm ist der strukturelle Unterschied zu einer reinen
- * Jobbörse und darf nicht wie eine Randnotiz aussehen.
+ * Steht hochkant und läuft neben dem Inhalt nach unten mit. Als schmale Kachel
+ * unter anderen Kacheln ging das Programm unter, als Querband über die volle
+ * Breite zerschnitt es die Seite. Hochkant bekommt es Fläche, ohne den
+ * Lesefluss der linken Spalte zu unterbrechen.
  *
  * Die eigenen Zahlen erscheinen erst, wenn es welche GIBT. Vorher standen dort
  * dauerhaft drei Kästen mit "0", "0 €", "0 €" — ausgerechnet an der Stelle, die
@@ -94,59 +101,82 @@ export function AffiliateTile({
         aria-hidden
         className="absolute pointer-events-none"
         style={{
-          left: "6%",
-          top: "-40%",
-          width: 420,
-          height: 420,
-          background: "radial-gradient(circle, rgba(232,168,56,0.26) 0%, transparent 68%)",
+          left: "-25%",
+          top: "-18%",
+          width: 380,
+          height: 380,
+          background: "radial-gradient(circle, rgba(232,168,56,0.3) 0%, transparent 68%)",
         }}
       />
 
-      <div className="relative flex flex-col md:flex-row md:items-center gap-7 md:gap-10 px-7 sm:px-10 py-9">
-        {/* Die Prämie — größtes Element der Seite, mit Goldlauf und Funken. */}
-        <div className="relative flex-shrink-0">
+      <div className="relative px-7 py-8">
+        <span
+          className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase mb-6"
+          style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+        >
+          <span className="w-5 h-px" style={{ background: "#E8A838" }} />
+          Verdienen
+        </span>
+
+        {/* Die Prämie mit Goldlauf und Funken — der Blickfang der Spalte. */}
+        <div className="relative inline-block">
           <Funken />
           <p
             className="gold-schimmer font-bold leading-none relative"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(3.4rem, 8vw, 5rem)",
-            }}
+            style={{ fontFamily: "var(--font-display)", fontSize: "4.2rem" }}
           >
             100&nbsp;€
           </p>
         </div>
 
-        <div className="min-w-0 flex-1">
-          <span
-            className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase mb-3"
-            style={{ color: "#E8A838", letterSpacing: "0.22em" }}
-          >
-            <span className="w-5 h-px" style={{ background: "#E8A838" }} />
-            Verdienen
-          </span>
-          <h2
-            className="text-white font-bold leading-snug mb-2"
-            style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.25rem, 2.4vw, 1.7rem)" }}
-          >
-            für jeden Kollegen, der über dich einen Job findet
-          </h2>
-          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
-            {laeuftBereits ? (
-              <>
-                Du hast bereits {geworben} {geworben === 1 ? "Kollegen" : "Kollegen"} vermittelt —{" "}
-                <strong style={{ color: "#E8A838" }}>{offenEuro + ausgezahltEuro} €</strong>{" "}
-                zusammen, davon {offenEuro} € noch offen.
-              </>
-            ) : (
-              <>Einmal deinen Link teilen. Keine Obergrenze, keine Frist, kein Aufwand.</>
-            )}
-          </p>
-        </div>
+        <h2
+          className="text-white font-bold leading-snug mt-4 mb-3"
+          style={{ fontFamily: "var(--font-display)", fontSize: "1.35rem" }}
+        >
+          für jeden Kollegen, der über dich einen Job findet
+        </h2>
+
+        <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+          {laeuftBereits ? (
+            <>
+              Du hast schon {geworben} {geworben === 1 ? "Kollegen" : "Kollegen"} vermittelt —{" "}
+              <strong style={{ color: "#E8A838" }}>{offenEuro + ausgezahltEuro} €</strong>{" "}
+              zusammen, davon {offenEuro} € noch offen.
+            </>
+          ) : (
+            <>Keine Obergrenze, keine Frist, kein Aufwand.</>
+          )}
+        </p>
+
+        {!laeuftBereits && (
+          <ol className="mt-6 space-y-3">
+            {SCHRITTE.map((s, i) => (
+              <li key={s} className="flex gap-3">
+                <span
+                  className="flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                  style={{
+                    width: 22,
+                    height: 22,
+                    background: "rgba(232,168,56,0.16)",
+                    color: "#E8A838",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span
+                  className="text-[13px] leading-snug pt-0.5"
+                  style={{ color: "rgba(255,255,255,0.72)" }}
+                >
+                  {s}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
 
         <Link
           href="/dashboard/verdienen"
-          className="group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-[14.5px] font-bold flex-shrink-0 transition-transform duration-200 hover:-translate-y-0.5"
+          className="group mt-7 flex items-center justify-center gap-2 rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
             background: "#E8A838",
             color: "#1A1A2E",

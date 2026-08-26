@@ -190,6 +190,23 @@ body {
   }
 }
 
+/* Aussenkante der Verdienen-Kachel.
+   Sie soll so weit nach rechts wie sinnvoll möglich — bündig mit der rechten
+   Kante der Kopfleiste, also unter dem Abmelden-Knopf.
+
+   Ein fester Wert kann das nicht: Kopfleiste (max 1680, Rand 40) und Inhalt
+   (max 1440, Rand 48) laufen unterschiedlich weit auf, ihr Abstand wächst mit
+   der Fensterbreite — 8 px bei 1440, 88 px bei 1600, 128 px ab 1680. Ein Wert,
+   der bei 1600 passt, schiebt die Kachel bei 1440 aus dem Fenster.
+
+   Die Rechnung bildet genau diese Differenz ab und stimmt damit bei jeder
+   Breite. */
+@media (min-width: 1024px) {
+  .verdienen-aussenkante {
+    margin-right: calc(-1 * ((min(100vw, 1680px) - min(100vw, 1440px)) / 2 + 8px));
+  }
+}
+
 /* Volle Fensterbreite aus einem zentrierten, gepolsterten Inhaltsbereich
    heraus. Der Elternbaum braucht dafür `overflow-x: clip` — clip und nicht
    hidden, weil hidden einen Scrollcontainer erzeugt und damit die klebende

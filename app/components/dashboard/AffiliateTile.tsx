@@ -75,15 +75,29 @@ export function AffiliateTile({
   geworben = 0,
   offenEuro = 0,
   ausgezahltEuro = 0,
+  angebunden = false,
 }: {
   geworben?: number;
   offenEuro?: number;
   ausgezahltEuro?: number;
+  /**
+   * Die Kachel ragt in das Banner darüber hinein und soll mit ihm
+   * verschmelzen. Dafür beginnt der Grund oben durchsichtig und wird nach
+   * unten hin voll: das Werkstattfoto des Banners läuft in die Kachel hinein,
+   * statt an einer Kante abzubrechen. Oben bleibt sie eckig — eine Rundung
+   * mitten in der dunklen Fläche würde die Naht erst sichtbar machen.
+   */
+  angebunden?: boolean;
 }) {
   const laeuftBereits = geworben > 0 || offenEuro > 0 || ausgezahltEuro > 0;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl" style={{ background: "#1A1A2E" }}>
+    <div
+      className={`relative overflow-hidden rounded-3xl ${
+        angebunden ? "verdienen-anbindung lg:rounded-t-none" : ""
+      }`}
+      style={{ background: "#1A1A2E" }}
+    >
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -98,16 +112,19 @@ export function AffiliateTile({
         className="absolute pointer-events-none"
         style={{
           left: "-25%",
-          top: "-18%",
+          top: angebunden ? "18%" : "-18%",
           width: 380,
           height: 380,
           background: "radial-gradient(circle, rgba(232,168,56,0.3) 0%, transparent 68%)",
         }}
       />
 
-      <div className="relative px-7 py-8">
+      <div className={`relative px-7 pb-8 ${angebunden ? "pt-8 lg:pt-[9.5rem]" : "pt-8"}`}>
+        {/* `flex` statt `inline-flex`: als Inline-Element stellte sich die
+            Prämie daneben, sobald die Spalte ein paar Pixel breiter war — auf
+            dem Handy stand "VERDIENEN 100 €" in einer Zeile. */}
         <span
-          className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase mb-6"
+          className="flex w-fit items-center gap-2.5 text-[9.5px] font-semibold uppercase mb-6"
           style={{ color: "#E8A838", letterSpacing: "0.22em" }}
         >
           <span className="w-5 h-px" style={{ background: "#E8A838" }} />

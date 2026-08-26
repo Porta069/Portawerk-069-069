@@ -15,7 +15,20 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Info } from "lucide-react";
+import { Check, Info, Wrench, Hammer, Ruler, Drill, PaintRoller, Cog, HardHat } from "lucide-react";
+
+// Streuung der Hintergrundwerkzeuge. Position, Grösse, Drehung und Deckkraft
+// stehen fest verdrahtet statt zufällig — Zufall würde bei jedem Rendern
+// springen und wäre serverseitig ohnehin nicht reproduzierbar.
+const WERKZEUGE = [
+  { Icon: Wrench, x: 3, y: 8, groesse: 120, dreh: -18, deckung: 0.07 },
+  { Icon: Hammer, x: 22, y: 52, groesse: 92, dreh: 24, deckung: 0.055 },
+  { Icon: Ruler, x: 41, y: -6, groesse: 104, dreh: -8, deckung: 0.06 },
+  { Icon: Drill, x: 58, y: 46, groesse: 96, dreh: 14, deckung: 0.05 },
+  { Icon: PaintRoller, x: 74, y: 2, groesse: 88, dreh: -22, deckung: 0.06 },
+  { Icon: Cog, x: 88, y: 44, groesse: 128, dreh: 10, deckung: 0.055 },
+  { Icon: HardHat, x: 12, y: -18, groesse: 84, dreh: 12, deckung: 0.045 },
+];
 
 export interface Ereignis {
   id: string;
@@ -74,7 +87,7 @@ function Zeichen({ stand }: { stand: Schritt["stand"] }) {
         className={gemeinsam}
         style={{
           ...masse,
-          background: "#FFFFFF",
+          background: "#1A1A2E",
           border: "2px solid #E8A838",
           boxShadow: "0 0 0 5px rgba(232,168,56,0.18)",
         }}
@@ -89,7 +102,7 @@ function Zeichen({ stand }: { stand: Schritt["stand"] }) {
   return (
     <span
       className={gemeinsam}
-      style={{ ...masse, background: "#F8F7F4", border: "2px dashed #DBD7CE" }}
+      style={{ ...masse, background: "transparent", border: "2px dashed rgba(255,255,255,0.22)" }}
     />
   );
 }
@@ -174,21 +187,66 @@ export default function Verlauf({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
-        className="rounded-2xl px-6 py-6"
-        style={{ background: "rgba(232,168,56,0.07)", border: "1.5px solid rgba(232,168,56,0.28)" }}
+        className="relative overflow-hidden rounded-2xl px-7 py-7"
+        style={{ background: "#1A1A2E" }}
       >
-        <div className="flex items-center gap-2.5 mb-6">
-          <Info className="w-4 h-4 flex-shrink-0" style={{ color: "#B47B18" }} />
+        {/* Werkzeuge im Hintergrund — gross, angeschnitten, leicht gedreht.
+            Sie machen aus einer erklärenden Fläche eine Werkstattwand statt
+            eines Hinweiskastens. Bewusst nur Kontur bei niedriger Deckkraft:
+            als Muster erkennbar, als Einzelwerkzeug nicht aufdringlich. */}
+        <span aria-hidden className="absolute inset-0 pointer-events-none">
+          {WERKZEUGE.map(({ Icon, x, y, groesse, dreh, deckung }, i) => (
+            <Icon
+              key={i}
+              className="absolute"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: groesse,
+                height: groesse,
+                transform: `rotate(${dreh}deg)`,
+                color: `rgba(232,168,56,${deckung})`,
+              }}
+              strokeWidth={1}
+            />
+          ))}
+        </span>
+
+        {/* Feines Raster wie in Banner und Verdienen-Kachel — hält die drei
+            dunklen Flächen der Seite als eine Familie zusammen. */}
+        <span
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)",
+          }}
+        />
+        <span
+          aria-hidden
+          className="absolute pointer-events-none"
+          style={{
+            left: "-8%",
+            top: "-60%",
+            width: 380,
+            height: 380,
+            background: "radial-gradient(circle, rgba(232,168,56,0.16) 0%, transparent 68%)",
+          }}
+        />
+
+        <div className="relative flex items-center gap-2.5 mb-7">
+          <Info className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
           <span
             className="text-[9.5px] font-semibold uppercase"
-            style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            style={{ color: "#E8A838", letterSpacing: "0.2em" }}
           >
             So läuft&rsquo;s
           </span>
-          <span className="h-px flex-1" style={{ background: "rgba(232,168,56,0.3)" }} />
+          <span className="h-px flex-1" style={{ background: "rgba(232,168,56,0.28)" }} />
         </div>
 
-        <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <ol className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {ABLAUF.map((s, i) => (
             <li key={s.titel} className="relative flex gap-3 lg:block">
               {/* Verbindungslinie zum nächsten Schritt — macht aus vier Kästen
@@ -202,7 +260,9 @@ export default function Verlauf({
                     right: -20,
                     top: 11,
                     background:
-                      s.stand === "erledigt" ? "rgba(232,168,56,0.5)" : "rgba(26,26,46,0.12)",
+                      s.stand === "erledigt"
+                        ? "rgba(232,168,56,0.55)"
+                        : "rgba(255,255,255,0.14)",
                   }}
                 />
               )}
@@ -210,13 +270,16 @@ export default function Verlauf({
               <div className="min-w-0 lg:mt-3">
                 <p
                   className="text-[13.5px] font-bold leading-snug"
-                  style={{ color: s.stand === "offen" ? "rgba(26,26,46,0.45)" : "#1A1A2E" }}
+                  style={{ color: s.stand === "offen" ? "rgba(255,255,255,0.42)" : "#FFFFFF" }}
                 >
                   {s.titel}
                 </p>
                 <p
                   className="text-[12.5px] leading-snug mt-0.5"
-                  style={{ color: s.stand === "offen" ? "rgba(26,26,46,0.35)" : "rgba(26,26,46,0.55)" }}
+                  style={{
+                    color:
+                      s.stand === "offen" ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.55)",
+                  }}
                 >
                   {s.text}
                 </p>

@@ -182,6 +182,34 @@ body {
   animation: radarwelle 3s ease-out infinite;
 }
 
+/* Anbindung der Verdienen-Kachel an das Banner darüber.
+   Die Kachel ragt in den Bannerbereich hinein; ihre obere Kante würde dort als
+   Naht quer über das Werkstattfoto laufen. Die Maske blendet die oberen rund
+   30 % aus, sodass das Foto in die Kachel hineinläuft und beide Flächen
+   ineinander übergehen.
+
+   Bewusst als Regel mit Medienabfrage und nicht als Inline-Verlauf: unterhalb
+   von lg steht die Kachel NICHT unter dem Banner, sondern auf hellem Grund —
+   dort wäre ein durchsichtiger Kopf schlicht ein Loch. */
+@media (min-width: 1024px) {
+  .verdienen-anbindung {
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.45) 11%,
+      rgba(0, 0, 0, 0.92) 23%,
+      rgba(0, 0, 0, 1) 32%
+    );
+    mask-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.45) 11%,
+      rgba(0, 0, 0, 0.92) 23%,
+      rgba(0, 0, 0, 1) 32%
+    );
+  }
+}
+
 /* Volle Fensterbreite aus einem zentrierten, gepolsterten Inhaltsbereich
    heraus. Der Elternbaum braucht dafür `overflow-x: clip` — clip und nicht
    hidden, weil hidden einen Scrollcontainer erzeugt und damit die klebende

@@ -16,7 +16,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, FlaskConical } from "lucide-react";
+import { ArrowRight, FlaskConical, Handshake, FileText, MessagesSquare, Bookmark } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import {
   getProfileScore,
@@ -198,6 +198,7 @@ export default function DashboardOverviewPage() {
       wert: daten.offers.filter((o) => o.status === "neu").length,
       href: "/dashboard/angebote",
       aktion: "Angebote ansehen",
+      icon: Handshake,
       betont: true,
     },
     {
@@ -205,12 +206,14 @@ export default function DashboardOverviewPage() {
       wert: daten.apps.filter((a) => a.status !== "abgelehnt").length,
       href: "/dashboard/bewerbungen",
       aktion: "Stand ansehen",
+      icon: FileText,
     },
     {
       label: "Im Gespräch",
       wert: daten.apps.filter((a) => a.status === "im_gespraech").length,
       href: "/dashboard/bewerbungen",
       aktion: "Gespräche ansehen",
+      icon: MessagesSquare,
       betont: true,
     },
     {
@@ -218,6 +221,7 @@ export default function DashboardOverviewPage() {
       wert: daten.favorites.length,
       href: "/dashboard/merkliste",
       aktion: "Merkliste öffnen",
+      icon: Bookmark,
     },
   ];
 
@@ -287,7 +291,7 @@ export default function DashboardOverviewPage() {
             Deine Angebote und Bewerbungen
           </h2>
           <p className="text-[13.5px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Klick eine Karte an, um die Liste zu öffnen.
+            Ein Klick öffnet die jeweilige Liste.
           </p>
 
           <Kennzahlen zahlen={zahlen} laedt={laedt} />
@@ -301,13 +305,17 @@ export default function DashboardOverviewPage() {
           </div>
         </div>
 
-        <aside className="space-y-6">
+        {/* Das Verdienen-Panel wird in den Banner hineingezogen: beide sind
+            navy, der Übergang verläuft weich, und aus zwei getrennten Kästen
+            wird eine Fläche, die aus dem Kopf der Seite nach unten läuft.
+            Nur ab lg — darunter steht die Spalte ohnehin unter dem Banner. */}
+        <aside className="space-y-6 lg:-mt-[8.5rem]">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.18 }}
           >
-            <AffiliateTile />
+            <AffiliateTile angebunden />
           </motion.div>
 
           {/* Offene Schritte — nur wenn es welche gibt. Eine Überschrift über

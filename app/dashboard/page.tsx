@@ -280,8 +280,9 @@ export default function DashboardOverviewPage() {
           `mx-auto` am selben Element würde eines von beiden gewinnen, je nach
           Reihenfolge im Stylesheet. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,330px)] gap-9 lg:gap-11 items-start">
-        <div>
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,350px)] gap-9 lg:gap-12 items-start">
+        {/* Etwas Luft zur Bannerkante — der Block sass sonst bündig darunter. */}
+        <div className="lg:pt-7">
           {/* Kurze Einordnung über den Karten — ohne sie sind es vier Zahlen
               ohne Zusammenhang, mit ihr ist klar, was der Bereich kann. */}
           <h2
@@ -309,7 +310,7 @@ export default function DashboardOverviewPage() {
             navy, der Übergang verläuft weich, und aus zwei getrennten Kästen
             wird eine Fläche, die aus dem Kopf der Seite nach unten läuft.
             Nur ab lg — darunter steht die Spalte ohnehin unter dem Banner. */}
-        <aside className="space-y-6 lg:-mt-[8.5rem]">
+        <aside className="space-y-6 lg:-mt-[8.5rem] lg:-mr-2 xl:-mr-4">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

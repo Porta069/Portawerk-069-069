@@ -162,26 +162,6 @@ body {
   animation: textglut 2.2s ease-in-out infinite;
 }
 
-/* Radarwellen — laufen aus der Mitte nach aussen und verlaufen sich.
-   Drei Ringe mit je einer Sekunde Versatz ergeben einen stetigen Puls, ohne
-   dass man die einzelne Welle als Wiederholung wahrnimmt. */
-@keyframes radarwelle {
-  0% {
-    transform: scale(0.5);
-    opacity: 0.6;
-  }
-  70% {
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.45);
-    opacity: 0;
-  }
-}
-.radar-welle {
-  animation: radarwelle 3s ease-out infinite;
-}
-
 /* Anbindung der Verdienen-Kachel an das Banner darüber.
    Die Kachel ragt in den Bannerbereich hinein; ihre obere Kante würde dort als
    Naht quer über das Werkstattfoto laufen. Die Maske blendet die oberen rund
@@ -228,16 +208,11 @@ body {
   .gold-schimmer,
   .funke,
   .punkt-glut,
-  .radar-welle,
   .text-glut {
     animation: none;
   }
   .text-glut {
     text-shadow: 0 0 16px rgba(232, 168, 56, 0.45);
-  }
-  /* Ohne Lauf keine Wellen — als starre Ringe wären sie nur Dekor. */
-  .radar-welle {
-    opacity: 0;
   }
   .punkt-glut {
     box-shadow: 0 0 10px 2px rgba(232, 168, 56, 0.85);

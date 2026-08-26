@@ -92,62 +92,6 @@ function Ring({ prozent }: { prozent: number }) {
   );
 }
 
-/**
- * Radar — zeigt, dass gerade gesucht wird.
- *
- * Die rechte Hälfte des Banners war leer: alles klebte links, das Foto lief ins
- * Nichts. Hier steht jetzt ein Element, das genau das anzeigt, was die Seite
- * behauptet — dass in diesem Moment Betriebe suchen. Drei Wellen laufen aus der
- * Mitte nach aussen, im Kern glüht der Punkt in demselben Gold wie überall.
- *
- * Liegt ein Profilwert vor, sitzt der Ring im Kern statt des Punktes: dieselbe
- * Grafik, zwei Aussagen — es läuft, und so weit bist du.
- */
-function Radar({ prozent }: { prozent: number | null }) {
-  return (
-    <div className="relative flex flex-col items-center flex-shrink-0" style={{ width: 172 }}>
-      <div className="relative" style={{ width: 172, height: 172 }}>
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            aria-hidden
-            className="radar-welle absolute inset-0 rounded-full"
-            style={{
-              border: "1.5px solid rgba(232,168,56,0.45)",
-              animationDelay: `${i}s`,
-            }}
-          />
-        ))}
-
-        <div className="absolute inset-0 flex items-center justify-center">
-          {prozent !== null ? (
-            <Ring prozent={prozent} />
-          ) : (
-            <span
-              className="punkt-glut rounded-full"
-              style={{ width: 16, height: 16, background: "#E8A838" }}
-            />
-          )}
-        </div>
-      </div>
-
-      <p
-        className="text-[9.5px] font-semibold uppercase text-center rounded-full px-3.5 py-1.5 -mt-1"
-        style={{
-          color: "rgba(255,255,255,0.75)",
-          letterSpacing: "0.18em",
-          // Ohne eigenen Grund steht die Zeile auf einer Werkbank und
-          // verschwindet — der Punkt darüber trägt sich selbst, Text nicht.
-          background: "rgba(26,26,46,0.72)",
-          border: "1px solid rgba(255,255,255,0.1)",
-        }}
-      >
-        Suche läuft
-      </p>
-    </div>
-  );
-}
-
 export default function StatusPanel({
   lage,
   prozent,
@@ -206,7 +150,7 @@ export default function StatusPanel({
           über das ganze Fenster läuft — sonst stünde die Überschrift am
           Fensterrand statt bündig zu allem darunter. */}
       <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-11 sm:py-14">
-        <div className="flex items-center gap-10 xl:gap-16">
+        <div className="flex items-center justify-between gap-10">
           <div className="min-w-0 max-w-[36rem]">
             {/* Der Slogan steht ganz oben — vorher lag eine Kleinschriftzeile
                 darüber, die ihn nach unten drückte und die Aussage doppelte. */}
@@ -225,7 +169,7 @@ export default function StatusPanel({
                 und glühende Schrift, beide im selben 2,2-Sekunden-Takt. Damit
                 sagt sie nicht nur, dass gesucht wird — man sieht es. */}
             <p
-              className="flex items-start gap-3 text-[15px] leading-relaxed mb-7 max-w-[24rem]"
+              className="flex items-start gap-3 text-[15px] leading-relaxed mb-7 max-w-[32rem]"
               style={{ color: lage.zweiWege ? "#E8A838" : "rgba(255,255,255,0.55)" }}
             >
               {lage.zweiWege && (
@@ -257,18 +201,11 @@ export default function StatusPanel({
 
           {/* Nur im Wartezustand — liegt ein Angebot vor, wäre "Suche läuft"
               die falsche Botschaft; dann zeigt die rechte Seite den Ring. */}
-          {/* Versetzt in die freie dunkle Fläche rechts neben dem Knopf. Ohne
-              den Versatz sass das Radar auf dem Foto: dort verschwand es im
-              Motiv, während der Bereich unter der Textzeile leer blieb.
-              Gemessen bei 1600 px — Knopf endet bei x=410, Radar beginnt bei
-              512, das Foto erst bei 736. */}
-          <div className="hidden lg:block lg:-translate-x-32 lg:translate-y-10 xl:-translate-x-36 xl:translate-y-10">
-            {lage.zweiWege ? (
-              <Radar prozent={prozent} />
-            ) : (
-              prozent !== null && <Ring prozent={prozent} />
-            )}
-          </div>
+          {prozent !== null && (
+            <div className="hidden lg:block">
+              <Ring prozent={prozent} />
+            </div>
+          )}
         </div>
       </div>
     </motion.section>

@@ -7,6 +7,7 @@
 // angenommenen Angebot, nach einer Absage, in der Übersicht.
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import type { CSSProperties } from "react";
 import { ArrowRight, Share2 } from "lucide-react";
@@ -107,6 +108,27 @@ export function AffiliateTile({
             "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)",
         }}
       />
+      {/* Der Schein am Fuss der Kachel. Er füllt die zusätzliche Höhe nicht mit
+          Luft, sondern mit dem, worum es geht — und läuft nach oben in das
+          Navy aus, sodass keine Kante entsteht. */}
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-[38%] pointer-events-none">
+        <Image
+          src="/images/geld-100.jpg"
+          alt=""
+          fill
+          sizes="360px"
+          className="object-cover"
+          style={{ objectPosition: "center 30%" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, #1A1A2E 0%, rgba(26,26,46,0.98) 30%, rgba(26,26,46,0.92) 62%, rgba(26,26,46,0.82) 100%)",
+          }}
+        />
+      </div>
+
       <div
         aria-hidden
         className="absolute pointer-events-none"
@@ -119,7 +141,11 @@ export function AffiliateTile({
         }}
       />
 
-      <div className={`relative px-7 pb-8 ${angebunden ? "pt-8 lg:pt-[9.5rem]" : "pt-8"}`}>
+      <div
+        className={`relative flex flex-col px-7 pb-8 ${
+          angebunden ? "pt-8 lg:pt-[9.5rem] lg:min-h-[36rem]" : "pt-8"
+        }`}
+      >
         {/* `flex` statt `inline-flex`: als Inline-Element stellte sich die
             Prämie daneben, sobald die Spalte ein paar Pixel breiter war — auf
             dem Handy stand "VERDIENEN 100 €" in einer Zeile. */}
@@ -189,7 +215,7 @@ export function AffiliateTile({
 
         <Link
           href="/dashboard/verdienen"
-          className="group mt-7 flex items-center justify-center gap-2 rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+          className="group mt-7 lg:mt-auto flex items-center justify-center gap-2 rounded-full w-full px-6 py-4 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
           style={{
             background: "#E8A838",
             color: "#1A1A2E",

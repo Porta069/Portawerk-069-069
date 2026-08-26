@@ -225,7 +225,7 @@ export default function StatusPanel({
                 und glühende Schrift, beide im selben 2,2-Sekunden-Takt. Damit
                 sagt sie nicht nur, dass gesucht wird — man sieht es. */}
             <p
-              className="flex items-start gap-3 text-[15px] leading-relaxed mb-7 max-w-[36rem]"
+              className="flex items-start gap-3 text-[15px] leading-relaxed mb-7 max-w-[24rem]"
               style={{ color: lage.zweiWege ? "#E8A838" : "rgba(255,255,255,0.55)" }}
             >
               {lage.zweiWege && (
@@ -257,7 +257,12 @@ export default function StatusPanel({
 
           {/* Nur im Wartezustand — liegt ein Angebot vor, wäre "Suche läuft"
               die falsche Botschaft; dann zeigt die rechte Seite den Ring. */}
-          <div className="hidden lg:block lg:-translate-x-6 lg:translate-y-10 xl:-translate-x-10 xl:translate-y-12">
+          {/* Versetzt in die freie dunkle Fläche rechts neben dem Knopf. Ohne
+              den Versatz sass das Radar auf dem Foto: dort verschwand es im
+              Motiv, während der Bereich unter der Textzeile leer blieb.
+              Gemessen bei 1600 px — Knopf endet bei x=410, Radar beginnt bei
+              512, das Foto erst bei 736. */}
+          <div className="hidden lg:block lg:-translate-x-32 lg:translate-y-10 xl:-translate-x-36 xl:translate-y-10">
             {lage.zweiWege ? (
               <Radar prozent={prozent} />
             ) : (

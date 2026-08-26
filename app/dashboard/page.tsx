@@ -132,7 +132,7 @@ function bestimmeLage(d: Daten): Lage {
   // "oder" — zu viel für den Moment, in dem jemand die Seite aufschlägt.
   return {
     ueberschrift: "Ab jetzt bewirbt sich das Handwerk bei DIR!",
-    unterzeile: "Dein Profil ist bereit. Betriebe suchen gerade nach dir.",
+    unterzeile: "Dein Profil ist bereit. Betriebe suchen gerade aktiv nach dir.",
     aktion: { label: "Stellen in der Nähe suchen", href: "/dashboard/jobboerse" },
     dringend: false,
     zweiWege: true,

@@ -284,17 +284,17 @@ export default function DashboardOverviewPage() {
         seit={aktivSeit(user?.createdAt)}
       />
 
-      {/* Der Bereich bricht aus der 1280er-Spalte des Layouts aus und nutzt die
-          1680 der Kopfleiste. Damit läuft die Kartenleiste fast über die ganze
-          Seite und das Verdienen sitzt aussen rechts, bündig unter "Abmelden".
-          Vorher war die Seite schmaler als ihre eigene Kopfleiste — das
-          verschenkte auf breiten Bildschirmen zweimal 200 px. */}
-      {/* Getrennte Ebenen: aussen der Ausbruch auf Fensterbreite, innen der
+      {/* 1440 statt 1680: über die volle Kopfleistenbreite wirkte die Seite
+          auseinandergezogen — vier flache Karten und ein Streifen quer über
+          1,6 Meter Fläche. 1440 mit 48 px Rand lässt Luft an den Seiten, ohne
+          dass es eng wird. Immer noch breiter als die 1280 des Layouts.
+
+          Getrennte Ebenen: aussen der Ausbruch auf Fensterbreite, innen der
           eigene Container. `.vollbreite` setzt selbst margin-left/right — mit
           `mx-auto` am selben Element würde eines von beiden gewinnen, je nach
           Reihenfolge im Stylesheet. */}
       <div className="vollbreite">
-        <div className="max-w-[1680px] mx-auto px-6 lg:px-10 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,340px)] gap-10 lg:gap-12 items-start">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,330px)] gap-9 lg:gap-11 items-start">
         <div>
           {/* Kurze Einordnung über den Karten — ohne sie sind es vier Zahlen
               ohne Zusammenhang, mit ihr ist klar, was der Bereich kann. */}

@@ -46,7 +46,7 @@ export default function Kennzahlen({
           >
             <Link
               href={z.href}
-              className="group flex h-full flex-col justify-between rounded-2xl bg-white p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1"
+              className="group flex h-full flex-col justify-between rounded-2xl bg-white p-6 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1"
               style={{
                 // Wartet etwas auf eine Reaktion, ist die Kante schon im
                 // Ruhezustand golden — die Karte meldet sich von selbst.
@@ -80,7 +80,7 @@ export default function Kennzahlen({
                   />
                 ) : (
                   <p
-                    className="text-[34px] font-bold tabular-nums leading-none"
+                    className="text-[38px] font-bold tabular-nums leading-none"
                     style={{
                       fontFamily: "var(--font-display)",
                       color: wartet ? "#B47B18" : z.wert > 0 ? "#1A1A2E" : "rgba(26,26,46,0.25)",
@@ -93,7 +93,7 @@ export default function Kennzahlen({
 
               {/* Die Handlungszeile ist der eigentliche Klick-Hinweis. */}
               <span
-                className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-semibold transition-colors duration-200"
+                className="mt-7 inline-flex items-center gap-1.5 text-[12px] font-semibold transition-colors duration-200"
                 style={{ color: wartet ? "#B47B18" : "rgba(26,26,46,0.45)" }}
               >
                 <span className="group-hover:text-[#B47B18] transition-colors duration-200">

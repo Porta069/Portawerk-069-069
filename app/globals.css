@@ -147,6 +147,21 @@ body {
   animation: punktglut 2.2s ease-in-out infinite;
 }
 
+/* Glühende Schrift — dieselbe Taktung wie .punkt-glut (2,2 s), damit Punkt und
+   Zeile gemeinsam atmen statt gegeneinander zu flackern. */
+@keyframes textglut {
+  0%,
+  100% {
+    text-shadow: 0 0 13px rgba(232, 168, 56, 0.32);
+  }
+  50% {
+    text-shadow: 0 0 22px rgba(232, 168, 56, 0.62);
+  }
+}
+.text-glut {
+  animation: textglut 2.2s ease-in-out infinite;
+}
+
 /* Radarwellen — laufen aus der Mitte nach aussen und verlaufen sich.
    Drei Ringe mit je einer Sekunde Versatz ergeben einen stetigen Puls, ohne
    dass man die einzelne Welle als Wiederholung wahrnimmt. */
@@ -185,8 +200,12 @@ body {
   .gold-schimmer,
   .funke,
   .punkt-glut,
-  .radar-welle {
+  .radar-welle,
+  .text-glut {
     animation: none;
+  }
+  .text-glut {
+    text-shadow: 0 0 16px rgba(232, 168, 56, 0.45);
   }
   /* Ohne Lauf keine Wellen — als starre Ringe wären sie nur Dekor. */
   .radar-welle {

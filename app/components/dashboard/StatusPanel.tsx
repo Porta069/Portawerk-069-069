@@ -151,13 +151,10 @@ function Radar({ prozent }: { prozent: number | null }) {
 export default function StatusPanel({
   lage,
   prozent,
-  seit,
 }: {
   lage: Lage;
   /** Profilvollständigkeit; null = noch nicht geladen, dann kein Ring. */
   prozent: number | null;
-  /** "seit 3 Tagen" — nur wenn das Anmeldedatum plausibel ist. */
-  seit?: string;
 }) {
   return (
     <motion.section
@@ -211,35 +208,10 @@ export default function StatusPanel({
       <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-11 sm:py-14">
         <div className="flex items-center gap-10 xl:gap-16">
           <div className="min-w-0 max-w-[36rem]">
-            {/* Statuszeile — der pulsierende Punkt signalisiert: es läuft.
-                Wichtiger als es klingt: ohne Angebote sieht ein leeres
-                Dashboard sonst kaputt aus statt wartend. */}
-            <div className="flex items-center gap-2.5 mb-5">
-              <span
-                className="punkt-glut rounded-full flex-shrink-0"
-                style={{ width: 8, height: 8, background: "#E8A838" }}
-              />
-              <span
-                className="text-[10px] font-semibold uppercase"
-                style={{ color: "#E8A838", letterSpacing: "0.22em" }}
-              >
-                {lage.zweiWege ? "Betriebe suchen gerade" : "Profil aktiv"}
-              </span>
-              {seit && (
-                <>
-                  <span className="h-px w-5" style={{ background: "rgba(232,168,56,0.35)" }} />
-                  <span
-                    className="text-[10px] uppercase"
-                    style={{ color: "rgba(255,255,255,0.38)", letterSpacing: "0.16em" }}
-                  >
-                    {seit}
-                  </span>
-                </>
-              )}
-            </div>
-
+            {/* Der Slogan steht ganz oben — vorher lag eine Kleinschriftzeile
+                darüber, die ihn nach unten drückte und die Aussage doppelte. */}
             <h1
-              className="font-bold leading-[1.12] mb-3"
+              className="font-bold leading-[1.12] mb-4"
               style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "clamp(1.75rem, 3.3vw, 2.6rem)",
@@ -249,11 +221,22 @@ export default function StatusPanel({
               {lage.ueberschrift}
             </h1>
 
+            {/* Die Zeile darunter trägt jetzt den Live-Zustand: glühender Punkt
+                und glühende Schrift, beide im selben 2,2-Sekunden-Takt. Damit
+                sagt sie nicht nur, dass gesucht wird — man sieht es. */}
             <p
-              className="text-[15px] leading-relaxed mb-7 max-w-[36rem]"
-              style={{ color: "rgba(255,255,255,0.55)" }}
+              className="flex items-start gap-3 text-[15px] leading-relaxed mb-7 max-w-[36rem]"
+              style={{ color: lage.zweiWege ? "#E8A838" : "rgba(255,255,255,0.55)" }}
             >
-              {lage.unterzeile}
+              {lage.zweiWege && (
+                <span
+                  className="punkt-glut rounded-full flex-shrink-0 mt-[7px]"
+                  style={{ width: 9, height: 9, background: "#E8A838" }}
+                />
+              )}
+              <span className={lage.zweiWege ? "text-glut font-medium" : undefined}>
+                {lage.unterzeile}
+              </span>
             </p>
 
             <Link
@@ -274,7 +257,7 @@ export default function StatusPanel({
 
           {/* Nur im Wartezustand — liegt ein Angebot vor, wäre "Suche läuft"
               die falsche Botschaft; dann zeigt die rechte Seite den Ring. */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block lg:-translate-x-6 lg:translate-y-10 xl:-translate-x-10 xl:translate-y-12">
             {lage.zweiWege ? (
               <Radar prozent={prozent} />
             ) : (

@@ -24,7 +24,6 @@ import {
   listOffers,
   listFavorites,
   listContactRequests,
-  formatRelative,
   JOBS_ARE_MOCKED,
 } from "@/lib/jobsService";
 import type {
@@ -154,19 +153,6 @@ function sicher<T>(p: Promise<ApiResult<T>>): Promise<ApiResult<T>> {
   return p.catch(() => ({ ok: false as const, error: "Netzwerkfehler" }));
 }
 
-/**
- * "seit 3 Tagen" — nur bei plausiblem Datum.
- *
- * Der Vorschau-Nutzer trägt den 1.1.1970; ohne Prüfung stünde dort
- * "seit 2900 Wochen".
- */
-function aktivSeit(iso?: string | null): string | undefined {
-  if (!iso) return undefined;
-  const t = new Date(iso).getTime();
-  if (!Number.isFinite(t) || t < Date.parse("2020-01-01")) return undefined;
-  return formatRelative(iso).replace(/^vor /, "seit ").replace(/^gerade eben$/, "seit heute");
-}
-
 export default function DashboardOverviewPage() {
   const { user } = useAuth();
   const [score, setScore] = useState<Score | null>(null);
@@ -278,11 +264,7 @@ export default function DashboardOverviewPage() {
         </div>
       )}
 
-      <StatusPanel
-        lage={lage}
-        prozent={score?.percent ?? null}
-        seit={aktivSeit(user?.createdAt)}
-      />
+      <StatusPanel lage={lage} prozent={score?.percent ?? null} />
 
       {/* 1440 statt 1680: über die volle Kopfleistenbreite wirkte die Seite
           auseinandergezogen — vier flache Karten und ein Streifen quer über

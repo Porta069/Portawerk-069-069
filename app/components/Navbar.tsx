@@ -75,7 +75,8 @@ export default function Navbar() {
           nicht. Bewusst breiter als der Inhalt darunter. */}
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+          {/* Einzug wie in der Dashboard-Leiste — siehe Begründung dort. */}
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 xl:ml-8 2xl:ml-28">
             {/* Reine Wortmarke ohne Slogan — der steht jetzt als Überschrift
                 im Hero, wo er die Größe bekommt, die er braucht. */}
             <Logo

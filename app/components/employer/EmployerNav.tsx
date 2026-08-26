@@ -41,7 +41,8 @@ export default function EmployerNav({
     <header className="sticky top-0 left-0 right-0 z-50 bg-[#1A1A2E] shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
-          <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0">
+          {/* Einzug wie in der Dashboard-Leiste — siehe Begründung dort. */}
+          <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0 xl:ml-8 2xl:ml-28">
             <Logo
               height={26}
               variant="hell"

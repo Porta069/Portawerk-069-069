@@ -69,7 +69,11 @@ export default function DashboardNav({
           Wechsel zwischen den Bereichen nicht springt. */}
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="relative flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+          {/* Einzug, damit das Logo mittig im freien Feld zwischen Rand und den
+              Bereichen steht statt am Rand zu kleben. Margin statt Padding: der
+              Klickbereich bleibt auf dem Logo. Erst ab xl — darunter reicht der
+              Platz nicht, die Bereiche sitzen dort schon fast am Logo. */}
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 xl:ml-8 2xl:ml-28">
             <Logo
               height={26}
               variant="hell"

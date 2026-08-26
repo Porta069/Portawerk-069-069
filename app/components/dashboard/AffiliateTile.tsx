@@ -8,9 +8,19 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Euro, Share2, Users } from "lucide-react";
+import { ArrowRight, Share2 } from "lucide-react";
 
-/** Große Kachel für die Übersicht — mit den eigenen Zahlen. */
+/**
+ * Große Kachel für die Übersicht.
+ *
+ * Die eigenen Zahlen erscheinen erst, wenn es welche GIBT. Vorher standen dort
+ * dauerhaft drei Kästen mit "0", "0 €", "0 €" — ausgerechnet an der Stelle, die
+ * Lust auf Geld machen soll, dreimal die Null. Solange nichts geworben wurde,
+ * steht dort stattdessen die Prämie selbst.
+ *
+ * Scharfe Kanten wie im Rest der Plattform; die Rundungen der alten Fassung
+ * gab es nur auf dieser einen Seite.
+ */
 export function AffiliateTile({
   geworben = 0,
   offenEuro = 0,
@@ -20,71 +30,78 @@ export function AffiliateTile({
   offenEuro?: number;
   ausgezahltEuro?: number;
 }) {
-  const stats = [
-    { label: "Geworben", value: String(geworben), icon: Users },
-    { label: "Offen", value: `${offenEuro} €`, icon: Euro },
-    { label: "Ausgezahlt", value: `${ausgezahltEuro} €`, icon: Euro },
-  ];
+  const laeuftBereits = geworben > 0 || offenEuro > 0 || ausgezahltEuro > 0;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl p-6" style={{ background: "#1A1A2E" }}>
+    <div className="relative overflow-hidden p-7" style={{ background: "#1A1A2E" }}>
       <div
-        className="absolute -top-20 -right-16 w-64 h-64 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(232,168,56,0.22) 0%, transparent 70%)" }}
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 30px)," +
+            "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 30px)",
+        }}
       />
+      <div
+        aria-hidden
+        className="absolute -top-24 -right-20 w-64 h-64 pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 70%)" }}
+      />
+
       <div className="relative">
         <span
-          className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3"
-          style={{ color: "#E8A838" }}
+          className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase mb-5"
+          style={{ color: "#E8A838", letterSpacing: "0.22em" }}
         >
-          <span className="w-6 h-[2px] bg-accent" />
+          <span className="w-5 h-px" style={{ background: "#E8A838" }} />
           Verdienen
         </span>
-        <h2
-          className="text-white font-bold text-[22px] leading-snug mb-2"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          100 € pro vermitteltem Kollegen
-        </h2>
-        <p className="text-[13.5px] leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.5)" }}>
-          Du kennst jemanden, der wechseln will? Teil deinen persönlichen Link — sobald
-          er über dich einen Job findet, bekommst du die Prämie.{" "}
-          <span style={{ color: "rgba(255,255,255,0.38)" }}>
-            Das Partnerprogramm hat einen eigenen Login.
-          </span>
-        </p>
 
-        <div className="grid grid-cols-3 gap-2 mb-5">
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="rounded-2xl px-3 py-2.5"
-              style={{ background: "rgba(255,255,255,0.06)" }}
+        {laeuftBereits ? (
+          <>
+            <p
+              className="text-white font-bold leading-none tabular-nums"
+              style={{ fontFamily: "var(--font-display)", fontSize: "2.6rem" }}
             >
-              <p
-                className="text-[16px] font-bold tabular-nums text-white leading-none"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {s.value}
-              </p>
-              <p className="text-[10px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
-                {s.label}
-              </p>
-            </div>
-          ))}
-        </div>
+              {offenEuro + ausgezahltEuro}&nbsp;€
+            </p>
+            <p className="text-[12.5px] mt-2 mb-5" style={{ color: "rgba(255,255,255,0.45)" }}>
+              aus {geworben} {geworben === 1 ? "Vermittlung" : "Vermittlungen"} — davon{" "}
+              {offenEuro} € offen
+            </p>
+          </>
+        ) : (
+          <>
+            <p
+              className="text-white font-bold leading-none"
+              style={{ fontFamily: "var(--font-display)", fontSize: "2.9rem" }}
+            >
+              100&nbsp;€
+            </p>
+            <p
+              className="text-[15px] font-semibold mt-2 mb-3"
+              style={{ color: "rgba(255,255,255,0.9)" }}
+            >
+              für jeden Kollegen, den du vermittelst
+            </p>
+            <p className="text-[13px] leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.45)" }}>
+              Du kennst jemanden, der wechseln will? Teil deinen Link. Findet er darüber
+              einen Job, bekommst du die Prämie — ohne Obergrenze.
+            </p>
+          </>
+        )}
 
         <Link
           href="/dashboard/verdienen"
-          className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+          className="group inline-flex items-center gap-2 px-5 py-3 text-[13.5px] font-bold transition-colors duration-200"
           style={{
             background: "#E8A838",
             color: "#1A1A2E",
             fontFamily: "var(--font-display)",
-            boxShadow: "0 14px 28px -14px rgba(232,168,56,0.9)",
           }}
         >
-          Zum Empfehlungsprogramm
+          {laeuftBereits ? "Zu deinen Vermittlungen" : "Link holen"}
           <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
         </Link>
       </div>

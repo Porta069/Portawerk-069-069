@@ -9,8 +9,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  Search, SlidersHorizontal, X, Loader2, ArrowUpDown, Send, Check,
+  Search, X, Loader2, Send, Check,
   GitCompareArrows, EyeOff, MapPin,
 } from "lucide-react";
 import {
@@ -24,6 +25,7 @@ import JobDetailDialog from "@/app/components/dashboard/JobDetailDialog";
 import CompareDialog from "@/app/components/dashboard/CompareDialog";
 import WorkLocationsMap from "@/app/components/WorkLocationsMapDynamic";
 import { ChipToggle } from "@/app/components/wizard";
+import Sortierung from "@/app/components/dashboard/Sortierung";
 
 const TRAVEL_STEPS = [15, 30, 45, 60];
 
@@ -81,7 +83,6 @@ export default function JobboersePage() {
   const [abendsZuhause, setAbendsZuhause] = useState(false);
   const [fahrzeitArbeitszeit, setFahrzeitArbeitszeit] = useState(false);
   const [sort, setSort] = useState<JobSort>("relevanz");
-  const [showFilters, setShowFilters] = useState(false);
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -193,62 +194,75 @@ export default function JobboersePage() {
 
   const gefiltert = activeChips.length > 0;
 
+  /** Ein Filterblock der waagerechten Leiste — Beschriftung plus Chips. */
+  const FilterGruppe = ({ titel, children }: { titel: string; children: React.ReactNode }) => (
+    <div className="flex items-center gap-3 min-w-0">
+      <span
+        className="text-[9.5px] font-semibold uppercase whitespace-nowrap flex-shrink-0"
+        style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
+      >
+        {titel}
+      </span>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
+    </div>
+  );
+
   return (
     <div>
       {/* ── Suchband ────────────────────────────────────────────────────────
-          Titel, Suche und Sortierung stehen zusammen auf dunklem Grund und
-          laufen randlos über das Fenster — wie der Kopf der Übersicht. Vorher
-          standen sie als einzelne helle Elemente auf der Fläche; das wirkte
-          zusammengesetzt statt gebaut. */}
-      <section
-        className="vollbreite relative overflow-hidden -mt-10 mb-9"
-        style={{ background: "#1A1A2E" }}
-      >
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)," +
-              "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)",
-          }}
+          Liegt auf einem Werkstattfoto statt auf demselben Navy wie die
+          Kopfleiste. Vorher gingen beide Flächen ineinander über und das Band
+          verschwand optisch in der Navigation — man übersah die ganze
+          Sektion. */}
+      <section className="vollbreite relative overflow-hidden -mt-10 mb-7">
+        <Image
+          src="/images/elektriker-werkstatt.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
+          style={{ objectPosition: "center 38%" }}
         />
         <div
           aria-hidden
-          className="absolute pointer-events-none"
+          className="absolute inset-0"
           style={{
-            right: "-6%",
-            top: "-70%",
-            width: 520,
-            height: 520,
-            background: "radial-gradient(circle, rgba(232,168,56,0.16) 0%, transparent 66%)",
+            background:
+              "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 42%, rgba(20,20,36,0.62) 100%)",
           }}
         />
+        {/* Goldkante als klare Trennung zur Kopfleiste. */}
+        <div aria-hidden className="absolute top-0 inset-x-0" style={{ height: 3, background: "#E8A838" }} />
 
         <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-9 sm:py-11">
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
-            <div>
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-6">
+            <div className="min-w-0">
               <h1
                 className="text-white font-black leading-tight"
-                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3.4vw, 2.5rem)" }}
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)" }}
               >
                 Jobbörse
               </h1>
-              <p className="text-[14.5px] mt-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+              <p className="text-[14.5px] mt-1.5" style={{ color: "rgba(255,255,255,0.62)" }}>
                 Alle offenen Stellen — sortiert nach dem, was für dich zählt.
               </p>
             </div>
 
-            {/* Trefferzahl im Band statt als graue Zeile über der Liste. */}
+            {/* Trefferzahl als richtige Zahl statt als Kleingedrucktes. */}
             {!loading && (
-              <p
-                className="text-[13px] tabular-nums pb-1"
-                style={{ color: "rgba(255,255,255,0.45)" }}
-              >
-                <strong className="text-white font-semibold">{jobs.length}</strong>{" "}
-                {jobs.length === 1 ? "Stelle" : "Stellen"}
-                {gefiltert && " nach deinen Filtern"}
-              </p>
+              <div className="flex items-baseline gap-2.5 flex-shrink-0">
+                <span
+                  className="font-black tabular-nums leading-none"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "2.6rem", color: "#E8A838" }}
+                >
+                  {jobs.length}
+                </span>
+                <span className="text-[14px]" style={{ color: "rgba(255,255,255,0.62)" }}>
+                  {jobs.length === 1 ? "Stelle" : "Stellen"}
+                  {gefiltert && <span className="block text-[12px] opacity-70">nach deinen Filtern</span>}
+                </span>
+              </div>
             )}
           </div>
 
@@ -262,8 +276,8 @@ export default function JobboersePage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Beruf, Betrieb oder Ort suchen …"
-                className="w-full rounded-full bg-white text-primary text-[15px] pl-13 pr-11 py-4 outline-none placeholder:text-primary/30"
-                style={{ paddingLeft: 52, boxShadow: "0 18px 40px -22px rgba(0,0,0,0.9)" }}
+                className="w-full rounded-full bg-white text-primary text-[15px] pr-11 py-4 outline-none placeholder:text-primary/30"
+                style={{ paddingLeft: 52, boxShadow: "0 20px 44px -22px rgba(0,0,0,0.95)" }}
               />
               {query && (
                 <button
@@ -277,166 +291,87 @@ export default function JobboersePage() {
               )}
             </div>
 
-            <div className="relative">
-              <ArrowUpDown
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                style={{ color: "rgba(255,255,255,0.45)" }}
-              />
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as JobSort)}
-                aria-label="Sortierung"
-                className="appearance-none w-full sm:w-auto rounded-full text-[14px] font-semibold text-white pl-11 pr-6 py-4 outline-none cursor-pointer"
-                style={{ background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.16)" }}
-              >
-                {SORTS.map((s) => (
-                  <option key={s.value} value={s.value} style={{ color: "#1A1A2E" }}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Nur auf schmalen Geräten: dort klappt die Filterspalte weg. */}
-            <button
-              type="button"
-              onClick={() => setShowFilters((v) => !v)}
-              className="lg:hidden inline-flex items-center justify-center gap-2 rounded-full px-5 py-4 text-[14px] font-semibold"
-              style={{
-                background: showFilters ? "#E8A838" : "rgba(255,255,255,0.09)",
-                color: showFilters ? "#1A1A2E" : "white",
-                border: `1px solid ${showFilters ? "#E8A838" : "rgba(255,255,255,0.16)"}`,
-              }}
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              Filter{activeChips.length > 0 && ` (${activeChips.length})`}
-            </button>
+            <Sortierung value={sort} options={SORTS} onChange={setSort} />
           </div>
         </div>
       </section>
 
-      {/* ── Karte als breites Band ───────────────────────────────────────────
-          Sie lag zuerst hinter einem Filterknopf, dann in einer 330 px
-          schmalen Spalte. Beides zu klein für das, was hier passiert: man
-          setzt seinen Arbeitsort und zieht einen Radius von bis zu 150 km.
-          Über die volle Inhaltsbreite hat die Karte rund viermal so viel
-          Fläche. */}
+      {/* ── Filterzeile ─────────────────────────────────────────────────────
+          Waagerecht statt als Kästchensammlung in einer Seitenspalte. Die
+          Spalte bestand aus drei gleich aussehenden weissen Blöcken
+          untereinander — viel Rahmen für zehn Schalter. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mb-8">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
           <div
-            className="rounded-3xl bg-white overflow-hidden"
-            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+            className="flex flex-wrap items-center gap-x-7 gap-y-3 rounded-2xl bg-white px-5 py-4 mb-6"
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 28px -24px rgba(26,26,46,0.55)" }}
           >
-            {locLoaded ? (
-              <WorkLocationsMap
-                value={locations}
-                onChange={updateLocations}
-                height={360}
-                breit
+            <FilterGruppe titel="Fahrzeit">
+              {TRAVEL_STEPS.map((m) => (
+                <ChipToggle
+                  key={m}
+                  label={`${m} Min.`}
+                  selected={maxTravel === m}
+                  onClick={() => setMaxTravel(maxTravel === m ? undefined : m)}
+                />
+              ))}
+            </FilterGruppe>
+
+            <span className="hidden lg:block w-px self-stretch" style={{ background: "#EFECE4" }} />
+
+            <FilterGruppe titel="Bedingungen">
+              <ChipToggle
+                label="Abends zuhause"
+                selected={abendsZuhause}
+                onClick={() => setAbendsZuhause((v) => !v)}
               />
-            ) : (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
-              </div>
+              <ChipToggle
+                label="Fahrzeit = Arbeitszeit"
+                selected={fahrzeitArbeitszeit}
+                onClick={() => setFahrzeitArbeitszeit((v) => !v)}
+              />
+            </FilterGruppe>
+
+            {(katalog?.bereiche?.length ?? 0) > 0 && (
+              <>
+                <span className="hidden lg:block w-px self-stretch" style={{ background: "#EFECE4" }} />
+                <FilterGruppe titel="Bereich">
+                  {(katalog?.bereiche ?? []).map((b) => (
+                    <ChipToggle
+                      key={b.value}
+                      label={b.label}
+                      selected={bereiche.includes(b.value)}
+                      onClick={() => toggleBereich(b.value)}
+                    />
+                  ))}
+                </FilterGruppe>
+              </>
+            )}
+
+            {gefiltert && (
+              <button
+                type="button"
+                onClick={resetAll}
+                className="ml-auto text-[12.5px] font-semibold whitespace-nowrap"
+                style={{ color: "#B47B18" }}
+              >
+                Filter zurücksetzen
+              </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* ── Zwei Spalten: Filter links, Ergebnisse rechts ─────────────────── */}
+      {/* ── Ergebnisse links, Karte rechts ──────────────────────────────────
+          Die Karte stand als flaches Band über allem. Deutschland ist höher
+          als breit — in einem 1000 x 360 breiten Ausschnitt füllte es ein
+          Viertel der Fläche und lag verloren in der Mitte. Als hohe Spalte
+          neben den Ergebnissen passt die Form, die Karte bleibt beim Scrollen
+          stehen, und der Bezug "diese Stellen liegen in diesem Gebiet" ist
+          direkt nebeneinander sichtbar. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[330px_minmax(0,1fr)] gap-8 items-start">
-          <aside
-            className={`${showFilters ? "block" : "hidden"} lg:block lg:sticky lg:top-[104px]`}
-          >
-            <div
-              className="rounded-3xl bg-white overflow-hidden"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
-            >
-              <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
-                <p
-                  className="text-[9.5px] font-semibold uppercase"
-                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                >
-                  Filter
-                </p>
-                {activeChips.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={resetAll}
-                    className="text-[11.5px] font-semibold"
-                    style={{ color: "#B47B18" }}
-                  >
-                    zurücksetzen
-                  </button>
-                )}
-              </div>
-
-              <div className="px-5 pb-5">
-                <p
-                  className="text-[9.5px] font-semibold uppercase mb-3"
-                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                >
-                  Maximale Fahrzeit
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {TRAVEL_STEPS.map((m) => (
-                    <ChipToggle
-                      key={m}
-                      label={`bis ${m} Min.`}
-                      selected={maxTravel === m}
-                      onClick={() => setMaxTravel(maxTravel === m ? undefined : m)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
-                <p
-                  className="text-[9.5px] font-semibold uppercase mb-3"
-                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                >
-                  Rahmenbedingungen
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <ChipToggle
-                    label="Jeden Abend zuhause"
-                    selected={abendsZuhause}
-                    onClick={() => setAbendsZuhause((v) => !v)}
-                  />
-                  <ChipToggle
-                    label="Fahrzeit = Arbeitszeit"
-                    selected={fahrzeitArbeitszeit}
-                    onClick={() => setFahrzeitArbeitszeit((v) => !v)}
-                  />
-                </div>
-              </div>
-
-              {(katalog?.bereiche?.length ?? 0) > 0 && (
-                <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
-                  <p
-                    className="text-[9.5px] font-semibold uppercase mb-3"
-                    style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                  >
-                    Ausbildungsbereich
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {(katalog?.bereiche ?? []).map((b) => (
-                      <ChipToggle
-                        key={b.value}
-                        label={b.label}
-                        selected={bereiche.includes(b.value)}
-                        onClick={() => toggleBereich(b.value)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </aside>
-
-          <div className="min-w-0">
-            {/* Ohne Arbeitsorte kein Fahrzeit-Matching — ehrlich sagen, was fehlt. */}
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[minmax(0,1fr)_400px] gap-7 items-start">
+          <div className="min-w-0 order-2 lg:order-1">
             {locLoaded && locations.length === 0 && (
               <div
                 className="flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3.5 mb-4"
@@ -445,35 +380,11 @@ export default function JobboersePage() {
                 <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: "#B47B18" }} />
                 <p className="text-[13px] leading-relaxed flex-1 min-w-[14rem]" style={{ color: "rgba(26,26,46,0.7)" }}>
                   <strong>Noch kein Arbeitsort gesetzt.</strong> Ohne ihn keine
-                  Fahrzeiten und keine Sortierung nach Nähe — setz ihn auf der Karte.
+                  Fahrzeiten und keine Sortierung nach Nähe.
                 </p>
               </div>
             )}
 
-            {/* Aktive Filter */}
-            {activeChips.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-                {activeChips.map((c) => (
-                  <button
-                    key={c.label}
-                    type="button"
-                    onClick={c.clear}
-                    className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-medium transition-colors"
-                    style={{
-                      background: "rgba(232,168,56,0.14)",
-                      color: "#1A1A2E",
-                      border: "1px solid rgba(232,168,56,0.4)",
-                    }}
-                  >
-                    {c.label}
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Warum die Liste kürzer ist: ausgeblendete Stellen benennen, statt
-                sie wortlos verschwinden zu lassen. */}
             {!loading && ausgeblendet && ausgeblendet.gesamt > 0 && (
               <div
                 className="rounded-2xl px-4 py-3.5 mb-4"
@@ -500,10 +411,7 @@ export default function JobboersePage() {
               </div>
             )}
 
-            {/* Ergebnisse */}
             {loading ? (
-              // Platzhalter in der Form der späteren Karten statt eines
-              // Kringels im Nichts — die Seite springt dadurch nicht.
               <div className="space-y-4">
                 {[0, 1, 2].map((i) => (
                   <div
@@ -532,7 +440,7 @@ export default function JobboersePage() {
                 </p>
                 <p className="text-[13.5px] mb-5 max-w-[26rem] mx-auto" style={{ color: "rgba(26,26,46,0.5)" }}>
                   {gefiltert
-                    ? "Erweiter die Fahrzeit oder nimm einen Ausbildungsbereich aus dem Filter."
+                    ? "Erweiter die Fahrzeit oder nimm einen Bereich aus dem Filter."
                     : "Setz deinen Arbeitsort auf der Karte — dann zeigen wir dir, was im Umkreis frei ist."}
                 </p>
                 {gefiltert && (
@@ -564,6 +472,38 @@ export default function JobboersePage() {
               </div>
             )}
           </div>
+
+          {/* Karte: hohe Spalte, bleibt beim Scrollen stehen. */}
+          <aside className="order-1 lg:order-2 lg:sticky lg:top-[104px]">
+            <div
+              className="rounded-3xl bg-white overflow-hidden"
+              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+            >
+              <div className="px-5 pt-5 pb-2">
+                <p
+                  className="text-[9.5px] font-semibold uppercase mb-1"
+                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+                >
+                  Dein Suchgebiet
+                </p>
+                <p className="text-[12.5px] leading-snug" style={{ color: "rgba(26,26,46,0.5)" }}>
+                  Tipp auf die Karte oder such einen Ort.
+                </p>
+              </div>
+              {locLoaded ? (
+                <WorkLocationsMap
+                  value={locations}
+                  onChange={updateLocations}
+                  height={420}
+                  kompakt
+                />
+              ) : (
+                <div className="flex items-center justify-center py-24">
+                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+                </div>
+              )}
+            </div>
+          </aside>
         </div>
       </div>
 

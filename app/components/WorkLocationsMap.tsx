@@ -220,7 +220,7 @@ export default function WorkLocationsMap({
   const suche = (
     <>
       {/* ── Suche ── */}
-      <div className={`relative ${kompakt ? "mb-2.5" : "mb-3"} ${breit ? "mb-4" : ""}`}>
+      <div className={`relative ${kompakt ? "mx-5 mb-3" : "mb-3"} ${breit ? "mb-4" : ""}`}>
         <Search
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
           style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.3)" }}
@@ -357,7 +357,7 @@ export default function WorkLocationsMap({
             breit
               ? "space-y-2.5"
               : kompakt
-                ? "space-y-2.5"
+                ? "px-5 pt-4 pb-5 space-y-2.5"
                 : "mt-4 space-y-2.5"
           }
         >

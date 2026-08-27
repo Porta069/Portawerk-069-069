@@ -178,8 +178,13 @@ export default function WorkLocationsMap({
 
   const addLocation = useCallback(
     (lat: number, lng: number, label: string) => {
+      // Auch über den Namen prüfen: zwei Klicks 3 km auseinander liegen
+      // ausserhalb der Koordinaten-Toleranz, lösen aber denselben Ort auf —
+      // in der Liste standen dann zwei identische Einträge.
       const vorhanden = value.find(
-        (l) => Math.abs(l.lat - lat) < 0.02 && Math.abs(l.lng - lng) < 0.02
+        (l) =>
+          (Math.abs(l.lat - lat) < 0.02 && Math.abs(l.lng - lng) < 0.02) ||
+          l.label === label
       );
       if (vorhanden) {
         setFlyTarget({ lat, lng, radiusKm: vorhanden.radiusKm });
@@ -357,7 +362,7 @@ export default function WorkLocationsMap({
             breit
               ? "space-y-2.5"
               : kompakt
-                ? "px-5 pt-4 pb-5 space-y-2.5"
+                ? "px-5 pb-3 space-y-2"
                 : "mt-4 space-y-2.5"
           }
         >
@@ -374,17 +379,27 @@ export default function WorkLocationsMap({
           {value.map((l) => (
             <div
               key={l.id}
-              className="rounded-2xl bg-white p-4"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }}
+              className={kompakt ? "rounded-xl px-3 py-2.5" : "rounded-2xl bg-white p-4"}
+              style={
+                kompakt
+                  ? { background: "rgba(232,168,56,0.07)", border: "1px solid rgba(232,168,56,0.28)" }
+                  : { border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }
+              }
             >
-              <div className="flex items-center gap-3 mb-3">
+              <div className={`flex items-center gap-3 ${kompakt ? "mb-2" : "mb-3"}`}>
                 <span
-                  className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(232,168,56,0.14)" }}
+                  className={`rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    kompakt ? "w-6 h-6" : "w-8 h-8 rounded-xl"
+                  }`}
+                  style={{ background: "rgba(232,168,56,0.18)" }}
                 >
-                  <MapPin className="w-4 h-4" style={{ color: "#E8A838" }} />
+                  <MapPin className={kompakt ? "w-3.5 h-3.5" : "w-4 h-4"} style={{ color: "#B47B18" }} />
                 </span>
-                <span className="text-[14px] font-semibold text-primary truncate flex-1">
+                <span
+                  className={`font-semibold text-primary truncate flex-1 ${
+                    kompakt ? "text-[13px]" : "text-[14px]"
+                  }`}
+                >
                   {l.label}
                 </span>
                 <span
@@ -421,10 +436,12 @@ export default function WorkLocationsMap({
                   }%, #E9E7E1 ${((l.radiusKm - 5) / 145) * 100}%)`,
                 }}
               />
-              <div className="flex justify-between mt-1.5 text-[10px] tabular-nums" style={{ color: "rgba(26,26,46,0.35)" }}>
-                <span>5 km</span>
-                <span>150 km</span>
-              </div>
+              {!kompakt && (
+                <div className="flex justify-between mt-1.5 text-[10px] tabular-nums" style={{ color: "rgba(26,26,46,0.35)" }}>
+                  <span>5 km</span>
+                  <span>150 km</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -461,6 +478,19 @@ export default function WorkLocationsMap({
             {liste}
           </div>
         </div>
+      </div>
+    );
+  }
+
+  // In der Spaltenfassung stehen die gewählten Orte ÜBER der Karte. Darunter
+  // lagen sie bei 440 px Kartenhöhe unterhalb des sichtbaren Bereichs — man
+  // setzte einen Ort und sah nicht, was man gewählt hatte, ohne zu scrollen.
+  if (kompakt) {
+    return (
+      <div>
+        {suche}
+        {liste}
+        {karte}
       </div>
     );
   }

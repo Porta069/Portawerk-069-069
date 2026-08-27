@@ -218,7 +218,10 @@ body {
    Hier deutlich entsättigt und aufgehellt, damit die Karte ruhig wirkt und
    der goldene Arbeitsradius klar davor steht. */
 .pw-map-tiles {
-  filter: saturate(0.42) brightness(1.07) contrast(0.94);
+  /* Zurückgenommen, aber nicht ausgewaschen: bei 0,42 Sättigung und 0,94
+     Kontrast war die Karte in einer schmalen Spalte kaum noch von einer
+     leeren Fläche zu unterscheiden. */
+  filter: saturate(0.58) brightness(1.02) contrast(1.04);
 }
 
 /* Leaflet-Steuerung an das Design angleichen. */

@@ -103,9 +103,20 @@ function FlyTo({ target }: { target: [number, number] | null }) {
 export default function WorkLocationsMap({
   value,
   onChange,
+  height = 400,
+  kompakt = false,
 }: {
   value: WorkLocation[];
   onChange: (locs: WorkLocation[]) => void;
+  /** Kartenhöhe in Pixeln — in einer Seitenspalte deutlich flacher als im Wizard. */
+  height?: number;
+  /**
+   * Fassung für schmale Spalten: kürzere Beschriftungen, keine eigene Rundung
+   * und kein eigener Schatten. In einer 330 px breiten Spalte lief der lange
+   * Hinweis über zwei Zeilen quer über die Karte, und die Rundung erzeugte
+   * einen Kasten im Kasten.
+   */
+  kompakt?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeoResult[]>([]);
@@ -184,7 +195,7 @@ export default function WorkLocationsMap({
   return (
     <div>
       {/* ── Suche ── */}
-      <div className="relative mb-3">
+      <div className={`relative ${kompakt ? "mb-2.5" : "mb-3"}`}>
         <Search
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
           style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.3)" }}
@@ -197,7 +208,7 @@ export default function WorkLocationsMap({
             if (results.length) setShowResults(true);
           }}
           onBlur={() => setFocused(false)}
-          placeholder="Ort oder PLZ suchen — z. B. München oder 80331"
+          placeholder={kompakt ? "Ort oder PLZ suchen" : "Ort oder PLZ suchen — z. B. München oder 80331"}
           className="w-full rounded-full bg-white text-primary text-[14px] pl-12 pr-11 py-3.5 outline-none transition-all duration-200 placeholder:text-primary/25"
           style={{
             border: `1.5px solid ${focused ? "#E8A838" : "#E9E7E1"}`,
@@ -255,8 +266,8 @@ export default function WorkLocationsMap({
 
       {/* ── Karte ── */}
       <div
-        className="relative overflow-hidden rounded-3xl"
-        style={{ boxShadow: "0 18px 44px -26px rgba(26,26,46,0.55)" }}
+        className={`relative overflow-hidden ${kompakt ? "" : "rounded-3xl"}`}
+        style={kompakt ? undefined : { boxShadow: "0 18px 44px -26px rgba(26,26,46,0.55)" }}
       >
         {adding && (
           <div
@@ -273,12 +284,12 @@ export default function WorkLocationsMap({
             className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
             style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)", boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)" }}
           >
-            <Crosshair className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-            Tipp auf die Karte, um einen Arbeitsort zu setzen
+            <Crosshair className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
+            {kompakt ? "Tipp auf die Karte" : "Tipp auf die Karte, um einen Arbeitsort zu setzen"}
           </div>
         )}
 
-        <MapShell height={400} fitGermany>
+        <MapShell height={height} fitGermany>
           <ClickHandler onClick={handleMapClick} />
           <FlyTo target={flyTarget} />
           <MapZoom />

@@ -315,11 +315,35 @@ export default function JobboersePage() {
         </div>
       </section>
 
-      {/* ── Zwei Spalten: Filter stehen offen, Ergebnisse daneben ───────────
-          Die Karte lag vorher hinter einem Filterknopf. Wer nicht weiß, dass
-          es sie gibt, findet sie nie — und ohne Arbeitsorte rechnet die Seite
-          keine Fahrzeiten. Jetzt steht sie dauerhaft links und läuft beim
-          Scrollen mit. */}
+      {/* ── Karte als breites Band ───────────────────────────────────────────
+          Sie lag zuerst hinter einem Filterknopf, dann in einer 330 px
+          schmalen Spalte. Beides zu klein für das, was hier passiert: man
+          setzt seinen Arbeitsort und zieht einen Radius von bis zu 150 km.
+          Über die volle Inhaltsbreite hat die Karte rund viermal so viel
+          Fläche. */}
+      <div className="vollbreite">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mb-8">
+          <div
+            className="rounded-3xl bg-white overflow-hidden"
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+          >
+            {locLoaded ? (
+              <WorkLocationsMap
+                value={locations}
+                onChange={updateLocations}
+                height={360}
+                breit
+              />
+            ) : (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Zwei Spalten: Filter links, Ergebnisse rechts ─────────────────── */}
       <div className="vollbreite">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[330px_minmax(0,1fr)] gap-8 items-start">
           <aside
@@ -329,41 +353,26 @@ export default function JobboersePage() {
               className="rounded-3xl bg-white overflow-hidden"
               style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
             >
-              <div className="px-5 pt-5 pb-4">
-                <div className="flex items-baseline justify-between gap-3 mb-1">
-                  <p
-                    className="text-[9.5px] font-semibold uppercase"
-                    style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                  >
-                    Deine Arbeitsorte
-                  </p>
-                  {activeChips.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={resetAll}
-                      className="text-[11.5px] font-semibold"
-                      style={{ color: "#B47B18" }}
-                    >
-                      zurücksetzen
-                    </button>
-                  )}
-                </div>
-                <p className="text-[12.5px] leading-snug" style={{ color: "rgba(26,26,46,0.5)" }}>
-                  Tipp auf die Karte oder such einen Ort. Änderungen gelten sofort.
+              <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
+                <p
+                  className="text-[9.5px] font-semibold uppercase"
+                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+                >
+                  Filter
                 </p>
+                {activeChips.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={resetAll}
+                    className="text-[11.5px] font-semibold"
+                    style={{ color: "#B47B18" }}
+                  >
+                    zurücksetzen
+                  </button>
+                )}
               </div>
 
-              {locLoaded ? (
-                <div className="[&>div:last-child]:px-5 [&>div:last-child]:pb-5">
-                  <WorkLocationsMap value={locations} onChange={updateLocations} height={310} kompakt />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center py-16">
-                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
-                </div>
-              )}
-
-              <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
+              <div className="px-5 pb-5">
                 <p
                   className="text-[9.5px] font-semibold uppercase mb-3"
                   style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}

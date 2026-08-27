@@ -121,6 +121,7 @@ export default function WorkLocationsMap({
   onChange,
   height = 400,
   kompakt = false,
+  breit = false,
 }: {
   value: WorkLocation[];
   onChange: (locs: WorkLocation[]) => void;
@@ -133,6 +134,12 @@ export default function WorkLocationsMap({
    * einen Kasten im Kasten.
    */
   kompakt?: boolean;
+  /**
+   * Fassung für ein breites Band: die Ortssuche bleibt schmal (ein Suchfeld
+   * über 1250 px wäre absurd), die Karte läuft randlos über die volle Breite,
+   * und die gewählten Orte stehen nebeneinander statt untereinander.
+   */
+  breit?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeoResult[]>([]);
@@ -169,12 +176,6 @@ export default function WorkLocationsMap({
     };
   }, [query]);
 
-  const exists = useCallback(
-    (lat: number, lng: number) =>
-      value.some((l) => Math.abs(l.lat - lat) < 0.02 && Math.abs(l.lng - lng) < 0.02),
-    [value]
-  );
-
   const addLocation = useCallback(
     (lat: number, lng: number, label: string) => {
       const vorhanden = value.find(
@@ -187,7 +188,7 @@ export default function WorkLocationsMap({
       onChange([...value, { id: uid(), label, lat, lng, radiusKm: 25 }]);
       setFlyTarget({ lat, lng, radiusKm: 25 });
     },
-    [value, onChange, exists]
+    [value, onChange]
   );
 
   const handleMapClick = useCallback(
@@ -216,10 +217,10 @@ export default function WorkLocationsMap({
   };
   const remove = (id: string) => onChange(value.filter((l) => l.id !== id));
 
-  return (
-    <div>
+  const suche = (
+    <>
       {/* ── Suche ── */}
-      <div className={`relative ${kompakt ? "mb-2.5" : "mb-3"}`}>
+      <div className={`relative ${kompakt ? "mb-2.5" : "mb-3"} ${breit ? "mb-4" : ""}`}>
         <Search
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
           style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.3)" }}
@@ -288,10 +289,15 @@ export default function WorkLocationsMap({
         )}
       </div>
 
+    </>
+  );
+
+  const karte = (
+    <>
       {/* ── Karte ── */}
       <div
-        className={`relative overflow-hidden ${kompakt ? "" : "rounded-3xl"}`}
-        style={kompakt ? undefined : { boxShadow: "0 18px 44px -26px rgba(26,26,46,0.55)" }}
+        className={`relative overflow-hidden ${kompakt || breit ? "" : "rounded-3xl"}`}
+        style={kompakt || breit ? undefined : { boxShadow: "0 18px 44px -26px rgba(26,26,46,0.55)" }}
       >
         {adding && (
           <div
@@ -339,12 +345,25 @@ export default function WorkLocationsMap({
         <MapAttribution />
       </div>
 
+    </>
+  );
+
+  const liste = (
+    <>
       {/* ── Gewählte Orte ── */}
       {value.length > 0 && (
-        <div className={kompakt ? "space-y-2.5" : "mt-4 space-y-2.5"}>
-          {/* In der Kompaktfassung trägt die umgebende Karte die Überschrift —
-              sonst stünde "Deine Arbeitsorte" zweimal untereinander. */}
-          {!kompakt && (
+        <div
+          className={
+            breit
+              ? "space-y-2.5"
+              : kompakt
+                ? "space-y-2.5"
+                : "mt-4 space-y-2.5"
+          }
+        >
+          {/* In Kompakt- und Bandfassung trägt die umgebende Karte die
+              Überschrift — sonst stünde "Deine Arbeitsorte" zweimal. */}
+          {!kompakt && !breit && (
             <p
               className="text-[10px] font-semibold uppercase tracking-[0.16em]"
               style={{ color: "rgba(26,26,46,0.4)" }}
@@ -410,6 +429,47 @@ export default function WorkLocationsMap({
           ))}
         </div>
       )}
+    </>
+  );
+
+  // Bandfassung: Karte links, Suche und gewählte Orte rechts daneben.
+  //
+  // Untereinander gestapelt wäre die Karte in einem 1340 px breiten Band
+  // 3,3-mal so breit wie hoch. Deutschland ist aber höher als breit — bei
+  // dieser Form füllt es nur ein Achtel der Fläche und liegt verloren in der
+  // Mitte. Nebeneinander bleibt die Karte bei etwa 2:1, und der Platz rechts
+  // trägt Inhalt statt Leere.
+  if (breit) {
+    return (
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="relative order-2 lg:order-1">{karte}</div>
+        <div
+          className="order-1 lg:order-2 px-6 pt-1 pb-6 lg:py-6 lg:px-6"
+          style={{ borderLeft: "none" }}
+        >
+          <div className="lg:sticky lg:top-4">
+            <p
+              className="text-[9.5px] font-semibold uppercase mb-1"
+              style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+            >
+              Deine Arbeitsorte
+            </p>
+            <p className="text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.5)" }}>
+              Tipp auf die Karte oder such einen Ort.
+            </p>
+            {suche}
+            {liste}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {suche}
+      {karte}
+      {liste}
     </div>
   );
 }

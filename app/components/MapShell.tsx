@@ -48,7 +48,11 @@ function GermanyMask() {
           // Exakt der Flächenton der Oberfläche (--color-surface).
           fillColor: "#F8F7F4",
           // Bewusst nicht deckend: die Umgebung bleibt als Andeutung erkennbar.
-          fillOpacity: 0.9,
+          // Fast deckend statt 0,9: in einem breiten Band ist Deutschland nur
+          // ein Ausschnitt in der Mitte, und bei 0,9 blieben England, Polen und
+          // die Ukraine gut lesbar. Die Karte soll Deutschland zeigen, nicht
+          // halb Europa.
+          fillOpacity: 0.97,
           weight: 0,
           interactive: false,
         }}

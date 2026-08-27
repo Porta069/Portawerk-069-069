@@ -354,7 +354,9 @@ export default function JobboersePage() {
               </div>
 
               {locLoaded ? (
-                <WorkLocationsMap value={locations} onChange={updateLocations} height={310} kompakt />
+                <div className="[&>div:last-child]:px-5 [&>div:last-child]:pb-5">
+                  <WorkLocationsMap value={locations} onChange={updateLocations} height={310} kompakt />
+                </div>
               ) : (
                 <div className="flex items-center justify-center py-16">
                   <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />

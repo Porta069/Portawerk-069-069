@@ -92,10 +92,26 @@ function ClickHandler({ onClick }: { onClick: (lat: number, lng: number) => void
   return null;
 }
 
-function FlyTo({ target }: { target: [number, number] | null }) {
+/**
+ * Fährt zum gesetzten Ort — und zwar auf den RADIUS, nicht auf eine feste
+ * Zoomstufe.
+ *
+ * Vorher stand hier `flyTo(target, 10)`. Bei Zoom 10 misst ein 25-km-Radius
+ * rund 470 px im Durchmesser; in einer 328 px breiten Karte lag der Kreis
+ * damit vollständig ausserhalb des Bildes. Man sah einen Stecknadelkopf und
+ * sonst nichts — der markierte Bereich war schlicht nicht zu sehen.
+ *
+ * `LatLng.toBounds` rechnet das Quadrat um den Punkt rein rechnerisch aus,
+ * ohne einen Kreis auf die Karte zu legen. Ein L.circle, der nicht auf der
+ * Karte liegt, hat weder _map noch _point — sein getBounds() greift intern
+ * darauf zu und wirft.
+ */
+function FlyTo({ target }: { target: { lat: number; lng: number; radiusKm: number } | null }) {
   const map = useMap();
   useEffect(() => {
-    if (target) map.flyTo(target, 10, { duration: 0.8 });
+    if (!target) return;
+    const bounds = L.latLng(target.lat, target.lng).toBounds(target.radiusKm * 2000);
+    map.flyToBounds(bounds, { padding: [24, 24], duration: 0.8 });
   }, [target, map]);
   return null;
 }
@@ -124,7 +140,7 @@ export default function WorkLocationsMap({
   const [showResults, setShowResults] = useState(false);
   const [adding, setAdding] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [flyTarget, setFlyTarget] = useState<[number, number] | null>(null);
+  const [flyTarget, setFlyTarget] = useState<{ lat: number; lng: number; radiusKm: number } | null>(null);
   const debRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced Nominatim-Suche (Rate-Limit-freundlich).
@@ -161,12 +177,15 @@ export default function WorkLocationsMap({
 
   const addLocation = useCallback(
     (lat: number, lng: number, label: string) => {
-      if (exists(lat, lng)) {
-        setFlyTarget([lat, lng]);
+      const vorhanden = value.find(
+        (l) => Math.abs(l.lat - lat) < 0.02 && Math.abs(l.lng - lng) < 0.02
+      );
+      if (vorhanden) {
+        setFlyTarget({ lat, lng, radiusKm: vorhanden.radiusKm });
         return;
       }
       onChange([...value, { id: uid(), label, lat, lng, radiusKm: 25 }]);
-      setFlyTarget([lat, lng]);
+      setFlyTarget({ lat, lng, radiusKm: 25 });
     },
     [value, onChange, exists]
   );
@@ -188,8 +207,13 @@ export default function WorkLocationsMap({
     addLocation(r.lat, r.lng, r.label);
   };
 
-  const setRadius = (id: string, radiusKm: number) =>
+  const setRadius = (id: string, radiusKm: number) => {
     onChange(value.map((l) => (l.id === id ? { ...l, radiusKm } : l)));
+    // Mitgehen: sonst wächst der Kreis aus dem Bild heraus und man zieht
+    // blind an einem Regler.
+    const ort = value.find((l) => l.id === id);
+    if (ort) setFlyTarget({ lat: ort.lat, lng: ort.lng, radiusKm });
+  };
   const remove = (id: string) => onChange(value.filter((l) => l.id !== id));
 
   return (
@@ -317,13 +341,17 @@ export default function WorkLocationsMap({
 
       {/* ── Gewählte Orte ── */}
       {value.length > 0 && (
-        <div className="mt-4 space-y-2.5">
-          <p
-            className="text-[10px] font-semibold uppercase tracking-[0.16em]"
-            style={{ color: "rgba(26,26,46,0.4)" }}
-          >
-            Deine Arbeitsorte ({value.length})
-          </p>
+        <div className={kompakt ? "space-y-2.5" : "mt-4 space-y-2.5"}>
+          {/* In der Kompaktfassung trägt die umgebende Karte die Überschrift —
+              sonst stünde "Deine Arbeitsorte" zweimal untereinander. */}
+          {!kompakt && (
+            <p
+              className="text-[10px] font-semibold uppercase tracking-[0.16em]"
+              style={{ color: "rgba(26,26,46,0.4)" }}
+            >
+              Deine Arbeitsorte ({value.length})
+            </p>
+          )}
           {value.map((l) => (
             <div
               key={l.id}

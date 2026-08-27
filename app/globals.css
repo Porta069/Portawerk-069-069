@@ -218,10 +218,14 @@ body {
    Hier deutlich entsättigt und aufgehellt, damit die Karte ruhig wirkt und
    der goldene Arbeitsradius klar davor steht. */
 .pw-map-tiles {
-  /* Zurückgenommen, aber nicht ausgewaschen: bei 0,42 Sättigung und 0,94
-     Kontrast war die Karte in einer schmalen Spalte kaum noch von einer
-     leeren Fläche zu unterscheiden. */
-  filter: saturate(0.58) brightness(1.02) contrast(1.04);
+  /* Ziel ist der ruhige, fast farblose Grundton moderner Karten: helles Land,
+     graue Strassen, gedämpftes Grün. Die Standardkacheln sind dafür viel zu
+     bunt — Autobahnen orange, Wälder kräftig grün, Bundesstrassen rot.
+
+     Vier Varianten am echten Kachelbild verglichen; diese Werte trafen den
+     Ton am besten. Deutlicher entsättigen ging nicht: darunter verschwinden
+     die Ortsnamen, und genau das war vorher das Problem. */
+  filter: saturate(0.26) brightness(1.09) contrast(0.92);
 }
 
 /* Leaflet-Steuerung an das Design angleichen. */

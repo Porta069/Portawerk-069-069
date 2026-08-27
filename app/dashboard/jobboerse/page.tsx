@@ -283,17 +283,127 @@ export default function JobboersePage() {
         </div>
       </section>
 
-      {/* ── Suchgebiet und Filter links, Ergebnisse rechts ──────────────────
-          Alles, womit man die Liste steuert, steht zusammen in einer Spalte:
-          Karte, gewählte Orte, Fahrzeit, Bedingungen, Bereiche. Vorher lagen
-          die Filter als waagerechte Leiste oben und die Karte rechts — die
-          Bedienelemente waren über drei Stellen verteilt.
+      {/* ── Karte oben, mittig ──────────────────────────────────────────────
+          Sie lag zuletzt in der linken Spalte über den Filtern. Zusammen mit
+          den gewählten Orten wurde die Spalte so hoch, dass die Filter darin
+          nur noch über einen eigenen Rollbalken erreichbar waren.
 
-          Die Spalte ist mit 440 px bewusst breit: bei 330 px lagen die
-          Ortsnamen so dicht beieinander, dass man beim Setzen eines
-          Arbeitsorts danebengetroffen hat. */}
+          Oben quer hat die Karte mehr Fläche, und die linke Spalte trägt nur
+          noch die Filter — die passen dann ohne Scrollen hinein. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[440px_minmax(0,1fr)] gap-7 items-start">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mb-6">
+          <div
+            className="rounded-3xl bg-white overflow-hidden"
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+          >
+            {locLoaded ? (
+              <WorkLocationsMap
+                value={locations}
+                onChange={updateLocations}
+                height={470}
+                breit
+              />
+            ) : (
+              <div className="flex items-center justify-center py-28">
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Filter links, Ergebnisse rechts ─────────────────────────────────
+          Bewusst ohne eigenen Rollbalken in der Spalte: die Filter sollen
+          vollständig zu sehen sein, sobald man bei ihnen ist. */}
+      <div className="vollbreite">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[268px_minmax(0,1fr)] gap-7 items-start">
+          <aside className="order-1 lg:sticky lg:top-[104px]">
+            <div
+              className="rounded-3xl bg-white overflow-hidden"
+              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+            >
+              <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
+                <p
+                  className="text-[9.5px] font-semibold uppercase"
+                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+                >
+                  Filter
+                </p>
+                {gefiltert && (
+                  <button
+                    type="button"
+                    onClick={resetAll}
+                    className="text-[11.5px] font-semibold"
+                    style={{ color: "#B47B18" }}
+                  >
+                    zurücksetzen
+                  </button>
+                )}
+              </div>
+
+              <div className="px-5 pb-5">
+                <p
+                  className="text-[9.5px] font-semibold uppercase mb-2.5"
+                  style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
+                >
+                  Maximale Fahrzeit
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {TRAVEL_STEPS.map((m) => (
+                    <ChipToggle
+                      key={m}
+                      label={`${m} Min.`}
+                      selected={maxTravel === m}
+                      onClick={() => setMaxTravel(maxTravel === m ? undefined : m)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
+                <p
+                  className="text-[9.5px] font-semibold uppercase mb-2.5"
+                  style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
+                >
+                  Rahmenbedingungen
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <ChipToggle
+                    label="Abends zuhause"
+                    selected={abendsZuhause}
+                    onClick={() => setAbendsZuhause((v) => !v)}
+                  />
+                  <ChipToggle
+                    label="Fahrzeit = Arbeitszeit"
+                    selected={fahrzeitArbeitszeit}
+                    onClick={() => setFahrzeitArbeitszeit((v) => !v)}
+                  />
+                </div>
+              </div>
+
+              {(katalog?.bereiche?.length ?? 0) > 0 && (
+                <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
+                  <p
+                    className="text-[9.5px] font-semibold uppercase mb-2.5"
+                    style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
+                  >
+                    Ausbildungsbereich
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(katalog?.bereiche ?? []).map((b) => (
+                      <ChipToggle
+                        key={b.value}
+                        label={b.label}
+                        selected={bereiche.includes(b.value)}
+                        onClick={() => toggleBereich(b.value)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
+
           <div className="min-w-0 order-2">
             {locLoaded && locations.length === 0 && (
               <div
@@ -395,127 +505,6 @@ export default function JobboersePage() {
               </div>
             )}
           </div>
-
-          {/* Steuerspalte: bleibt beim Scrollen stehen, solange sie ins
-              Fenster passt. Ohne die Höhenbegrenzung würde `sticky` bei
-              langer Filterliste gar nicht greifen. */}
-          <aside className="order-1 space-y-5 lg:sticky lg:top-[104px] lg:max-h-[calc(100vh-124px)] lg:overflow-y-auto lg:pb-2">
-            <div
-              className="rounded-3xl bg-white overflow-hidden"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
-            >
-              <div className="px-5 pt-5 pb-2">
-                <p
-                  className="text-[9.5px] font-semibold uppercase mb-1"
-                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                >
-                  Dein Suchgebiet
-                </p>
-                <p className="text-[12.5px] leading-snug" style={{ color: "rgba(26,26,46,0.5)" }}>
-                  Tipp auf die Karte oder such einen Ort.
-                </p>
-              </div>
-              {locLoaded ? (
-                <WorkLocationsMap
-                  value={locations}
-                  onChange={updateLocations}
-                  height={440}
-                  kompakt
-                />
-              ) : (
-                <div className="flex items-center justify-center py-24">
-                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
-                </div>
-              )}
-            </div>
-
-            {/* Filter — dieselbe Spalte, damit alles, was die Liste steuert,
-                an einer Stelle liegt. */}
-            <div
-              className="rounded-3xl bg-white overflow-hidden"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
-            >
-              <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
-                <p
-                  className="text-[9.5px] font-semibold uppercase"
-                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                >
-                  Filter
-                </p>
-                {gefiltert && (
-                  <button
-                    type="button"
-                    onClick={resetAll}
-                    className="text-[11.5px] font-semibold"
-                    style={{ color: "#B47B18" }}
-                  >
-                    zurücksetzen
-                  </button>
-                )}
-              </div>
-
-              <div className="px-5 pb-5">
-                <p
-                  className="text-[9.5px] font-semibold uppercase mb-2.5"
-                  style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
-                >
-                  Maximale Fahrzeit
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {TRAVEL_STEPS.map((m) => (
-                    <ChipToggle
-                      key={m}
-                      label={`bis ${m} Min.`}
-                      selected={maxTravel === m}
-                      onClick={() => setMaxTravel(maxTravel === m ? undefined : m)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
-                <p
-                  className="text-[9.5px] font-semibold uppercase mb-2.5"
-                  style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
-                >
-                  Rahmenbedingungen
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <ChipToggle
-                    label="Jeden Abend zuhause"
-                    selected={abendsZuhause}
-                    onClick={() => setAbendsZuhause((v) => !v)}
-                  />
-                  <ChipToggle
-                    label="Fahrzeit = Arbeitszeit"
-                    selected={fahrzeitArbeitszeit}
-                    onClick={() => setFahrzeitArbeitszeit((v) => !v)}
-                  />
-                </div>
-              </div>
-
-              {(katalog?.bereiche?.length ?? 0) > 0 && (
-                <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
-                  <p
-                    className="text-[9.5px] font-semibold uppercase mb-2.5"
-                    style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
-                  >
-                    Ausbildungsbereich
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {(katalog?.bereiche ?? []).map((b) => (
-                      <ChipToggle
-                        key={b.value}
-                        label={b.label}
-                        selected={bereiche.includes(b.value)}
-                        onClick={() => toggleBereich(b.value)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </aside>
         </div>
       </div>
 

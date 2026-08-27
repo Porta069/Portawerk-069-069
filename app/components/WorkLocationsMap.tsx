@@ -476,6 +476,39 @@ export default function WorkLocationsMap({
             </p>
             {suche}
             {liste}
+
+            {/* Solange kein Ort gesetzt ist, stand hier eine leere weisse
+                Fläche neben der Karte. Drei Zeilen erklären stattdessen, was
+                als Nächstes passiert. */}
+            {value.length === 0 && (
+              <ol className="mt-5 space-y-3">
+                {[
+                  "Ort suchen oder auf die Karte tippen",
+                  "Radius ziehen — 5 bis 150 km",
+                  "Passende Stellen erscheinen unten",
+                ].map((schritt, i) => (
+                  <li key={schritt} className="flex gap-3">
+                    <span
+                      className="flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                      style={{
+                        width: 22,
+                        height: 22,
+                        background: "rgba(232,168,56,0.16)",
+                        color: "#B47B18",
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span
+                      className="text-[13px] leading-snug pt-0.5"
+                      style={{ color: "rgba(26,26,46,0.6)" }}
+                    >
+                      {schritt}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
           </div>
         </div>
       </div>

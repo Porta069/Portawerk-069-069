@@ -252,7 +252,7 @@ export default function WorkLocationsMap({
             if (results.length) setShowResults(true);
           }}
           onBlur={() => setFocused(false)}
-          placeholder={kompakt ? "Ort oder PLZ suchen" : "Ort oder PLZ suchen — z. B. München oder 80331"}
+          placeholder={kompakt ? "Ort oder PLZ" : "Ort oder PLZ suchen — z. B. München oder 80331"}
           className={`w-full rounded-full text-[14px] pl-12 pr-11 py-3.5 outline-none transition-all duration-200 ${
             dunkel ? "text-white placeholder:text-white/30" : "bg-white text-primary placeholder:text-primary/25"
           }`}
@@ -349,7 +349,7 @@ export default function WorkLocationsMap({
             }
           >
             <Crosshair className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
-            {kompakt ? "Tipp auf die Karte" : "Tipp auf die Karte, um einen Arbeitsort zu setzen"}
+            {kompakt ? "Tipp auf deinen Ort" : "Tipp auf die Karte, um einen Arbeitsort zu setzen"}
           </div>
         )}
 

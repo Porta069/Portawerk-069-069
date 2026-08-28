@@ -217,6 +217,17 @@ body {
    Der Standardstil ist recht bunt: Autobahnen orange, Wälder kräftig grün.
    Hier deutlich entsättigt und aufgehellt, damit die Karte ruhig wirkt und
    der goldene Arbeitsradius klar davor steht. */
+/* Dunkle Kartenfassung.
+   Die Kacheln kommen als helles Bild; invertiert man sie, werden Strassen hell
+   auf dunkel — der Farbdreher stellt anschliessend die Farbrichtung wieder
+   her, sonst wäre Wasser orange. Stark entgraut und abgedunkelt, damit die
+   Karte zum Navy der Oberfläche passt statt gruen zu stechen.
+
+   Vier Varianten am echten Kachelbild verglichen; diese traf den Ton. */
+.pw-map-tiles-dunkel {
+  filter: invert(1) hue-rotate(180deg) grayscale(0.8) brightness(0.72) contrast(1.22);
+}
+
 .pw-map-tiles {
   /* Ziel ist der ruhige, fast farblose Grundton moderner Karten: helles Land,
      graue Strassen, gedämpftes Grün. Die Standardkacheln sind dafür viel zu

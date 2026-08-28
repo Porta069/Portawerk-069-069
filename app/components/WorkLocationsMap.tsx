@@ -122,6 +122,7 @@ export default function WorkLocationsMap({
   height = 400,
   kompakt = false,
   breit = false,
+  dunkel = false,
 }: {
   value: WorkLocation[];
   onChange: (locs: WorkLocation[]) => void;
@@ -140,6 +141,8 @@ export default function WorkLocationsMap({
    * und die gewählten Orte stehen nebeneinander statt untereinander.
    */
   breit?: boolean;
+  /** Fassung für dunkle Flächen — Karte, Suchfeld und Ortsliste in Navy/Gold. */
+  dunkel?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeoResult[]>([]);
@@ -228,7 +231,7 @@ export default function WorkLocationsMap({
       <div className={`relative ${kompakt ? "mx-5 mb-3" : "mb-3"} ${breit ? "mb-4" : ""}`}>
         <Search
           className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-          style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.3)" }}
+          style={{ color: focused ? "#E8A838" : dunkel ? "rgba(255,255,255,0.35)" : "rgba(26,26,46,0.3)" }}
         />
         <input
           value={query}
@@ -239,12 +242,19 @@ export default function WorkLocationsMap({
           }}
           onBlur={() => setFocused(false)}
           placeholder={kompakt ? "Ort oder PLZ suchen" : "Ort oder PLZ suchen — z. B. München oder 80331"}
-          className="w-full rounded-full bg-white text-primary text-[14px] pl-12 pr-11 py-3.5 outline-none transition-all duration-200 placeholder:text-primary/25"
+          className={`w-full rounded-full text-[14px] pl-12 pr-11 py-3.5 outline-none transition-all duration-200 ${
+            dunkel ? "text-white placeholder:text-white/30" : "bg-white text-primary placeholder:text-primary/25"
+          }`}
           style={{
-            border: `1.5px solid ${focused ? "#E8A838" : "#E9E7E1"}`,
+            background: dunkel ? "rgba(255,255,255,0.06)" : undefined,
+            border: `1.5px solid ${
+              focused ? "#E8A838" : dunkel ? "rgba(255,255,255,0.14)" : "#E9E7E1"
+            }`,
             boxShadow: focused
-              ? "0 0 0 4px rgba(232,168,56,0.12)"
-              : "0 2px 10px -6px rgba(26,26,46,0.14)",
+              ? "0 0 0 4px rgba(232,168,56,0.14)"
+              : dunkel
+                ? "none"
+                : "0 2px 10px -6px rgba(26,26,46,0.14)",
             fontFamily: "var(--font-sans)",
           }}
         />
@@ -268,8 +278,12 @@ export default function WorkLocationsMap({
 
         {showResults && results.length > 0 && (
           <div
-            className="absolute z-[20] left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white"
-            style={{ border: "1px solid #E9E7E1", boxShadow: "0 20px 40px -18px rgba(26,26,46,0.4)" }}
+            className="absolute z-[20] left-0 right-0 mt-2 overflow-hidden rounded-2xl"
+            style={
+              dunkel
+                ? { background: "#20203A", border: "1px solid rgba(255,255,255,0.14)", boxShadow: "0 24px 46px -18px rgba(0,0,0,0.7)" }
+                : { background: "#FFFFFF", border: "1px solid #E9E7E1", boxShadow: "0 20px 40px -18px rgba(26,26,46,0.4)" }
+            }
           >
             {results.map((r, i) => (
               <button
@@ -277,8 +291,8 @@ export default function WorkLocationsMap({
                 type="button"
                 onClick={() => pickResult(r)}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-[14px] transition-colors"
-                style={{ color: "rgba(26,26,46,0.82)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.08)")}
+                style={{ color: dunkel ? "rgba(255,255,255,0.85)" : "rgba(26,26,46,0.82)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(232,168,56,0.14)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
                 <span
@@ -317,14 +331,18 @@ export default function WorkLocationsMap({
         {value.length === 0 && !adding && (
           <div
             className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
-            style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)", boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)" }}
+            style={
+              dunkel
+                ? { background: "rgba(18,18,31,0.88)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.12)" }
+                : { background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)", boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)" }
+            }
           >
             <Crosshair className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
             {kompakt ? "Tipp auf die Karte" : "Tipp auf die Karte, um einen Arbeitsort zu setzen"}
           </div>
         )}
 
-        <MapShell height={height} fitGermany>
+        <MapShell height={height} fitGermany dunkel={dunkel}>
           <ClickHandler onClick={handleMapClick} />
           <FlyTo target={flyTarget} />
           <MapZoom />
@@ -379,11 +397,13 @@ export default function WorkLocationsMap({
           {value.map((l) => (
             <div
               key={l.id}
-              className={kompakt ? "rounded-xl px-3 py-2.5" : "rounded-2xl bg-white p-4"}
+              className={kompakt || dunkel ? "rounded-xl px-3.5 py-3" : "rounded-2xl bg-white p-4"}
               style={
-                kompakt
-                  ? { background: "rgba(232,168,56,0.07)", border: "1px solid rgba(232,168,56,0.28)" }
-                  : { border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }
+                dunkel
+                  ? { background: "rgba(232,168,56,0.1)", border: "1px solid rgba(232,168,56,0.3)" }
+                  : kompakt
+                    ? { background: "rgba(232,168,56,0.07)", border: "1px solid rgba(232,168,56,0.28)" }
+                    : { border: "1.5px solid #E9E7E1", boxShadow: "0 2px 10px -8px rgba(26,26,46,0.2)" }
               }
             >
               <div className={`flex items-center gap-3 ${kompakt ? "mb-2" : "mb-3"}`}>
@@ -396,15 +416,19 @@ export default function WorkLocationsMap({
                   <MapPin className={kompakt ? "w-3.5 h-3.5" : "w-4 h-4"} style={{ color: "#B47B18" }} />
                 </span>
                 <span
-                  className={`font-semibold text-primary truncate flex-1 ${
-                    kompakt ? "text-[13px]" : "text-[14px]"
-                  }`}
+                  className={`font-semibold truncate flex-1 ${
+                    kompakt || dunkel ? "text-[13px]" : "text-[14px]"
+                  } ${dunkel ? "text-white" : "text-primary"}`}
                 >
                   {l.label}
                 </span>
                 <span
                   className="rounded-full px-2.5 py-1 text-[12px] font-bold tabular-nums flex-shrink-0"
-                  style={{ background: "rgba(26,26,46,0.06)", color: "#1A1A2E" }}
+                  style={
+                    dunkel
+                      ? { background: "rgba(232,168,56,0.22)", color: "#E8A838" }
+                      : { background: "rgba(26,26,46,0.06)", color: "#1A1A2E" }
+                  }
                 >
                   {l.radiusKm} km
                 </span>
@@ -413,9 +437,11 @@ export default function WorkLocationsMap({
                   onClick={() => remove(l.id)}
                   aria-label={`${l.label} entfernen`}
                   className="flex-shrink-0 transition-colors"
-                  style={{ color: "rgba(26,26,46,0.3)" }}
+                  style={{ color: dunkel ? "rgba(255,255,255,0.4)" : "rgba(26,26,46,0.3)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#EF4444")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,46,0.3)")}
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = dunkel ? "rgba(255,255,255,0.4)" : "rgba(26,26,46,0.3)")
+                  }
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -433,11 +459,16 @@ export default function WorkLocationsMap({
                   accentColor: "#E8A838",
                   background: `linear-gradient(to right, #E8A838 ${
                     ((l.radiusKm - 5) / 145) * 100
-                  }%, #E9E7E1 ${((l.radiusKm - 5) / 145) * 100}%)`,
+                  }%, ${dunkel ? "rgba(255,255,255,0.16)" : "#E9E7E1"} ${
+                    ((l.radiusKm - 5) / 145) * 100
+                  }%)`,
                 }}
               />
               {!kompakt && (
-                <div className="flex justify-between mt-1.5 text-[10px] tabular-nums" style={{ color: "rgba(26,26,46,0.35)" }}>
+                <div
+                  className="flex justify-between mt-1.5 text-[10px] tabular-nums"
+                  style={{ color: dunkel ? "rgba(255,255,255,0.35)" : "rgba(26,26,46,0.35)" }}
+                >
                   <span>5 km</span>
                   <span>150 km</span>
                 </div>
@@ -467,11 +498,17 @@ export default function WorkLocationsMap({
           <div className="lg:sticky lg:top-4">
             <p
               className="text-[9.5px] font-semibold uppercase mb-1"
-              style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
+              style={{
+                color: dunkel ? "rgba(255,255,255,0.45)" : "rgba(26,26,46,0.42)",
+                letterSpacing: "0.19em",
+              }}
             >
               Deine Arbeitsorte
             </p>
-            <p className="text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.5)" }}>
+            <p
+              className="text-[13px] mb-4"
+              style={{ color: dunkel ? "rgba(255,255,255,0.5)" : "rgba(26,26,46,0.5)" }}
+            >
               Tipp auf die Karte oder such einen Ort.
             </p>
             {suche}
@@ -493,15 +530,15 @@ export default function WorkLocationsMap({
                       style={{
                         width: 22,
                         height: 22,
-                        background: "rgba(232,168,56,0.16)",
-                        color: "#B47B18",
+                        background: "rgba(232,168,56,0.18)",
+                        color: "#E8A838",
                       }}
                     >
                       {i + 1}
                     </span>
                     <span
                       className="text-[13px] leading-snug pt-0.5"
-                      style={{ color: "rgba(26,26,46,0.6)" }}
+                      style={{ color: dunkel ? "rgba(255,255,255,0.65)" : "rgba(26,26,46,0.6)" }}
                     >
                       {schritt}
                     </span>

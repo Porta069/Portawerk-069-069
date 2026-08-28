@@ -201,7 +201,7 @@ export default function JobboersePage() {
           Kopfleiste. Vorher gingen beide Flächen ineinander über und das Band
           verschwand optisch in der Navigation — man übersah die ganze
           Sektion. */}
-      <section className="vollbreite relative overflow-hidden -mt-10 mb-7">
+      <section className="vollbreite relative overflow-hidden -mt-10 mb-9">
         <Image
           src="/images/elektriker-werkstatt.jpg"
           alt=""
@@ -283,228 +283,270 @@ export default function JobboersePage() {
         </div>
       </section>
 
-      {/* ── Karte oben, mittig ──────────────────────────────────────────────
-          Sie lag zuletzt in der linken Spalte über den Filtern. Zusammen mit
-          den gewählten Orten wurde die Spalte so hoch, dass die Filter darin
-          nur noch über einen eigenen Rollbalken erreichbar waren.
-
-          Oben quer hat die Karte mehr Fläche, und die linke Spalte trägt nur
-          noch die Filter — die passen dann ohne Scrollen hinein. */}
+      {/* ── Suchgebiet ──────────────────────────────────────────────────────
+          Dunkles Panel, das aus dem Suchband herauswächst — dieselbe Bauform
+          wie die Verdienen-Kachel der Übersicht. Die Karte darin ist ebenfalls
+          dunkel: Strassen hell auf Navy, Deutschland als einzige belebte
+          Fläche, der Arbeitsradius in Gold. Auf einer hellen Karte in einem
+          hellen Kasten war Deutschland ein blasser Fleck in viel Weiss. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mb-6">
-          <div
-            className="rounded-3xl bg-white overflow-hidden"
-            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+          <section
+            className="relative overflow-hidden rounded-3xl mb-10"
+            style={{ background: "#1A1A2E" }}
           >
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none z-[5]"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(0deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)," +
+                  "repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)",
+              }}
+            />
+
+            <div className="relative z-10 px-6 sm:px-8 pt-6 pb-5">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+                <p
+                  className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase"
+                  style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+                >
+                  <span className="w-5 h-px" style={{ background: "#E8A838" }} />
+                  Dein Suchgebiet
+                </p>
+                {/* Nur wenn es etwas zu zählen gibt — der Hinweis "tipp auf die
+                    Karte" steht schon neben dem Suchfeld rechts. */}
+                {locations.length > 0 && (
+                  <p className="text-[13px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+                    {locations.length} {locations.length === 1 ? "Ort" : "Orte"} — Änderungen gelten sofort.
+                  </p>
+                )}
+              </div>
+            </div>
+
             {locLoaded ? (
               <WorkLocationsMap
                 value={locations}
                 onChange={updateLocations}
-                height={470}
+                height={430}
                 breit
+                dunkel
               />
             ) : (
               <div className="flex items-center justify-center py-28">
                 <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
 
-      {/* ── Filter links, Ergebnisse rechts ─────────────────────────────────
-          Bewusst ohne eigenen Rollbalken in der Spalte: die Filter sollen
-          vollständig zu sehen sein, sobald man bei ihnen ist. */}
+      {/* ── Filter ──────────────────────────────────────────────────────────
+          Eine Zeile auf der Fläche, kein Kasten. Vorher lagen dieselben zehn
+          Schalter mal in einer Seitenspalte, mal in einem weissen Balken —
+          beides war mehr Rahmen als Inhalt. Aufbau wie "So läuft's" auf der
+          Übersicht: Überschrift, Haarlinie, Inhalt. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[268px_minmax(0,1fr)] gap-7 items-start">
-          <aside className="order-1 lg:sticky lg:top-[104px]">
-            <div
-              className="rounded-3xl bg-white overflow-hidden"
-              style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 14px 36px -28px rgba(26,26,46,0.6)" }}
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mb-10">
+          <div className="flex items-center gap-4 mb-5">
+            <span
+              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              style={{ color: "#B47B18", letterSpacing: "0.2em" }}
             >
-              <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
-                <p
-                  className="text-[9.5px] font-semibold uppercase"
-                  style={{ color: "rgba(26,26,46,0.42)", letterSpacing: "0.19em" }}
-                >
-                  Filter
-                </p>
-                {gefiltert && (
-                  <button
-                    type="button"
-                    onClick={resetAll}
-                    className="text-[11.5px] font-semibold"
-                    style={{ color: "#B47B18" }}
-                  >
-                    zurücksetzen
-                  </button>
-                )}
-              </div>
+              Filter
+            </span>
+            <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+            {gefiltert && (
+              <button
+                type="button"
+                onClick={resetAll}
+                className="text-[12px] font-semibold flex-shrink-0"
+                style={{ color: "#B47B18" }}
+              >
+                zurücksetzen
+              </button>
+            )}
+          </div>
 
-              <div className="px-5 pb-5">
+          <div className="flex flex-wrap items-start gap-x-10 gap-y-5">
+            <div>
+              <p
+                className="text-[9.5px] font-semibold uppercase mb-2.5"
+                style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
+              >
+                Maximale Fahrzeit
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {TRAVEL_STEPS.map((m) => (
+                  <ChipToggle
+                    key={m}
+                    label={`bis ${m} Min.`}
+                    selected={maxTravel === m}
+                    onClick={() => setMaxTravel(maxTravel === m ? undefined : m)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p
+                className="text-[9.5px] font-semibold uppercase mb-2.5"
+                style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
+              >
+                Rahmenbedingungen
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <ChipToggle
+                  label="Jeden Abend zuhause"
+                  selected={abendsZuhause}
+                  onClick={() => setAbendsZuhause((v) => !v)}
+                />
+                <ChipToggle
+                  label="Fahrzeit = Arbeitszeit"
+                  selected={fahrzeitArbeitszeit}
+                  onClick={() => setFahrzeitArbeitszeit((v) => !v)}
+                />
+              </div>
+            </div>
+
+            {(katalog?.bereiche?.length ?? 0) > 0 && (
+              <div className="min-w-0">
                 <p
                   className="text-[9.5px] font-semibold uppercase mb-2.5"
                   style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
                 >
-                  Maximale Fahrzeit
+                  Ausbildungsbereich
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {TRAVEL_STEPS.map((m) => (
+                  {(katalog?.bereiche ?? []).map((b) => (
                     <ChipToggle
-                      key={m}
-                      label={`${m} Min.`}
-                      selected={maxTravel === m}
-                      onClick={() => setMaxTravel(maxTravel === m ? undefined : m)}
+                      key={b.value}
+                      label={b.label}
+                      selected={bereiche.includes(b.value)}
+                      onClick={() => toggleBereich(b.value)}
                     />
                   ))}
                 </div>
               </div>
-
-              <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
-                <p
-                  className="text-[9.5px] font-semibold uppercase mb-2.5"
-                  style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
-                >
-                  Rahmenbedingungen
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <ChipToggle
-                    label="Abends zuhause"
-                    selected={abendsZuhause}
-                    onClick={() => setAbendsZuhause((v) => !v)}
-                  />
-                  <ChipToggle
-                    label="Fahrzeit = Arbeitszeit"
-                    selected={fahrzeitArbeitszeit}
-                    onClick={() => setFahrzeitArbeitszeit((v) => !v)}
-                  />
-                </div>
-              </div>
-
-              {(katalog?.bereiche?.length ?? 0) > 0 && (
-                <div className="px-5 py-5" style={{ borderTop: "1px solid #F0EDE6" }}>
-                  <p
-                    className="text-[9.5px] font-semibold uppercase mb-2.5"
-                    style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
-                  >
-                    Ausbildungsbereich
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {(katalog?.bereiche ?? []).map((b) => (
-                      <ChipToggle
-                        key={b.value}
-                        label={b.label}
-                        selected={bereiche.includes(b.value)}
-                        onClick={() => toggleBereich(b.value)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </aside>
-
-          <div className="min-w-0 order-2">
-            {locLoaded && locations.length === 0 && (
-              <div
-                className="flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3.5 mb-4"
-                style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
-              >
-                <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: "#B47B18" }} />
-                <p className="text-[13px] leading-relaxed flex-1 min-w-[14rem]" style={{ color: "rgba(26,26,46,0.7)" }}>
-                  <strong>Noch kein Arbeitsort gesetzt.</strong> Ohne ihn keine
-                  Fahrzeiten und keine Sortierung nach Nähe.
-                </p>
-              </div>
-            )}
-
-            {!loading && ausgeblendet && ausgeblendet.gesamt > 0 && (
-              <div
-                className="rounded-2xl px-4 py-3.5 mb-4"
-                style={{ background: "white", border: "1px solid #E9E7E1" }}
-              >
-                <p className="text-[13px] text-primary">
-                  <EyeOff className="w-3.5 h-3.5 inline-block mr-1.5 -mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }} />
-                  <strong className="font-semibold">
-                    {ausgeblendet.gesamt} {ausgeblendet.gesamt === 1 ? "Stelle" : "Stellen"}
-                  </strong>{" "}
-                  {ausgeblendet.gesamt === 1 ? "wird" : "werden"} nicht angezeigt, weil dein
-                  Profil eine Voraussetzung nicht erfüllt:
-                </p>
-                <p className="text-[12.5px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
-                  {ausgeblendet.gruende.map((g) => `${g.anzahl}× ${g.label}`).join(" · ")}
-                </p>
-                <Link
-                  href="/einstellungen"
-                  className="inline-block text-[12.5px] font-semibold mt-2 underline-offset-2 hover:underline"
-                  style={{ color: "#B47B18" }}
-                >
-                  Angaben im Profil anpassen
-                </Link>
-              </div>
-            )}
-
-            {loading ? (
-              <div className="space-y-4">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse rounded-3xl bg-white"
-                    style={{ height: 190, border: "1.5px solid #EDEAE4" }}
-                  />
-                ))}
-              </div>
-            ) : jobs.length === 0 ? (
-              <div
-                className="rounded-3xl px-6 py-14 text-center"
-                style={{
-                  background: "linear-gradient(158deg, #FFFFFF 0%, #FCFAF4 56%, #F6F0E2 100%)",
-                  border: "1.5px solid #EDE8DC",
-                }}
-              >
-                <span
-                  className="inline-flex items-center justify-center rounded-full mb-4"
-                  style={{ width: 52, height: 52, background: "rgba(232,168,56,0.14)" }}
-                >
-                  <Search className="w-6 h-6" style={{ color: "#B47B18" }} />
-                </span>
-                <p className="text-[16px] font-bold text-primary mb-1.5">
-                  {gefiltert ? "Keine Stelle passt zu diesen Filtern" : "Noch keine Stellen in deiner Nähe"}
-                </p>
-                <p className="text-[13.5px] mb-5 max-w-[26rem] mx-auto" style={{ color: "rgba(26,26,46,0.5)" }}>
-                  {gefiltert
-                    ? "Erweiter die Fahrzeit oder nimm einen Bereich aus dem Filter."
-                    : "Setz deinen Arbeitsort auf der Karte — dann zeigen wir dir, was im Umkreis frei ist."}
-                </p>
-                {gefiltert && (
-                  <button
-                    type="button"
-                    onClick={resetAll}
-                    className="rounded-full px-5 py-3 text-[14px] font-bold"
-                    style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-                  >
-                    Filter zurücksetzen
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {jobs.map((job) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    highlight={job.recommended}
-                    footer={<ApplyButton jobId={job.id} />}
-                    onOpen={setDetailJob}
-                    onToggleFavorite={toggleFavorite}
-                    compareSelected={compareIds.includes(job.id)}
-                    onToggleCompare={toggleCompare}
-                    workLocations={locations}
-                  />
-                ))}
-              </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* ── Ergebnisse ──────────────────────────────────────────────────────
+          Über die volle Breite, eine Spalte. Keine Seitenspalte mehr neben den
+          Stellen — die Steuerung steht komplett darüber. */}
+      <div className="vollbreite">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+          <div className="flex items-center gap-4 mb-5">
+            <span
+              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            >
+              {loading ? "Stellen" : `${jobs.length} ${jobs.length === 1 ? "Stelle" : "Stellen"}`}
+            </span>
+            <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+          </div>
+
+          {locLoaded && locations.length === 0 && (
+            <div
+              className="flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3.5 mb-4"
+              style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
+            >
+              <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: "#B47B18" }} />
+              <p className="text-[13px] leading-relaxed flex-1 min-w-[14rem]" style={{ color: "rgba(26,26,46,0.7)" }}>
+                <strong>Noch kein Arbeitsort gesetzt.</strong> Ohne ihn keine
+                Fahrzeiten und keine Sortierung nach Nähe.
+              </p>
+            </div>
+          )}
+
+          {!loading && ausgeblendet && ausgeblendet.gesamt > 0 && (
+            <div
+              className="rounded-2xl px-4 py-3.5 mb-4"
+              style={{ background: "white", border: "1px solid #E9E7E1" }}
+            >
+              <p className="text-[13px] text-primary">
+                <EyeOff className="w-3.5 h-3.5 inline-block mr-1.5 -mt-0.5" style={{ color: "rgba(26,26,46,0.4)" }} />
+                <strong className="font-semibold">
+                  {ausgeblendet.gesamt} {ausgeblendet.gesamt === 1 ? "Stelle" : "Stellen"}
+                </strong>{" "}
+                {ausgeblendet.gesamt === 1 ? "wird" : "werden"} nicht angezeigt, weil dein
+                Profil eine Voraussetzung nicht erfüllt:
+              </p>
+              <p className="text-[12.5px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                {ausgeblendet.gruende.map((g) => `${g.anzahl}× ${g.label}`).join(" · ")}
+              </p>
+              <Link
+                href="/einstellungen"
+                className="inline-block text-[12.5px] font-semibold mt-2 underline-offset-2 hover:underline"
+                style={{ color: "#B47B18" }}
+              >
+                Angaben im Profil anpassen
+              </Link>
+            </div>
+          )}
+
+          {loading ? (
+            <div className="space-y-4">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse rounded-3xl bg-white"
+                  style={{ height: 190, border: "1.5px solid #EDEAE4" }}
+                />
+              ))}
+            </div>
+          ) : jobs.length === 0 ? (
+            <div
+              className="rounded-3xl px-6 py-16 text-center"
+              style={{
+                background: "linear-gradient(158deg, #FFFFFF 0%, #FCFAF4 56%, #F6F0E2 100%)",
+                border: "1.5px solid #EDE8DC",
+              }}
+            >
+              <span
+                className="inline-flex items-center justify-center rounded-full mb-4"
+                style={{ width: 52, height: 52, background: "rgba(232,168,56,0.14)" }}
+              >
+                <Search className="w-6 h-6" style={{ color: "#B47B18" }} />
+              </span>
+              <p className="text-[16px] font-bold text-primary mb-1.5">
+                {gefiltert ? "Keine Stelle passt zu diesen Filtern" : "Noch keine Stellen in deiner Nähe"}
+              </p>
+              <p className="text-[13.5px] mb-5 max-w-[26rem] mx-auto" style={{ color: "rgba(26,26,46,0.5)" }}>
+                {gefiltert
+                  ? "Erweiter die Fahrzeit oder nimm einen Bereich aus dem Filter."
+                  : "Setz deinen Arbeitsort auf der Karte — dann zeigen wir dir, was im Umkreis frei ist."}
+              </p>
+              {gefiltert && (
+                <button
+                  type="button"
+                  onClick={resetAll}
+                  className="rounded-full px-5 py-3 text-[14px] font-bold"
+                  style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+                >
+                  Filter zurücksetzen
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {jobs.map((job) => (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  highlight={job.recommended}
+                  footer={<ApplyButton jobId={job.id} />}
+                  onOpen={setDetailJob}
+                  onToggleFavorite={toggleFavorite}
+                  compareSelected={compareIds.includes(job.id)}
+                  onToggleCompare={toggleCompare}
+                  workLocations={locations}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

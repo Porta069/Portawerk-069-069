@@ -38,7 +38,7 @@ const WORLD: [number, number][] = [
  *
  * Nicht anklickbar, damit Kartenklicks weiterhin durchgehen.
  */
-function GermanyMask() {
+function GermanyMask({ dunkel = false }: { dunkel?: boolean }) {
   return (
     <>
       <Polygon
@@ -46,7 +46,7 @@ function GermanyMask() {
         pathOptions={{
           color: "transparent",
           // Exakt der Flächenton der Oberfläche (--color-surface).
-          fillColor: "#F8F7F4",
+          fillColor: dunkel ? "#1A1A2E" : "#F8F7F4",
           // Bewusst nicht deckend: die Umgebung bleibt als Andeutung erkennbar.
           // Fast deckend statt 0,9: in einem breiten Band ist Deutschland nur
           // ein Ausschnitt in der Mitte, und bei 0,9 blieben England, Polen und
@@ -61,9 +61,11 @@ function GermanyMask() {
       <Polyline
         positions={GERMANY_OUTLINE}
         pathOptions={{
-          color: "#FFFFFF",
-          weight: 7,
-          opacity: 0.9,
+          // Auf dunklem Grund trägt kein weisser Halo — dort markiert Gold die
+          // Grenze, passend zum Rest der Oberfläche.
+          color: dunkel ? "#E8A838" : "#FFFFFF",
+          weight: dunkel ? 4 : 7,
+          opacity: dunkel ? 0.5 : 0.9,
           lineJoin: "round",
           interactive: false,
           className: "pw-de-outline",
@@ -73,9 +75,9 @@ function GermanyMask() {
       <Polyline
         positions={GERMANY_OUTLINE}
         pathOptions={{
-          color: "#1A1A2E",
+          color: dunkel ? "#FFFFFF" : "#1A1A2E",
           weight: 1.4,
-          opacity: 0.26,
+          opacity: dunkel ? 0.3 : 0.26,
           lineJoin: "round",
           interactive: false,
         }}
@@ -101,6 +103,7 @@ export default function MapShell({
   /** Beim Start ganz Deutschland einpassen (statt fester Zoomstufe). */
   fitGermany = false,
   scrollWheelZoom = true,
+  dunkel = false,
   children,
 }: {
   height?: number;
@@ -108,6 +111,13 @@ export default function MapShell({
   zoom?: number;
   fitGermany?: boolean;
   scrollWheelZoom?: boolean;
+  /**
+   * Dunkle Fassung für dunkle Flächen: die Kacheln werden invertiert und
+   * entsättigt, die Maske aussen wird navy statt Papierton, die Landeskante
+   * gold statt weiss. Ohne das läge ein weisses Rechteck in einem navyfarbenen
+   * Panel — der Bruch, den man sofort sieht.
+   */
+  dunkel?: boolean;
   children?: React.ReactNode;
 }) {
   return (
@@ -121,10 +131,14 @@ export default function MapShell({
       scrollWheelZoom={scrollWheelZoom}
       zoomControl={false}
       attributionControl={false}
-      style={{ height, width: "100%", background: "#F8F7F4" }}
+      style={{ height, width: "100%", background: dunkel ? "#1A1A2E" : "#F8F7F4" }}
     >
-      <TileLayer url={TILE_URL} maxZoom={MAX_ZOOM} className="pw-map-tiles" />
-      <GermanyMask />
+      <TileLayer
+        url={TILE_URL}
+        maxZoom={MAX_ZOOM}
+        className={dunkel ? "pw-map-tiles-dunkel" : "pw-map-tiles"}
+      />
+      <GermanyMask dunkel={dunkel} />
       <FitGermany enabled={fitGermany} />
       {children}
     </MapContainer>

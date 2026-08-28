@@ -23,10 +23,13 @@ export default function Sortierung<T extends string>({
   value,
   options,
   onChange,
+  hell = false,
 }: {
   value: T;
   options: SortOption<T>[];
   onChange: (v: T) => void;
+  /** Fassung für helle Flächen — der Knopf steht jetzt in der weissen Suchleiste. */
+  hell?: boolean;
 }) {
   const [offen, setOffen] = useState(false);
   const [fokus, setFokus] = useState(0);
@@ -94,18 +97,30 @@ export default function Sortierung<T extends string>({
         onClick={() => setOffen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={offen}
-        className="w-full sm:w-auto inline-flex items-center justify-between sm:justify-start gap-2.5 rounded-full text-[14px] font-semibold text-white pl-5 pr-4 py-4 transition-colors"
-        style={{
-          background: offen ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.09)",
-          border: "1px solid rgba(255,255,255,0.18)",
-        }}
+        className={`w-full sm:w-auto inline-flex items-center justify-between sm:justify-start gap-2.5 text-[14px] font-semibold px-5 py-4 transition-colors ${
+          hell ? "rounded-2xl text-primary" : "rounded-full text-white"
+        }`}
+        style={
+          hell
+            ? {
+                background: offen ? "rgba(232,168,56,0.14)" : "#FBFAF7",
+                border: `1px solid ${offen ? "rgba(232,168,56,0.5)" : "#EDE8DC"}`,
+              }
+            : {
+                background: offen ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.09)",
+                border: "1px solid rgba(255,255,255,0.18)",
+              }
+        }
       >
-        <ArrowUpDown className="w-4 h-4 flex-shrink-0" style={{ color: "rgba(255,255,255,0.55)" }} />
+        <ArrowUpDown
+          className="w-4 h-4 flex-shrink-0"
+          style={{ color: hell ? "rgba(26,26,46,0.4)" : "rgba(255,255,255,0.55)" }}
+        />
         <span className="whitespace-nowrap">{aktiv.label}</span>
         <ChevronDown
           className="w-4 h-4 flex-shrink-0 transition-transform duration-200"
           style={{
-            color: "rgba(255,255,255,0.5)",
+            color: hell ? "rgba(26,26,46,0.4)" : "rgba(255,255,255,0.5)",
             transform: offen ? "rotate(180deg)" : "none",
           }}
         />

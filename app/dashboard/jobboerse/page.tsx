@@ -222,8 +222,8 @@ export default function JobboersePage() {
         {/* Goldkante als klare Trennung zur Kopfleiste. */}
         <div aria-hidden className="absolute top-0 inset-x-0" style={{ height: 3, background: "#E8A838" }} />
 
-        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-9 sm:py-11">
-          <div className="flex flex-wrap items-end justify-between gap-6 mb-6">
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 pt-10 pb-16 sm:pt-12 sm:pb-20">
+          <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="min-w-0">
               <h1
                 className="text-white font-black leading-tight"
@@ -252,19 +252,32 @@ export default function JobboersePage() {
               </div>
             )}
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-col sm:flex-row gap-2.5">
+      {/* Suchleiste liegt auf der Unterkante des Banners, halb im Foto, halb
+          auf der Fläche. Im Banner selbst ging sie zwischen Überschrift und
+          Bildrand unter — hier ist sie das erste, was ins Auge fällt.
+
+          Bewusst ein eigener Container: das Banner braucht `overflow-hidden`
+          für sein Foto und würde alles abschneiden, was übersteht. */}
+      <div className="vollbreite relative z-20 -mt-[4.5rem] mb-9">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+          <div
+            className="flex flex-col sm:flex-row gap-3 rounded-3xl bg-white p-3"
+            style={{ boxShadow: "0 28px 60px -30px rgba(26,26,46,0.85)" }}
+          >
             <div className="relative flex-1">
               <Search
-                className="absolute left-5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none"
-                style={{ color: "rgba(26,26,46,0.3)" }}
+                className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none"
+                style={{ color: "rgba(26,26,46,0.32)" }}
               />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Beruf, Betrieb oder Ort suchen …"
-                className="w-full rounded-full bg-white text-primary text-[15px] pr-11 py-4 outline-none placeholder:text-primary/30"
-                style={{ paddingLeft: 52, boxShadow: "0 20px 44px -22px rgba(0,0,0,0.95)" }}
+                className="w-full rounded-2xl text-primary text-[16px] pr-11 py-4 outline-none placeholder:text-primary/30"
+                style={{ paddingLeft: 54, background: "#FBFAF7" }}
               />
               {query && (
                 <button
@@ -278,10 +291,10 @@ export default function JobboersePage() {
               )}
             </div>
 
-            <Sortierung value={sort} options={SORTS} onChange={setSort} />
+            <Sortierung value={sort} options={SORTS} onChange={setSort} hell />
           </div>
         </div>
-      </section>
+      </div>
 
       {/* ── Suchgebiet ──────────────────────────────────────────────────────
           Dunkles Panel, das aus dem Suchband herauswächst — dieselbe Bauform
@@ -292,24 +305,14 @@ export default function JobboersePage() {
       <div className="vollbreite">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
           <section
-            className="relative overflow-hidden rounded-3xl mb-10"
-            style={{ background: "#1A1A2E" }}
+            className="relative overflow-hidden rounded-3xl bg-white mb-10"
+            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 16px 40px -30px rgba(26,26,46,0.6)" }}
           >
-            <div
-              aria-hidden
-              className="absolute inset-0 pointer-events-none z-[5]"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(0deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)," +
-                  "repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)",
-              }}
-            />
-
             <div className="relative z-10 px-6 sm:px-8 pt-6 pb-5">
               <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
                 <p
                   className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase"
-                  style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+                  style={{ color: "#B47B18", letterSpacing: "0.22em" }}
                 >
                   <span className="w-5 h-px" style={{ background: "#E8A838" }} />
                   Dein Suchgebiet
@@ -317,7 +320,7 @@ export default function JobboersePage() {
                 {/* Nur wenn es etwas zu zählen gibt — der Hinweis "tipp auf die
                     Karte" steht schon neben dem Suchfeld rechts. */}
                 {locations.length > 0 && (
-                  <p className="text-[13px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+                  <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
                     {locations.length} {locations.length === 1 ? "Ort" : "Orte"} — Änderungen gelten sofort.
                   </p>
                 )}
@@ -330,7 +333,6 @@ export default function JobboersePage() {
                 onChange={updateLocations}
                 height={430}
                 breit
-                dunkel
               />
             ) : (
               <div className="flex items-center justify-center py-28">

@@ -218,8 +218,6 @@ export default function JobboersePage() {
               "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 42%, rgba(20,20,36,0.6) 100%)",
           }}
         />
-        <div aria-hidden className="absolute top-0 inset-x-0" style={{ height: 3, background: "#E8A838" }} />
-
         <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 pt-8 pb-14">
           <h1
             className="text-white font-black leading-tight"
@@ -265,15 +263,15 @@ export default function JobboersePage() {
         </div>
       </div>
 
-      {/* ── Stellen links, Steuerung rechts ─────────────────────────────────
-          Die Liste ist der Zweck der Seite und steht deshalb an erster
-          Leseposition, auf gleicher Höhe wie die Karte. Vorher lag sie unter
-          rund 1200 px Vorlauf: Banner, Suche, Kartenpanel, Filterblock. Karte
-          und Filter liegen jetzt daneben statt davor. */}
+      {/* ── Steuerung links, Stellen rechts ─────────────────────────────────
+          Karte und Filter stehen zusammen in einer klebenden Spalte, die
+          Stellen daneben. Entscheidend ist nicht die Seite, sondern dass beide
+          auf gleicher Höhe beginnen: vorher lag die Liste unter rund 1200 px
+          Vorlauf aus Banner, Suche, Kartenpanel und Filterblock. */}
       <div className="vollbreite">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[minmax(0,1fr)_400px] gap-8 items-start">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid lg:grid-cols-[400px_minmax(0,1fr)] gap-8 items-start">
           {/* ── Liste ── */}
-          <div className="min-w-0 order-2 lg:order-1">
+          <div className="min-w-0 order-2">
             {/* Listenkopf klebt: beim Filtern rechts sieht man links sofort,
                 wie sich die Trefferzahl ändert. Sortierung gehört hierher und
                 nicht in die Suchleiste — sie ordnet die Liste, sie sucht
@@ -444,7 +442,7 @@ export default function JobboersePage() {
               direkt unter dem Radius: Kilometer und Minuten sind dasselbe
               Denkmodell, sie 900 px auseinanderzuziehen war der teuerste
               Einzelfehler der alten Ordnung. */}
-          <aside className="order-1 lg:order-2 lg:sticky lg:top-[88px]">
+          <aside className="order-1 lg:sticky lg:top-[88px]">
             <div
               className="rounded-3xl bg-white overflow-hidden"
               style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 16px 40px -30px rgba(26,26,46,0.6)" }}

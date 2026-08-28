@@ -236,7 +236,9 @@ body {
      Vier Varianten am echten Kachelbild verglichen; diese Werte trafen den
      Ton am besten. Deutlicher entsättigen ging nicht: darunter verschwinden
      die Ortsnamen, und genau das war vorher das Problem. */
-  filter: saturate(0.26) brightness(1.09) contrast(0.92);
+  /* Etwas mehr Substanz als zuvor (0,26/1,09/0,92): Deutschland unterschied
+     sich sonst kaum von der abgedeckten Umgebung — beides war fast weiss. */
+  filter: saturate(0.4) brightness(1.03) contrast(1.0);
 }
 
 /* Leaflet-Steuerung an das Design angleichen. */

@@ -86,12 +86,22 @@ function GermanyMask({ dunkel = false }: { dunkel?: boolean }) {
   );
 }
 
-/** Zeigt beim ersten Rendern ganz Deutschland. */
+/**
+ * Zeigt beim ersten Rendern ganz Deutschland — und nutzt dabei die verfügbare
+ * Fläche wirklich aus.
+ *
+ * Leaflet rastet standardmässig auf ganze Zoomstufen (`zoomSnap: 1`). In einem
+ * 540 px hohen Rahmen bräuchte Deutschland Stufe 5,94; gerundet wird auf 5, und
+ * eine Stufe entspricht dem Faktor zwei. Das Land kam dadurch nur halb so gross
+ * heraus wie möglich — es sah verloren aus, egal wie gross der Rahmen war. Mit
+ * `zoomSnap: 0` (am MapContainer) sind Zwischenstufen erlaubt und fitBounds
+ * trifft die Fläche genau.
+ */
 function FitGermany({ enabled }: { enabled: boolean }) {
   const map = useMap();
   useEffect(() => {
     if (!enabled) return;
-    map.fitBounds(GERMANY_BOUNDS as LatLngBoundsExpression, { padding: [26, 26] });
+    map.fitBounds(GERMANY_BOUNDS as LatLngBoundsExpression, { padding: [18, 18] });
   }, [enabled, map]);
   return null;
 }
@@ -128,6 +138,8 @@ export default function MapShell({
       maxZoom={MAX_ZOOM}
       maxBounds={GERMANY_BOUNDS}
       maxBoundsViscosity={1}
+      zoomSnap={0}
+      zoomDelta={0.5}
       scrollWheelZoom={scrollWheelZoom}
       zoomControl={false}
       attributionControl={false}

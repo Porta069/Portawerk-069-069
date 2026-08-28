@@ -305,24 +305,59 @@ export default function JobboersePage() {
       <div className="vollbreite">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
           <section
-            className="relative overflow-hidden rounded-3xl bg-white mb-10"
-            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 16px 40px -30px rgba(26,26,46,0.6)" }}
+            className="relative overflow-hidden rounded-3xl mb-10"
+            style={{
+              // Warmer Verlauf statt Reinweiss — dieselbe Behandlung wie die
+              // Zahlenkarten der Übersicht. Reinweiss wirkte neben der pastellen
+              // Karte wie ein leeres Blatt.
+              background: "linear-gradient(168deg, #FFFFFF 0%, #FDFBF6 46%, #F7F1E3 100%)",
+              border: "1.5px solid #EDE8DC",
+              boxShadow: "0 30px 70px -40px rgba(26,26,46,0.7)",
+            }}
           >
-            <div className="relative z-10 px-6 sm:px-8 pt-6 pb-5">
+            {/* Goldkante oben — markiert den Abschnitt als den wichtigsten der
+                Seite, ohne einen weiteren Rahmen zu ziehen. */}
+            <div
+              aria-hidden
+              className="absolute top-0 inset-x-0"
+              style={{
+                height: 3,
+                background:
+                  "linear-gradient(90deg, #E8A838 0%, rgba(232,168,56,0.45) 46%, rgba(232,168,56,0) 100%)",
+              }}
+            />
+
+            <div className="relative z-10 px-6 sm:px-9 pt-7 pb-4">
               <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-                <p
-                  className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase"
-                  style={{ color: "#B47B18", letterSpacing: "0.22em" }}
-                >
-                  <span className="w-5 h-px" style={{ background: "#E8A838" }} />
-                  Dein Suchgebiet
-                </p>
-                {/* Nur wenn es etwas zu zählen gibt — der Hinweis "tipp auf die
-                    Karte" steht schon neben dem Suchfeld rechts. */}
-                {locations.length > 0 && (
-                  <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
-                    {locations.length} {locations.length === 1 ? "Ort" : "Orte"} — Änderungen gelten sofort.
+                <div>
+                  <p
+                    className="inline-flex items-center gap-2.5 text-[9.5px] font-semibold uppercase"
+                    style={{ color: "#B47B18", letterSpacing: "0.22em" }}
+                  >
+                    <span className="w-5 h-px" style={{ background: "#E8A838" }} />
+                    Dein Suchgebiet
                   </p>
+                  <h2
+                    className="text-primary font-black leading-tight mt-2"
+                    style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.35rem, 2.4vw, 1.9rem)" }}
+                  >
+                    Wo willst du arbeiten?
+                  </h2>
+                </div>
+
+                {locations.length > 0 && (
+                  <div className="flex items-baseline gap-2.5">
+                    <span
+                      className="font-black tabular-nums leading-none"
+                      style={{ fontFamily: "var(--font-display)", fontSize: "2rem", color: "#B47B18" }}
+                    >
+                      {locations.length}
+                    </span>
+                    <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+                      {locations.length === 1 ? "Arbeitsort" : "Arbeitsorte"}
+                      <span className="block text-[11.5px] opacity-70">gelten sofort</span>
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
@@ -331,11 +366,12 @@ export default function JobboersePage() {
               <WorkLocationsMap
                 value={locations}
                 onChange={updateLocations}
-                height={430}
+                height={540}
                 breit
+                randfarbe="#FBF7EE"
               />
             ) : (
-              <div className="flex items-center justify-center py-28">
+              <div className="flex items-center justify-center py-36">
                 <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
               </div>
             )}

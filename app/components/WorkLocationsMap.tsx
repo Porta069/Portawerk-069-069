@@ -123,6 +123,7 @@ export default function WorkLocationsMap({
   kompakt = false,
   breit = false,
   dunkel = false,
+  randfarbe,
 }: {
   value: WorkLocation[];
   onChange: (locs: WorkLocation[]) => void;
@@ -143,6 +144,16 @@ export default function WorkLocationsMap({
   breit?: boolean;
   /** Fassung für dunkle Flächen — Karte, Suchfeld und Ortsliste in Navy/Gold. */
   dunkel?: boolean;
+  /**
+   * Farbe, in die die Kartenränder auslaufen.
+   *
+   * Deutschland ist höher als breit; in einem breiten Rahmen bleibt links und
+   * rechts viel leere Kartenfläche. Statt den Rahmen zu verkleinern — dann
+   * wäre die Karte zu klein zum Zielen — laufen die Ränder weich in den
+   * Untergrund aus. Das Land steht dadurch wie in einem Lichtkegel, die
+   * Kartenfläche bleibt in voller Grösse bedienbar.
+   */
+  randfarbe?: string;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeoResult[]>([]);
@@ -363,6 +374,31 @@ export default function WorkLocationsMap({
             </Fragment>
           ))}
         </MapShell>
+
+        {/* Lichtkegel: warmer Schein in der Mitte, weiches Auslaufen zum Rand.
+            Liegt über der Karte, fängt aber keine Klicks ab — sonst könnte man
+            keinen Arbeitsort mehr setzen. */}
+        {randfarbe && (
+          <>
+            <span
+              aria-hidden
+              className="absolute inset-0 pointer-events-none z-[15]"
+              style={{
+                background:
+                  "radial-gradient(ellipse 34% 54% at 50% 50%, rgba(232,168,56,0.1) 0%, rgba(232,168,56,0) 72%)",
+              }}
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0 pointer-events-none z-[16]"
+              style={{
+                // Bewusst erst spät einsetzend: bei 34 % Startpunkt lag ein
+                // Nebel über der halben Karte und die Ortsnamen verschwanden.
+                background: `radial-gradient(ellipse 72% 104% at 50% 50%, transparent 62%, ${randfarbe} 100%)`,
+              }}
+            />
+          </>
+        )}
 
         {/* Pflichtangabe nach ODbL — dezent, ohne Leaflet-Werbung. */}
         <MapAttribution />

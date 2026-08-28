@@ -16,7 +16,7 @@ import "leaflet/dist/leaflet.css";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Marker, Circle, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { Search, X, Loader2, Trash2, MapPin, Plus, Crosshair } from "lucide-react";
+import { Search, X, Loader2, Trash2, MapPin, Plus, Crosshair, Maximize2 } from "lucide-react";
 import type { WorkLocation } from "@/lib/types";
 import MapShell, { MapAttribution, MapZoom } from "./MapShell";
 
@@ -124,6 +124,7 @@ export default function WorkLocationsMap({
   breit = false,
   dunkel = false,
   randfarbe,
+  onVergroessern,
 }: {
   value: WorkLocation[];
   onChange: (locs: WorkLocation[]) => void;
@@ -154,6 +155,12 @@ export default function WorkLocationsMap({
    * Kartenfläche bleibt in voller Grösse bedienbar.
    */
   randfarbe?: string;
+  /**
+   * Zeigt oben rechts auf der Karte einen Knopf zum Vergrössern. Ohne
+   * Rückruf erscheint er nicht — die Vollbildfassung selbst braucht ihn
+   * naturgemäss nicht.
+   */
+  onVergroessern?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeoResult[]>([]);
@@ -398,6 +405,32 @@ export default function WorkLocationsMap({
               }}
             />
           </>
+        )}
+
+        {onVergroessern && (
+          <button
+            type="button"
+            onClick={onVergroessern}
+            aria-label="Karte vergrössern"
+            title="Karte vergrössern"
+            className="absolute z-[20] top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+            style={{
+              background: "rgba(255,255,255,0.94)",
+              border: "1px solid #E9E7E1",
+              boxShadow: "0 8px 20px -12px rgba(26,26,46,0.5)",
+              color: "rgba(26,26,46,0.7)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#FFFFFF";
+              e.currentTarget.style.color = "#B47B18";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.94)";
+              e.currentTarget.style.color = "rgba(26,26,46,0.7)";
+            }}
+          >
+            <Maximize2 className="w-4 h-4" />
+          </button>
         )}
 
         {/* Pflichtangabe nach ODbL — dezent, ohne Leaflet-Werbung. */}

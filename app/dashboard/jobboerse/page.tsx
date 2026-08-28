@@ -96,10 +96,19 @@ export default function JobboersePage() {
   // Änderungen hier werden sofort gespeichert und gelten fürs Matching.
   const [locations, setLocations] = useState<WorkLocation[]>([]);
   const [locLoaded, setLocLoaded] = useState(false);
+  const [karteGross, setKarteGross] = useState(false);
+  // Kartenhöhe im Vollbild: der Rest des Fensters nach Kopfzeile und Rändern.
+  // MapShell braucht eine Zahl, keine CSS-Höhe — deshalb gemessen statt
+  // gerechnet in CSS.
+  const [vollbildHoehe, setVollbildHoehe] = useState(560);
+
+  // Nutzt der Besucher die Karte, bevor die gespeicherten Orte eintreffen,
+  // darf die Antwort seine Eingabe nicht überschreiben.
+  const eigenhaendig = useRef(false);
 
   useEffect(() => {
     getWorkLocations().then((res) => {
-      if (res.ok) setLocations(res.data);
+      if (res.ok && !eigenhaendig.current) setLocations(res.data);
       setLocLoaded(true);
     });
     // Der Filter zeigt dieselben Gewerke, nach denen das Matching
@@ -109,7 +118,25 @@ export default function JobboersePage() {
     });
   }, []);
 
+  // Escape schliesst das Vollbild, und beim Öffnen wird die Höhe gemessen.
+  useEffect(() => {
+    if (!karteGross) return;
+    const messen = () =>
+      setVollbildHoehe(Math.max(320, Math.min(880, window.innerHeight - 200)));
+    messen();
+    const taste = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setKarteGross(false);
+    };
+    window.addEventListener("resize", messen);
+    document.addEventListener("keydown", taste);
+    return () => {
+      window.removeEventListener("resize", messen);
+      document.removeEventListener("keydown", taste);
+    };
+  }, [karteGross]);
+
   const updateLocations = (locs: WorkLocation[]) => {
+    eigenhaendig.current = true;
     setLocations(locs);
     void saveWorkLocations(locs);
   };
@@ -338,7 +365,7 @@ export default function JobboersePage() {
                   />
                 ))}
               </div>
-            ) : locations.length === 0 ? (
+            ) : locLoaded && locations.length === 0 ? (
               // Der Erstlauf belegt den PLATZ der ersten Stellenkarte, nicht
               // den Platz darüber. Die Liste rutscht dadurch nie nach unten.
               <div
@@ -461,18 +488,18 @@ export default function JobboersePage() {
                 )}
               </div>
 
-              {locLoaded ? (
-                <WorkLocationsMap
-                  value={locations}
-                  onChange={updateLocations}
-                  height={360}
-                  kompakt
-                />
-              ) : (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} />
-                </div>
-              )}
+              {/* Bewusst NICHT an `locLoaded` gehängt: der Client versucht es
+                  bei einem stummen Backend dreimal mit Wartezeit, und solange
+                  stand hier nur ein Ladekringel — die Karte war schlicht nicht
+                  da. Sie braucht die gespeicherten Orte nicht, um zu
+                  erscheinen; die tragen sich nach, sobald sie eintreffen. */}
+              <WorkLocationsMap
+                value={locations}
+                onChange={updateLocations}
+                height={360}
+                kompakt
+                onVergroessern={() => setKarteGross(true)}
+              />
 
               <div className="px-5 py-4" style={{ borderTop: "1px solid #F0EDE6" }}>
                 <p className="text-[13px] font-semibold text-primary mb-2.5">Wie lange fährst du?</p>
@@ -523,6 +550,65 @@ export default function JobboersePage() {
           </aside>
         </div>
       </div>
+
+      {/* ── Karte im Vollbild ───────────────────────────────────────────────
+          Dieselbe Komponente, nur in der breiten Fassung und über die ganze
+          Fläche. Orte, die hier gesetzt werden, stehen sofort auch in der
+          Spalte — beide arbeiten auf demselben Zustand, es gibt keine zweite
+          Kopie der Daten. */}
+      <AnimatePresence>
+        {karteGross && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[130] flex items-center justify-center p-4 sm:p-8"
+            style={{ background: "rgba(18,18,31,0.72)", backdropFilter: "blur(3px)" }}
+            onClick={() => setKarteGross(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 12 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-[1500px] overflow-hidden rounded-3xl bg-white"
+              style={{ boxShadow: "0 40px 90px -30px rgba(0,0,0,0.7)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between gap-4 px-6 py-4" style={{ borderBottom: "1px solid #F0EDE6" }}>
+                <div>
+                  <p
+                    className="text-[9.5px] font-semibold uppercase"
+                    style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+                  >
+                    Dein Suchgebiet
+                  </p>
+                  <p className="text-[15px] font-bold text-primary mt-0.5">
+                    Wo willst du arbeiten?
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setKarteGross(false)}
+                  aria-label="Vollbild schliessen"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+                  style={{ background: "#F6F4EF", color: "rgba(26,26,46,0.6)" }}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <WorkLocationsMap
+                value={locations}
+                onChange={updateLocations}
+                height={vollbildHoehe}
+                breit
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Detailansicht ── */}
       <JobDetailDialog

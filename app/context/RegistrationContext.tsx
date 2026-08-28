@@ -163,8 +163,8 @@ export function RegistrationProvider({
     // ist der Katalog noch nicht geladen.
     try {
       const param = new URLSearchParams(window.location.search).get("bereich");
-      if (param && !base.profil.bereich) {
-        base = { ...base, profil: { ...base.profil, bereich: param } };
+      if (param && !base.profil.gewerk) {
+        base = { ...base, profil: { ...base.profil, gewerk: param } };
       }
     } catch {
       /* ignore — Vorbelegung ist rein optional */

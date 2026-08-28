@@ -25,8 +25,11 @@ const STANDARD: Required<JobGewichte> = {
   aufgaben: 5,
   erfahrung: 4,
   beruf: 3,
-  prioritaeten: 2,
+  bezeichnung: 3,
+  gehalt: 3,
+  wuensche: 2,
   fuehrerschein: 2,
+  meister: 2,
   start: 1,
 };
 
@@ -34,15 +37,23 @@ const GEWICHT_LABELS: { key: keyof JobGewichte; label: string }[] = [
   { key: "aufgaben", label: "Aufgabenbereiche" },
   { key: "erfahrung", label: "Berufserfahrung" },
   { key: "beruf", label: "Ausbildungsberuf" },
-  { key: "prioritaeten", label: "Erfüllte Wünsche" },
+  { key: "bezeichnung", label: "Berufsbezeichnung" },
+  { key: "gehalt", label: "Gehalt" },
+  { key: "meister", label: "Meister / Techniker" },
+  { key: "wuensche", label: "Erfüllte Wünsche" },
   { key: "fuehrerschein", label: "Führerschein" },
   { key: "start", label: "Startzeitpunkt" },
 ];
 
 export const LEERE_ANFORDERUNG: Anforderungsprofil = {
-  bereiche: [],
+  gewerke: []
+  ,
+  meisterErwuenscht: false,
+  bezeichnungTags: [],
+  fuehrungGefordert: false,
+  budgetMonatCents: null,
   berufe: [],
-  ausbildungMin: null,
+  abschlussMin: null,
   aufgaben: [],
   aufgabenMin: 0,
   erfahrungMin: null,
@@ -181,7 +192,7 @@ export default function AnforderungsEditor({
 
   const set = (p: Partial<Anforderungsprofil>) => onChange({ ...wert, ...p });
 
-  const toggle = (feld: "bereiche" | "berufe" | "aufgaben" | "gebotenes", v: string) => {
+  const toggle = (feld: "gewerke" | "berufe" | "aufgaben" | "gebotenes", v: string) => {
     const liste = wert[feld];
     set({
       [feld]: liste.includes(v) ? liste.filter((x) => x !== v) : [...liste, v],
@@ -190,12 +201,12 @@ export default function AnforderungsEditor({
 
   // Berufe und Aufgabenfelder ergeben sich aus den gewählten Bereichen. Ohne
   // Bereich gäbe es sonst eine Liste über alle Gewerke hinweg — unbrauchbar.
-  const gewaehlteBereiche = katalog.bereiche.filter((b) =>
-    wert.bereiche.includes(b.value),
+  const gewaehlteGewerke = katalog.gewerke.filter((b) =>
+    wert.gewerke.includes(b.value),
   );
-  const berufe = gewaehlteBereiche.flatMap((b) => b.berufe);
+  const berufe = gewaehlteGewerke.flatMap((b) => b.berufe);
   const aufgaben = Array.from(
-    new Map(gewaehlteBereiche.flatMap((b) => b.aufgaben).map((a) => [a.value, a])).values(),
+    new Map(gewaehlteGewerke.flatMap((b) => b.aufgaben).map((a) => [a.value, a])).values(),
   );
 
   const gewicht = (k: keyof JobGewichte) => wert.gewichte?.[k] ?? STANDARD[k];
@@ -203,17 +214,17 @@ export default function AnforderungsEditor({
   return (
     <div>
       <Feld
-        titel="Ausbildungsbereiche"
+        titel="Gewerke"
         hinweis="Wer einen anderen Bereich gelernt hat, sieht dieses Inserat nicht. Nichts wählen = alle Bereiche."
         ausschluss
       >
         <div className="flex flex-wrap gap-1.5">
-          {katalog.bereiche.map((b) => (
+          {katalog.gewerke.map((b) => (
             <Chip
               key={b.value}
               label={b.label}
-              selected={wert.bereiche.includes(b.value)}
-              onClick={() => toggle("bereiche", b.value)}
+              selected={wert.gewerke.includes(b.value)}
+              onClick={() => toggle("gewerke", b.value)}
             />
           ))}
         </div>
@@ -225,10 +236,10 @@ export default function AnforderungsEditor({
         ausschluss
       >
         <Auswahl
-          wert={wert.ausbildungMin}
-          optionen={katalog.ausbildungsstatus}
+          wert={wert.abschlussMin}
+          optionen={katalog.abschluss}
           leerLabel="Egal"
-          onChange={(v) => set({ ausbildungMin: v })}
+          onChange={(v) => set({ abschlussMin: v })}
         />
       </Feld>
 
@@ -354,7 +365,7 @@ export default function AnforderungsEditor({
         hinweis="Trifft auf die Prioritäten des Bewerbers — je mehr Übereinstimmung, desto weiter oben stehen Sie bei ihm."
       >
         <div className="flex flex-wrap gap-1.5">
-          {katalog.prioritaeten.map((o) => (
+          {katalog.wuensche.map((o) => (
             <Chip
               key={o.value}
               label={o.label}

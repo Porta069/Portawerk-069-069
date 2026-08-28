@@ -410,31 +410,42 @@ export interface JobGewichte {
   aufgaben?: number;
   erfahrung?: number;
   beruf?: number;
-  prioritaeten?: number;
+  bezeichnung?: number;
+  gehalt?: number;
+  wuensche?: number;
   fuehrerschein?: number;
+  meister?: number;
   start?: number;
 }
 
 /** Das Anforderungsprofil eines Inserats. */
 export interface Anforderungsprofil {
-  /** Akzeptierte Ausbildungsbereiche — Ausschlusskriterium. */
-  bereiche: string[];
+  /** Akzeptierte Gewerke — Ausschlusskriterium. */
+  gewerke: string[];
   /** Bevorzugte Ausbildungsberufe — fließt gewichtet ein. */
   berufe: string[];
-  /** Mindest-Ausbildungsstand — Ausschlusskriterium. */
-  ausbildungMin: string | null;
+  /** Mindestabschluss — Ausschlusskriterium. */
+  abschlussMin: string | null;
+  /** Meister/Techniker gewünscht — zählt Punkte, schließt nie aus. */
+  meisterErwuenscht: boolean;
   /** Gesuchte Aufgabenbereiche. */
   aufgaben: string[];
   /** Wie viele davon abgedeckt sein MÜSSEN (0 = keine Pflicht). */
   aufgabenMin: number;
+  /** Stichworte für die Freitext-Berufsbezeichnung, kleingeschrieben. */
+  bezeichnungTags: string[];
   erfahrungMin: string | null;
   erfahrungMax: string | null;
+  /** Führungsverantwortung verlangt — Ausschlusskriterium. */
+  fuehrungGefordert: boolean;
+  /** Gehaltsobergrenze in Cent pro Monat; null = keine Angabe. */
+  budgetMonatCents: number | null;
   /** Verlangte Montagebereitschaft — Ausschlusskriterium. */
   montageMin: string | null;
   fuehrerscheinMin: string | null;
   /** Verlangtes Sprachniveau — Ausschlusskriterium. */
   deutschMin: string | null;
-  /** Was der Betrieb bietet — trifft auf die Prioritäten des Handwerkers. */
+  /** Was der Betrieb bietet — trifft auf die Wünsche des Handwerkers. */
   gebotenes: string[];
   startBis: string | null;
   gewichte?: JobGewichte | null;
@@ -471,6 +482,12 @@ export interface EmployerJob extends Anforderungsprofil {
 /** Eingabedaten beim Anlegen/Bearbeiten eines Inserats. */
 export interface EmployerJobInput {
   title: string;
+  gewerke?: string[];
+  abschlussMin?: string | null;
+  meisterErwuenscht?: boolean;
+  bezeichnungTags?: string[];
+  fuehrungGefordert?: boolean;
+  budgetMonatCents?: number | null;
   gewerk: string;
   description?: string;
   tags?: string[];

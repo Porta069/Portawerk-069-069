@@ -141,13 +141,17 @@ function JobEditor({
   const [anforderung, setAnforderung] = useState<Anforderungsprofil>(() =>
     job
       ? {
-          bereiche: job.bereiche ?? [],
+          gewerke: job.gewerke ?? [],
           berufe: job.berufe ?? [],
-          ausbildungMin: job.ausbildungMin ?? null,
+          abschlussMin: job.abschlussMin ?? null,
+          meisterErwuenscht: job.meisterErwuenscht ?? false,
           aufgaben: job.aufgaben ?? [],
           aufgabenMin: job.aufgabenMin ?? 0,
+          bezeichnungTags: job.bezeichnungTags ?? [],
           erfahrungMin: job.erfahrungMin ?? null,
           erfahrungMax: job.erfahrungMax ?? null,
+          fuehrungGefordert: job.fuehrungGefordert ?? false,
+          budgetMonatCents: job.budgetMonatCents ?? null,
           montageMin: job.montageMin ?? null,
           fuehrerscheinMin: job.fuehrerscheinMin ?? null,
           deutschMin: job.deutschMin ?? null,
@@ -166,8 +170,8 @@ function JobEditor({
   // Wie viele Ausschlusskriterien gesetzt sind — die Zahl steht in der
   // Kopfzeile, damit niemand versehentlich den halben Markt aussperrt.
   const ausschluesse = [
-    anforderung.bereiche.length > 0,
-    !!anforderung.ausbildungMin,
+    anforderung.gewerke.length > 0,
+    !!anforderung.abschlussMin,
     anforderung.aufgabenMin > 0,
     !!anforderung.montageMin,
     !!anforderung.deutschMin,
@@ -183,9 +187,9 @@ function JobEditor({
     const res = await saveJob(
       {
         ...form,
-        bereiche: anforderung.bereiche,
+        gewerke: anforderung.gewerke,
         berufe: anforderung.berufe,
-        ausbildungMin: anforderung.ausbildungMin ?? undefined,
+        abschlussMin: anforderung.abschlussMin ?? undefined,
         aufgaben: anforderung.aufgaben,
         aufgabenMin: anforderung.aufgabenMin,
         erfahrungMin: anforderung.erfahrungMin ?? undefined,
@@ -657,14 +661,14 @@ export default function InseratePage() {
                     // Ausschlüsse zuerst und farblich abgesetzt: sie bestimmen,
                     // WER das Inserat überhaupt sieht.
                     const harte: string[] = [];
-                    if (job.bereiche?.length) harte.push(`${job.bereiche.length} Ausbildungsbereich${job.bereiche.length > 1 ? "e" : ""}`);
-                    if (job.ausbildungMin) harte.push("Mindest-Abschluss");
+                    if (job.gewerke?.length) harte.push(`${job.gewerke.length} Gewerk${job.gewerke.length > 1 ? "e" : ""}`);
+                    if (job.abschlussMin) harte.push("Mindest-Abschluss");
                     if (job.aufgabenMin > 0) harte.push(`${job.aufgabenMin} Pflicht-Aufgabenbereich${job.aufgabenMin > 1 ? "e" : ""}`);
                     if (job.montageMin) harte.push("Montagebereitschaft");
                     if (job.deutschMin) harte.push("Sprachniveau");
 
                     const weiche: string[] = [];
-                    if (job.aufgaben?.length) weiche.push(`${job.aufgaben.length} Aufgabenbereiche`);
+                    if (job.aufgaben?.length) weiche.push(`${job.aufgaben.length} Aufgabengewerke`);
                     if (job.erfahrungMin || job.erfahrungMax) weiche.push("Erfahrung");
                     if (job.berufe?.length) weiche.push("Ausbildungsberuf");
                     if (job.gebotenes?.length) weiche.push(`${job.gebotenes.length} Angebote`);

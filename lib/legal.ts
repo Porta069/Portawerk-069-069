@@ -55,7 +55,7 @@ export const ANBIETER = {
  * später belegen, WELCHEM Text jemand zugestimmt hat — ohne das ist eine
  * Zustimmung im Streitfall wertlos. Bei jeder inhaltlichen Änderung erhöhen.
  */
-export const RECHTSTEXTE_VERSION = "2026-08-24";
+export const RECHTSTEXTE_VERSION = "2026-08-28";
 
 const ANSCHRIFT = `${ANBIETER.name}, ${ANBIETER.strasse}, ${ANBIETER.plz} ${ANBIETER.ort}, ${ANBIETER.land}`;
 
@@ -100,7 +100,7 @@ const LEGAL_SECTIONS: LegalSection[] = [
       },
       {
         heading: "Welche Daten wir erheben",
-        text: "Bei der Registrierung als Handwerker:in: Vor- und Nachname, E-Mail-Adresse, Telefonnummer und ein Passwort (gespeichert wird ausschließlich ein kryptografischer Hash, nie das Passwort selbst). Dazu deine fachlichen Angaben aus dem Fragebogen: Ausbildungsbereich, Ausbildungsstand, Ausbildungsberuf, Aufgabenbereiche mit Berufserfahrung, Jahre an Berufserfahrung, deine Prioritäten für den nächsten Job, Montagebereitschaft, Führerscheinklasse, Deutschkenntnisse und gewünschter Startzeitpunkt. Außerdem deine gewählten Arbeitsorte mit Umkreis und optional ein Profilbild. Bei einer Bewerbung über das Bewerbungsformular zusätzlich das Geburtsjahr (das vollständige Geburtsdatum dient nur der Altersprüfung und wird nicht gespeichert) sowie hochgeladene Unterlagen. Bei Betrieben: Firmen- und Kontaktdaten sowie die Angaben zu Stellen, Anforderungen und Arbeitsbedingungen.",
+        text: "Bei der Registrierung als Handwerker:in: Vor- und Nachname, E-Mail-Adresse, Telefonnummer und ein Passwort (gespeichert wird ausschließlich ein kryptografischer Hash, nie das Passwort selbst). Dazu deine fachlichen Angaben aus dem Fragebogen: Gewerk, anerkannter Ausbildungsabschluss, aktuelle Berufsbezeichnung, Jahre an Berufserfahrung in dieser Position, ob du Führungsverantwortung trägst, bei einem Studium der Studiengang, bei Meistern und Technikern die Qualifikation, der Ausbildungsberuf, freiwillig deine Aufgabenbereiche mit Erfahrung, deine Wünsche an den neuen Arbeitgeber, Montagebereitschaft, Führerscheinklasse, Deutschkenntnisse, gewünschter Eintrittszeitpunkt sowie — freiwillig — dein Mindest-Gehaltswunsch. Außerdem deine gewählten Arbeitsorte mit Umkreis und optional ein Profilbild. Bei einer Bewerbung über das Bewerbungsformular zusätzlich das Geburtsjahr (das vollständige Geburtsdatum dient nur der Altersprüfung und wird nicht gespeichert) sowie hochgeladene Unterlagen. Bei Betrieben: Firmen- und Kontaktdaten sowie die Angaben zu Stellen, Anforderungen und Arbeitsbedingungen.",
       },
       {
         heading: "Wofür wir sie verwenden (Zwecke und Rechtsgrundlagen)",
@@ -108,7 +108,7 @@ const LEGAL_SECTIONS: LegalSection[] = [
       },
       {
         heading: "Wie das Matching funktioniert — und was es nicht entscheidet",
-        text: "Das Matching läuft in zwei Stufen. Zuerst prüfen wir Anforderungen, bei denen es kein Dazwischen gibt: Ausbildungsbereich, Mindest-Ausbildungsstand, geforderte Aufgabenbereiche, Montagebereitschaft, Sprachniveau und — falls für die Stelle nötig — das Vorhandensein eines Führerscheins. Außerdem berücksichtigen wir den Arbeitsradius, den du selbst angegeben hast. Erfüllst du eine dieser Anforderungen nicht, wird dir die Stelle nicht vorgeschlagen; die Jobbörse weist die Zahl der ausgeblendeten Stellen und den jeweiligen Grund aus. In der zweiten Stufe berechnen wir aus den übrigen Angaben einen Übereinstimmungswert, der nur die Reihenfolge bestimmt. Den vollständigen Rechenweg jedes Werts kannst du in der Anwendung einsehen. Es findet keine automatisierte Entscheidung im Sinne des Art. 22 DSGVO statt: Ob es zu Kontakt, Gespräch oder Vertrag kommt, entscheiden ausschließlich Menschen — du und der Betrieb.",
+        text: "Das Matching läuft in zwei Stufen. Zuerst prüfen wir Anforderungen, bei denen es kein Dazwischen gibt: Gewerk, Mindestabschluss, geforderte Aufgabenbereiche, verlangte Führungsverantwortung, Montagebereitschaft, Sprachniveau, — falls für die Stelle nötig — das Vorhandensein eines Führerscheins und, sofern du einen Mindest-Gehaltswunsch angegeben hast, ob das Budget der Stelle deutlich darunter liegt. Außerdem berücksichtigen wir den Arbeitsradius, den du selbst angegeben hast. Erfüllst du eine dieser Anforderungen nicht, wird dir die Stelle nicht vorgeschlagen; die Jobbörse weist die Zahl der ausgeblendeten Stellen und den jeweiligen Grund aus. In der zweiten Stufe berechnen wir aus den übrigen Angaben einen Übereinstimmungswert, der nur die Reihenfolge bestimmt. Den vollständigen Rechenweg jedes Werts kannst du in der Anwendung einsehen. Es findet keine automatisierte Entscheidung im Sinne des Art. 22 DSGVO statt: Ob es zu Kontakt, Gespräch oder Vertrag kommt, entscheiden ausschließlich Menschen — du und der Betrieb.",
       },
       {
         heading: "Einsatz von Künstlicher Intelligenz (KI)",

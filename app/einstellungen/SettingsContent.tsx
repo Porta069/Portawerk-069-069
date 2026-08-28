@@ -19,8 +19,8 @@ import { useI18n, LANGUAGES, type Lang } from "@/lib/i18n";
 import { api, type AuthSession, type PublicUser } from "@/lib/api";
 import {
   getKatalog,
-  bereichVon,
-  bereichWechseln,
+  gewerkVon,
+  gewerkWechseln,
   LEERES_PROFIL,
   type Katalog,
   type Handwerkerprofil,
@@ -206,7 +206,7 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
     return <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 animate-spin" style={{ color: "#E8A838" }} /></div>;
   }
 
-  const bereich = bereichVon(katalog, profil.bereich);
+  const bereich = gewerkVon(katalog, profil.gewerk);
   const set = (p: Partial<Handwerkerprofil>) => setProfil((v) => ({ ...v, ...p }));
 
   const Chips = ({
@@ -279,21 +279,21 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
         du sie, ändert sich sofort deine Jobbörse.
       </p>
 
-      <Zeile titel="Ausbildungsbereich">
-        {auswahl(profil.bereich, katalog.bereiche, (v) =>
-          setProfil((alt) => bereichWechseln(alt, v, katalog))
+      <Zeile titel="Gewerk">
+        {auswahl(profil.gewerk, katalog.gewerke, (v) =>
+          setProfil((alt) => gewerkWechseln(alt, v, katalog))
         )}
       </Zeile>
 
       <Zeile titel="Ausbildungsstand">
-        {auswahl(profil.ausbildungsstatus, katalog.ausbildungsstatus, (v) =>
-          set({ ausbildungsstatus: v, ...(v === "keine" ? { beruf: null } : {}) })
+        {auswahl(profil.abschluss, katalog.abschluss, (v) =>
+          set({ abschluss: v, ...(v === "keine" ? { ausbildungsberuf: null } : {}) })
         )}
       </Zeile>
 
-      {bereich && profil.ausbildungsstatus && profil.ausbildungsstatus !== "keine" && (
+      {bereich && profil.abschluss && profil.abschluss !== "keine" && (
         <Zeile titel="Ausbildungsberuf">
-          {auswahl(profil.beruf, bereich.berufe, (v) => set({ beruf: v }))}
+          {auswahl(profil.ausbildungsberuf, bereich.berufe, (v) => set({ ausbildungsberuf: v }))}
         </Zeile>
       )}
 
@@ -317,16 +317,16 @@ function AnswersSection({ token, t }: { token: string; t: T }) {
         {auswahl(profil.erfahrung, katalog.erfahrung, (v) => set({ erfahrung: v }))}
       </Zeile>
 
-      <Zeile titel={`Was dir wichtig ist (bis zu ${katalog.prioritaetenMax})`}>
+      <Zeile titel={`Was dir wichtig ist (bis zu ${katalog.wuenscheMax})`}>
         <Chips
-          optionen={katalog.prioritaeten}
-          gewaehlt={profil.prioritaeten}
-          max={katalog.prioritaetenMax}
+          optionen={katalog.wuensche}
+          gewaehlt={profil.wuensche}
+          max={katalog.wuenscheMax}
           onToggle={(v) =>
             set({
-              prioritaeten: profil.prioritaeten.includes(v)
-                ? profil.prioritaeten.filter((x) => x !== v)
-                : [...profil.prioritaeten, v],
+              wuensche: profil.wuensche.includes(v)
+                ? profil.wuensche.filter((x) => x !== v)
+                : [...profil.wuensche, v],
             })
           }
         />

@@ -102,7 +102,7 @@ export default function JobboersePage() {
       if (res.ok) setLocations(res.data);
       setLocLoaded(true);
     });
-    // Der Filter zeigt dieselben Ausbildungsbereiche, nach denen das Matching
+    // Der Filter zeigt dieselben Gewerke, nach denen das Matching
     // arbeitet — geholt aus dem Katalog, nicht aus einer eigenen Liste.
     void getKatalog().then((res) => {
       if (res.ok) setKatalog(res.data);
@@ -175,7 +175,7 @@ export default function JobboersePage() {
   // Aktive Filter als entfernbare Chips — Transparenz statt versteckter Zustand.
   const activeChips: { label: string; clear: () => void }[] = [
     ...bereiche.map((b) => ({
-      label: katalog?.bereiche.find((x) => x.value === b)?.label ?? b,
+      label: katalog?.gewerke.find((x) => x.value === b)?.label ?? b,
       clear: () => toggleBereich(b),
     })),
     ...(maxTravel ? [{ label: `max. ${maxTravel} Min.`, clear: () => setMaxTravel(undefined) }] : []),
@@ -411,16 +411,16 @@ export default function JobboersePage() {
               </div>
             </div>
 
-            {(katalog?.bereiche?.length ?? 0) > 0 && (
+            {(katalog?.gewerke?.length ?? 0) > 0 && (
               <div className="min-w-0">
                 <p
                   className="text-[9.5px] font-semibold uppercase mb-2.5"
                   style={{ color: "rgba(26,26,46,0.4)", letterSpacing: "0.17em" }}
                 >
-                  Ausbildungsbereich
+                  Gewerk
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {(katalog?.bereiche ?? []).map((b) => (
+                  {(katalog?.gewerke ?? []).map((b) => (
                     <ChipToggle
                       key={b.value}
                       label={b.label}

@@ -9,7 +9,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, AlertCircle, Truck, CarFront, Languages, CalendarDays, Compass } from "lucide-react";
 import { useRegistration } from "@/app/context/RegistrationContext";
-import { getKatalog, type Katalog } from "@/lib/catalogService";
+import { getKatalog, profilFuerBackend, type Katalog } from "@/lib/catalogService";
 import {
   StepHeading,
   QuestionBlock,
@@ -18,6 +18,7 @@ import {
   StepActions,
   ValueNote,
 } from "@/app/components/wizard";
+import GehaltsWunsch from "@/app/components/GehaltsWunsch";
 import { api } from "@/lib/api";
 
 export default function StepRahmen() {
@@ -42,7 +43,7 @@ export default function StepRahmen() {
     // Der Fachfragebogen ist hier vollständig — einmal sichern, damit ein
     // Abbruch in den folgenden Schritten die Antworten nicht verliert.
     if (data.draftToken) {
-      await api.saveStep(data.draftToken, 2, { profil: p });
+      await api.saveStep(data.draftToken, 2, { profil: profilFuerBackend(p) });
     }
     setSpeichert(false);
     next();
@@ -83,7 +84,7 @@ export default function StepRahmen() {
         überhaupt angezeigt werden.
       </StepHeading>
 
-      <QuestionBlock index={7} title="Wie hoch ist deine Montagebereitschaft?" required>
+      <QuestionBlock index={1} title="Wie hoch ist deine Montagebereitschaft?" required>
         <div className="grid gap-2.5">
           {katalog.montage.map((m) => (
             <OptionCard
@@ -98,7 +99,7 @@ export default function StepRahmen() {
         </div>
       </QuestionBlock>
 
-      <QuestionBlock index={8} title="Hast du einen gültigen Führerschein?" required>
+      <QuestionBlock index={2} title="Hast du einen gültigen Führerschein?" required>
         <div className="grid sm:grid-cols-2 gap-2.5">
           {katalog.fuehrerschein.map((f) => (
             <OptionCard
@@ -112,7 +113,7 @@ export default function StepRahmen() {
         </div>
       </QuestionBlock>
 
-      <QuestionBlock index={9} title="Wie gut sind deine Deutschkenntnisse?" required>
+      <QuestionBlock index={3} title="Wie gut sind deine Deutschkenntnisse?" required>
         <div className="grid sm:grid-cols-2 gap-2.5">
           {katalog.deutsch.map((d) => (
             <OptionCard
@@ -126,7 +127,7 @@ export default function StepRahmen() {
         </div>
       </QuestionBlock>
 
-      <QuestionBlock index={10} title="Wann möchtest du anfangen?" required>
+      <QuestionBlock index={4} title="Zu welchem Zeitpunkt möchtest du deine neue Position antreten?" required>
         <div className="grid sm:grid-cols-2 gap-2.5">
           {katalog.start.map((s) => (
             <OptionCard
@@ -144,6 +145,19 @@ export default function StepRahmen() {
         Wer nie auf Montage kann, bekommt keine Dauermontage-Stellen zu sehen —
         das ist kein schlechter Wert, sondern schlicht keine Übereinstimmung.
       </ValueNote>
+
+      <QuestionBlock
+        index={5}
+        title="Wie viel möchtest du mindestens verdienen?"
+        hint="Betriebe, deren Budget deutlich darunter liegt, tauchen bei dir gar nicht erst auf. Du kannst die Frage überspringen."
+      >
+        <GehaltsWunsch
+          katalog={katalog}
+          periode={p.gehaltPeriode}
+          betragCents={p.gehaltBetragCents}
+          onChange={(periode, betragCents) => setProfil({ gehaltPeriode: periode, gehaltBetragCents: betragCents })}
+        />
+      </QuestionBlock>
 
       <StepActions>
         <NextButton onClick={() => void weiterMitSpeichern()} disabled={!weiter} loading={speichert}>

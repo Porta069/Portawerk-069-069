@@ -32,16 +32,16 @@ export default function StepWuensche() {
   }, []);
 
   const p = data.profil;
-  const max = katalog?.prioritaetenMax ?? 5;
-  const voll = p.prioritaeten.length >= max;
+  const max = katalog?.wuenscheMax ?? 5;
+  const voll = p.wuensche.length >= max;
 
   const umschalten = (wert: string) => {
-    const drin = p.prioritaeten.includes(wert);
+    const drin = p.wuensche.includes(wert);
     if (!drin && voll) return; // Obergrenze still einhalten statt zu meckern
     setProfil({
-      prioritaeten: drin
-        ? p.prioritaeten.filter((x) => x !== wert)
-        : [...p.prioritaeten, wert],
+      wuensche: drin
+        ? p.wuensche.filter((x) => x !== wert)
+        : [...p.wuensche, wert],
     });
   };
 
@@ -75,7 +75,7 @@ export default function StepWuensche() {
 
   return (
     <div>
-      <StepHeading eyebrow="Deine Prioritäten">
+      <StepHeading eyebrow="Deine Wünsche">
         Jetzt bist du dran mit Ansprüchen: Wonach soll dein nächster Betrieb
         ausgesucht werden?
       </StepHeading>
@@ -83,12 +83,12 @@ export default function StepWuensche() {
       <QuestionBlock
         index={6}
         title="Was ist dir in deinem neuen Job besonders wichtig?"
-        hint={`Wähle bis zu ${max} — ${p.prioritaeten.length} von ${max} gewählt.`}
+        hint={`Wähle bis zu ${max} — ${p.wuensche.length} von ${max} gewählt.`}
         required
       >
         <div className="flex flex-wrap gap-2">
-          {katalog.prioritaeten.map((o) => {
-            const gewaehlt = p.prioritaeten.includes(o.value);
+          {katalog.wuensche.map((o) => {
+            const gewaehlt = p.wuensche.includes(o.value);
             return (
               <span
                 key={o.value}
@@ -113,7 +113,7 @@ export default function StepWuensche() {
       </ValueNote>
 
       <StepActions>
-        <NextButton onClick={next} disabled={p.prioritaeten.length === 0}>
+        <NextButton onClick={next} disabled={p.wuensche.length === 0}>
           Weiter
         </NextButton>
       </StepActions>

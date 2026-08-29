@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Search, X, Loader2, Send, Check, FlaskConical,
+  Search, X, Loader2, Send, Check,
   GitCompareArrows, EyeOff, MapPin,
 } from "lucide-react";
 import {
@@ -20,7 +20,6 @@ import {
 } from "@/lib/jobsService";
 import { getKatalog, type Katalog } from "@/lib/catalogService";
 import type { Job, WorkLocation } from "@/lib/types";
-import { DEMO_JOBS, demoAktiv } from "@/lib/demoJobs";
 import JobCard from "@/app/components/dashboard/JobCard";
 import JobDetailDialog from "@/app/components/dashboard/JobDetailDialog";
 import CompareDialog from "@/app/components/dashboard/CompareDialog";
@@ -98,13 +97,6 @@ export default function JobboersePage() {
   const [locations, setLocations] = useState<WorkLocation[]>([]);
   const [locLoaded, setLocLoaded] = useState(false);
   const [karteGross, setKarteGross] = useState(false);
-  // Gestaltungsvorschau: zeigt Beispielstellen, damit man die Kartenansicht
-  // beurteilen kann, ohne angemeldet zu sein. Nur im Entwicklungsmodus, siehe
-  // demoAktiv(). Erst nach dem ersten Rendern gesetzt — serverseitig gibt es
-  // kein Fenster, und ein Unterschied zwischen Server- und Browserausgabe
-  // führt zu einem Hydrationsfehler.
-  const [demo, setDemo] = useState(false);
-  useEffect(() => setDemo(demoAktiv()), []);
   // Kartenhöhe im Vollbild: der Rest des Fensters nach Kopfzeile und Rändern.
   // MapShell braucht eine Zahl, keine CSS-Höhe — deshalb gemessen statt
   // gerechnet in CSS.
@@ -115,16 +107,6 @@ export default function JobboersePage() {
   const eigenhaendig = useRef(false);
 
   useEffect(() => {
-    // In der Vorschau nichts vom Server holen: die Beispielstellen brauchen
-    // einen Arbeitsort, sonst verdeckt der Leerzustand sie.
-    if (demoAktiv()) {
-      setLocations([
-        { id: "demo-ort", label: "Göttingen, Niedersachsen", lat: 51.5413, lng: 9.9158, radiusKm: 40 },
-      ]);
-      setLocLoaded(true);
-      return;
-    }
-
     getWorkLocations().then((res) => {
       if (res.ok && !eigenhaendig.current) setLocations(res.data);
       setLocLoaded(true);
@@ -156,9 +138,7 @@ export default function JobboersePage() {
   const updateLocations = (locs: WorkLocation[]) => {
     eigenhaendig.current = true;
     setLocations(locs);
-    // In der Vorschau wird bewusst nichts geschrieben — sie soll die echten
-    // Arbeitsorte des Nutzers nicht überschreiben.
-    if (!demoAktiv()) void saveWorkLocations(locs);
+    void saveWorkLocations(locs);
   };
 
   const filters = useMemo<JobFilters>(
@@ -177,16 +157,6 @@ export default function JobboersePage() {
   useEffect(() => {
     let active = true;
     setLoading(true);
-    if (demoAktiv()) {
-      setJobs(DEMO_JOBS);
-      setAusgeblendet({
-        gesamt: 2,
-        gruende: [{ key: "fuehrerschein", label: "Führerschein Klasse B", anzahl: 2 }],
-      });
-      setLoading(false);
-      return;
-    }
-
     const run = () =>
       listJobs(filters, sort).then((res) => {
         if (!active) return;
@@ -384,21 +354,6 @@ export default function JobboersePage() {
                 </div>
               )}
             </div>
-
-            {demo && (
-              <div
-                className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-4"
-                style={{ background: "rgba(232,168,56,0.09)", border: "1px solid rgba(232,168,56,0.28)" }}
-              >
-                <FlaskConical className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
-                <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.7)" }}>
-                  <strong>Gestaltungsvorschau.</strong> Diese drei Stellen sind
-                  erfunden und stehen nur zum Ansehen hier — nichts davon wird
-                  gespeichert oder gesendet. Ohne <code>?demo=1</code> ist der
-                  Bereich unverändert.
-                </p>
-              </div>
-            )}
 
             {loading ? (
               <div className="space-y-4">

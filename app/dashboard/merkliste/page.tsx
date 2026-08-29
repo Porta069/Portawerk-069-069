@@ -7,9 +7,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Heart, Loader2, ArrowRight, Send, Check, X, GitCompareArrows,
+  Heart, Loader2, ArrowRight, Send, Check, X, GitCompareArrows, Wallet, Clock3,
 } from "lucide-react";
 import { listFavorites, setFavorite, applyToJob, getWorkLocations } from "@/lib/jobsService";
 import type { Job, WorkLocation } from "@/lib/types";
@@ -87,47 +88,300 @@ export default function MerklistePage() {
 
   const compareJobs = (jobs ?? []).filter((j) => compareIds.includes(j.id));
 
+  // Kennzahlen aus den gemerkten Stellen — rein abgeleitet, kein zusätzlicher
+  // Aufruf. Sie beantworten die Fragen, die man sich vor einer Bewerbung
+  // stellt: Was ist das Beste dabei? Was liegt am nächsten?
+  const liste = jobs ?? [];
+  const bestesGehalt = liste.length
+    ? Math.max(...liste.map((j) => j.salaryMax || j.salaryMin || 0))
+    : 0;
+  const kuerzesteFahrt = liste.length
+    ? Math.min(...liste.map((j) => j.travelMinutes).filter((m) => m > 0))
+    : 0;
+
   return (
     <div>
-      <h1
-        className="text-primary font-bold mb-1"
-        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
+      {/* ── Statuspanel ─────────────────────────────────────────────────────
+          Randlos über die volle Fensterbreite, direkt unter der Kopfleiste —
+          dieselbe Bauform wie die Übersicht. Die Überschrift beschreibt die
+          Lage statt nur den Seitennamen zu wiederholen. */}
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="vollbreite relative overflow-hidden -mt-10 mb-10"
+        style={{ background: "#1A1A2E" }}
       >
-        Deine Merkliste
-      </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
-        Gespeicherte Stellen aus der Jobbörse — vergleichen, ansehen, bewerben.
-      </p>
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)",
+          }}
+        />
 
+        <div aria-hidden className="absolute inset-y-0 right-0 w-[46%] hidden md:block">
+          <Image
+            src="/images/tischler-hobel.jpg"
+            alt=""
+            fill
+            sizes="46vw"
+            className="object-cover"
+            style={{ objectPosition: "center 45%" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, #1A1A2E 2%, rgba(26,26,46,0.9) 32%, rgba(26,26,46,0.45) 100%)",
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-10 sm:py-14">
+          <div className="flex items-center justify-between gap-8">
+            <div className="min-w-0 max-w-[34rem]">
+              <div className="flex items-center gap-2.5 mb-5">
+                <Heart
+                  className="w-4 h-4 flex-shrink-0"
+                  fill="#E8A838"
+                  strokeWidth={0}
+                />
+                <span
+                  className="text-[10px] font-semibold uppercase"
+                  style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+                >
+                  Merkliste
+                </span>
+              </div>
+
+              <h1
+                className="font-bold leading-[1.12] mb-3"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.75rem, 3.3vw, 2.6rem)",
+                  color: "#FFFFFF",
+                }}
+              >
+                {liste.length === 0
+                  ? "Hier sammelst du, was dich interessiert."
+                  : liste.length === 1
+                    ? "Eine Stelle wartet auf deine Entscheidung."
+                    : `${liste.length} Stellen warten auf deine Entscheidung.`}
+              </h1>
+
+              <p
+                className="text-[15px] leading-relaxed mb-7 max-w-[32rem]"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
+                {liste.length === 0
+                  ? "Tipp in der Jobbörse auf das Herz — die Stelle landet hier."
+                  : "Lass dir Zeit. Gemerkte Stellen laufen dir nicht weg."}
+              </p>
+
+              <Link
+                href="/dashboard/jobboerse"
+                className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: "#E8A838",
+                  color: "#1A1A2E",
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                }}
+              >
+                {liste.length === 0 ? "Stellen ansehen" : "Weitere Stellen ansehen"}
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+            </div>
+
+            {/* Zähler im Panel — grösstes Element, sagt sofort, wie viel hier
+                liegt. */}
+            {liste.length > 0 && (
+              <div
+                className="hidden lg:flex flex-col items-center justify-center flex-shrink-0"
+                style={{
+                  width: 168,
+                  height: 168,
+                  // Der Zähler liegt über dem Werkstattfoto. Ohne diese
+                  // Abdunklung steht er auf einer Hobelbank und ist nicht mehr
+                  // zu lesen.
+                  background:
+                    "radial-gradient(circle, rgba(26,26,46,0.92) 44%, rgba(26,26,46,0) 74%)",
+                }}
+              >
+                <span
+                  className="font-black tabular-nums leading-none"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "4.5rem", color: "#E8A838" }}
+                >
+                  {liste.length}
+                </span>
+                <span
+                  className="text-[9.5px] font-semibold uppercase mt-2"
+                  style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.2em" }}
+                >
+                  gemerkt
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── Kennzahlen ──────────────────────────────────────────────────────
+          Abgeleitet aus den gemerkten Stellen, kein zusätzlicher Aufruf.
+          Warmer Verlauf und Werkzeug-Wasserzeichen wie die Karten der
+          Übersicht. */}
+      {liste.length > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-10">
+          {[
+            {
+              label: "Gemerkt",
+              wert: String(liste.length),
+              zusatz: liste.length === 1 ? "Stelle" : "Stellen",
+              icon: Heart,
+            },
+            {
+              label: "Bester Lohn",
+              wert: bestesGehalt ? `${bestesGehalt.toLocaleString("de-DE")} €` : "—",
+              zusatz: bestesGehalt ? "im Monat" : "keine Angabe",
+              icon: Wallet,
+            },
+            {
+              label: "Nächste Stelle",
+              wert: kuerzesteFahrt ? `${kuerzesteFahrt}` : "—",
+              zusatz: kuerzesteFahrt ? "Minuten Fahrt" : "keine Angabe",
+              icon: Clock3,
+            },
+          ].map((k, i) => {
+            const Werkzeug = k.icon;
+            return (
+              <motion.div
+                key={k.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.08 + i * 0.05 }}
+                className="relative overflow-hidden rounded-2xl p-6 last:col-span-2 lg:last:col-span-1"
+                style={{
+                  background: "linear-gradient(158deg, #FFFFFF 0%, #FCFAF4 56%, #F6F0E2 100%)",
+                  border: "1.5px solid #EDE8DC",
+                  boxShadow: "0 10px 26px -20px rgba(26,26,46,0.6)",
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="absolute top-0 left-0 h-[3px]"
+                  style={{
+                    width: "36%",
+                    background: "linear-gradient(90deg, #E8A838 0%, rgba(232,168,56,0.15) 100%)",
+                  }}
+                />
+                <Werkzeug
+                  aria-hidden
+                  className="absolute pointer-events-none"
+                  style={{
+                    right: -16,
+                    bottom: -12,
+                    width: 92,
+                    height: 92,
+                    color: "rgba(26,26,46,0.07)",
+                  }}
+                  strokeWidth={1.1}
+                />
+                <p
+                  className="relative text-[9.5px] font-semibold uppercase mb-2"
+                  style={{ color: "rgba(26,26,46,0.45)", letterSpacing: "0.19em" }}
+                >
+                  {k.label}
+                </p>
+                <p
+                  className="relative text-[34px] font-bold tabular-nums leading-none text-primary"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {k.wert}
+                </p>
+                <p className="relative text-[12.5px] mt-2" style={{ color: "rgba(26,26,46,0.5)" }}>
+                  {k.zusatz}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Liste ── */}
       {jobs === null ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+        <div className="space-y-4">
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-3xl bg-white"
+              style={{ height: 190, border: "1.5px solid #EDEAE4" }}
+            />
+          ))}
         </div>
       ) : jobs.length === 0 ? (
-        <div
-          className="rounded-3xl bg-white px-6 py-16 text-center"
-          style={{ border: "1.5px solid #E9E7E1" }}
-        >
-          <Heart className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[16px] font-bold text-primary mb-1.5">Noch nichts gemerkt</p>
-          <p className="text-[13.5px] mb-6 max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Tipp in der Jobbörse auf das Herz einer Stelle — sie landet dann hier
-            in deinem Profilbereich.
-          </p>
-          <Link
-            href="/dashboard/jobboerse"
-            className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-          >
-            Zur Jobbörse
-            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </Link>
-        </div>
+        // Leer ist hier der Normalfall am ersten Tag. Statt einer leeren
+        // Fläche steht dort, wie die Merkliste gedacht ist — dieselbe Form wie
+        // "So läuft's" auf der Übersicht.
+        <section>
+          <div className="flex items-center gap-4 mb-6">
+            <span
+              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            >
+              So geht&rsquo;s
+            </span>
+            <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+          </div>
+
+          <ol className="grid sm:grid-cols-3 gap-x-5 gap-y-6">
+            {[
+              { titel: "Herz antippen", text: "In der Jobbörse an jeder Stelle" },
+              { titel: "In Ruhe vergleichen", text: "Lohn, Fahrzeit, Bedingungen" },
+              { titel: "Dann bewerben", text: "Diskret, wann du willst" },
+            ].map((s, i) => (
+              <li key={s.titel} className="relative flex gap-3 sm:block">
+                {i < 2 && (
+                  <span
+                    aria-hidden
+                    className="hidden sm:block absolute h-px"
+                    style={{ left: 30, right: -20, top: 11, background: "rgba(26,26,46,0.13)" }}
+                  />
+                )}
+                <span
+                  className="relative z-10 flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                  style={{
+                    width: 22,
+                    height: 22,
+                    background: "rgba(232,168,56,0.18)",
+                    color: "#B47B18",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <div className="min-w-0 sm:mt-3">
+                  <p className="text-[13.5px] font-bold leading-snug text-primary">{s.titel}</p>
+                  <p className="text-[12.5px] leading-snug mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                    {s.text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
       ) : (
         <>
-          <p className="text-[13px] mb-4" style={{ color: "rgba(26,26,46,0.45)" }}>
-            {jobs.length} {jobs.length === 1 ? "gemerkte Stelle" : "gemerkte Stellen"}
-          </p>
+          <div className="flex items-center gap-4 mb-5">
+            <span
+              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            >
+              Deine gemerkten Stellen
+            </span>
+            <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+          </div>
           <div className="space-y-4">
             {jobs.map((job) => (
               <JobCard

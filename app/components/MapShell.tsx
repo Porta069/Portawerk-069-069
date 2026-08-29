@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, Polygon, Polyline, useMap } from "react-leaflet";
 import type { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import {
-  GERMANY_CENTER, GERMANY_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
+  GERMANY_CENTER, GERMANY_BOUNDS, PAN_BOUNDS, MIN_ZOOM, MAX_ZOOM, TILE_URL, OSM_COPYRIGHT_URL,
 } from "@/lib/mapConfig";
 import { GERMANY_OUTLINE } from "@/lib/germanyOutline";
 
@@ -136,10 +136,23 @@ export default function MapShell({
       zoom={zoom ?? 6}
       minZoom={MIN_ZOOM}
       maxZoom={MAX_ZOOM}
-      maxBounds={GERMANY_BOUNDS}
-      maxBoundsViscosity={1}
+      maxBounds={PAN_BOUNDS}
+      /* Elastisch statt starr: an der Grenze gibt die Karte nach und federt
+         zurück, statt die Bewegung hart zu verschlucken. */
+      maxBoundsViscosity={0.4}
+      /*
+       * `zoomSnap: 0` erlaubt Zwischenstufen — nötig, damit fitBounds
+       * Deutschland formatfüllend einpasst statt auf die nächstkleinere ganze
+       * Stufe zu runden (das halbierte die Grösse).
+       *
+       * Es macht aber das Mausrad extrem fein: Leaflet rundet den Zoomschritt
+       * dann nicht mehr auf, gemessen blieben 0,31 Stufen pro Radklick. Der
+       * kleinere Wert für `wheelPxPerZoomLevel` gleicht das aus — je kleiner,
+       * desto mehr Zoom pro Radweg.
+       */
       zoomSnap={0}
-      zoomDelta={0.5}
+      zoomDelta={1}
+      wheelPxPerZoomLevel={22}
       scrollWheelZoom={scrollWheelZoom}
       zoomControl={false}
       attributionControl={false}

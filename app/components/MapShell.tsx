@@ -106,6 +106,70 @@ function FitGermany({ enabled }: { enabled: boolean }) {
   return null;
 }
 
+/**
+ * Eigener Mausrad-Zoom statt Leaflets `scrollWheelZoom`.
+ *
+ * Leaflet bildet das Radsignal über eine Sigmoid-Funktion ab und dämpft kleine
+ * Werte stark. Das trifft Trackpads hart: die liefern viele winzige Deltas
+ * statt weniger grosser. Dazu teilt Leaflet auf macOS zusätzlich durch
+ * `devicePixelRatio * 3` — auf einem Retina-Bildschirm also durch sechs.
+ *
+ * Gemessen mit `zoomSnap: 0` bei devicePixelRatio 2, jeweils 20 Trackpad-
+ * Wische: bei `wheelPxPerZoomLevel` 22 kamen 0,09 Zoomstufen heraus, bei 3
+ * immer noch nur 0,63 — während dasselbe 3 dem Mausrad schon 3,83 Stufen für
+ * drei Klicks gab. Ein einziger Wert kann beide Geräte nicht bedienen.
+ *
+ * Dieser Handler rechnet linear: gesammelte Pixel geteilt durch eine feste
+ * Zahl ergeben die Zoomstufen — Trackpad und Mausrad landen damit auf
+ * derselben Kurve. Nachgemessen: drei Radklicks (360 px) ergeben 2,8 Stufen,
+ * ein kräftiger Trackpad-Wisch etwa dasselbe. Angewendet wird einmal pro
+ * Bildaufbau: flüssig, und trotzdem geht kein Einzelereignis verloren.
+ */
+const PIXEL_PRO_ZOOMSTUFE = 130;
+
+function RadZoom({ aktiv }: { aktiv: boolean }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!aktiv) return;
+    const el = map.getContainer();
+    let offen = 0;
+    let punkt: ReturnType<typeof map.mouseEventToContainerPoint> | null = null;
+    let bild = 0;
+
+    const anwenden = () => {
+      bild = 0;
+      if (!offen || !punkt) return;
+      const stufen = -offen / PIXEL_PRO_ZOOMSTUFE;
+      offen = 0;
+      map.setZoomAround(punkt, map.getZoom() + stufen, { animate: false });
+    };
+
+    const amRad = (e: WheelEvent) => {
+      // Ohne preventDefault scrollt die Seite unter der Karte weg.
+      e.preventDefault();
+      // deltaMode: 0 = Pixel, 1 = Zeilen, 2 = Seiten.
+      const px =
+        e.deltaMode === 1
+          ? e.deltaY * 16
+          : e.deltaMode === 2
+            ? e.deltaY * el.clientHeight
+            : e.deltaY;
+      offen += px;
+      punkt = map.mouseEventToContainerPoint(e);
+      if (!bild) bild = requestAnimationFrame(anwenden);
+    };
+
+    el.addEventListener("wheel", amRad, { passive: false });
+    return () => {
+      el.removeEventListener("wheel", amRad);
+      if (bild) cancelAnimationFrame(bild);
+    };
+  }, [map, aktiv]);
+
+  return null;
+}
+
 export default function MapShell({
   height = 360,
   center = GERMANY_CENTER,
@@ -140,20 +204,12 @@ export default function MapShell({
       /* Elastisch statt starr: an der Grenze gibt die Karte nach und federt
          zurück, statt die Bewegung hart zu verschlucken. */
       maxBoundsViscosity={0.4}
-      /*
-       * `zoomSnap: 0` erlaubt Zwischenstufen — nötig, damit fitBounds
-       * Deutschland formatfüllend einpasst statt auf die nächstkleinere ganze
-       * Stufe zu runden (das halbierte die Grösse).
-       *
-       * Es macht aber das Mausrad extrem fein: Leaflet rundet den Zoomschritt
-       * dann nicht mehr auf, gemessen blieben 0,31 Stufen pro Radklick. Der
-       * kleinere Wert für `wheelPxPerZoomLevel` gleicht das aus — je kleiner,
-       * desto mehr Zoom pro Radweg.
-       */
+      /* Zwischenstufen erlaubt — nötig, damit fitBounds Deutschland
+         formatfüllend einpasst statt auf die nächstkleinere ganze Stufe zu
+         runden. Das Mausrad übernimmt RadZoom, siehe oben. */
       zoomSnap={0}
       zoomDelta={1}
-      wheelPxPerZoomLevel={22}
-      scrollWheelZoom={scrollWheelZoom}
+      scrollWheelZoom={false}
       zoomControl={false}
       attributionControl={false}
       style={{ height, width: "100%", background: dunkel ? "#1A1A2E" : "#F8F7F4" }}
@@ -164,6 +220,7 @@ export default function MapShell({
         className={dunkel ? "pw-map-tiles-dunkel" : "pw-map-tiles"}
       />
       <GermanyMask dunkel={dunkel} />
+      <RadZoom aktiv={scrollWheelZoom} />
       <FitGermany enabled={fitGermany} />
       {children}
     </MapContainer>

@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Wallet, Users, CheckCircle2, TrendingUp, Copy, Check, Loader2,
@@ -47,45 +48,65 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
     "w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-primary/25";
 
   return (
-    <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] gap-6 items-start">
-      {/* Nutzenversprechen */}
-      <div className="relative overflow-hidden rounded-3xl p-7" style={{ background: "#1A1A2E" }}>
-        <div
-          className="absolute -top-24 -right-20 w-72 h-72 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.22) 0%, transparent 70%)" }}
-        />
-        <div className="relative">
+    <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-8 items-start">
+      {/* Was das Programm bringt — die drei Punkte, die im Banner keinen Platz
+          haben. Ohne den dunklen Kasten von vorher: der stand direkt unter dem
+          Banner und wiederholte dessen Aussage in derselben Farbe. */}
+      <div>
+        <div className="flex items-center gap-4 mb-6">
           <span
-            className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3"
-            style={{ color: "#E8A838" }}
+            className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+            style={{ color: "#B47B18", letterSpacing: "0.2em" }}
           >
-            <span className="w-6 h-[2px] bg-accent" />
-            Empfehlungsprogramm
+            So funktioniert&rsquo;s
           </span>
-          <h2
-            className="text-white font-bold text-[26px] leading-snug mb-3"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            100 € für jeden Kollegen, den du vermittelst
-          </h2>
-          <p className="text-[14px] leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.5)" }}>
-            Du bekommst einen persönlichen Link. Findet jemand darüber einen Job,
-            bekommst du die Prämie ausgezahlt — unabhängig davon, ob du selbst gerade
-            suchst.
-          </p>
-          <ul className="space-y-2.5">
-            {[
-              "Kostenlos, keine Mindestanzahl",
-              "Auszahlung aufs eigene Konto",
-              "Läuft parallel zu deinen Bewerbungen",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2.5 text-[13.5px]" style={{ color: "rgba(255,255,255,0.72)" }}>
-                <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} strokeWidth={3} />
-                {t}
-              </li>
-            ))}
-          </ul>
+          <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
         </div>
+
+        <ol className="space-y-5 mb-9">
+          {[
+            { titel: "Link holen", text: "Nach der Anmeldung sofort da" },
+            { titel: "An Kollegen schicken", text: "WhatsApp, SMS, wie du willst" },
+            { titel: "100 € kassieren", text: "Sobald er über dich einen Job findet" },
+          ].map((s2, i) => (
+            <li key={s2.titel} className="flex gap-3.5">
+              <span
+                className="flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                style={{
+                  width: 24,
+                  height: 24,
+                  background: "rgba(232,168,56,0.18)",
+                  color: "#B47B18",
+                }}
+              >
+                {i + 1}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[14.5px] font-bold leading-snug text-primary">{s2.titel}</p>
+                <p className="text-[13px] leading-snug mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                  {s2.text}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <ul className="space-y-2.5">
+          {[
+            "Kostenlos, keine Mindestanzahl",
+            "Auszahlung aufs eigene Konto",
+            "Läuft parallel zu deinen Bewerbungen",
+          ].map((t) => (
+            <li
+              key={t}
+              className="flex items-start gap-2.5 text-[13.5px]"
+              style={{ color: "rgba(26,26,46,0.65)" }}
+            >
+              <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} strokeWidth={3} />
+              {t}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Formular */}
@@ -359,16 +380,80 @@ export default function DashboardVerdienenPage() {
 
   return (
     <div>
-      <h1
-        className="text-primary font-bold mb-1"
-        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
+      {/* ── Banner ──────────────────────────────────────────────────────────
+          Randlos, dunkel, mit dem Geldbild rechts — dieselbe Bauform wie auf
+          den übrigen Seiten des Bereichs und dasselbe Motiv wie im Hero der
+          öffentlichen Verdienen-Seite. Die Prämie trägt den Goldlauf, den die
+          Übersicht schon nutzt. */}
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="vollbreite relative overflow-hidden -mt-10 mb-10"
+        style={{ background: "#1A1A2E" }}
       >
-        Verdienen
-      </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
-        Empfiehl Kollegen und verdien nebenbei — deine Bewerbungen laufen unabhängig
-        davon weiter.
-      </p>
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)",
+          }}
+        />
+
+        <div aria-hidden className="absolute inset-y-0 right-0 w-[52%] hidden md:block">
+          <Image
+            src="/images/geld.jpg"
+            alt=""
+            fill
+            sizes="52vw"
+            priority
+            className="object-cover"
+            style={{ objectPosition: "center 45%" }}
+          />
+          {/* Derselbe Verlauf wie im Hero der öffentlichen Seite: links voll
+              deckend, nach rechts hin klart das Motiv auf. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, #1A1A2E 0%, rgba(26,26,46,0.86) 26%, rgba(26,26,46,0.32) 68%, rgba(26,26,46,0.5) 100%)",
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-10 sm:py-14">
+          <div className="max-w-[36rem]">
+            <span
+              className="inline-flex items-center gap-2.5 text-[10px] font-semibold uppercase mb-5"
+              style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+            >
+              <span className="w-5 h-px" style={{ background: "#E8A838" }} />
+              Empfehlungsprogramm
+            </span>
+
+            <h1
+              className="font-bold leading-[1.08] mb-3"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(1.9rem, 3.6vw, 2.8rem)",
+                color: "#FFFFFF",
+              }}
+            >
+              <span className="gold-schimmer">100 €</span> für jeden Kollegen,
+              den du vermittelst
+            </h1>
+
+            <p
+              className="text-[15px] leading-relaxed max-w-[32rem]"
+              style={{ color: "rgba(255,255,255,0.6)" }}
+            >
+              Läuft nebenher — deine Bewerbungen sind davon unberührt.
+            </p>
+          </div>
+        </div>
+      </motion.section>
 
       {checking ? (
         <div className="flex items-center justify-center py-20">

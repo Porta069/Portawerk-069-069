@@ -295,7 +295,7 @@ export default function AngebotePage() {
               senken sich kaum merklich, ein heller Streifen läuft durch. Man
               sieht dadurch, WO das Angebot erscheinen wird, und dass die Seite
               darauf wartet statt kaputt zu sein. */}
-          <div className="relative mb-14">
+          <div className="relative mb-11">
             <div aria-hidden className="space-y-4">
               {[
                 { hoehe: 132, verzug: "0s", deckung: 1 },
@@ -388,8 +388,8 @@ export default function AngebotePage() {
           <ol className="grid sm:grid-cols-3 gap-x-5 gap-y-6">
             {[
               { titel: "Betrieb findet dich", text: "Anonym, ohne deinen Namen" },
-              { titel: "Er bietet dir eine Stelle an", text: "Mit Lohn und Fahrzeit" },
-              { titel: "Du sagst zu oder ab", text: "Erst bei Zusage bekommt er deine Nummer" },
+              { titel: "Betrieb bietet dir eine Stelle an", text: "Mit Lohn und Fahrzeit" },
+              { titel: "Du sagst zu oder ab", text: "Erst bei Zusage bekommt der Betrieb deine Nummer" },
             ].map((s2, i) => (
               <li key={s2.titel} className="relative flex gap-3 sm:block">
                 {i < 2 && (

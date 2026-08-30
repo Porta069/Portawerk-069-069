@@ -6,7 +6,6 @@
 // als Ausweg aus der Sackgasse.
 
 import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -18,6 +17,7 @@ import {
 import type { JobOffer, WorkerContactRequest } from "@/lib/types";
 import OfferCard from "@/app/components/dashboard/OfferCard";
 import { AffiliateNudge } from "@/app/components/dashboard/AffiliateTile";
+import Wartezustand from "@/app/components/dashboard/Wartezustand";
 
 /** Ein Betrieb möchte Kontaktdaten sehen — der Handwerker entscheidet. */
 function ContactRequestRow({
@@ -281,101 +281,17 @@ export default function AngebotePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          {/* ── Wartezustand ────────────────────────────────────────────────
-              Statt eines Symbols in einem getönten Kreis — die Standardform,
-              an der man jeden generierten Leerzustand erkennt — stehen hier
-              zwei leere Karten in der Form der echten Angebote. Sie heben und
-              senken sich kaum merklich, ein heller Streifen läuft durch. Man
-              sieht dadurch, WO das Angebot erscheinen wird, und dass die Seite
-              darauf wartet statt kaputt zu sein. */}
-          {/* Der Abstand ist auf breiten Fenstern bewusst gross: sonst klebt
-              die Anleitung am Wartezustand, darunter bleibt aber Leerraum.
-              Der Kartenstapel trägt die Höhe inzwischen selbst, deshalb ist
-              hier nur noch wenig nötig. Auf schmalen Geräten bleibt es beim
-              kleinen Wert, dort zählt jeder Pixel. */}
-          <div className="relative mb-8 lg:mb-[1.5rem]">
-            <div aria-hidden className="space-y-3">
-              {/* Vier Karten, nach unten hin blasser und flacher. Der Text
-                  liegt mittig über dem Stapel — bei nur zwei Karten sass er
-                  dadurch im oberen Drittel und wirkte nach oben gerutscht. */}
-              {[
-                { hoehe: 100, verzug: "0s", deckung: 1 },
-                { hoehe: 92, verzug: "0.8s", deckung: 0.6 },
-                { hoehe: 84, verzug: "1.6s", deckung: 0.3 },
-                { hoehe: 76, verzug: "2.4s", deckung: 0.13 },
-              ].map((k, i) => (
-                <div
-                  key={i}
-                  className="wartekarte relative overflow-hidden rounded-3xl"
-                  style={
-                    {
-                      height: k.hoehe,
-                      opacity: k.deckung,
-                      background: "#FFFFFF",
-                      border: "1.5px solid #EDE8DC",
-                      "--verzug": k.verzug,
-                    } as CSSProperties
-                  }
-                >
-                  {/* Angedeutete Zeilen — die Form einer Angebotskarte. */}
-                  <div className="flex gap-4 p-4">
-                    <span
-                      className="rounded-2xl flex-shrink-0"
-                      style={{ width: 60, height: 60, background: "#F4F1EA" }}
-                    />
-                    <span className="flex-1 min-w-0 space-y-2.5 pt-1">
-                      <span className="block rounded-full" style={{ width: "42%", height: 13, background: "#F1EDE4" }} />
-                      <span className="block rounded-full" style={{ width: "26%", height: 10, background: "#F4F1EA" }} />
-                      <span className="block rounded-full" style={{ width: "58%", height: 10, background: "#F4F1EA" }} />
-                    </span>
-                  </div>
-                  <span
-                    className="warte-glanz absolute inset-y-0 w-1/3 pointer-events-none"
-                    style={
-                      {
-                        background:
-                          "linear-gradient(90deg, transparent, rgba(232,168,56,0.13), transparent)",
-                        "--verzug": k.verzug,
-                      } as CSSProperties
-                    }
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Die Botschaft liegt über den Karten, mit weichem Übergang nach
-                unten — dadurch verlaufen die Platzhalter darunter und drängen
-                sich nicht auf. */}
-            <div
-              className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(248,247,244,0.3) 0%, rgba(248,247,244,0.82) 38%, rgba(248,247,244,0.97) 62%, #F8F7F4 100%)",
-              }}
-            >
-              <span className="inline-flex items-center gap-2.5 mb-3">
-                <span
-                  className="punkt-glut rounded-full flex-shrink-0"
-                  style={{ width: 8, height: 8, background: "#E8A838" }}
-                />
-                <span
-                  className="text-[9.5px] font-semibold uppercase"
-                  style={{ color: "#B47B18", letterSpacing: "0.2em" }}
-                >
-                  Betriebe suchen gerade
-                </span>
-              </span>
-              <p
-                className="text-primary font-bold leading-tight"
-                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.25rem, 2.6vw, 1.7rem)" }}
-              >
-                Noch kein Angebot da
-              </p>
-              <p className="text-[14px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
-                Sobald sich ein Betrieb meldet, steht es hier.
-              </p>
-            </div>
-          </div>
+          <Wartezustand
+            marke="Betriebe suchen gerade"
+            titel="Noch kein Angebot da"
+            text="Sobald sich ein Betrieb meldet, steht es hier."
+            icon={
+              <span
+                className="punkt-glut rounded-full flex-shrink-0"
+                style={{ width: 8, height: 8, background: "#E8A838" }}
+              />
+            }
+          />
 
           <div className="flex items-center gap-4 mb-6">
             <span

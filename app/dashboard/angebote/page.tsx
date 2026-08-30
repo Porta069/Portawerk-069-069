@@ -7,7 +7,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Inbox, Loader2, ArrowRight, ShieldCheck, Check, X } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Loader2, ArrowRight, ShieldCheck, Check, X } from "lucide-react";
 import {
   listOffers, respondToOffer, listContactRequests, respondContactRequest,
   type DeclineReason,
@@ -126,15 +128,129 @@ export default function AngebotePage() {
 
   return (
     <div>
-      <h1
-        className="text-primary font-bold mb-1"
-        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
+      {/* ── Statuspanel ─────────────────────────────────────────────────────
+          Randlos, dunkel, mit Foto — dieselbe Bauform wie Übersicht und
+          Merkliste. Die Überschrift beschreibt die Lage, statt nur den
+          Seitennamen zu wiederholen. */}
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="vollbreite relative overflow-hidden -mt-10 mb-10"
+        style={{ background: "#1A1A2E" }}
       >
-        Deine Jobangebote
-      </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
-        Diese Betriebe möchten dich einstellen — du entscheidest, wer dein Profil sehen darf.
-      </p>
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)",
+          }}
+        />
+
+        <div aria-hidden className="absolute inset-y-0 right-0 w-[46%] hidden md:block">
+          <Image
+            src="/images/hero-team-werkstatt.jpg"
+            alt=""
+            fill
+            sizes="46vw"
+            className="object-cover"
+            style={{ objectPosition: "center 40%" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, #1A1A2E 2%, rgba(26,26,46,0.9) 32%, rgba(26,26,46,0.45) 100%)",
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-10 sm:py-14">
+          <div className="flex items-center justify-between gap-8">
+            <div className="min-w-0 max-w-[34rem]">
+              <div className="flex items-center gap-2.5 mb-5">
+                <span
+                  className="punkt-glut rounded-full flex-shrink-0"
+                  style={{ width: 8, height: 8, background: "#E8A838" }}
+                />
+                <span
+                  className="text-[10px] font-semibold uppercase"
+                  style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+                >
+                  {offen.length > 0 ? `${offen.length} neu` : "Profil läuft mit"}
+                </span>
+              </div>
+
+              <h1
+                className="font-bold leading-[1.12] mb-3"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.75rem, 3.3vw, 2.6rem)",
+                  color: "#FFFFFF",
+                }}
+              >
+                {offers.length === 0
+                  ? "Betriebe suchen gerade nach dir."
+                  : offen.length === 1
+                    ? "Ein Betrieb möchte dich einstellen."
+                    : offen.length > 1
+                      ? `${offen.length} Betriebe möchten dich einstellen.`
+                      : "Deine Jobangebote"}
+              </h1>
+
+              <p
+                className="text-[15px] leading-relaxed mb-7 max-w-[32rem]"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
+                Du entscheidest, wer dein Profil sehen darf.
+              </p>
+
+              {offers.length === 0 && (
+                <Link
+                  href="/dashboard/jobboerse"
+                  className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
+                  style={{
+                    background: "#E8A838",
+                    color: "#1A1A2E",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                  }}
+                >
+                  Selbst Stellen ansehen
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+              )}
+            </div>
+
+            {offen.length > 0 && (
+              <div
+                className="hidden lg:flex flex-col items-center justify-center flex-shrink-0"
+                style={{
+                  width: 168,
+                  height: 168,
+                  background:
+                    "radial-gradient(circle, rgba(26,26,46,0.92) 44%, rgba(26,26,46,0) 74%)",
+                }}
+              >
+                <span
+                  className="font-black tabular-nums leading-none"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "4.5rem", color: "#E8A838" }}
+                >
+                  {offen.length}
+                </span>
+                <span
+                  className="text-[9.5px] font-semibold uppercase mt-2"
+                  style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.2em" }}
+                >
+                  offen
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.section>
 
       {/* Offene Kontaktanfragen — Diskretionsversprechen in Aktion */}
       {offeneAnfragen.length > 0 && (
@@ -163,25 +279,59 @@ export default function AngebotePage() {
           <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
         </div>
       ) : offers.length === 0 ? (
-        <div
-          className="rounded-3xl bg-white px-6 py-16 text-center"
-          style={{ border: "1.5px solid #E9E7E1" }}
+        // Leer ist am Anfang der Normalfall, nicht der Sonderfall. Statt eines
+        // Kastens mit drei Zeilen Fliesstext steht hier der Ablauf — dieselbe
+        // Form wie "So läuft's" auf der Übersicht.
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
         >
-          <Inbox className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[16px] font-bold text-primary mb-1.5">Noch keine Angebote</p>
-          <p className="text-[13.5px] mb-6 max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Je vollständiger dein Profil, desto häufiger wirst du gefunden. In der
-            Zwischenzeit kannst du dich selbst auf Stellen bewerben.
-          </p>
-          <Link
-            href="/dashboard/jobboerse"
-            className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-          >
-            Zur Jobbörse
-            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </Link>
-        </div>
+          <div className="flex items-center gap-4 mb-6">
+            <span
+              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            >
+              So kommt ein Angebot
+            </span>
+            <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+          </div>
+
+          <ol className="grid sm:grid-cols-3 gap-x-5 gap-y-6">
+            {[
+              { titel: "Betrieb findet dich", text: "Anonym, ohne Namen" },
+              { titel: "Er fragt an", text: "Du bekommst Bescheid" },
+              { titel: "Du entscheidest", text: "Erst dann kennt er dich" },
+            ].map((s2, i) => (
+              <li key={s2.titel} className="relative flex gap-3 sm:block">
+                {i < 2 && (
+                  <span
+                    aria-hidden
+                    className="hidden sm:block absolute h-px"
+                    style={{ left: 30, right: -20, top: 11, background: "rgba(26,26,46,0.13)" }}
+                  />
+                )}
+                <span
+                  className="relative z-10 flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                  style={{
+                    width: 22,
+                    height: 22,
+                    background: "rgba(232,168,56,0.18)",
+                    color: "#B47B18",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <div className="min-w-0 sm:mt-3">
+                  <p className="text-[13.5px] font-bold leading-snug text-primary">{s2.titel}</p>
+                  <p className="text-[12.5px] leading-snug mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                    {s2.text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </motion.section>
       ) : (
         <div className="space-y-8">
           {offen.length > 0 && (

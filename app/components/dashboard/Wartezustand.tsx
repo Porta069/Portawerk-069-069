@@ -63,7 +63,7 @@ export default function Wartezustand({
                 // den Verlauf trägt allein die Deckkraft. Vorher waren die
                 // hinteren zusätzlich blasser gezeichnet, dadurch verschwanden
                 // sie doppelt und der Übergang war nicht zu sehen.
-                border: "1.5px solid #DED5BF",
+                border: "1.5px solid #E7E0D0",
                 boxShadow: i === 0 ? "0 10px 26px -22px rgba(26,26,46,0.55)" : "none",
                 "--verzug": k.verzug,
               } as CSSProperties
@@ -72,20 +72,20 @@ export default function Wartezustand({
             <div className="flex gap-4 p-4">
               <span
                 className="rounded-2xl flex-shrink-0"
-                style={{ width: 56, height: 56, background: "#DCD0B6" }}
+                style={{ width: 56, height: 56, background: "#EAE3D5" }}
               />
               <span className="flex-1 min-w-0 space-y-2.5 pt-1">
                 <span
                   className="block rounded-full"
-                  style={{ width: "42%", height: 13, background: "#D2C3A3" }}
+                  style={{ width: "42%", height: 13, background: "#E3DACA" }}
                 />
                 <span
                   className="block rounded-full"
-                  style={{ width: "26%", height: 10, background: "#DCD0B6" }}
+                  style={{ width: "26%", height: 10, background: "#EAE3D5" }}
                 />
                 <span
                   className="block rounded-full"
-                  style={{ width: "58%", height: 10, background: "#DCD0B6" }}
+                  style={{ width: "58%", height: 10, background: "#EAE3D5" }}
                 />
               </span>
             </div>

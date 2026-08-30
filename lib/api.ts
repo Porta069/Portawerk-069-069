@@ -2,8 +2,21 @@
 // Spricht das Live-Backend (NestJS auf Render) unter /api/v1 an.
 // Alle Methoden liefern ein `ApiResult<T>` für einheitliches Error-Handling.
 
+/**
+ * Adresse des Backends.
+ *
+ * Der Ausweichwert zeigt bewusst auf das Live-Backend und nicht mehr auf
+ * `http://localhost:4000`. Ohne gesetzte Umgebungsvariable liefen sonst alle
+ * Aufrufe gegen einen lokalen Server, den es meist gar nicht gibt — während
+ * die Statusanzeige (BackendStatus.tsx) und die CSP in next.config.mjs
+ * gleichzeitig auf Render zeigten. Drei Stellen, zwei verschiedene Ziele.
+ *
+ * Wer lokal gegen ein eigenes Backend entwickelt, setzt NEXT_PUBLIC_API_URL
+ * in einer `.env.local` — dann greift der Ausweichwert nicht.
+ */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://portbackend-069-069.onrender.com/api/v1";
 
 export type ApiResult<T> =
   | { ok: true; data: T }

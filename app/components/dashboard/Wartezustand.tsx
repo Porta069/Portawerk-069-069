@@ -27,11 +27,11 @@ import { motion } from "framer-motion";
  * schiebt die Anleitung darunter aus dem Bild.
  */
 const KARTEN = [
-  { hoehe: 100, verzug: "0s", deckung: 1 },
-  { hoehe: 90, verzug: "0.7s", deckung: 0.82 },
-  { hoehe: 80, verzug: "1.4s", deckung: 0.64 },
-  { hoehe: 70, verzug: "2.1s", deckung: 0.46 },
-  { hoehe: 60, verzug: "2.8s", deckung: 0.28 },
+  { hoehe: 92, verzug: "0s", deckung: 1 },
+  { hoehe: 82, verzug: "0.7s", deckung: 0.82 },
+  { hoehe: 72, verzug: "1.4s", deckung: 0.64 },
+  { hoehe: 62, verzug: "2.1s", deckung: 0.46 },
+  { hoehe: 52, verzug: "2.8s", deckung: 0.28 },
 ];
 
 export default function Wartezustand({
@@ -39,6 +39,7 @@ export default function Wartezustand({
   titel,
   text,
   icon,
+  abstandUnten = "lg:mb-2",
 }: {
   /** Kleinschriftzeile über der Überschrift, z. B. "Noch nichts unterwegs". */
   marke: string;
@@ -46,9 +47,18 @@ export default function Wartezustand({
   text: string;
   /** Zeichen vor der Marke — ein Punkt, ein Symbol, was passt. */
   icon: ReactNode;
+  /**
+   * Abstand nach unten, als Tailwind-Klasse.
+   *
+   * Bewusst nie negativ: der Block ist `relative` und legt sich damit über
+   * alles, was statisch darunter folgt. Ein negativer Rand liess prompt die
+   * Überschrift der Anleitung verschwinden. Wer den Block kürzer braucht,
+   * ändert die Kartenhöhen — nicht den Rand.
+   */
+  abstandUnten?: string;
 }) {
   return (
-    <div className="relative mb-8 lg:mb-2">
+    <div className={`relative mb-8 ${abstandUnten}`}>
       <div aria-hidden className="space-y-3">
         {KARTEN.map((k, i) => (
           <div

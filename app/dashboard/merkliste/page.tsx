@@ -17,6 +17,7 @@ import type { Job, WorkLocation } from "@/lib/types";
 import JobCard from "@/app/components/dashboard/JobCard";
 import JobDetailDialog from "@/app/components/dashboard/JobDetailDialog";
 import CompareDialog from "@/app/components/dashboard/CompareDialog";
+import Wartezustand from "@/app/components/dashboard/Wartezustand";
 
 /** Bewerben-Button mit Zustand (wie in der Jobbörse). */
 function ApplyButton({ jobId }: { jobId: string }) {
@@ -322,10 +323,18 @@ export default function MerklistePage() {
           ))}
         </div>
       ) : jobs.length === 0 ? (
-        // Leer ist hier der Normalfall am ersten Tag. Statt einer leeren
-        // Fläche steht dort, wie die Merkliste gedacht ist — dieselbe Form wie
-        // "So läuft's" auf der Übersicht.
+        // Leer ist hier der Normalfall am ersten Tag. Erst der Befund als
+        // wartender Kartenstapel — er zeigt, dass nichts gemerkt ist und wo
+        // die erste Stelle landen wird —, dann die Anleitung.
         <section>
+          <Wartezustand
+            marke="Merkliste leer"
+            titel="Noch nichts gemerkt"
+            text="Tipp in der Jobbörse auf das Herz einer Stelle."
+            icon={<Heart className="w-3.5 h-3.5 flex-shrink-0" fill="#B47B18" strokeWidth={0} />}
+            abstandUnten="lg:mb-24"
+          />
+
           <div className="flex items-center gap-4 mb-6">
             <span
               className="text-[9.5px] font-semibold uppercase flex-shrink-0"

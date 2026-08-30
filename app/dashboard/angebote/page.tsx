@@ -290,16 +290,19 @@ export default function AngebotePage() {
               darauf wartet statt kaputt zu sein. */}
           {/* Der Abstand ist auf breiten Fenstern bewusst gross: sonst klebt
               die Anleitung am Wartezustand, darunter bleibt aber Leerraum.
-              196 px sind rund zwei Zentimeter weniger als der mittige Wert —
-              so gewünscht. Auf schmalen Geräten bleibt er klein, dort zählt
-              jeder Pixel. */}
-          <div className="relative mb-8 lg:mb-[12.25rem]">
+              Der Kartenstapel trägt die Höhe inzwischen selbst, deshalb ist
+              hier nur noch wenig nötig. Auf schmalen Geräten bleibt es beim
+              kleinen Wert, dort zählt jeder Pixel. */}
+          <div className="relative mb-8 lg:mb-[1.5rem]">
             <div aria-hidden className="space-y-3">
-              {/* Zwei Karten statt drei, und flacher: mit 380 px Blockhöhe
-                  rutschte die Anleitung darunter aus dem sichtbaren Bereich. */}
+              {/* Vier Karten, nach unten hin blasser und flacher. Der Text
+                  liegt mittig über dem Stapel — bei nur zwei Karten sass er
+                  dadurch im oberen Drittel und wirkte nach oben gerutscht. */}
               {[
-                { hoehe: 104, verzug: "0s", deckung: 1 },
-                { hoehe: 92, verzug: "1s", deckung: 0.4 },
+                { hoehe: 100, verzug: "0s", deckung: 1 },
+                { hoehe: 92, verzug: "0.8s", deckung: 0.6 },
+                { hoehe: 84, verzug: "1.6s", deckung: 0.3 },
+                { hoehe: 76, verzug: "2.4s", deckung: 0.13 },
               ].map((k, i) => (
                 <div
                   key={i}
@@ -347,7 +350,7 @@ export default function AngebotePage() {
               className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(248,247,244,0.35) 0%, rgba(248,247,244,0.9) 45%, #F8F7F4 100%)",
+                  "linear-gradient(180deg, rgba(248,247,244,0.3) 0%, rgba(248,247,244,0.82) 38%, rgba(248,247,244,0.97) 62%, #F8F7F4 100%)",
               }}
             >
               <span className="inline-flex items-center gap-2.5 mb-3">

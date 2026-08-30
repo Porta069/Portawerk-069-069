@@ -17,16 +17,21 @@ import type { CSSProperties, ReactNode } from "react";
 import { motion } from "framer-motion";
 
 /**
- * Fünf Stufen: die erste Karte steht klar da, danach fällt die Deckkraft
- * schnell ab. Sie werden zugleich flacher — sonst trägt der Stapel zu viel
- * Höhe und schiebt die Anleitung darunter aus dem Bild.
+ * Fünf Stufen mit gleichmässigem Abfall (rund 18 Prozentpunkte je Karte).
+ *
+ * Vorher fiel die Deckkraft von 1 auf 0,55 und dann auf 0,07 — die erste
+ * Karte stand da, die übrigen waren praktisch weg, einen Verlauf nahm man
+ * nicht wahr. Jetzt bleibt auch die letzte noch sichtbar.
+ *
+ * Sie werden zugleich flacher, sonst trägt der Stapel zu viel Höhe und
+ * schiebt die Anleitung darunter aus dem Bild.
  */
 const KARTEN = [
   { hoehe: 100, verzug: "0s", deckung: 1 },
-  { hoehe: 90, verzug: "0.7s", deckung: 0.55 },
-  { hoehe: 80, verzug: "1.4s", deckung: 0.3 },
-  { hoehe: 70, verzug: "2.1s", deckung: 0.16 },
-  { hoehe: 60, verzug: "2.8s", deckung: 0.07 },
+  { hoehe: 90, verzug: "0.7s", deckung: 0.82 },
+  { hoehe: 80, verzug: "1.4s", deckung: 0.64 },
+  { hoehe: 70, verzug: "2.1s", deckung: 0.46 },
+  { hoehe: 60, verzug: "2.8s", deckung: 0.28 },
 ];
 
 export default function Wartezustand({
@@ -54,9 +59,11 @@ export default function Wartezustand({
                 height: k.hoehe,
                 opacity: k.deckung,
                 background: "#FFFFFF",
-                // Die erste Karte trägt eine kräftigere Kontur — sie soll
-                // klar als Karte lesbar sein, die übrigen nur andeuten.
-                border: `1.5px solid ${i === 0 ? "#E4DDCB" : "#EDE8DC"}`,
+                // Kontur und Innenzeichnung sind für alle Karten gleich —
+                // den Verlauf trägt allein die Deckkraft. Vorher waren die
+                // hinteren zusätzlich blasser gezeichnet, dadurch verschwanden
+                // sie doppelt und der Übergang war nicht zu sehen.
+                border: "1.5px solid #E4DDCB",
                 boxShadow: i === 0 ? "0 10px 26px -22px rgba(26,26,46,0.55)" : "none",
                 "--verzug": k.verzug,
               } as CSSProperties
@@ -65,20 +72,20 @@ export default function Wartezustand({
             <div className="flex gap-4 p-4">
               <span
                 className="rounded-2xl flex-shrink-0"
-                style={{ width: 56, height: 56, background: i === 0 ? "#F0EBDF" : "#F4F1EA" }}
+                style={{ width: 56, height: 56, background: "#E3D9C4" }}
               />
               <span className="flex-1 min-w-0 space-y-2.5 pt-1">
                 <span
                   className="block rounded-full"
-                  style={{ width: "42%", height: 13, background: i === 0 ? "#ECE5D6" : "#F1EDE4" }}
+                  style={{ width: "42%", height: 13, background: "#DACEB4" }}
                 />
                 <span
                   className="block rounded-full"
-                  style={{ width: "26%", height: 10, background: i === 0 ? "#F0EBDF" : "#F4F1EA" }}
+                  style={{ width: "26%", height: 10, background: "#E3D9C4" }}
                 />
                 <span
                   className="block rounded-full"
-                  style={{ width: "58%", height: 10, background: i === 0 ? "#F0EBDF" : "#F4F1EA" }}
+                  style={{ width: "58%", height: 10, background: "#E3D9C4" }}
                 />
               </span>
             </div>
@@ -107,7 +114,7 @@ export default function Wartezustand({
         className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
         style={{
           background:
-            "linear-gradient(180deg, rgba(248,247,244,0.1) 0%, rgba(248,247,244,0.62) 26%, rgba(248,247,244,0.93) 48%, #F8F7F4 68%)",
+            "linear-gradient(180deg, rgba(248,247,244,0.05) 0%, rgba(248,247,244,0.42) 24%, rgba(248,247,244,0.8) 46%, rgba(248,247,244,0.95) 70%, #F8F7F4 88%)",
         }}
       >
         <span className="inline-flex items-center gap-2.5 mb-3">

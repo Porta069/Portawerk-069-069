@@ -6,8 +6,11 @@
 // der höchsten Abbruchgefahr wird so wieder zu einem Weg nach vorn.
 
 import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { FileText, Loader2, ArrowRight, Check, Eye, MessagesSquare, X, Send } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { FileText, ArrowRight, Check, Eye, MessagesSquare, X, Send } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { listApplications, similarJobs } from "@/lib/jobsService";
 import type { Application, ApplicationStatus, Job } from "@/lib/types";
@@ -97,6 +100,9 @@ export default function BewerbungenPage() {
     };
   }, []);
 
+  // Laufend = alles ausser Absagen. Die Zahl traegt Banner und Zaehler.
+  const laufend = apps.filter((a) => a.status !== "abgelehnt").length;
+
   const grouped = ORDER.map((status) => ({
     status,
     items: apps.filter((a) => a.status === status),
@@ -104,36 +110,265 @@ export default function BewerbungenPage() {
 
   return (
     <div>
-      <h1
-        className="text-primary font-bold mb-1"
-        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
+      {/* ── Banner ──────────────────────────────────────────────────────────
+          Randlos, dunkel, mit Foto — dieselbe Bauform wie Übersicht,
+          Merkliste und Angebote. Die Überschrift beschreibt die Lage statt
+          nur den Seitennamen zu wiederholen. */}
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="vollbreite relative overflow-hidden -mt-10 mb-10"
+        style={{ background: "#1A1A2E" }}
       >
-        Deine Bewerbungen
-      </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
-        Wo du dich beworben hast — und wie weit der Betrieb ist.
-      </p>
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.032) 0 1px, transparent 1px 34px)",
+          }}
+        />
+
+        <div aria-hidden className="absolute inset-y-0 right-0 w-[46%] hidden md:block">
+          <Image
+            src="/images/maurer-ziegel.jpg"
+            alt=""
+            fill
+            sizes="46vw"
+            className="object-cover"
+            style={{ objectPosition: "center 42%" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, #1A1A2E 2%, rgba(26,26,46,0.9) 32%, rgba(26,26,46,0.45) 100%)",
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-9 sm:py-11">
+          <div className="flex items-center justify-between gap-8">
+            <div className="min-w-0 max-w-[34rem]">
+              <div className="flex items-center gap-2.5 mb-5">
+                <span
+                  className="punkt-glut rounded-full flex-shrink-0"
+                  style={{ width: 8, height: 8, background: "#E8A838" }}
+                />
+                <span
+                  className="text-[10px] font-semibold uppercase"
+                  style={{ color: "#E8A838", letterSpacing: "0.22em" }}
+                >
+                  {laufend > 0 ? `${laufend} laufend` : "Bewerbungen"}
+                </span>
+              </div>
+
+              <h1
+                className="font-bold leading-[1.12] mb-3"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.75rem, 3.3vw, 2.6rem)",
+                  color: "#FFFFFF",
+                }}
+              >
+                {apps.length === 0
+                  ? "Hier siehst du, wie weit der Betrieb ist."
+                  : laufend === 1
+                    ? "Eine Bewerbung ist unterwegs."
+                    : laufend > 1
+                      ? `${laufend} Bewerbungen sind unterwegs.`
+                      : "Deine Bewerbungen"}
+              </h1>
+
+              {apps.length === 0 && (
+                <Link
+                  href="/dashboard/jobboerse"
+                  className="group inline-flex items-center justify-center gap-2.5 mt-7 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
+                  style={{
+                    background: "#E8A838",
+                    color: "#1A1A2E",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                  }}
+                >
+                  Stellen ansehen
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+              )}
+            </div>
+
+            {laufend > 0 && (
+              <div
+                className="hidden lg:flex flex-col items-center justify-center flex-shrink-0"
+                style={{
+                  width: 168,
+                  height: 168,
+                  background:
+                    "radial-gradient(circle, rgba(26,26,46,0.92) 44%, rgba(26,26,46,0) 74%)",
+                }}
+              >
+                <span
+                  className="font-black tabular-nums leading-none"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "4.5rem", color: "#E8A838" }}
+                >
+                  {laufend}
+                </span>
+                <span
+                  className="text-[9.5px] font-semibold uppercase mt-2"
+                  style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.2em" }}
+                >
+                  laufend
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.section>
 
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+        <div className="space-y-4">
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-3xl bg-white"
+              style={{ height: 170, border: "1.5px solid #EDEAE4" }}
+            />
+          ))}
         </div>
       ) : apps.length === 0 ? (
-        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <FileText className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[16px] font-bold text-primary mb-1.5">Noch keine Bewerbung</p>
-          <p className="text-[13.5px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Such dir in der Jobbörse eine Stelle — du bewirbst dich diskret.
-          </p>
-          <Link
-            href="/dashboard/jobboerse"
-            className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-          >
-            Zur Jobbörse
-            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </Link>
-        </div>
+        // Wartezustand wie auf der Angebote-Seite: leere Karten in der Form
+        // der echten Bewerbungen, die sich kaum merklich heben und senken.
+        // Man sieht dadurch, wo die erste Bewerbung erscheinen wird.
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <div className="relative mb-8 lg:mb-[1.5rem]">
+            <div aria-hidden className="space-y-3">
+              {[
+                { hoehe: 100, verzug: "0s", deckung: 1 },
+                { hoehe: 92, verzug: "0.8s", deckung: 0.6 },
+                { hoehe: 84, verzug: "1.6s", deckung: 0.3 },
+                { hoehe: 76, verzug: "2.4s", deckung: 0.13 },
+              ].map((k, i) => (
+                <div
+                  key={i}
+                  className="wartekarte relative overflow-hidden rounded-3xl"
+                  style={
+                    {
+                      height: k.hoehe,
+                      opacity: k.deckung,
+                      background: "#FFFFFF",
+                      border: "1.5px solid #EDE8DC",
+                      "--verzug": k.verzug,
+                    } as CSSProperties
+                  }
+                >
+                  <div className="flex gap-4 p-4">
+                    <span
+                      className="rounded-2xl flex-shrink-0"
+                      style={{ width: 60, height: 60, background: "#F4F1EA" }}
+                    />
+                    <span className="flex-1 min-w-0 space-y-2.5 pt-1">
+                      <span className="block rounded-full" style={{ width: "42%", height: 13, background: "#F1EDE4" }} />
+                      <span className="block rounded-full" style={{ width: "26%", height: 10, background: "#F4F1EA" }} />
+                      <span className="block rounded-full" style={{ width: "58%", height: 10, background: "#F4F1EA" }} />
+                    </span>
+                  </div>
+                  <span
+                    className="warte-glanz absolute inset-y-0 w-1/3 pointer-events-none"
+                    style={
+                      {
+                        background:
+                          "linear-gradient(90deg, transparent, rgba(232,168,56,0.13), transparent)",
+                        "--verzug": k.verzug,
+                      } as CSSProperties
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(248,247,244,0.3) 0%, rgba(248,247,244,0.82) 38%, rgba(248,247,244,0.97) 62%, #F8F7F4 100%)",
+              }}
+            >
+              <span className="inline-flex items-center gap-2.5 mb-3">
+                <FileText className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />
+                <span
+                  className="text-[9.5px] font-semibold uppercase"
+                  style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+                >
+                  Noch nichts unterwegs
+                </span>
+              </span>
+              <p
+                className="text-primary font-bold leading-tight"
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.25rem, 2.6vw, 1.7rem)" }}
+              >
+                Noch keine Bewerbung
+              </p>
+              <p className="text-[14px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                Such dir eine Stelle — du bewirbst dich diskret.
+              </p>
+            </div>
+          </div>
+
+          {/* Der Weg einer Bewerbung — dieselbe Form wie auf der
+              Angebote-Seite. Die vier Stufen sind exakt die Status, die eine
+              echte Bewerbung durchläuft. */}
+          <div className="flex items-center gap-4 mb-6">
+            <span
+              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            >
+              So läuft eine Bewerbung
+            </span>
+            <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+          </div>
+
+          <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-6">
+            {[
+              { titel: "Du bewirbst dich", text: "Ein Klick, diskret" },
+              { titel: "Betrieb sieht sie", text: "Meist in wenigen Tagen" },
+              { titel: "Ihr kommt ins Gespräch", text: "Er meldet sich bei dir" },
+              { titel: "Zusage oder Absage", text: "Du siehst den Stand hier" },
+            ].map((s2, i) => (
+              <li key={s2.titel} className="relative flex gap-3 sm:block">
+                {i < 3 && (
+                  <span
+                    aria-hidden
+                    className="hidden lg:block absolute h-px"
+                    style={{ left: 30, right: -20, top: 11, background: "rgba(26,26,46,0.13)" }}
+                  />
+                )}
+                <span
+                  className="relative z-10 flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                  style={{
+                    width: 22,
+                    height: 22,
+                    background: "rgba(232,168,56,0.18)",
+                    color: "#B47B18",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <div className="min-w-0 sm:mt-3">
+                  <p className="text-[13.5px] font-bold leading-snug text-primary">{s2.titel}</p>
+                  <p className="text-[12.5px] leading-snug mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                    {s2.text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </motion.div>
       ) : (
         <div className="space-y-9">
           {grouped.map((g) => (

@@ -337,7 +337,7 @@ export default function BewerbungenPage() {
             {[
               { titel: "Du bewirbst dich", text: "Ein Klick, diskret" },
               { titel: "Betrieb sieht sie", text: "Meist in wenigen Tagen" },
-              { titel: "Ihr kommt ins Gespräch", text: "Er meldet sich bei dir" },
+              { titel: "Ihr kommt ins Gespräch", text: "Betrieb meldet sich bei dir" },
               { titel: "Zusage oder Absage", text: "Du siehst den Stand hier" },
             ].map((s2, i) => (
               <li key={s2.titel} className="relative flex gap-3 sm:block">

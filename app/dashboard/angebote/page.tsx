@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, ArrowRight, ShieldCheck, Check, X } from "lucide-react";
+import { Inbox, Loader2, ArrowRight, ShieldCheck, Check, X } from "lucide-react";
 import {
   listOffers, respondToOffer, listContactRequests, respondContactRequest,
   type DeclineReason,
@@ -287,6 +287,32 @@ export default function AngebotePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
+          {/* Zuerst der Befund, dann die Erklärung. Vorher stand nur die
+              Anleitung da — man musste sich selbst zusammenreimen, dass die
+              Liste leer ist. */}
+          <div
+            className="flex flex-wrap items-center gap-4 rounded-2xl px-6 py-5 mb-8"
+            style={{
+              background: "linear-gradient(158deg, #FFFFFF 0%, #FCFAF4 56%, #F6F0E2 100%)",
+              border: "1.5px solid #EDE8DC",
+            }}
+          >
+            <span
+              className="flex items-center justify-center rounded-full flex-shrink-0"
+              style={{ width: 46, height: 46, background: "rgba(232,168,56,0.16)" }}
+            >
+              <Inbox className="w-5 h-5" style={{ color: "#B47B18" }} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[16px] font-bold text-primary leading-snug">
+                Noch kein Angebot da
+              </p>
+              <p className="text-[13.5px] mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                Sobald sich ein Betrieb meldet, steht es hier.
+              </p>
+            </div>
+          </div>
+
           <div className="flex items-center gap-4 mb-6">
             <span
               className="text-[9.5px] font-semibold uppercase flex-shrink-0"
@@ -299,9 +325,9 @@ export default function AngebotePage() {
 
           <ol className="grid sm:grid-cols-3 gap-x-5 gap-y-6">
             {[
-              { titel: "Betrieb findet dich", text: "Anonym, ohne Namen" },
-              { titel: "Er fragt an", text: "Du bekommst Bescheid" },
-              { titel: "Du entscheidest", text: "Erst dann kennt er dich" },
+              { titel: "Betrieb findet dich", text: "Anonym, ohne deinen Namen" },
+              { titel: "Er bietet dir eine Stelle an", text: "Mit Lohn und Fahrzeit" },
+              { titel: "Du sagst zu oder ab", text: "Erst bei Zusage bekommt er deine Nummer" },
             ].map((s2, i) => (
               <li key={s2.titel} className="relative flex gap-3 sm:block">
                 {i < 2 && (

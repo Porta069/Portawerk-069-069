@@ -168,7 +168,7 @@ export default function AngebotePage() {
           />
         </div>
 
-        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-10 sm:py-14">
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-9 sm:py-11">
           <div className="flex items-center justify-between gap-8">
             <div className="min-w-0 max-w-[34rem]">
               <div className="flex items-center gap-2.5 mb-5">
@@ -295,12 +295,13 @@ export default function AngebotePage() {
               senken sich kaum merklich, ein heller Streifen läuft durch. Man
               sieht dadurch, WO das Angebot erscheinen wird, und dass die Seite
               darauf wartet statt kaputt zu sein. */}
-          <div className="relative mb-11">
-            <div aria-hidden className="space-y-4">
+          <div className="relative mb-8">
+            <div aria-hidden className="space-y-3">
+              {/* Zwei Karten statt drei, und flacher: mit 380 px Blockhöhe
+                  rutschte die Anleitung darunter aus dem sichtbaren Bereich. */}
               {[
-                { hoehe: 132, verzug: "0s", deckung: 1 },
-                { hoehe: 116, verzug: "0.9s", deckung: 0.5 },
-                { hoehe: 100, verzug: "1.8s", deckung: 0.22 },
+                { hoehe: 104, verzug: "0s", deckung: 1 },
+                { hoehe: 92, verzug: "1s", deckung: 0.4 },
               ].map((k, i) => (
                 <div
                   key={i}
@@ -316,10 +317,10 @@ export default function AngebotePage() {
                   }
                 >
                   {/* Angedeutete Zeilen — die Form einer Angebotskarte. */}
-                  <div className="flex gap-4 p-5">
+                  <div className="flex gap-4 p-4">
                     <span
                       className="rounded-2xl flex-shrink-0"
-                      style={{ width: 72, height: 72, background: "#F4F1EA" }}
+                      style={{ width: 60, height: 60, background: "#F4F1EA" }}
                     />
                     <span className="flex-1 min-w-0 space-y-2.5 pt-1">
                       <span className="block rounded-full" style={{ width: "42%", height: 13, background: "#F1EDE4" }} />

@@ -140,6 +140,43 @@ body {
   animation: textglut 2.2s ease-in-out infinite;
 }
 
+/* Wartende Platzhalterkarten im Leerzustand.
+   Zwei Ebenen: die Karte hebt und senkt sich kaum merklich, darüber läuft ein
+   heller Streifen durch. Zusammen wirkt es, als würde die Seite auf etwas
+   warten — statt eines Symbols in einem getönten Kreis, das nichts erzählt.
+
+   Der Versatz je Karte kommt als --verzug aus dem Markup, damit die Reihe
+   nicht im Gleichschritt atmet. */
+@keyframes wartekarte {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+.wartekarte {
+  animation: wartekarte 3.4s ease-in-out infinite;
+  animation-delay: var(--verzug, 0s);
+}
+
+@keyframes warteglanz {
+  0% {
+    transform: translateX(-120%);
+  }
+  60%,
+  100% {
+    transform: translateX(320%);
+  }
+}
+.warte-glanz {
+  animation: warteglanz 3.4s ease-in-out infinite;
+  animation-delay: var(--verzug, 0s);
+}
+
 /* Anbindung der Verdienen-Kachel an das Banner darüber.
    Die Kachel ragt in den Bannerbereich hinein; ihre obere Kante würde dort als
    Naht quer über das Werkstattfoto laufen. Die Maske blendet die oberen rund
@@ -202,8 +239,14 @@ body {
   .pulse-dot,
   .gold-schimmer,
   .punkt-glut,
-  .text-glut {
+  .text-glut,
+  .wartekarte,
+  .warte-glanz {
     animation: none;
+  }
+  /* Ohne Lauf kein Glanzstreifen — er stünde sonst starr quer auf der Karte. */
+  .warte-glanz {
+    opacity: 0;
   }
   .text-glut {
     text-shadow: 0 0 16px rgba(232, 168, 56, 0.45);

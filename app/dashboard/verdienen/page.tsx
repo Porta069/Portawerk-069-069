@@ -44,23 +44,76 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
     }
   };
 
+  // Dunkle Felder: das Formular steht auf navyfarbenem Grund. Ein weisser
+  // Kasten mitten darin sah aus wie hineingefallen.
   const field =
-    "w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-primary/25";
+    "w-full rounded-2xl text-white text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-white/30";
+  const feldStil = {
+    background: "rgba(255,255,255,0.06)",
+    border: "1.5px solid rgba(255,255,255,0.14)",
+  };
 
   return (
-    <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-8 items-start">
-      {/* Was das Programm bringt — die drei Punkte, die im Banner keinen Platz
-          haben. Ohne den dunklen Kasten von vorher: der stand direkt unter dem
-          Banner und wiederholte dessen Aussage in derselben Farbe. */}
+    <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-10 items-start">
       <div>
+        {/* ── Was drin ist ────────────────────────────────────────────────
+            Die Staffel ist der Blickfang: eine Zahl, die mit der Anzahl
+            wächst. Sie rechnet nichts Neues aus, sie zeigt dieselbe Prämie
+            dreimal — aber in einer Grösse, die den Punkt macht. */}
         <div className="flex items-center gap-4 mb-6">
           <span
             className="text-[9.5px] font-semibold uppercase flex-shrink-0"
-            style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+            style={{ color: "#E8A838", letterSpacing: "0.2em" }}
+          >
+            Was drin ist
+          </span>
+          <span className="h-px flex-1" style={{ background: "rgba(232,168,56,0.28)" }} />
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 mb-11">
+          {[
+            { anzahl: "1", euro: "100" },
+            { anzahl: "5", euro: "500" },
+            { anzahl: "10", euro: "1.000" },
+          ].map((s2, i) => (
+            <div
+              key={s2.anzahl}
+              className="relative overflow-hidden rounded-2xl px-2 sm:px-4 py-4 sm:py-5 text-center"
+              style={{
+                background:
+                  i === 2
+                    ? "linear-gradient(158deg, rgba(232,168,56,0.2) 0%, rgba(232,168,56,0.07) 100%)"
+                    : "rgba(255,255,255,0.045)",
+                border: `1px solid ${i === 2 ? "rgba(232,168,56,0.4)" : "rgba(255,255,255,0.1)"}`,
+              }}
+            >
+              <p className="text-[10.5px] sm:text-[11px] mb-1.5 sm:mb-2 whitespace-nowrap" style={{ color: "rgba(255,255,255,0.45)" }}>
+                {s2.anzahl} {s2.anzahl === "1" ? "Kollege" : "Kollegen"}
+              </p>
+              <p
+                className={`font-black leading-none tabular-nums ${i === 2 ? "gold-schimmer" : ""}`}
+                style={{
+                  fontFamily: "var(--font-display)",
+                  // Auf 400 px Breite passte "1.000 €" bei 1,4 rem nicht mehr
+                  // in die dritte Spalte — das Eurozeichen fiel weg.
+                  fontSize: "clamp(1.05rem, 3.4vw, 2.1rem)",
+                  color: i === 2 ? undefined : "#E8A838",
+                }}
+              >
+                <span className="whitespace-nowrap">{s2.euro}&nbsp;€</span>
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-4 mb-6">
+          <span
+            className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+            style={{ color: "#E8A838", letterSpacing: "0.2em" }}
           >
             So funktioniert&rsquo;s
           </span>
-          <span className="h-px flex-1" style={{ background: "#E4E1DA" }} />
+          <span className="h-px flex-1" style={{ background: "rgba(232,168,56,0.28)" }} />
         </div>
 
         <ol className="space-y-5 mb-9">
@@ -76,14 +129,14 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
                   width: 24,
                   height: 24,
                   background: "rgba(232,168,56,0.18)",
-                  color: "#B47B18",
+                  color: "#E8A838",
                 }}
               >
                 {i + 1}
               </span>
               <div className="min-w-0">
-                <p className="text-[14.5px] font-bold leading-snug text-primary">{s2.titel}</p>
-                <p className="text-[13px] leading-snug mt-0.5" style={{ color: "rgba(26,26,46,0.55)" }}>
+                <p className="text-[14.5px] font-bold leading-snug text-white">{s2.titel}</p>
+                <p className="text-[13px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
                   {s2.text}
                 </p>
               </div>
@@ -100,9 +153,9 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
             <li
               key={t}
               className="flex items-start gap-2.5 text-[13.5px]"
-              style={{ color: "rgba(26,26,46,0.65)" }}
+              style={{ color: "rgba(255,255,255,0.62)" }}
             >
-              <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} strokeWidth={3} />
+              <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} strokeWidth={3} />
               {t}
             </li>
           ))}
@@ -111,19 +164,45 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
 
       {/* Formular */}
       <div
-        className="rounded-3xl bg-white p-6"
-        style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+        className="relative overflow-hidden rounded-3xl p-7"
+        style={{
+          background: "linear-gradient(158deg, #23233D 0%, #1A1A2E 62%)",
+          border: "1.5px solid rgba(232,168,56,0.28)",
+          boxShadow: "0 30px 70px -34px rgba(0,0,0,0.85)",
+        }}
       >
-        <h3 className="text-primary font-bold text-[18px] mb-1" style={{ fontFamily: "var(--font-display)" }}>
+        {/* Goldschein oben — hebt die Karte aus der dunklen Fläche heraus. */}
+        <span
+          aria-hidden
+          className="absolute pointer-events-none"
+          style={{
+            left: "-20%",
+            top: "-45%",
+            width: 380,
+            height: 380,
+            background: "radial-gradient(circle, rgba(232,168,56,0.22) 0%, transparent 68%)",
+          }}
+        />
+        <span
+          aria-hidden
+          className="absolute top-0 inset-x-0"
+          style={{
+            height: 2,
+            background:
+              "linear-gradient(90deg, transparent, rgba(232,168,56,0.85), transparent)",
+          }}
+        />
+
+        <h3 className="relative text-white font-bold text-[19px] mb-1" style={{ fontFamily: "var(--font-display)" }}>
           Partner-Anmeldung
         </h3>
-        <p className="text-[13px] mb-5" style={{ color: "rgba(26,26,46,0.55)" }}>
+        <p className="relative text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.5)" }}>
           Eigene Zugangsdaten — getrennt von deinem Handwerker-Konto.
         </p>
 
-        <form onSubmit={submit} className="space-y-3.5">
+        <form onSubmit={submit} className="relative space-y-3.5">
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
+            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>
               Telefonnummer oder Link-Name
             </label>
             <input
@@ -132,11 +211,11 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
               placeholder="+49 170 … oder max"
               autoComplete="username"
               className={field}
-              style={{ border: "1.5px solid #E9E7E1" }}
+              style={feldStil}
             />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
+            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>
               Passwort
             </label>
             <div className="relative">
@@ -146,14 +225,14 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 className={`${field} pr-12`}
-                style={{ border: "1.5px solid #E9E7E1" }}
+                style={feldStil}
               />
               <button
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
                 aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
-                style={{ color: "rgba(26,26,46,0.35)" }}
+                style={{ color: "rgba(255,255,255,0.4)" }}
               >
                 {showPw ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
               </button>
@@ -161,7 +240,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
           </div>
 
           {error && (
-            <p className="text-[13px] rounded-xl px-3.5 py-2.5" style={{ background: "rgba(239,68,68,0.07)", color: "#B91C1C" }}>
+            <p className="text-[13px] rounded-xl px-3.5 py-2.5" style={{ background: "rgba(239,68,68,0.16)", color: "#FCA5A5" }}>
               {error}
             </p>
           )}
@@ -177,9 +256,12 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
           </button>
         </form>
 
-        <p className="text-[13px] mt-5 pt-5 text-center" style={{ borderTop: "1px solid #F1EEE8", color: "rgba(26,26,46,0.55)" }}>
+        <p
+          className="relative text-[13px] mt-5 pt-5 text-center"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)" }}
+        >
           Noch kein Partner?{" "}
-          <Link href="/verdienen/partner" className="font-bold" style={{ color: "#B47B18" }}>
+          <Link href="/verdienen/partner" className="font-bold" style={{ color: "#E8A838" }}>
             Kostenlos registrieren
           </Link>
         </p>
@@ -389,7 +471,7 @@ export default function DashboardVerdienenPage() {
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="vollbreite relative overflow-hidden -mt-10 mb-10"
+        className="vollbreite relative overflow-hidden -mt-10"
         style={{ background: "#1A1A2E" }}
       >
         <div
@@ -455,23 +537,47 @@ export default function DashboardVerdienenPage() {
         </div>
       </motion.section>
 
-      {checking ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
-        </div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {data ? (
-            <PartnerOverview data={data} onLogout={handleLogout} />
+      {/* Der dunkle Grund laeuft bis zum Seitenende weiter. Die uebrigen
+          Bereiche stehen auf Papierton — das Empfehlungsprogramm soll sich
+          bewusst davon absetzen, es ist der einzige Ort, an dem es ums
+          eigene Verdienen geht. */}
+      {/* `min-h`, damit die dunkle Fläche bis zum Fensterrand reicht. Ohne sie
+          endete sie mit dem Inhalt und darunter blieb ein heller Streifen —
+          die Seite sah abgeschnitten aus. Der Wert ergibt sich aus Kopfleiste
+          und Bannerhöhe. */}
+      <div
+        className="vollbreite relative -mb-10 pb-16 lg:min-h-[calc(100vh-23rem)]"
+        style={{ background: "#1A1A2E" }}
+      >
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px)",
+          }}
+        />
+        <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 pt-11">
+          {checking ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+            </div>
           ) : (
-            <PartnerLogin onSuccess={(t) => void load(t)} />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {data ? (
+                <PartnerOverview data={data} onLogout={handleLogout} />
+              ) : (
+                <PartnerLogin onSuccess={(t) => void load(t)} />
+              )}
+            </motion.div>
           )}
-        </motion.div>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

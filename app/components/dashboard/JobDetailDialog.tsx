@@ -40,6 +40,14 @@ function Chip({ icon: Icon, children }: { icon: typeof MapPin; children: React.R
   );
 }
 
+/**
+ * Nebenzahl — eine Zeile, kein Kasten.
+ *
+ * Vorher waren Lohn, Fahrzeit, Urlaub und Match vier gleich grosse Kacheln
+ * nebeneinander. Wenn alles gleich wichtig aussieht, sucht das Auge die
+ * Rangfolge selbst und findet keine. Lohn und Match stehen jetzt oben gross,
+ * Fahrzeit und Urlaub hier daneben.
+ */
 function Fact({
   icon: Icon,
   value,
@@ -50,14 +58,29 @@ function Fact({
   label: string;
 }) {
   return (
-    <div className="rounded-2xl p-4" style={{ background: "var(--color-surface)" }}>
-      <Icon className="w-4 h-4 mb-2" style={{ color: "#E8A838" }} />
-      <p className="text-[16px] font-bold text-primary leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-        {value}
-      </p>
-      <p className="text-[11px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
-        {label}
-      </p>
+    <div className="flex items-center gap-2.5">
+      <Icon className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
+      <span>
+        <span className="text-[14.5px] font-bold text-primary">{value}</span>
+        <span className="text-[12.5px] ml-1.5" style={{ color: "rgba(26,26,46,0.45)" }}>
+          {label}
+        </span>
+      </span>
+    </div>
+  );
+}
+
+/** Abschnittsüberschrift mit Haarlinie — wie in der Übersicht. */
+function Abschnitt({ titel }: { titel: string }) {
+  return (
+    <div className="flex items-center gap-3.5 mb-3">
+      <span
+        className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+        style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+      >
+        {titel}
+      </span>
+      <span className="h-px flex-1" style={{ background: "#E9E7E1" }} />
     </div>
   );
 }
@@ -172,23 +195,58 @@ export default function JobDetailDialog({
               </div>
             </div>
 
-            <div className="p-5 sm:p-7 space-y-6">
-              {/* ── Kernzahlen ── */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Fact
-                  icon={Euro}
-                  value={job.salaryMax > 0 ? `${euro(job.salaryMin)}–${euro(job.salaryMax)} €` : "n. V."}
-                  label="brutto / Monat"
-                />
-                <Fact
-                  icon={Car}
-                  value={job.travelMinutes ? `${job.travelMinutes} Min.` : "—"}
-                  label={job.startLabel ? `ab „${job.startLabel}“` : "Fahrzeit"}
-                />
-                <Fact icon={Palmtree} value={c.urlaubstage ? `${c.urlaubstage} Tage` : "—"} label="Urlaub" />
-                <div className="rounded-2xl p-4" style={{ background: "rgba(232,168,56,0.1)" }}>
-                  <Sparkles className="w-4 h-4 mb-2" style={{ color: "#B47B18" }} />
-                  <p className="text-[16px] font-bold leading-tight tabular-nums" style={{ fontFamily: "var(--font-display)", color: "#8A5B0F" }}>
+            <div className="p-5 sm:p-7 space-y-7">
+              {/* ── Lohn und Match ──────────────────────────────────────
+                  Die zwei Zahlen, wegen derer jemand die Stelle überhaupt
+                  öffnet. Sie tragen den Blick, alles andere ordnet sich unter. */}
+              <div className="flex flex-wrap items-stretch gap-3">
+                <div
+                  className="flex-1 min-w-[15rem] rounded-2xl px-5 py-4"
+                  style={{
+                    background: "linear-gradient(158deg, #FFFFFF 0%, #FCFAF4 56%, #F6F0E2 100%)",
+                    border: "1.5px solid #EDE8DC",
+                  }}
+                >
+                  <p
+                    className="inline-flex items-center gap-2 text-[9.5px] font-semibold uppercase mb-2"
+                    style={{ color: "rgba(26,26,46,0.45)", letterSpacing: "0.19em" }}
+                  >
+                    <Euro className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
+                    Lohn
+                  </p>
+                  <p
+                    className="font-bold text-primary leading-none tabular-nums"
+                    style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.5rem, 3.4vw, 2rem)" }}
+                  >
+                    {job.salaryMax > 0 ? `${euro(job.salaryMin)}–${euro(job.salaryMax)} €` : "n. V."}
+                  </p>
+                  <p className="text-[12px] mt-1.5" style={{ color: "rgba(26,26,46,0.45)" }}>
+                    brutto / Monat
+                  </p>
+                </div>
+
+                <div
+                  className="flex-1 min-w-[11rem] rounded-2xl px-5 py-4"
+                  style={{
+                    background: "rgba(232,168,56,0.12)",
+                    border: "1.5px solid rgba(232,168,56,0.45)",
+                  }}
+                >
+                  <p
+                    className="inline-flex items-center gap-2 text-[9.5px] font-semibold uppercase mb-2"
+                    style={{ color: "#8A5B0F", letterSpacing: "0.19em" }}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" style={{ color: "#B47B18" }} />
+                    Match-Score
+                  </p>
+                  <p
+                    className="font-bold leading-none tabular-nums"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(1.5rem, 3.4vw, 2rem)",
+                      color: "#8A5B0F",
+                    }}
+                  >
                     {typeof job.matchScore === "number" ? (
                       <>
                         {job.matchScore} %
@@ -198,43 +256,80 @@ export default function JobDetailDialog({
                       "—"
                     )}
                   </p>
-                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
-                    Match-Score
+                  <p className="text-[12px] mt-1.5" style={{ color: "rgba(138,91,15,0.7)" }}>
+                    wie gut die Stelle zu dir passt
                   </p>
                 </div>
               </div>
 
-              {/* ── Rahmenbedingungen ── */}
-              <div className="flex flex-wrap gap-2">
-                <Chip icon={Home}>{c.montage}</Chip>
-                {c.fahrzeitIstArbeitszeit && <Chip icon={Timer}>Fahrzeit = Arbeitszeit</Chip>}
-                <Chip icon={MapPin}>Start ab {c.startpunkt}</Chip>
-                <Chip icon={CalendarDays}>{c.start}</Chip>
-                {c.extras?.map((e) => (
-                  <Chip key={e} icon={Sparkles}>
-                    {e}
-                  </Chip>
-                ))}
-                {job.benefits?.map((b) => (
-                  <Chip key={b} icon={Sparkles}>
-                    {b}
-                  </Chip>
-                ))}
+              {/* Fahrzeit und Urlaub — wichtig, aber kein Blickfang. */}
+              <div className="flex flex-wrap gap-x-7 gap-y-2.5">
+                <Fact
+                  icon={Car}
+                  value={job.travelMinutes ? `${job.travelMinutes} Min.` : "—"}
+                  label={job.startLabel ? `ab „${job.startLabel}“` : "Fahrzeit"}
+                />
+                <Fact
+                  icon={Palmtree}
+                  value={c.urlaubstage ? `${c.urlaubstage} Tage` : "—"}
+                  label="Urlaub"
+                />
               </div>
 
-              {/* ── Warum es passt ── */}
+              {/* ── Rahmenbedingungen ──────────────────────────────────────
+                  Vorher standen hier bis zu acht gleich aussehende Marken in
+                  einer Wolke — Arbeitsalltag und Extras vermischt. Getrennt
+                  liest man beides in einem Blick statt es zu sortieren. */}
+              <div>
+                <Abschnitt titel="So arbeitest du" />
+                <div className="flex flex-wrap gap-2">
+                  <Chip icon={Home}>{c.montage}</Chip>
+                  {c.fahrzeitIstArbeitszeit && <Chip icon={Timer}>Fahrzeit = Arbeitszeit</Chip>}
+                  <Chip icon={MapPin}>Start ab {c.startpunkt}</Chip>
+                  <Chip icon={CalendarDays}>{c.start}</Chip>
+                </div>
+              </div>
+
+              {(c.extras?.length || job.benefits?.length) && (
+                <div>
+                  <Abschnitt titel="Was dazukommt" />
+                  <div className="flex flex-wrap gap-2">
+                    {c.extras?.map((e) => (
+                      <Chip key={e} icon={Sparkles}>
+                        {e}
+                      </Chip>
+                    ))}
+                    {job.benefits?.map((b) => (
+                      <Chip key={b} icon={Sparkles}>
+                        {b}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Warum es passt ──
+                  Die einzige Stelle, an der die Anzeige persönlich wird —
+                  deshalb mit Zeichen und eigener Kante statt als getönter
+                  Absatz zwischen anderen getönten Absätzen. */}
               {job.matchReasons?.length ? (
-                <p className="text-[13px] rounded-2xl px-4 py-3" style={{ background: "rgba(232,168,56,0.08)", color: "rgba(26,26,46,0.7)" }}>
-                  <span className="font-semibold" style={{ color: "#B47B18" }}>Passt, weil:</span>{" "}
-                  {job.matchReasons.join(" · ")}
-                </p>
+                <div
+                  className="flex gap-3 rounded-2xl px-4 py-3.5"
+                  style={{ background: "rgba(232,168,56,0.1)", border: "1px solid rgba(232,168,56,0.35)" }}
+                >
+                  <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+                  <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.72)" }}>
+                    <span className="font-bold block mb-0.5" style={{ color: "#8A5B0F" }}>
+                      Passt, weil:
+                    </span>
+                    {job.matchReasons.join(" · ")}
+                  </p>
+                </div>
               ) : null}
 
               {/* ── Stellenbeschreibung ── */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(26,26,46,0.4)" }}>
-                  Über die Stelle
-                </p>
+                <Abschnitt titel="Über die Stelle" />
                 <p className="text-[14px] leading-relaxed whitespace-pre-line" style={{ color: "rgba(26,26,46,0.72)" }}>
                   {jobDescription(job)}
                 </p>
@@ -247,7 +342,10 @@ export default function JobDetailDialog({
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] mb-1" style={{ color: "rgba(26,26,46,0.4)" }}>
+                    <p
+                      className="text-[9.5px] font-semibold uppercase mb-1.5"
+                      style={{ color: "#B47B18", letterSpacing: "0.2em" }}
+                    >
                       Über das Unternehmen
                     </p>
                     <p className="text-[17px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
@@ -272,7 +370,11 @@ export default function JobDetailDialog({
                   {job.companyMitarbeiter && (
                     <span className="inline-flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-                      {job.companyMitarbeiter} Mitarbeiter
+                      {/* Ohne die Prüfung stand hier "38 Mitarbeiter Mitarbeiter" —
+                          das Feld bringt die Einheit je nach Betrieb schon mit. */}
+                      {/Mitarbeiter|Beschäftigt/i.test(job.companyMitarbeiter)
+                        ? job.companyMitarbeiter
+                        : `${job.companyMitarbeiter} Mitarbeiter`}
                     </span>
                   )}
                   {safeUrl(job.companyWebsite) && (

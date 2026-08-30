@@ -201,17 +201,10 @@ export default function AngebotePage() {
                       : "Deine Jobangebote"}
               </h1>
 
-              <p
-                className="text-[15px] leading-relaxed mb-7 max-w-[32rem]"
-                style={{ color: "rgba(255,255,255,0.55)" }}
-              >
-                Du entscheidest, wer dein Profil sehen darf.
-              </p>
-
               {offers.length === 0 && (
                 <Link
                   href="/dashboard/jobboerse"
-                  className="group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
+                  className="group inline-flex items-center justify-center gap-2.5 mt-7 px-6 py-3.5 text-[14px] font-bold rounded-full transition-transform duration-200 hover:-translate-y-0.5"
                   style={{
                     background: "#E8A838",
                     color: "#1A1A2E",
@@ -295,7 +288,11 @@ export default function AngebotePage() {
               senken sich kaum merklich, ein heller Streifen läuft durch. Man
               sieht dadurch, WO das Angebot erscheinen wird, und dass die Seite
               darauf wartet statt kaputt zu sein. */}
-          <div className="relative mb-8">
+          {/* Der Abstand ist auf breiten Fenstern bewusst gross: unter der
+              Anleitung lagen sonst 475 px Leerraum, sie klebte am
+              Wartezustand. Auf schmalen Geräten bleibt er klein, dort zählt
+              jeder Pixel. */}
+          <div className="relative mb-8 lg:mb-[17rem]">
             <div aria-hidden className="space-y-3">
               {/* Zwei Karten statt drei, und flacher: mit 380 px Blockhöhe
                   rutschte die Anleitung darunter aus dem sichtbaren Bereich. */}

@@ -288,11 +288,12 @@ export default function AngebotePage() {
               senken sich kaum merklich, ein heller Streifen läuft durch. Man
               sieht dadurch, WO das Angebot erscheinen wird, und dass die Seite
               darauf wartet statt kaputt zu sein. */}
-          {/* Der Abstand ist auf breiten Fenstern bewusst gross: unter der
-              Anleitung lagen sonst 475 px Leerraum, sie klebte am
-              Wartezustand. Auf schmalen Geräten bleibt er klein, dort zählt
+          {/* Der Abstand ist auf breiten Fenstern bewusst gross: sonst klebt
+              die Anleitung am Wartezustand, darunter bleibt aber Leerraum.
+              196 px sind rund zwei Zentimeter weniger als der mittige Wert —
+              so gewünscht. Auf schmalen Geräten bleibt er klein, dort zählt
               jeder Pixel. */}
-          <div className="relative mb-8 lg:mb-[17rem]">
+          <div className="relative mb-8 lg:mb-[12.25rem]">
             <div aria-hidden className="space-y-3">
               {/* Zwei Karten statt drei, und flacher: mit 380 px Blockhöhe
                   rutschte die Anleitung darunter aus dem sichtbaren Bereich. */}

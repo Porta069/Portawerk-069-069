@@ -178,11 +178,6 @@ export default function PartnerFunnel() {
           <Link href="/verdienen" className="flex items-center gap-2.5 group">
             <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
           </Link>
-          {step > 0 && !isSuccess && (
-            <button onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" /> Zurück
-            </button>
-          )}
           {step === 0 && !isSuccess && (
             <Link href="/verdienen/login" className="text-sm text-white/50 hover:text-white transition-colors">
               Schon Partner? <span className="text-accent font-semibold">Anmelden</span>
@@ -195,7 +190,34 @@ export default function PartnerFunnel() {
       {/* Header */}
       {!isSuccess && (
         <div className="bg-primary">
-          <div className="max-w-2xl mx-auto px-6 pt-10 pb-12">
+          <div className="max-w-2xl mx-auto px-6 pt-8 pb-12">
+            {/* Zurueck steht jetzt hier statt klein rechts in der Kopfleiste.
+                Dort war er 14 px grau auf Navy und ging neben dem Logo unter —
+                ausgerechnet der Weg, den man sucht, wenn man sich vertippt
+                hat. Links oben ist die Stelle, an der man ihn erwartet. */}
+            {step > 0 && (
+              <button
+                type="button"
+                onClick={() => setStep((s) => s - 1)}
+                className="inline-flex items-center gap-2 rounded-full pl-3 pr-4 py-2 mb-7 text-[15px] font-semibold text-white transition-colors"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.16)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(232,168,56,0.16)";
+                  e.currentTarget.style.borderColor = "rgba(232,168,56,0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.16)";
+                }}
+              >
+                <ArrowLeft className="w-[18px] h-[18px]" style={{ color: "#E8A838" }} />
+                Zurück
+              </button>
+            )}
+
             <div className="flex items-center gap-3 mb-5">
               <span className="w-8 flex-shrink-0" style={{ display: "block", height: "2px", background: "#E8A838" }} />
               <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent">

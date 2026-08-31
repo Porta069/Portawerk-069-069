@@ -12,7 +12,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Loader2, Inbox, Briefcase, Award, Route, Clock3, ShieldCheck, Check,
-  Eye, MessagesSquare, ThumbsUp, ThumbsDown, Phone, Mail,
+  Eye, MessagesSquare, ThumbsUp, ThumbsDown, Phone, Mail, Star, Sparkles,
 } from "lucide-react";
 import {
   listEmployerApplications, setApplicationStatus, requestContact,
@@ -45,6 +45,46 @@ const ACTIONS: {
   { status: "abgelehnt", label: "Absagen", icon: ThumbsDown },
 ];
 
+/**
+ * Eine Kernzahl mit Zeichen davor.
+ *
+ * Zuvor standen Erfahrung, Abschluss, Entfernung und zwei Aufgabenfelder als
+ * fuenf gleich grosse Zeilen mit demselben goldenen Zeichen nebeneinander —
+ * nichts stach heraus, obwohl die ersten drei ueber Einladen oder Absagen
+ * entscheiden und die letzten beiden nur Beiwerk sind.
+ */
+function Fakt({
+  icon: Icon,
+  wert,
+  label,
+}: {
+  icon: typeof Briefcase;
+  wert: string;
+  label: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <span
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: "rgba(232,168,56,0.13)" }}
+      >
+        <Icon className="w-[18px] h-[18px]" style={{ color: "#B47B18" }} strokeWidth={2.2} />
+      </span>
+      <span className="min-w-0">
+        <span
+          className="block text-[16px] font-bold text-primary leading-tight truncate"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          {wert}
+        </span>
+        <span className="block text-[11.5px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
+          {label}
+        </span>
+      </span>
+    </div>
+  );
+}
+
 function ApplicationCard({
   app,
   onStatus,
@@ -57,6 +97,9 @@ function ApplicationCard({
   const [busy, setBusy] = useState<string | null>(null);
   const c = app.candidate;
   const meta = STATUS_META[app.status];
+  const neu = app.status === "gesendet";
+  const erledigt = app.status === "abgelehnt";
+  const top = c.matchScore >= 80;
 
   const act = async (fn: () => Promise<void>, key: string) => {
     setBusy(key);
@@ -70,128 +113,249 @@ function ApplicationCard({
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-3xl bg-white p-5 sm:p-6"
-      style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+      className="group relative overflow-hidden rounded-3xl transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1"
+      style={{
+        // Warmer Verlauf statt Reinweiss — dieselbe Zeichnung wie bei den
+        // Inseraten nebenan. Abgesagte bleiben blass, neue Bewerbungen tragen
+        // die kraeftigste Flaeche: sie sind das, was Arbeit macht.
+        background: erledigt
+          ? "linear-gradient(158deg, #FDFDFC 0%, #F8F7F4 100%)"
+          : neu
+            ? "linear-gradient(158deg, #FFFFFF 0%, #FEFBF4 54%, #FBF3E2 100%)"
+            : "linear-gradient(158deg, #FFFFFF 0%, #FDFCF8 58%, #F9F5EC 100%)",
+        border: `1.5px solid ${neu ? "rgba(232,168,56,0.5)" : erledigt ? "#EBE9E4" : "#EDE8DC"}`,
+        boxShadow: neu
+          ? "0 16px 38px -26px rgba(232,168,56,0.75)"
+          : "0 14px 36px -28px rgba(26,26,46,0.55)",
+        opacity: erledigt ? 0.82 : 1,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "#E8A838";
+        e.currentTarget.style.boxShadow = "0 22px 44px -24px rgba(232,168,56,0.55)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = neu
+          ? "rgba(232,168,56,0.5)"
+          : erledigt
+            ? "#EBE9E4"
+            : "#EDE8DC";
+        e.currentTarget.style.boxShadow = neu
+          ? "0 16px 38px -26px rgba(232,168,56,0.75)"
+          : "0 14px 36px -28px rgba(26,26,46,0.55)";
+      }}
     >
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2.5 mb-1">
+      {/* Goldkante oben — bei neuen Bewerbungen durchgehend, sonst ein Stueck,
+          das beim Ueberfahren durchlaeuft. */}
+      <span
+        aria-hidden
+        className="absolute top-0 left-0 h-[3px] transition-[width] duration-300 ease-out group-hover:!w-full"
+        style={{
+          width: neu ? "100%" : erledigt ? "0%" : "28%",
+          background: "linear-gradient(90deg, #E8A838 0%, rgba(232,168,56,0.15) 100%)",
+        }}
+      />
+
+      <div className="flex flex-col lg:flex-row">
+        {/* ── Hauptbereich ── */}
+        <div className="flex-1 min-w-0 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
             <h2
-              className="text-primary font-bold text-[18px] leading-snug"
+              className="text-primary font-bold text-[20px] leading-snug"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {c.handle}
             </h2>
             <span
-              className="rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
               style={{ background: meta.bg, color: meta.color }}
             >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${neu ? "punkt-glut" : ""}`}
+                style={{ background: meta.color }}
+              />
               {meta.label}
             </span>
           </div>
-          <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
+
+          <p
+            className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] mb-5"
+            style={{ color: "rgba(26,26,46,0.5)" }}
+          >
             <span className="inline-flex items-center gap-1.5">
-              <Briefcase className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-              beworben auf „{app.jobPosting.title}“
+              <Briefcase className="w-3.5 h-3.5" />
+              auf „{app.jobPosting.title}“
             </span>
+            <span style={{ color: "rgba(26,26,46,0.2)" }}>·</span>
             <span className="inline-flex items-center gap-1.5">
               <Clock3 className="w-3.5 h-3.5" />
               {app.createdAt}
             </span>
           </p>
-        </div>
 
-        {c.matchScore > 0 && (
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 flex-shrink-0 text-[15px] font-bold tabular-nums"
-            style={{
-              background: c.matchScore >= 80 ? "rgba(232,168,56,0.2)" : "rgba(26,26,46,0.05)",
-              color: c.matchScore >= 80 ? "#8A5B0F" : "rgba(26,26,46,0.6)",
-              fontFamily: "var(--font-display)",
-            }}
-          >
-            {c.matchScore} %
-            <ScoreExplainer breakdown={c.matchBreakdown} subject={c.handle} />
-          </span>
-        )}
-      </div>
+          {/* Die drei Angaben, an denen ein Chef entscheidet. */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-4">
+            <Fakt icon={Briefcase} wert={c.erfahrung ?? "—"} label="Erfahrung" />
+            <Fakt icon={Award} wert={c.ausbildung ?? "—"} label="Ausbildungsstand" />
+            <Fakt
+              icon={Route}
+              wert={c.distanceKm != null ? `${c.distanceKm} km` : "—"}
+              label="Anfahrt zu Ihnen"
+            />
+          </div>
 
-      {/* Kandidaten-Fakten */}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-[13px]" style={{ color: "rgba(26,26,46,0.65)" }}>
-        <span className="inline-flex items-center gap-1.5">
-          <Briefcase className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-          {c.erfahrung ? `${c.erfahrung} Erfahrung` : "Erfahrung —"}
-        </span>
-        {c.distanceKm != null && (
-          <span className="inline-flex items-center gap-1.5">
-            <Route className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-            {c.distanceKm} km entfernt
-          </span>
-        )}
-        {c.ausbildung && (
-          <span className="inline-flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-            {c.ausbildung}
-          </span>
-        )}
-        {c.aufgaben.slice(0, 2).map((a) => (
-          <span key={a} className="inline-flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-            {a}
-          </span>
-        ))}
-      </div>
+          {c.aufgaben.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-5">
+              {c.aufgaben.slice(0, 4).map((a) => (
+                <span
+                  key={a}
+                  className="rounded-full px-3 py-1.5 text-[12px] font-medium"
+                  style={{ background: "rgba(26,26,46,0.045)", color: "rgba(26,26,46,0.62)" }}
+                >
+                  {a}
+                </span>
+              ))}
+            </div>
+          )}
 
-      {/* Kontakt: nur nach Freigabe */}
-      {c.freigegeben ? (
-        <div
-          className="flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-2xl px-4 py-3 mt-4 text-[13.5px]"
-          style={{ background: "rgba(22,163,74,0.08)", border: "1px solid rgba(22,163,74,0.25)" }}
-        >
-          <span className="inline-flex items-center gap-1.5 font-bold" style={{ color: "#15803D" }}>
-            <Check className="w-3.5 h-3.5" strokeWidth={3} />
-            {c.freigegeben.name}
-          </span>
-          <span className="inline-flex items-center gap-1.5" style={{ color: "rgba(26,26,46,0.7)" }}>
-            <Phone className="w-3.5 h-3.5" />
-            {c.freigegeben.telefon || "—"}
-          </span>
-          <span className="inline-flex items-center gap-1.5" style={{ color: "rgba(26,26,46,0.7)" }}>
-            <Mail className="w-3.5 h-3.5" />
-            {c.freigegeben.email}
-          </span>
-        </div>
-      ) : (
-        <p
-          className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 mt-4 text-[12.5px]"
-          style={{ background: "rgba(26,26,46,0.035)", color: "rgba(26,26,46,0.55)" }}
-        >
-          <ShieldCheck className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
-          Kontaktdaten erscheinen, sobald der Kandidat Ihre Kontaktanfrage annimmt.
-          {c.status === "verfuegbar" && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void act(onRequestContact, "contact")}
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-bold disabled:opacity-50"
-              style={{ background: "#E8A838", color: "#1A1A2E" }}
+          {/* Freigegebene Kontaktdaten stehen im Hauptbereich: sie sind breit
+              und der Moment, auf den der ganze Ablauf hinauslaeuft. */}
+          {c.freigegeben && (
+            <div
+              className="flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-2xl px-4 py-3.5 mt-5"
+              style={{ background: "rgba(22,163,74,0.08)", border: "1px solid rgba(22,163,74,0.25)" }}
             >
-              {busy === "contact" && <Loader2 className="w-3 h-3 animate-spin" />}
-              Kontakt anfragen
-            </button>
+              <span
+                className="inline-flex items-center gap-2 text-[15px] font-bold"
+                style={{ color: "#15803D", fontFamily: "var(--font-display)" }}
+              >
+                <Check className="w-4 h-4" strokeWidth={3} />
+                {c.freigegeben.name}
+              </span>
+              <a
+                href={`tel:${c.freigegeben.telefon.replace(/\s/g, "")}`}
+                className="inline-flex items-center gap-1.5 text-[13.5px]"
+                style={{ color: "rgba(26,26,46,0.7)" }}
+              >
+                <Phone className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
+                {c.freigegeben.telefon || "—"}
+              </a>
+              <a
+                href={`mailto:${c.freigegeben.email}`}
+                className="inline-flex items-center gap-1.5 text-[13.5px]"
+                style={{ color: "rgba(26,26,46,0.7)" }}
+              >
+                <Mail className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
+                {c.freigegeben.email}
+              </a>
+            </div>
           )}
-          {c.status === "angefragt" && (
-            <span className="font-semibold" style={{ color: "#8A5B0F" }}>
-              Anfrage läuft — Kandidat entscheidet.
-            </span>
-          )}
-        </p>
-      )}
+        </div>
 
-      {/* Status setzen */}
-      <div className="flex flex-wrap items-center gap-2 mt-4 pt-4" style={{ borderTop: "1px solid #F1EEE8" }}>
-        <span className="text-[11px] font-bold uppercase tracking-[0.14em] mr-1" style={{ color: "rgba(26,26,46,0.4)" }}>
-          Status setzen
+        {/* ── Rechte Spalte: Passung und naechster Schritt ──
+            Der Match-Score war zuvor eine blasse Pille oben rechts, kleiner
+            als der Name. Er ist die Antwort auf die einzige Frage, die man
+            beim Ueberfliegen hat: lohnt sich das Lesen? */}
+        <div
+          className="flex flex-row lg:flex-col items-center lg:items-stretch justify-between gap-5 p-5 sm:px-6 sm:py-6 lg:w-[228px] flex-shrink-0"
+          style={{
+            background: "rgba(255,255,255,0.5)",
+            borderTop: "1px solid #F0EDE5",
+            borderLeft: "1px solid #F0EDE5",
+          }}
+        >
+          {c.matchScore > 0 && (
+            <div className="lg:text-center">
+              <p
+                className="inline-flex items-baseline gap-1 text-[40px] font-bold tabular-nums leading-none"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: top ? "#B47B18" : "rgba(26,26,46,0.45)",
+                }}
+              >
+                {c.matchScore}
+                <span className="text-[20px]">%</span>
+              </p>
+              <p
+                className="inline-flex items-center gap-1.5 text-[11.5px] mt-2 lg:justify-center"
+                style={{ color: "rgba(26,26,46,0.45)" }}
+              >
+                {top ? (
+                  <Star className="w-3.5 h-3.5" fill="currentColor" style={{ color: "#E8A838" }} />
+                ) : (
+                  <Sparkles className="w-3.5 h-3.5" style={{ color: "rgba(26,26,46,0.3)" }} />
+                )}
+                Übereinstimmung
+                <ScoreExplainer breakdown={c.matchBreakdown} subject={c.handle} />
+              </p>
+            </div>
+          )}
+
+          <div className="lg:mt-auto">
+            {c.freigegeben ? (
+              <p
+                className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold"
+                style={{ color: "#15803D" }}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                Kontakt freigegeben
+              </p>
+            ) : c.status === "angefragt" ? (
+              <p
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold"
+                style={{ background: "rgba(232,168,56,0.16)", color: "#8A5B0F" }}
+              >
+                <Clock3 className="w-3.5 h-3.5" />
+                Anfrage läuft
+              </p>
+            ) : c.status === "verfuegbar" ? (
+              <>
+                <button
+                  type="button"
+                  disabled={busy !== null}
+                  onClick={() => void act(onRequestContact, "contact")}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[13.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
+                  style={{
+                    background: "#E8A838",
+                    color: "#1A1A2E",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 14px 28px -16px rgba(232,168,56,0.9)",
+                  }}
+                >
+                  {busy === "contact" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <ShieldCheck className="w-4 h-4" />
+                  )}
+                  Kontakt anfragen
+                </button>
+                {/* Der Satz stand zuvor als breiter grauer Balken quer durch
+                    die Karte — auf jeder Karte derselbe. Als Fussnote am Knopf
+                    sagt er dasselbe und kostet keine Aufmerksamkeit. */}
+                <p
+                  className="text-[11px] mt-2 leading-snug lg:text-center"
+                  style={{ color: "rgba(26,26,46,0.4)" }}
+                >
+                  Name und Nummer erst, wenn er zustimmt.
+                </p>
+              </>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Fussleiste: Status setzen ──
+          Eigener, getoenter Streifen statt vier Umrissknoepfen mitten in der
+          Karte. Die Karte liest sich dadurch in drei Bloecken: wer, wie gut,
+          was tun. */}
+      <div
+        className="flex flex-wrap items-center gap-2 px-5 py-3.5 sm:px-6"
+        style={{ background: "rgba(26,26,46,0.028)", borderTop: "1px solid #F0EDE5" }}
+      >
+        <span
+          className="text-[10.5px] font-bold uppercase tracking-[0.14em] mr-1"
+          style={{ color: "rgba(26,26,46,0.35)" }}
+        >
+          Status
         </span>
         {ACTIONS.map((a) => {
           const active = app.status === a.status;
@@ -201,12 +365,22 @@ function ApplicationCard({
               type="button"
               disabled={busy !== null || active}
               onClick={() => void act(() => onStatus(a.status), a.status)}
-              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors disabled:cursor-default"
+              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold transition-colors disabled:cursor-default"
               style={{
-                background: active ? STATUS_META[a.status].bg : "white",
-                color: active ? STATUS_META[a.status].color : "rgba(26,26,46,0.6)",
-                border: `1.5px solid ${active ? "transparent" : "#E0DDD6"}`,
+                background: active ? STATUS_META[a.status].bg : "transparent",
+                color: active ? STATUS_META[a.status].color : "rgba(26,26,46,0.55)",
+                border: `1.5px solid ${active ? "transparent" : "rgba(26,26,46,0.09)"}`,
                 opacity: busy !== null && !active ? 0.5 : 1,
+              }}
+              onMouseEnter={(e) => {
+                if (active || busy !== null) return;
+                e.currentTarget.style.background = "white";
+                e.currentTarget.style.borderColor = "#E0DDD6";
+              }}
+              onMouseLeave={(e) => {
+                if (active) return;
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.borderColor = "rgba(26,26,46,0.09)";
               }}
             >
               {busy === a.status ? (
@@ -291,7 +465,7 @@ export default function EmployerBewerbungenPage() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 44%, rgba(20,20,36,0.58) 100%)",
+              "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 44%, rgba(20,20,36,0.72) 100%)",
           }}
         />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">
@@ -328,7 +502,11 @@ export default function EmployerBewerbungenPage() {
                     <div
                       key={s2.l}
                       className="rounded-2xl px-4 py-3 min-w-[104px]"
-                      style={{ background: "rgba(255,255,255,0.09)" }}
+                      style={{
+                        background: "rgba(20,20,36,0.55)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        backdropFilter: "blur(3px)",
+                      }}
                     >
                       <Icon className="w-3.5 h-3.5 mb-1.5" style={{ color: "#E8A838" }} />
                       <p
@@ -337,7 +515,7 @@ export default function EmployerBewerbungenPage() {
                       >
                         {s2.v}
                       </p>
-                      <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>
+                      <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
                         {s2.l}
                       </p>
                     </div>

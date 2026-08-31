@@ -359,8 +359,8 @@ function JobEditor({
       : []),
   ];
 
-  // Wie viele Ausschlusskriterien gesetzt sind — die Zahl steht in der
-  // Kopfzeile, damit niemand versehentlich den halben Markt aussperrt.
+  // Wie viele Muss-Kriterien gesetzt sind — die Zahl steht im Band, damit
+  // niemand versehentlich den halben Markt aussperrt.
   const ausschluesse = [
     anforderung.gewerke.length > 0,
     !!anforderung.abschlussMin,
@@ -448,8 +448,10 @@ function JobEditor({
             </p>
           </div>
 
-          {/* Wie streng das Inserat gerade eingestellt ist. Steht oben, weil
-              es beim Ausfüllen ständig die Frage im Kopf ist. */}
+          {/* Wie streng das Inserat eingestellt ist. Steht oben, weil es beim
+              Ausfüllen ständig die Frage im Kopf ist — und mit einem Satz
+              dabei, was die Zahl bewirkt. Eine nackte Ziffer neben dem Wort
+              "Ausschlusskriterien" hat niemand verstanden. */}
           <div
             className="rounded-2xl px-5 py-4 min-w-[168px]"
             style={{ background: "rgba(255,255,255,0.07)" }}
@@ -462,7 +464,12 @@ function JobEditor({
               {ausschluesse}
             </p>
             <p className="text-[11px] mt-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
-              {ausschluesse === 1 ? "Ausschlusskriterium" : "Ausschlusskriterien"}
+              {ausschluesse === 1 ? "Muss-Kriterium" : "Muss-Kriterien"}
+            </p>
+            <p className="text-[10.5px] mt-2 max-w-[150px] leading-snug" style={{ color: "rgba(255,255,255,0.32)" }}>
+              {ausschluesse === 0
+                ? "Alle Handwerker sehen die Stelle."
+                : "Wer die nicht erfüllt, sieht die Stelle nicht."}
             </p>
           </div>
         </div>
@@ -623,14 +630,14 @@ function JobEditor({
         <Schritt
           nr="03"
           titel="Wen Sie suchen"
-          hinweis="Dieselben Angaben, die Handwerker bei der Registrierung machen. Rot markierte Felder blenden das Inserat bei allen aus, die sie nicht erfüllen — der Rest zählt Punkte und bestimmt die Reihenfolge. Leer gelassen heisst überall: ist uns egal."
+          hinweis="Dieselben Angaben, die Handwerker bei der Anmeldung machen. Leer gelassen heisst überall: ist uns egal."
           rechts={
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.12em] flex-shrink-0"
               style={{ background: "#FBF0DC", border: "1px solid rgba(232,168,56,0.35)", color: "#B47B18" }}
             >
               <Scale className="w-3 h-3" />
-              {ausschluesse} {ausschluesse === 1 ? "Ausschluss" : "Ausschlüsse"}
+              {ausschluesse} × Muss
             </span>
           }
         >
@@ -747,8 +754,8 @@ function InseratKarte({
   const aktiv = job.status === "ACTIVE";
   const bewerbungen = job.applications ?? 0;
 
-  // Ausschlüsse zuerst und farblich abgesetzt: sie bestimmen, WER das Inserat
-  // überhaupt sieht. Früher trugen sie ein Warndreieck und ein kräftiges Rot —
+  // Muss-Kriterien zuerst und farblich abgesetzt: sie bestimmen, WER das
+  // Inserat überhaupt sieht. Früher trugen sie ein Warndreieck und Rot —
   // drei davon nebeneinander lasen sich wie Fehlermeldungen. Jetzt genügt ein
   // roter Punkt; die Aussage bleibt, der Lärm ist weg.
   const harte: string[] = [];
@@ -896,7 +903,7 @@ function InseratKarte({
                   key={h}
                   className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-medium"
                   style={{ background: "rgba(185,28,28,0.06)", color: "#9B2C2C" }}
-                  title="Ausschlusskriterium — wer das nicht erfüllt, sieht das Inserat nicht"
+                  title="Muss-Kriterium — wer das nicht erfüllt, sieht das Inserat nicht"
                 >
                   <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#C0392B" }} />
                   {h}
@@ -907,7 +914,7 @@ function InseratKarte({
                   key={w}
                   className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-medium"
                   style={{ background: "rgba(26,26,46,0.045)", color: "rgba(26,26,46,0.62)" }}
-                  title="Zählt Punkte und bestimmt die Reihenfolge"
+                  title="Zählt Punkte — sperrt niemanden aus, sortiert nur die Liste"
                 >
                   <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#E8A838" }} />
                   {w}

@@ -4,10 +4,14 @@
 // Hier stellt der Betrieb ein, wen er sucht. Zwei Arten von Angaben, optisch
 // getrennt, weil sie sehr unterschiedlich wirken:
 //
-//  • Ausschluss — wer das nicht erfüllt, bekommt die Stelle NICHT zu sehen.
-//    Diese Felder sind rot markiert und tragen den Hinweis ausgeschrieben,
-//    damit niemand aus Versehen den halben Bewerbermarkt aussperrt.
+//  • Muss-Kriterium — wer das nicht erfüllt, bekommt die Stelle NICHT zu
+//    sehen. Diese Felder sind rot markiert und tragen den Hinweis
+//    ausgeschrieben, damit niemand aus Versehen den halben Markt aussperrt.
 //  • Gewichtung — zählt Punkte und entscheidet über die Reihenfolge.
+//
+// Die Felder hiessen zuvor "Ausschluss". Das Wort beschreibt die Technik, nicht
+// die Wirkung: der Gründer selbst konnte nicht sagen, was es bedeutet. Ein
+// Betrieb denkt in "das muss er können" — deshalb jetzt "Muss".
 //
 // Leer lassen heißt überall: ist uns egal. Genau so behandelt es das Matching.
 
@@ -135,7 +139,7 @@ function Feld({
             style={{ background: "rgba(185,28,28,0.07)", color: "#9B2C2C" }}
           >
             <AlertTriangle className="w-3 h-3" />
-            Ausschluss
+            Muss
           </span>
         )}
       </div>
@@ -226,9 +230,40 @@ export default function AnforderungsEditor({
 
   return (
     <div>
+      {/* Die zwei Arten von Angaben, bevor die erste kommt. Ohne diese Zeilen
+          musste man sich aus den Hinweisen unter den Feldern zusammenreimen,
+          was ein rot markiertes Feld eigentlich bewirkt. */}
+      <div
+        className="rounded-2xl px-4 py-4 mb-6 grid sm:grid-cols-2 gap-x-6 gap-y-3"
+        style={{ background: "rgba(26,26,46,0.025)", border: "1px solid #EDE8DC" }}
+      >
+        <p className="flex items-start gap-2.5 text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.65)" }}>
+          <span
+            className="w-2 h-2 rounded-full flex-shrink-0 mt-[6px]"
+            style={{ background: "#C0392B" }}
+          />
+          <span>
+            <strong className="text-primary">Rot = Muss.</strong> Wer das nicht
+            erfüllt, bekommt Ihr Inserat gar nicht erst zu sehen und kann sich
+            nicht bewerben.
+          </span>
+        </p>
+        <p className="flex items-start gap-2.5 text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.65)" }}>
+          <span
+            className="w-2 h-2 rounded-full flex-shrink-0 mt-[6px]"
+            style={{ background: "#E8A838" }}
+          />
+          <span>
+            <strong className="text-primary">Alles andere zählt Punkte.</strong>{" "}
+            Es sperrt niemanden aus, sondern schiebt passende Bewerber in Ihrer
+            Liste nach oben.
+          </span>
+        </p>
+      </div>
+
       <Feld
         titel="Gewerke"
-        hinweis="Wer einen anderen Bereich gelernt hat, sieht dieses Inserat nicht. Nichts wählen = alle Bereiche."
+        hinweis="Nur wer einen dieser Bereiche gelernt hat, bekommt das Inserat zu sehen. Nichts wählen = alle Bereiche."
         ausschluss
       >
         <div className="flex flex-wrap gap-1.5">
@@ -245,7 +280,7 @@ export default function AnforderungsEditor({
 
       <Feld
         titel="Mindest-Ausbildungsstand"
-        hinweis="Wer darunter liegt, sieht das Inserat nicht."
+        hinweis="Wer weniger vorweisen kann, bekommt das Inserat nicht zu sehen."
         ausschluss
       >
         <KatalogAuswahl
@@ -259,7 +294,7 @@ export default function AnforderungsEditor({
       {berufe.length > 0 && (
         <Feld
           titel="Bevorzugte Ausbildungsberufe"
-          hinweis="Kein Ausschluss: ein verwandter Beruf aus demselben Bereich zählt zu 60 %."
+          hinweis="Kein Muss — ein verwandter Beruf aus demselben Bereich zählt zu 60 %."
         >
           <div className="flex flex-wrap gap-1.5">
             {berufe.map((b) => (
@@ -296,7 +331,7 @@ export default function AnforderungsEditor({
             >
               <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#9B2C2C" }} />
               <span className="text-[13px] font-semibold" style={{ color: "rgba(26,26,46,0.7)" }}>
-                Davon zwingend erforderlich:
+                Davon muss der Bewerber können:
               </span>
               <Auswahl
                 wert={wert.aufgabenMin > 0 ? String(wert.aufgabenMin) : null}
@@ -334,7 +369,7 @@ export default function AnforderungsEditor({
 
       <Feld
         titel="Verlangte Montagebereitschaft"
-        hinweis="Wer weniger angegeben hat, sieht das Inserat nicht."
+        hinweis="Wer weniger Montage angegeben hat, bekommt das Inserat nicht zu sehen."
         ausschluss
       >
         <KatalogAuswahl
@@ -347,7 +382,7 @@ export default function AnforderungsEditor({
 
       <Feld
         titel="Führerschein"
-        hinweis="Kein voller Ausschluss: Nur wer gar keinen hat, fällt raus — eine niedrigere Klasse kostet Punkte."
+        hinweis="Nur wer gar keinen Führerschein hat, fällt raus. Eine niedrigere Klasse kostet nur Punkte."
       >
         <KatalogAuswahl
           wert={wert.fuehrerscheinMin}
@@ -359,7 +394,7 @@ export default function AnforderungsEditor({
 
       <Feld
         titel="Mindest-Deutschkenntnisse"
-        hinweis="Wer darunter liegt, sieht das Inserat nicht."
+        hinweis="Wer schlechter Deutsch spricht, bekommt das Inserat nicht zu sehen."
         ausschluss
       >
         <KatalogAuswahl
@@ -409,15 +444,38 @@ export default function AnforderungsEditor({
         }}
       >
         <p
-          className="flex items-center gap-2 text-[15px] font-bold text-primary mb-1"
+          className="flex items-center gap-2 text-[15px] font-bold text-primary mb-1.5"
           style={{ fontFamily: "var(--font-display)" }}
         >
           <Scale className="w-4 h-4" style={{ color: "#E8A838" }} />
-          Gewichtung
+          Was Ihnen am wichtigsten ist
         </p>
-        <p className="text-[12.5px] mb-5 max-w-2xl leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
-          Wie stark jedes Kriterium den Wert beeinflusst. 0 nimmt es ganz aus der
-          Wertung — ausgeschlossen wird dadurch niemand.
+        {/* Der alte Text ("wie stark jedes Kriterium den Wert beeinflusst")
+            beschrieb die Rechnung statt den Nutzen — niemand wusste, welchen
+            "Wert" er meint. Jetzt steht da, was der Betrieb davon hat. */}
+        <p className="text-[13px] mb-4 max-w-2xl leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+          Jeder Handwerker bekommt eine Prozentzahl, wie gut er zu dieser Stelle
+          passt. Hier stellen Sie ein, was dabei schwerer wiegt.{" "}
+          <strong className="text-primary">5 zählt fünfmal so stark wie 1</strong>{" "}
+          — bei 0 zählt es überhaupt nicht mit.
+        </p>
+        <p
+          className="text-[12.5px] mb-5 max-w-2xl leading-relaxed rounded-xl px-3.5 py-2.5"
+          style={{ background: "rgba(232,168,56,0.1)", color: "rgba(26,26,46,0.62)" }}
+        >
+          <strong className="text-primary">Beispiel:</strong> Erfahrung auf 5 und
+          Führerschein auf 1 — dann steht ein alter Hase mit kleiner Klasse trotzdem
+          weit oben in Ihrer Liste.
+        </p>
+        {/* Wie die Balken zu lesen sind. Zuvor stand hier "links / rechts" an
+            den Aussenkanten des Kastens — links steht dort aber der Name des
+            Kriteriums, nicht der erste Balken. */}
+        <p
+          className="text-[12.5px] pb-3 mb-3.5 leading-relaxed"
+          style={{ color: "rgba(26,26,46,0.45)", borderBottom: "1px solid #EDE8DC" }}
+        >
+          Je mehr Balken, desto stärker zählt es. Der kleine graue Balken ganz
+          vorn bedeutet: zählt gar nicht mit.
         </p>
         <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
           {GEWICHT_LABELS.map(({ key, label }) => {

@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Users, ShieldCheck, X, Route, MapPin, Target,
-  SlidersHorizontal, RotateCcw, ArrowUpDown, Award, Briefcase,
+  SlidersHorizontal, RotateCcw, Award, Briefcase,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
@@ -25,6 +25,7 @@ import type { Candidate } from "@/lib/types";
 import CandidateCard from "@/app/components/employer/CandidateCard";
 import SearchAreaMap, { type SearchArea } from "@/app/components/employer/SearchAreaMapDynamic";
 import Wartezustand from "@/app/components/dashboard/Wartezustand";
+import Sortierung from "@/app/components/dashboard/Sortierung";
 
 const SORTS: { value: CandidateSort; label: string }[] = [
   { value: "match", label: "Beste Übereinstimmung" },
@@ -400,25 +401,10 @@ export default function EmployerSearchPage() {
                 <SlidersHorizontal className="w-4 h-4" />
                 Filter{activeCount > 0 && ` (${activeCount})`}
               </button>
-              <div className="relative">
-                <ArrowUpDown
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                  style={{ color: "rgba(26,26,46,0.35)" }}
-                />
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value as CandidateSort)}
-                  aria-label="Sortierung"
-                  className="appearance-none rounded-full bg-white text-[13.5px] font-semibold pl-11 pr-6 py-2.5 outline-none cursor-pointer"
-                  style={{ border: "1.5px solid #E9E7E1", color: "rgba(26,26,46,0.65)" }}
-                >
-                  {SORTS.map((s) => (
-                    <option key={s.value} value={s.value}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* Eigenes Menue statt <select>: dessen Klappliste zeichnet das
+                  Betriebssystem — graue Systemschrift, eckige Raender, kein
+                  Bezug zum Rest. Mit CSS nicht zu gestalten, nur zu ersetzen. */}
+              <Sortierung value={sort} options={SORTS} onChange={setSort} hell />
             </div>
           </div>
 
@@ -431,16 +417,20 @@ export default function EmployerSearchPage() {
             </div>
           )}
 
-          {/* Vertrauenszeile */}
-          <div
-            className="flex items-start gap-3 rounded-2xl px-4 py-3.5 mb-5"
-            style={{ background: "rgba(26,26,46,0.035)" }}
-          >
-            <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} />
-            <p className="text-[12.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
-              Profile sind anonymisiert. Name und Kontaktdaten sehen Sie, sobald der
-              Kandidat Ihre Anfrage annimmt — deshalb zeigen sich hier auch Fachkräfte,
-              die nicht offen suchen.
+          {/* ── Vertrauenszeile ──────────────────────────────────────────
+              Vorher ein grauer Kasten mit Symbol links und zwei Zeilen
+              Fliesstext — die Standardform, an der man generierte Oberflaechen
+              erkennt. Dabei ist das hier das Kernversprechen der Plattform und
+              der Grund, warum ueberhaupt Kandidaten in der Liste stehen.
+
+              Jetzt ohne Kasten: goldene Kante links, die Kernaussage fett
+              voran, die Begruendung dahinter. Liest sich in einem Zug. */}
+          <div className="flex items-start gap-3.5 pl-4 pr-1 py-1 mb-6" style={{ borderLeft: "2px solid #E8A838" }}>
+            <ShieldCheck className="w-[18px] h-[18px] flex-shrink-0 mt-0.5" style={{ color: "#B47B18" }} />
+            <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(26,26,46,0.62)" }}>
+              <strong className="text-primary font-bold">Anonym bis zur Freigabe.</strong>{" "}
+              Name und Kontaktdaten sehen Sie, sobald der Kandidat Ihre Anfrage annimmt
+              — deshalb stehen hier auch Fachkräfte, die nicht offen suchen.
             </p>
           </div>
 

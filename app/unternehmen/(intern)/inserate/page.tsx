@@ -1137,7 +1137,7 @@ export default function InseratePage() {
         // Skelettkarten statt eines Kringels in der Mitte: sie zeigen, wo die
         // Inserate erscheinen werden, und die Seite wirkt nicht leer.
         <div className="space-y-4">
-          {[0, 1].map((i) => (
+          {(error ? [] : [0, 1]).map((i) => (
             <div
               key={i}
               className="animate-pulse rounded-3xl"

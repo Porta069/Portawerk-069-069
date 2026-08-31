@@ -7,7 +7,8 @@
 // Kontaktdaten erscheinen NUR, wenn der Kandidat eine Kontaktanfrage
 // freigegeben hat (Diskretionsversprechen).
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Loader2, Inbox, Briefcase, Award, Route, Clock3, ShieldCheck, Check,
@@ -18,6 +19,8 @@ import {
 } from "@/lib/employerService";
 import type { EmployerApplication, ApplicationStatus } from "@/lib/types";
 import ScoreExplainer from "@/app/components/ScoreExplainer";
+import Wartezustand from "@/app/components/dashboard/Wartezustand";
+import { useAuth } from "@/app/context/AuthContext";
 
 const STATUS_META: Record<
   ApplicationStatus,
@@ -221,6 +224,7 @@ function ApplicationCard({
 }
 
 export default function EmployerBewerbungenPage() {
+  const { user } = useAuth();
   const [apps, setApps] = useState<EmployerApplication[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -252,18 +256,98 @@ export default function EmployerBewerbungenPage() {
   const neue = apps?.filter((a) => a.status === "gesendet") ?? [];
   const rest = apps?.filter((a) => a.status !== "gesendet") ?? [];
 
+  const zahlen = useMemo(() => {
+    if (!apps?.length) return null;
+    return {
+      neu: apps.filter((a) => a.status === "gesendet").length,
+      gespraech: apps.filter((a) => a.status === "im_gespraech").length,
+      zusagen: apps.filter((a) => a.status === "zusage").length,
+    };
+  }, [apps]);
+
   return (
     <div>
-      <h1
-        className="text-primary font-bold mb-1"
-        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
-      >
-        Bewerbungen
-      </h1>
-      <p className="text-[15px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
-        Wer sich auf Ihre Inserate beworben hat — der Status, den Sie setzen,
-        erscheint sofort beim Kandidaten.
-      </p>
+      {/* ══ Kopf ══
+          Randlos ueber die volle Fensterbreite mit echtem Werkstattfoto —
+          dieselbe Bauform wie in der Jobboerse. Zuvor begann die Seite mit
+          einer nackten Ueberschrift auf Papierton, waehrend jede
+          Nachbarseite ein Band traegt.
+
+          Das Foto zeigt eine Werkstatt, nie eine Person: die Kandidaten hier
+          sind anonym, ein Gesicht im Kopf der Seite waere ein falsches
+          Versprechen. */}
+      <div className="vollbreite relative overflow-hidden -mt-10 mb-8">
+        <Image
+          src="/images/hero-team-werkstatt.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
+          style={{ objectPosition: "center 42%" }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 44%, rgba(20,20,36,0.58) 100%)",
+          }}
+        />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <span
+                className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+                style={{ color: "#E8A838" }}
+              >
+                <span className="w-6 h-[2px] bg-accent" />
+                {user?.companyName || "Ihr Betrieb"}
+              </span>
+              <h1
+                className="text-white font-bold leading-tight"
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3.4vw, 2.7rem)" }}
+              >
+                Bewerbungen
+              </h1>
+              <p className="text-[15px] mt-2 max-w-lg" style={{ color: "rgba(255,255,255,0.55)" }}>
+                Wer sich auf Ihre Inserate beworben hat. Der Status, den Sie
+                setzen, erscheint sofort beim Handwerker.
+              </p>
+            </div>
+
+            {zahlen && (
+              <div className="flex flex-wrap gap-2.5">
+                {[
+                  { icon: Inbox, v: String(zahlen.neu), l: "Neu" },
+                  { icon: MessagesSquare, v: String(zahlen.gespraech), l: "Im Gespräch" },
+                  { icon: ThumbsUp, v: String(zahlen.zusagen), l: "Zusagen" },
+                ].map((s2) => {
+                  const Icon = s2.icon;
+                  return (
+                    <div
+                      key={s2.l}
+                      className="rounded-2xl px-4 py-3 min-w-[104px]"
+                      style={{ background: "rgba(255,255,255,0.09)" }}
+                    >
+                      <Icon className="w-3.5 h-3.5 mb-1.5" style={{ color: "#E8A838" }} />
+                      <p
+                        className="text-[19px] font-bold tabular-nums text-white leading-none"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
+                        {s2.v}
+                      </p>
+                      <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>
+                        {s2.l}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {error && (
         <div
@@ -275,20 +359,27 @@ export default function EmployerBewerbungenPage() {
       )}
 
       {apps === null ? (
-        <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+        // Skelettkarten statt Kringel: sie zeigen, wo die Bewerbungen
+        // erscheinen werden, statt eine leere Flaeche zu hinterlassen.
+        <div className="space-y-4">
+          {(error ? [] : [0, 1]).map((i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-3xl"
+              style={{ height: 190, background: "#FBFAF7", border: "1.5px solid #EDEAE4" }}
+            />
+          ))}
         </div>
       ) : apps.length === 0 ? (
-        <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <Inbox className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
-            Noch keine Bewerbungen
-          </p>
-          <p className="text-[14px] max-w-md mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Sobald sich Handwerker auf Ihre Inserate bewerben, erscheinen sie
-            hier — anonymisiert, mit Match-Score und Statusverwaltung.
-          </p>
-        </div>
+        // Derselbe wartende Stapel wie in Merkliste, Angeboten und
+        // Kandidatensuche — nicht wieder ein Symbol im Kreis ueber zwei
+        // Zeilen Text.
+        <Wartezustand
+          marke="Noch keine Bewerbung"
+          titel="Hier landen Ihre Bewerber"
+          text="Sobald sich jemand auf ein Inserat bewirbt, steht er hier — anonym, mit Match-Score."
+          icon={<Inbox className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />}
+        />
       ) : (
         <div className="space-y-8">
           {neue.length > 0 && (

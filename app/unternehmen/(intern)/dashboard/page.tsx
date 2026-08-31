@@ -288,13 +288,30 @@ export default function EmployerSearchPage() {
         </div>
       )}
 
-      {/* ══ Standort ══ */}
-      <div className="relative overflow-hidden rounded-3xl mb-6" style={{ background: "#1A1A2E" }}>
+      {/* ══ Standort ══
+          Randlos über die volle Fensterbreite und ohne Abstand zur Kopfleiste
+          — dieselbe Bauform wie im Kandidatenbereich. Als Kachel mit Rand
+          ringsum stand oben und an den Seiten viel Papierton, der Block sah
+          ausgeschnitten aus statt wie der Kopf der Seite. */}
+      <div
+        className="vollbreite relative overflow-hidden -mt-10 mb-8"
+        style={{ background: "#1A1A2E" }}
+      >
         <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)," +
+              "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)",
+          }}
+        />
+        <div
+          aria-hidden
           className="absolute -top-32 -right-24 w-[520px] h-[520px] rounded-full pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 68%)" }}
         />
-        <div className="relative p-6 sm:p-8">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">
           <div className="flex flex-wrap items-end justify-between gap-5 mb-6">
             <div>
               <span

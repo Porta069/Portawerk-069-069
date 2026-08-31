@@ -16,8 +16,9 @@ import "leaflet/dist/leaflet.css";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Marker, Circle, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { Search, X, Loader2, Trash2, MapPin, Plus, Crosshair, Maximize2 } from "lucide-react";
+import { Search, X, Loader2, Trash2, MapPin, Plus, Crosshair, Maximize2, AlertTriangle } from "lucide-react";
 import type { WorkLocation } from "@/lib/types";
+import { liegtInDeutschland } from "@/lib/germanyOutline";
 import MapShell, { MapAttribution, MapZoom } from "./MapShell";
 
 /** Gold-Pin mit weißem Ring und weichem Schlagschatten. */
@@ -167,9 +168,17 @@ export default function WorkLocationsMap({
   const [searching, setSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [adding, setAdding] = useState(false);
+  // Kurzmeldung nach einem Klick ausserhalb Deutschlands.
+  const [ausland, setAusland] = useState(false);
   const [focused, setFocused] = useState(false);
   const [flyTarget, setFlyTarget] = useState<{ lat: number; lng: number; radiusKm: number } | null>(null);
   const debRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!ausland) return;
+    const t = setTimeout(() => setAusland(false), 4000);
+    return () => clearTimeout(t);
+  }, [ausland]);
 
   // Debounced Nominatim-Suche (Rate-Limit-freundlich).
   useEffect(() => {
@@ -219,6 +228,13 @@ export default function WorkLocationsMap({
 
   const handleMapClick = useCallback(
     async (lat: number, lng: number) => {
+      // Die Maske deckt die Nachbarländer nur optisch ab — ohne diese Prüfung
+      // liess sich ein Arbeitsort in Frankreich oder Polen setzen.
+      if (!liegtInDeutschland(lat, lng)) {
+        setAusland(true);
+        return;
+      }
+      setAusland(false);
       setAdding(true);
       const label = await reverseGeocode(lat, lng);
       setAdding(false);
@@ -346,7 +362,24 @@ export default function WorkLocationsMap({
           </div>
         )}
 
-        {value.length === 0 && !adding && (
+        {/* Klick ausserhalb Deutschlands — sagt, warum nichts passiert ist,
+            statt den Klick stumm zu verschlucken. */}
+        {ausland && (
+          <div
+            className="absolute z-[20] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2.5 rounded-full px-4 py-2.5 text-[12.5px] font-medium pointer-events-none max-w-[calc(100%-24px)]"
+            style={{
+              background: "rgba(26,26,46,0.95)",
+              color: "white",
+              border: "1px solid rgba(232,168,56,0.5)",
+              boxShadow: "0 14px 30px -14px rgba(0,0,0,0.7)",
+            }}
+          >
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
+            Wir vermitteln derzeit nur innerhalb Deutschlands.
+          </div>
+        )}
+
+        {value.length === 0 && !adding && !ausland && (
           <div
             className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
             style={

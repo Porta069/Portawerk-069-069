@@ -121,7 +121,14 @@ export default function EmployerLayout({ children }: { children: React.ReactNode
   }
 
   return (
-    <div className="min-h-screen bg-surface" style={{ fontFamily: "var(--font-sans)" }}>
+    // `overflow-x: clip` erlaubt Seiten, mit `.vollbreite` aus dem zentrierten
+    // Inhaltsbereich auszubrechen, ohne dass ein waagerechter Balken entsteht.
+    // Bewusst clip statt hidden: hidden würde einen Scrollcontainer aufmachen
+    // und die klebende Kopfleiste stünde nicht mehr.
+    <div
+      className="min-h-screen bg-surface overflow-x-clip"
+      style={{ fontFamily: "var(--font-sans)" }}
+    >
       <EmployerNav
         companyName={user.companyName || `${user.firstName} ${user.lastName}`.trim()}
         openRequests={openRequests}

@@ -10,7 +10,9 @@ import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Marker, Circle, CircleMarker, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { Search, X, Loader2, Crosshair, MapPin, Trash2 } from "lucide-react";
+import { Search, X, Loader2, Crosshair, MapPin, Trash2, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { liegtInDeutschland } from "@/lib/germanyOutline";
 import MapShell, { MapAttribution, MapZoom } from "@/app/components/MapShell";
 
 export interface SearchArea {
@@ -150,8 +152,24 @@ export default function SearchAreaMap({
     };
   }, [query]);
 
+  // Kurzmeldung nach einem Klick ausserhalb Deutschlands.
+  const [ausland, setAusland] = useState(false);
+  useEffect(() => {
+    if (!ausland) return;
+    const t = setTimeout(() => setAusland(false), 4000);
+    return () => clearTimeout(t);
+  }, [ausland]);
+
   const handleMapClick = useCallback(
     async (lat: number, lng: number) => {
+      // Die Maske deckt die Nachbarlaender nur optisch ab — Klicks nahm die
+      // Karte dort trotzdem entgegen und legte einen Suchbereich in Frankreich
+      // oder Polen an. Wir vermitteln ausschliesslich in Deutschland.
+      if (!liegtInDeutschland(lat, lng)) {
+        setAusland(true);
+        return;
+      }
+      setAusland(false);
       setLocating(true);
       const hit = await reverse(lat, lng);
       setLocating(false);
@@ -248,7 +266,7 @@ export default function SearchAreaMap({
           </div>
         )}
 
-        {!area && !locating && (
+        {!area && !locating && !ausland && (
           <div
             className="absolute z-[10] top-3 left-3 flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium pointer-events-none"
             style={{ background: "rgba(255,255,255,0.94)", color: "rgba(26,26,46,0.72)" }}
@@ -257,6 +275,29 @@ export default function SearchAreaMap({
             Auf die Karte tippen, um den Standort zu setzen
           </div>
         )}
+
+        {/* Klick ausserhalb Deutschlands — die Meldung sagt, warum nichts
+            passiert ist, statt den Klick stumm zu verschlucken. */}
+        <AnimatePresence>
+          {ausland && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22 }}
+              className="absolute z-[20] top-3 left-1/2 -translate-x-1/2 flex items-center gap-2.5 rounded-full px-4 py-2.5 text-[12.5px] font-medium pointer-events-none max-w-[calc(100%-24px)]"
+              style={{
+                background: "rgba(26,26,46,0.95)",
+                color: "white",
+                border: "1px solid rgba(232,168,56,0.5)",
+                boxShadow: "0 14px 30px -14px rgba(0,0,0,0.7)",
+              }}
+            >
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#E8A838" }} />
+              Wir vermitteln derzeit nur innerhalb Deutschlands.
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <MapShell
           height={340}

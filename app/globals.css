@@ -338,3 +338,33 @@ body {
     box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18);
   }
 }
+
+/* ─── Eingabefelder im Arbeitgeberbereich ───────────────────────────────────
+   Ein Feld gehoert dem, der gerade darin schreibt: beim Fokus wandert die
+   Kante auf Gold und bekommt einen weichen Ring. Vorher sprang nur die
+   Randfarbe um — auf einer Seite mit zwanzig Feldern sah man nicht, wo man
+   ist. Als Klasse statt inline, weil :focus in einem style-Attribut nicht
+   ausdrueckbar ist. */
+.wp-feld {
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.wp-feld:focus,
+.wp-feld:focus-visible {
+  outline: none;
+  border-color: #e8a838;
+  box-shadow: 0 0 0 4px rgba(232, 168, 56, 0.14);
+}
+
+/* Zahlenfelder: die Pfeilchen des Browsers passen in kein gestaltetes Feld
+   und verschieben zudem den Text. Eingegeben wird ohnehin per Tastatur. */
+.wp-feld::-webkit-outer-spin-button,
+.wp-feld::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.wp-feld[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

@@ -7,51 +7,174 @@
 // Score eines Kandidaten = 100 × (1 − Σ(Gewicht × Differenz) / Σ(Gewicht × maxDifferenz)).
 // Antworten innerhalb der Range kosten nichts; außerhalb zählt der Abstand zur
 // nächstgelegenen Grenze.
+//
+// ── Zur Gestaltung ──────────────────────────────────────────────────────────
+// Die Seite sah zuvor aus wie eine Verwaltungstabelle aus einem Baukasten:
+// weisse Rechtecke mit Text links und einer Knopfreihe rechts, darüber eine
+// nackte Überschrift auf Papierton. Sechs Dinge lagen im Argen:
+//
+//   1. Kein Kopf. Jede andere Seite des Bereichs beginnt mit dem dunklen,
+//      randlosen Band — hier fing die Seite mitten im Nichts an.
+//   2. Die wichtigste Zahl (eingegangene Bewerbungen) war die kleinste
+//      Schrift der Karte, versteckt in einer grauen Pille.
+//   3. Die Karten waren reinweiss und flach: kein Verlauf, keine Kante, kein
+//      Anhalt, was hier eigentlich verwaltet wird.
+//   4. Die Kriterien standen als grelle rote Pillen darunter, obwohl sie das
+//      Herz des Inserats sind — sie sahen aus wie Fehlermeldungen.
+//   5. Der Leerzustand war ein Symbol im Kreis über zwei Zeilen Text, also
+//      genau die Form, an der man jede generierte Oberfläche erkennt.
+//   6. Der Editor: drei gleich aussehende weisse Kästen, Systemschrift in
+//      jedem Auswahlfeld, und der Speichern-Knopf ganz unten ausser Sicht.
+//
+// Alle Knöpfe und Abläufe sind dieselben geblieben — nur Anordnung, Gewicht
+// und Zeichnung sind neu. Am Backend wurde nichts angefasst.
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Plus, Loader2, Pencil, Archive, FileText, Scale, ChevronLeft,
-  AlertCircle, Check, Users, Sparkles, Bot, AlertTriangle,
+  Plus, Loader2, Pencil, Archive, Scale, ChevronLeft, Wrench,
+  AlertCircle, Check, Users, Sparkles, Bot, MapPin, Wallet, FileText,
+  Clock3, Eye, EyeOff, PenLine,
 } from "lucide-react";
 import {
   listMyJobs, saveJob, archiveJob,
   MONTAGE_OPTIONEN,
 } from "@/lib/employerService";
 import { GEWERKE } from "@/lib/constants";
+import { useAuth } from "@/app/context/AuthContext";
 import AnforderungsEditor, { LEERE_ANFORDERUNG } from "@/app/components/employer/AnforderungsEditor";
+import Auswahl from "@/app/components/dashboard/Auswahl";
+import Wartezustand from "@/app/components/dashboard/Wartezustand";
 import type {
   EmployerJob, EmployerJobInput, Anforderungsprofil,
 } from "@/lib/types";
 
 // ── Kleine Bausteine im Stil des Bereichs ────────────────────────────────────
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+/**
+ * Dunkles Band über die volle Fensterbreite — dieselbe Bauform wie in der
+ * Kandidatensuche nebenan. `.vollbreite` bricht aus dem zentrierten
+ * Inhaltsbereich aus, `-mt-10` hebt den Abstand des Layouts auf, damit das
+ * Band direkt unter der Kopfleiste sitzt und nicht ausgeschnitten wirkt.
+ */
+function Band({ children }: { children: React.ReactNode }) {
   return (
-    <p
-      className="text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
-      style={{ color: "rgba(26,26,46,0.45)" }}
+    <div className="vollbreite relative overflow-hidden -mt-10 mb-8" style={{ background: "#1A1A2E" }}>
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)," +
+            "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute -top-32 -right-24 w-[520px] h-[520px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 68%)" }}
+      />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Abschnitt im Editor mit vorangestellter Ordnungszahl.
+ *
+ * Die Ziffer ist gross und blass und sitzt in der linken Spalte: sie gliedert
+ * ein langes Formular in vier überschaubare Schritte, ohne eine Zeile Text zu
+ * kosten. Vorher standen vier gleich aussehende weisse Kästen untereinander —
+ * man wusste beim Scrollen nie, wo man ist.
+ */
+function Schritt({
+  nr,
+  titel,
+  hinweis,
+  rechts,
+  children,
+}: {
+  nr: string;
+  titel: string;
+  hinweis?: string;
+  rechts?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      className="relative overflow-hidden rounded-3xl p-5 sm:p-7"
+      style={{
+        background: "linear-gradient(158deg, #FFFFFF 0%, #FDFCF8 62%, #F9F5EC 100%)",
+        border: "1.5px solid #EDE8DC",
+        boxShadow: "0 14px 36px -28px rgba(26,26,46,0.55)",
+      }}
     >
-      {children}
-    </p>
+      <span
+        aria-hidden
+        className="absolute pointer-events-none select-none font-bold leading-none"
+        style={{
+          right: 18,
+          top: 4,
+          fontFamily: "var(--font-display)",
+          fontSize: 84,
+          color: "rgba(26,26,46,0.035)",
+        }}
+      >
+        {nr}
+      </span>
+      <div className="relative flex flex-wrap items-start justify-between gap-3 mb-5">
+        <div>
+          <p
+            className="inline-flex items-center gap-2.5 text-[10.5px] font-bold uppercase tracking-[0.18em] mb-1.5"
+            style={{ color: "#B47B18" }}
+          >
+            <span className="w-5 h-[2px] rounded-full" style={{ background: "#E8A838" }} />
+            Schritt {nr}
+          </p>
+          <h2
+            className="text-primary font-bold text-[19px] leading-snug"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {titel}
+          </h2>
+          {hinweis && (
+            <p className="text-[13.5px] mt-1 max-w-xl leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
+              {hinweis}
+            </p>
+          )}
+        </div>
+        {rechts}
+      </div>
+      <div className="relative">{children}</div>
+    </section>
   );
 }
 
 function Field({
   label,
+  hinweis,
   children,
   grow = false,
 }: {
   label: string;
+  hinweis?: string;
   children: React.ReactNode;
   grow?: boolean;
 }) {
   return (
-    <label className={`block ${grow ? "flex-1 min-w-[180px]" : ""}`}>
-      <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
+    <label className={`block ${grow ? "flex-1 min-w-[200px]" : ""}`}>
+      <span
+        className="block text-[11px] font-bold uppercase tracking-[0.13em] mb-2"
+        style={{ color: "rgba(26,26,46,0.42)" }}
+      >
         {label}
       </span>
       {children}
+      {hinweis && (
+        <span className="block text-[12px] mt-1.5" style={{ color: "rgba(26,26,46,0.42)" }}>
+          {hinweis}
+        </span>
+      )}
     </label>
   );
 }
@@ -62,37 +185,96 @@ const inputStyle: React.CSSProperties = {
 };
 
 const inputClass =
-  "w-full rounded-xl text-primary text-[14.5px] px-3.5 py-2.5 outline-none transition-colors focus:border-accent placeholder:text-primary/25";
+  "wp-feld w-full rounded-2xl text-primary text-[14.5px] px-4 py-3 placeholder:text-primary/25";
 
-/** Segment-Auswahl (z. B. Ja / Nein / Egal). */
+/**
+ * Zahlenfeld mit Einheit am rechten Rand.
+ *
+ * "3.600" ohne Angabe der Einheit ist mehrdeutig — Monat, Jahr, Stunde? Die
+ * Einheit steht deshalb im Feld statt in der Beschriftung, wo sie beim
+ * Ausfüllen sichtbar bleibt.
+ */
+function Zahlfeld({
+  wert,
+  onChange,
+  platzhalter,
+  einheit,
+  max,
+}: {
+  wert: number | undefined;
+  onChange: (v: number | undefined) => void;
+  platzhalter: string;
+  einheit: string;
+  max?: number;
+}) {
+  return (
+    <span className="relative block">
+      <input
+        type="number"
+        min={0}
+        max={max}
+        value={wert ?? ""}
+        onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
+        placeholder={platzhalter}
+        className={`${inputClass} pr-16 tabular-nums`}
+        style={inputStyle}
+      />
+      <span
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] font-semibold pointer-events-none"
+        style={{ color: "rgba(26,26,46,0.35)" }}
+      >
+        {einheit}
+      </span>
+    </span>
+  );
+}
+
+/**
+ * Segment-Auswahl (z. B. Ja / Nein).
+ *
+ * Der dunkle Reiter gleitet mit `layoutId` zur neuen Stelle, statt an der
+ * alten zu verschwinden und an der neuen aufzutauchen. Der Unterschied ist
+ * winzig und trägt trotzdem den halben Eindruck von Wertigkeit.
+ */
 function Segmented<T extends string | number>({
   value,
   options,
   onChange,
+  gruppe,
 }: {
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
+  /** Eigener Name je Gruppe — sonst gleitet der Reiter zwischen den Gruppen. */
+  gruppe: string;
 }) {
   return (
     <div
-      className="inline-flex rounded-full p-1 gap-1"
-      style={{ background: "rgba(26,26,46,0.05)" }}
+      className="inline-flex flex-wrap rounded-full p-1 gap-1"
+      style={{ background: "rgba(26,26,46,0.05)", border: "1px solid rgba(26,26,46,0.05)" }}
     >
-      {options.map((o) => (
-        <button
-          key={String(o.value)}
-          type="button"
-          onClick={() => onChange(o.value)}
-          className="rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors"
-          style={{
-            background: value === o.value ? "#1A1A2E" : "transparent",
-            color: value === o.value ? "white" : "rgba(26,26,46,0.55)",
-          }}
-        >
-          {o.label}
-        </button>
-      ))}
+      {options.map((o) => {
+        const an = value === o.value;
+        return (
+          <button
+            key={String(o.value)}
+            type="button"
+            onClick={() => onChange(o.value)}
+            className="relative rounded-full px-4 py-2 text-[13px] font-semibold transition-colors"
+            style={{ color: an ? "white" : "rgba(26,26,46,0.55)" }}
+          >
+            {an && (
+              <motion.span
+                layoutId={`seg-${gruppe}`}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 rounded-full"
+                style={{ background: "#1A1A2E" }}
+              />
+            )}
+            <span className="relative">{o.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -167,6 +349,16 @@ function JobEditor({
   const set = <K extends keyof EmployerJobInput>(k: K, v: EmployerJobInput[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  // Ein gespeichertes Gewerk, das nicht mehr im Katalog steht (etwa von uns
+  // angelegte Inserate), bekommt einen eigenen Eintrag. Sonst stünde im Feld
+  // "Bitte wählen" und ein unbedachtes Speichern würde die Angabe überschreiben.
+  const gewerkOptionen = [
+    ...GEWERKE.map((g) => ({ value: g, label: g })),
+    ...(form.gewerk && !GEWERKE.includes(form.gewerk)
+      ? [{ value: form.gewerk, label: form.gewerk }]
+      : []),
+  ];
+
   // Wie viele Ausschlusskriterien gesetzt sind — die Zahl steht in der
   // Kopfzeile, damit niemand versehentlich den halben Markt aussperrt.
   const ausschluesse = [
@@ -214,35 +406,76 @@ function JobEditor({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
-      <button
-        type="button"
-        onClick={onCancel}
-        className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold mb-5"
-        style={{ color: "rgba(26,26,46,0.5)" }}
-      >
-        <ChevronLeft className="w-4 h-4" />
-        Zurück zur Übersicht
-      </button>
-
-      <h1
-        className="text-primary font-bold mb-1"
-        style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3vw, 2.2rem)" }}
-      >
-        {job ? "Inserat bearbeiten" : "Neues Inserat"}
-      </h1>
-      <p className="text-[14.5px] mb-7" style={{ color: "rgba(26,26,46,0.55)" }}>
-        Eckdaten der Stelle plus Ihre Wunsch-Antworten mit Gewichtung — daraus
-        entsteht der Match-Score jedes Kandidaten.
-      </p>
-
-      <div className="space-y-6">
-        {/* ── Eckdaten ── */}
-        <section
-          className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+      {/* ══ Kopf ══
+          Der Zurück-Weg gehört in die obere linke Ecke des Bandes, gross genug
+          zum Treffen. Als graue Textzeile über der Überschrift wurde er
+          übersehen — dieselbe Rückmeldung gab es schon beim Partner-Funnel. */}
+      <Band>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="inline-flex items-center gap-2 rounded-full pl-3 pr-5 py-2.5 mb-6 text-[14px] font-semibold transition-colors"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.16)",
+            color: "rgba(255,255,255,0.86)",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.16)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
         >
-          <SectionTitle>Eckdaten</SectionTitle>
-          <div className="space-y-4">
+          <ChevronLeft className="w-5 h-5" />
+          Zurück zu allen Inseraten
+        </button>
+
+        <div className="flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <span
+              className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+              style={{ color: "#E8A838" }}
+            >
+              <span className="w-6 h-[2px] bg-accent" />
+              {job ? "Inserat bearbeiten" : "Neues Inserat"}
+            </span>
+            <h1
+              className="text-white font-bold leading-tight"
+              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3.4vw, 2.7rem)" }}
+            >
+              {job ? job.title || "Ohne Titel" : "Stelle ausschreiben"}
+            </h1>
+            <p className="text-[15px] mt-2 max-w-xl" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Eckdaten der Stelle plus Ihre Wunsch-Antworten mit Gewichtung — daraus
+              entsteht der Match-Score jedes Kandidaten.
+            </p>
+          </div>
+
+          {/* Wie streng das Inserat gerade eingestellt ist. Steht oben, weil
+              es beim Ausfüllen ständig die Frage im Kopf ist. */}
+          <div
+            className="rounded-2xl px-5 py-4 min-w-[168px]"
+            style={{ background: "rgba(255,255,255,0.07)" }}
+          >
+            <Scale className="w-4 h-4 mb-2" style={{ color: "#E8A838" }} />
+            <p
+              className="text-[22px] font-bold tabular-nums text-white leading-none"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {ausschluesse}
+            </p>
+            <p className="text-[11px] mt-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+              {ausschluesse === 1 ? "Ausschlusskriterium" : "Ausschlusskriterien"}
+            </p>
+          </div>
+        </div>
+      </Band>
+
+      <div className="space-y-5">
+        {/* ── 01 Eckdaten ── */}
+        <Schritt
+          nr="01"
+          titel="Eckdaten der Stelle"
+          hinweis="Das sieht der Handwerker zuerst — Titel, Ort und Bezahlung entscheiden, ob er weiterliest."
+        >
+          <div className="space-y-5">
             <Field label="Stellentitel *">
               <input
                 value={form.title}
@@ -254,16 +487,13 @@ function JobEditor({
             </Field>
             <div className="flex flex-wrap gap-4">
               <Field label="Gewerk *" grow>
-                <select
-                  value={form.gewerk}
-                  onChange={(e) => set("gewerk", e.target.value)}
-                  className={inputClass}
-                  style={{ ...inputStyle, appearance: "none" }}
-                >
-                  {GEWERKE.map((g) => (
-                    <option key={g}>{g}</option>
-                  ))}
-                </select>
+                <Auswahl
+                  wert={form.gewerk ?? GEWERKE[0]}
+                  optionen={gewerkOptionen}
+                  leerLabel="Bitte wählen"
+                  onChange={(v) => set("gewerk", v ?? GEWERKE[0])}
+                  breit
+                />
               </Field>
               <Field label="Einsatzort (Stadt)" grow>
                 <input
@@ -275,7 +505,10 @@ function JobEditor({
                 />
               </Field>
             </div>
-            <Field label="Beschreibung der Stelle">
+            <Field
+              label="Beschreibung der Stelle"
+              hinweis="Kurz und konkret. Handwerker lesen keine Prosa — Aufgaben, Team, Projekte."
+            >
               <textarea
                 value={form.description ?? ""}
                 onChange={(e) => set("description", e.target.value)}
@@ -286,59 +519,57 @@ function JobEditor({
               />
             </Field>
             <div className="flex flex-wrap gap-4">
-              <Field label="Gehalt von (€ brutto/Monat)" grow>
-                <input
-                  type="number"
-                  min={0}
-                  value={form.salaryMin ?? ""}
-                  onChange={(e) =>
-                    set("salaryMin", e.target.value ? Number(e.target.value) : undefined)
-                  }
-                  placeholder="2.800"
-                  className={inputClass}
-                  style={inputStyle}
+              <Field label="Gehalt von" grow>
+                <Zahlfeld
+                  wert={form.salaryMin}
+                  onChange={(v) => set("salaryMin", v)}
+                  platzhalter="2800"
+                  einheit="€ / Monat"
                 />
               </Field>
               <Field label="Gehalt bis" grow>
-                <input
-                  type="number"
-                  min={0}
-                  value={form.salaryMax ?? ""}
-                  onChange={(e) =>
-                    set("salaryMax", e.target.value ? Number(e.target.value) : undefined)
-                  }
-                  placeholder="3.600"
-                  className={inputClass}
-                  style={inputStyle}
+                <Zahlfeld
+                  wert={form.salaryMax}
+                  onChange={(v) => set("salaryMax", v)}
+                  platzhalter="3600"
+                  einheit="€ / Monat"
                 />
               </Field>
             </div>
           </div>
-        </section>
+        </Schritt>
 
-        {/* ── Rahmenbedingungen ── */}
-        <section
-          className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+        {/* ── 02 Rahmenbedingungen ── */}
+        <Schritt
+          nr="02"
+          titel="Rahmenbedingungen"
+          hinweis="Fahrzeit und Montage sind für Handwerker oft wichtiger als hundert Euro mehr."
         >
-          <SectionTitle>Rahmenbedingungen</SectionTitle>
-          <div className="space-y-5">
+          <div className="space-y-6">
             <div>
-              <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
+              <span
+                className="block text-[11px] font-bold uppercase tracking-[0.13em] mb-2.5"
+                style={{ color: "rgba(26,26,46,0.42)" }}
+              >
                 Montageaufkommen
               </span>
               <Segmented
+                gruppe="montage"
                 value={form.montage ?? MONTAGE_OPTIONEN[0]}
                 options={MONTAGE_OPTIONEN.map((m) => ({ value: m, label: m }))}
                 onChange={(v) => set("montage", v)}
               />
             </div>
-            <div className="flex flex-wrap gap-x-10 gap-y-5">
+            <div className="flex flex-wrap gap-x-10 gap-y-6">
               <div>
-                <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
+                <span
+                  className="block text-[11px] font-bold uppercase tracking-[0.13em] mb-2.5"
+                  style={{ color: "rgba(26,26,46,0.42)" }}
+                >
                   Fahrzeit ist Arbeitszeit
                 </span>
                 <Segmented
+                  gruppe="fahrzeit"
                   value={form.fahrzeitIstArbeitszeit ? "ja" : "nein"}
                   options={[
                     { value: "ja", label: "Ja" },
@@ -348,10 +579,14 @@ function JobEditor({
                 />
               </div>
               <div>
-                <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
+                <span
+                  className="block text-[11px] font-bold uppercase tracking-[0.13em] mb-2.5"
+                  style={{ color: "rgba(26,26,46,0.42)" }}
+                >
                   Arbeitstag startet
                 </span>
                 <Segmented
+                  gruppe="startpunkt"
                   value={form.startpunkt ?? "Betrieb"}
                   options={[
                     { value: "Haustür" as const, label: "an der Haustür" },
@@ -363,17 +598,12 @@ function JobEditor({
             </div>
             <div className="flex flex-wrap gap-4">
               <Field label="Urlaubstage" grow>
-                <input
-                  type="number"
-                  min={0}
+                <Zahlfeld
+                  wert={form.urlaubstage}
+                  onChange={(v) => set("urlaubstage", v)}
+                  platzhalter="30"
+                  einheit="Tage"
                   max={60}
-                  value={form.urlaubstage ?? ""}
-                  onChange={(e) =>
-                    set("urlaubstage", e.target.value ? Number(e.target.value) : undefined)
-                  }
-                  placeholder="30"
-                  className={inputClass}
-                  style={inputStyle}
                 />
               </Field>
               <Field label="Start" grow>
@@ -387,43 +617,49 @@ function JobEditor({
               </Field>
             </div>
           </div>
-        </section>
+        </Schritt>
 
-        {/* ── Matching-Kriterien ── */}
-        <section
-          className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
-        >
-          <div className="flex items-start justify-between gap-4 mb-1">
-            <SectionTitle>Matching-Kriterien</SectionTitle>
+        {/* ── 03 Matching-Kriterien ── */}
+        <Schritt
+          nr="03"
+          titel="Wen Sie suchen"
+          hinweis="Dieselben Angaben, die Handwerker bei der Registrierung machen. Rot markierte Felder blenden das Inserat bei allen aus, die sie nicht erfüllen — der Rest zählt Punkte und bestimmt die Reihenfolge. Leer gelassen heisst überall: ist uns egal."
+          rechts={
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
-              style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.12em] flex-shrink-0"
+              style={{ background: "#FBF0DC", border: "1px solid rgba(232,168,56,0.35)", color: "#B47B18" }}
             >
               <Scale className="w-3 h-3" />
               {ausschluesse} {ausschluesse === 1 ? "Ausschluss" : "Ausschlüsse"}
             </span>
-          </div>
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(26,26,46,0.55)" }}>
-            Dieselben Angaben, die Handwerker bei der Registrierung machen. Rot
-            markierte Felder blenden das Inserat bei allen aus, die sie nicht
-            erfüllen — der Rest zählt Punkte und bestimmt die Reihenfolge.
-            Leer gelassen heißt überall: ist uns egal.
-          </p>
-          <AnforderungsEditor wert={anforderung} onChange={setAnforderung} />
-        </section>
-
-        {/* ── Status + Aktionen ── */}
-        <section
-          className="rounded-3xl bg-white p-5 sm:p-6"
-          style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
+          }
         >
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <AnforderungsEditor wert={anforderung} onChange={setAnforderung} />
+        </Schritt>
+
+        {/* ── Aktionsleiste ──
+            Klebt am unteren Rand statt am Ende der Seite. Bei einem Formular
+            dieser Länge lag der Speichern-Knopf sonst weit ausserhalb des
+            Sichtfelds, sobald man an den Kriterien arbeitete. */}
+        <div className="sticky bottom-4 z-30 pt-1">
+          <div
+            className="flex flex-wrap items-center justify-between gap-4 rounded-3xl px-5 py-4 sm:px-6"
+            style={{
+              background: "rgba(255,255,255,0.92)",
+              backdropFilter: "blur(10px)",
+              border: "1.5px solid #EDE8DC",
+              boxShadow: "0 22px 44px -26px rgba(26,26,46,0.6)",
+            }}
+          >
             <div>
-              <span className="block text-[12.5px] font-semibold mb-1.5" style={{ color: "rgba(26,26,46,0.6)" }}>
-                Status
+              <span
+                className="block text-[11px] font-bold uppercase tracking-[0.13em] mb-2"
+                style={{ color: "rgba(26,26,46,0.42)" }}
+              >
+                Sichtbarkeit
               </span>
               <Segmented
+                gruppe="status"
                 value={form.status ?? "ACTIVE"}
                 options={[
                   { value: "ACTIVE" as const, label: "Aktiv" },
@@ -437,7 +673,7 @@ function JobEditor({
               <button
                 type="button"
                 onClick={onCancel}
-                className="rounded-full px-5 py-3 text-[14px] font-semibold"
+                className="rounded-full px-5 py-3.5 text-[14px] font-semibold transition-colors"
                 style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.6)", background: "white" }}
               >
                 Abbrechen
@@ -446,24 +682,30 @@ function JobEditor({
                 type="button"
                 onClick={submit}
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
-                style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
+                style={{
+                  background: "#E8A838",
+                  color: "#1A1A2E",
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                }}
               >
-                {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={3} />}
                 {job ? "Änderungen speichern" : "Inserat veröffentlichen"}
               </button>
             </div>
           </div>
+
           {error && (
             <p
-              className="flex items-center gap-2 text-[13px] mt-4"
-              style={{ color: "#B91C1C" }}
+              className="flex items-center gap-2 text-[13px] mt-3 rounded-2xl px-4 py-3"
+              style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", color: "#B91C1C" }}
             >
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               {error}
             </p>
           )}
-        </section>
+        </div>
       </div>
     </motion.div>
   );
@@ -471,13 +713,296 @@ function JobEditor({
 
 // ── Übersicht ────────────────────────────────────────────────────────────────
 
-const STATUS_CHIP: Record<string, { label: string; bg: string; color: string }> = {
-  ACTIVE: { label: "Aktiv", bg: "rgba(22,163,74,0.12)", color: "#15803D" },
-  PAUSED: { label: "Pausiert", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F" },
-  DRAFT: { label: "Entwurf", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" },
+const STATUS_CHIP: Record<
+  string,
+  { label: string; bg: string; color: string; punkt: string; icon: typeof Eye }
+> = {
+  ACTIVE: { label: "Aktiv", bg: "rgba(22,163,74,0.1)", color: "#15803D", punkt: "#16A34A", icon: Eye },
+  PAUSED: { label: "Pausiert", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F", punkt: "#E8A838", icon: EyeOff },
+  DRAFT: { label: "Entwurf", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)", punkt: "rgba(26,26,46,0.3)", icon: PenLine },
 };
 
+/** „vor 3 Tagen“ statt eines Datums — Betriebe denken in Abständen. */
+function seit(iso: string): string {
+  const tage = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+  if (!Number.isFinite(tage) || tage < 0) return "";
+  if (tage === 0) return "heute geändert";
+  if (tage === 1) return "gestern geändert";
+  if (tage < 31) return `vor ${tage} Tagen geändert`;
+  const monate = Math.floor(tage / 30);
+  return `vor ${monate} Monat${monate > 1 ? "en" : ""} geändert`;
+}
+
+function InseratKarte({
+  job,
+  onEdit,
+  onArchive,
+}: {
+  job: EmployerJob;
+  onEdit: () => void;
+  onArchive: () => void;
+}) {
+  const chip = STATUS_CHIP[job.status] ?? STATUS_CHIP.DRAFT;
+  const StatusIcon = chip.icon;
+  const aktiv = job.status === "ACTIVE";
+  const bewerbungen = job.applications ?? 0;
+
+  // Ausschlüsse zuerst und farblich abgesetzt: sie bestimmen, WER das Inserat
+  // überhaupt sieht. Früher trugen sie ein Warndreieck und ein kräftiges Rot —
+  // drei davon nebeneinander lasen sich wie Fehlermeldungen. Jetzt genügt ein
+  // roter Punkt; die Aussage bleibt, der Lärm ist weg.
+  const harte: string[] = [];
+  if (job.gewerke?.length) harte.push(`${job.gewerke.length} Gewerk${job.gewerke.length > 1 ? "e" : ""}`);
+  if (job.abschlussMin) harte.push("Mindest-Abschluss");
+  if (job.aufgabenMin > 0) harte.push(`${job.aufgabenMin} Pflicht-Aufgabe${job.aufgabenMin > 1 ? "n" : ""}`);
+  if (job.montageMin) harte.push("Montagebereitschaft");
+  if (job.deutschMin) harte.push("Sprachniveau");
+
+  const weiche: string[] = [];
+  if (job.aufgaben?.length) weiche.push(`${job.aufgaben.length} Aufgabenbereiche`);
+  if (job.erfahrungMin || job.erfahrungMax) weiche.push("Erfahrung");
+  if (job.berufe?.length) weiche.push("Ausbildungsberuf");
+  if (job.gebotenes?.length) weiche.push(`${job.gebotenes.length} Angebote`);
+  if (job.fuehrerscheinMin) weiche.push("Führerschein");
+
+  const eckdaten = [
+    { icon: Wrench, text: job.gewerk },
+    job.city ? { icon: MapPin, text: job.city } : null,
+    job.salaryMax != null && job.salaryMax > 0
+      ? {
+          icon: Wallet,
+          text: `${(job.salaryMin ?? 0).toLocaleString("de-DE")}–${job.salaryMax.toLocaleString("de-DE")} €`,
+        }
+      : null,
+  ].filter(Boolean) as { icon: typeof Wrench; text: string }[];
+
+  return (
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden rounded-3xl transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1"
+      style={{
+        // Warmer Verlauf statt Reinweiss — dieselbe Zeichnung wie die Kacheln
+        // auf der Übersicht. Pausiert und Entwurf bleiben blasser, damit man
+        // die aktiven Inserate beim Überfliegen sofort findet.
+        background: aktiv
+          ? "linear-gradient(158deg, #FFFFFF 0%, #FDFCF8 58%, #F8F3E8 100%)"
+          : "linear-gradient(158deg, #FDFDFC 0%, #F9F8F5 100%)",
+        border: `1.5px solid ${aktiv ? "#EDE8DC" : "#EBE9E4"}`,
+        boxShadow: "0 14px 36px -28px rgba(26,26,46,0.55)",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "#E8A838";
+        e.currentTarget.style.boxShadow = "0 22px 44px -24px rgba(232,168,56,0.55)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = aktiv ? "#EDE8DC" : "#EBE9E4";
+        e.currentTarget.style.boxShadow = "0 14px 36px -28px rgba(26,26,46,0.55)";
+      }}
+    >
+      {/* Goldkante oben: im Ruhezustand ein Stück, beim Überfahren läuft sie
+          durch — dasselbe Detail wie bei den Kennzahlen der Übersicht. */}
+      <span
+        aria-hidden
+        className="absolute top-0 left-0 h-[3px] transition-[width] duration-300 ease-out group-hover:!w-full"
+        style={{
+          width: aktiv ? "34%" : "0%",
+          background: "linear-gradient(90deg, #E8A838 0%, rgba(232,168,56,0.15) 100%)",
+        }}
+      />
+
+      <div className="flex flex-col sm:flex-row">
+        {/* ── Inhalt ── */}
+        <div className="flex-1 min-w-0 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2.5 mb-2">
+            <h2
+              className="text-primary font-bold text-[20px] leading-snug"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {job.title}
+            </h2>
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
+              style={{ background: chip.bg, color: chip.color }}
+            >
+              {/* Der Punkt pulst nur bei aktiven Inseraten — er zeigt, dass
+                  gerade wirklich jemand die Stelle sehen kann. */}
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${aktiv ? "punkt-glut" : ""}`}
+                style={{ background: chip.punkt }}
+              />
+              {chip.label}
+            </span>
+            {job.source !== "SELF" && (
+              <span
+                title="Von WerkPair für Sie angelegt"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
+                style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" }}
+              >
+                <Bot className="w-3 h-3" />
+                {job.source === "AI" ? "KI-angelegt" : "Von WerkPair angelegt"}
+              </span>
+            )}
+          </div>
+
+          {/* Eckdaten mit Zeichen statt einer punktgetrennten Textzeile —
+              beim Überfliegen erkennt man Ort und Gehalt am Symbol. */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mb-4">
+            {eckdaten.map((e) => {
+              const Icon = e.icon;
+              return (
+                <span
+                  key={e.text}
+                  className="inline-flex items-center gap-1.5 text-[13.5px]"
+                  style={{ color: "rgba(26,26,46,0.6)" }}
+                >
+                  <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#E8A838" }} />
+                  {e.text}
+                </span>
+              );
+            })}
+          </div>
+
+          {job.description && (
+            <p
+              className="text-[13.5px] leading-relaxed mb-4 max-w-2xl"
+              style={{
+                color: "rgba(26,26,46,0.58)",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {job.description}
+            </p>
+          )}
+
+          {harte.length === 0 && weiche.length === 0 ? (
+            <p
+              className="inline-flex items-center gap-1.5 text-[12.5px]"
+              style={{ color: "rgba(26,26,46,0.45)" }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Kein Anforderungsprofil — alle Handwerker sehen 100 %.
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {harte.map((h) => (
+                <span
+                  key={h}
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                  style={{ background: "rgba(185,28,28,0.06)", color: "#9B2C2C" }}
+                  title="Ausschlusskriterium — wer das nicht erfüllt, sieht das Inserat nicht"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#C0392B" }} />
+                  {h}
+                </span>
+              ))}
+              {weiche.map((w) => (
+                <span
+                  key={w}
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                  style={{ background: "rgba(26,26,46,0.045)", color: "rgba(26,26,46,0.62)" }}
+                  title="Zählt Punkte und bestimmt die Reihenfolge"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#E8A838" }} />
+                  {w}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {job.updatedAt && (
+            <p
+              className="inline-flex items-center gap-1.5 text-[11.5px] mt-4"
+              style={{ color: "rgba(26,26,46,0.35)" }}
+            >
+              <Clock3 className="w-3 h-3" />
+              {seit(job.updatedAt)}
+            </p>
+          )}
+        </div>
+
+        {/* ── Rechte Spalte ──
+            Eigener, abgesetzter Bereich statt einer Knopfreihe am Zeilenende.
+            Die Bewerberzahl war zuvor die kleinste Schrift der Karte, obwohl
+            sie der Grund ist, warum man hier überhaupt nachsieht. */}
+        <div
+          className="flex flex-row sm:flex-col items-center sm:items-stretch justify-between gap-4 p-5 sm:py-6 sm:px-6 sm:w-[220px] flex-shrink-0"
+          style={{
+            background: "rgba(255,255,255,0.5)",
+            borderTop: "1px solid #F0EDE5",
+            borderLeft: "1px solid #F0EDE5",
+          }}
+        >
+          <div className="sm:text-center">
+            <p
+              className="text-[38px] font-bold tabular-nums leading-none"
+              style={{
+                fontFamily: "var(--font-display)",
+                color: bewerbungen > 0 ? "#B47B18" : "rgba(26,26,46,0.28)",
+              }}
+            >
+              {bewerbungen}
+            </p>
+            <p
+              className="inline-flex items-center gap-1.5 text-[11.5px] mt-2"
+              style={{ color: "rgba(26,26,46,0.45)" }}
+            >
+              <Users className="w-3.5 h-3.5" style={{ color: bewerbungen > 0 ? "#E8A838" : "rgba(26,26,46,0.3)" }} />
+              {bewerbungen === 1 ? "Bewerbung" : "Bewerbungen"}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 sm:w-full">
+            <button
+              type="button"
+              onClick={onEdit}
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-[13.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+              style={{ background: "#1A1A2E", color: "white" }}
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Bearbeiten
+            </button>
+            <button
+              type="button"
+              onClick={onArchive}
+              title="Inserat archivieren"
+              aria-label="Inserat archivieren"
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
+              style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.45)", background: "white" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#E8A838";
+                e.currentTarget.style.color = "#B47B18";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#E0DDD6";
+                e.currentTarget.style.color = "rgba(26,26,46,0.45)";
+              }}
+            >
+              <Archive className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Statuszeichen als Wasserzeichen, am Rand angeschnitten. */}
+      <StatusIcon
+        aria-hidden
+        className="absolute pointer-events-none transition-transform duration-500 group-hover:scale-110"
+        style={{ left: -14, bottom: -16, width: 88, height: 88, color: "rgba(26,26,46,0.028)" }}
+        strokeWidth={1.1}
+      />
+    </motion.article>
+  );
+}
+
 export default function InseratePage() {
+  const { user } = useAuth();
   const [jobs, setJobs] = useState<EmployerJob[] | null>(null);
   const [editing, setEditing] = useState<EmployerJob | null | "new">(null);
   const [error, setError] = useState<string | null>(null);
@@ -498,6 +1023,15 @@ export default function InseratePage() {
     if (res.ok) load();
   };
 
+  const zahlen = useMemo(() => {
+    if (!jobs?.length) return null;
+    return {
+      aktiv: jobs.filter((j) => j.status === "ACTIVE").length,
+      bewerbungen: jobs.reduce((s, j) => s + (j.applications ?? 0), 0),
+      ruhend: jobs.filter((j) => j.status !== "ACTIVE").length,
+    };
+  }, [jobs]);
+
   if (editing !== null) {
     return (
       <JobEditor
@@ -513,29 +1047,75 @@ export default function InseratePage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
-        <div>
-          <h1
-            className="text-primary font-bold mb-1"
-            style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
-          >
-            Ihre Inserate
-          </h1>
-          <p className="text-[15px]" style={{ color: "rgba(26,26,46,0.55)" }}>
-            Stellen samt Wunsch-Antworten und Gewichtungen — die Grundlage jedes
-            Match-Scores.
-          </p>
+      {/* ══ Kopf ══ */}
+      <Band>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <span
+              className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+              style={{ color: "#E8A838" }}
+            >
+              <span className="w-6 h-[2px] bg-accent" />
+              {user?.companyName || "Ihr Betrieb"}
+            </span>
+            <h1
+              className="text-white font-bold leading-tight"
+              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3.4vw, 2.7rem)" }}
+            >
+              Ihre Inserate
+            </h1>
+            <p className="text-[15px] mt-2 max-w-lg" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Jedes Inserat trägt Ihre Wunsch-Antworten und Gewichtungen — daraus
+              rechnet WerkPair den Match-Score jedes Handwerkers.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setEditing("new")}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 mt-6 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "#E8A838",
+                color: "#1A1A2E",
+                fontFamily: "var(--font-display)",
+                boxShadow: "0 16px 34px -16px rgba(232,168,56,0.9)",
+              }}
+            >
+              <Plus className="w-4 h-4" strokeWidth={2.8} />
+              Neues Inserat
+            </button>
+          </div>
+
+          {zahlen && (
+            <div className="flex flex-wrap gap-2.5">
+              {[
+                { icon: Eye, v: String(zahlen.aktiv), l: "Aktiv sichtbar" },
+                { icon: Users, v: String(zahlen.bewerbungen), l: "Bewerbungen" },
+                { icon: EyeOff, v: String(zahlen.ruhend), l: "Pausiert / Entwurf" },
+              ].map((s) => {
+                const Icon = s.icon;
+                return (
+                  <div
+                    key={s.l}
+                    className="rounded-2xl px-4 py-3 min-w-[112px]"
+                    style={{ background: "rgba(255,255,255,0.07)" }}
+                  >
+                    <Icon className="w-3.5 h-3.5 mb-1.5" style={{ color: "#E8A838" }} />
+                    <p
+                      className="text-[19px] font-bold tabular-nums text-white leading-none"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {s.v}
+                    </p>
+                    <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
+                      {s.l}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-        <button
-          type="button"
-          onClick={() => setEditing("new")}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
-          style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-        >
-          <Plus className="w-4 h-4" strokeWidth={2.6} />
-          Neues Inserat
-        </button>
-      </div>
+      </Band>
 
       {error && (
         <div
@@ -547,172 +1127,51 @@ export default function InseratePage() {
       )}
 
       {jobs === null ? (
-        <div className="flex items-center justify-center py-24">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+        // Skelettkarten statt eines Kringels in der Mitte: sie zeigen, wo die
+        // Inserate erscheinen werden, und die Seite wirkt nicht leer.
+        <div className="space-y-4">
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-3xl"
+              style={{ height: 176, background: "#FBFAF7", border: "1.5px solid #EDEAE4" }}
+            />
+          ))}
         </div>
       ) : jobs.length === 0 ? (
-        <div
-          className="rounded-3xl bg-white px-6 py-20 text-center"
-          style={{ border: "1.5px solid #E9E7E1" }}
-        >
-          <FileText className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
-            Noch kein Inserat
-          </p>
-          <p className="text-[14px] max-w-md mx-auto leading-relaxed mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Mit einem Inserat inklusive Gewichtungen berechnet WerkPair für jeden
-            Kandidaten einen nachvollziehbaren Match-Score — und schlägt Ihre
-            Stelle passenden Handwerkern vor.
-          </p>
-          <button
-            type="button"
-            onClick={() => setEditing("new")}
-            className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-          >
-            <Plus className="w-4 h-4" strokeWidth={2.6} />
-            Erstes Inserat anlegen
-          </button>
-        </div>
+        <Wartezustand
+          marke="Noch kein Inserat"
+          titel="Hier entsteht Ihre erste Stelle"
+          text="Mit Gewichtungen berechnet WerkPair für jeden Handwerker einen nachvollziehbaren Match-Score."
+          icon={<FileText className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />}
+          aktion={
+            <button
+              type="button"
+              onClick={() => setEditing("new")}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "#E8A838",
+                color: "#1A1A2E",
+                fontFamily: "var(--font-display)",
+                boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+              }}
+            >
+              <Plus className="w-4 h-4" strokeWidth={2.6} />
+              Erstes Inserat anlegen
+            </button>
+          }
+        />
       ) : (
         <div className="space-y-4">
           <AnimatePresence initial={false}>
-            {jobs.map((job) => {
-              const chip = STATUS_CHIP[job.status] ?? STATUS_CHIP.DRAFT;
-              return (
-                <motion.article
-                  key={job.id}
-                  layout
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-3xl bg-white p-5 sm:p-6"
-                  style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -24px rgba(26,26,46,0.5)" }}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2.5 mb-1">
-                        <h2
-                          className="text-primary font-bold text-[18px] leading-snug"
-                          style={{ fontFamily: "var(--font-display)" }}
-                        >
-                          {job.title}
-                        </h2>
-                        <span
-                          className="rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
-                          style={{ background: chip.bg, color: chip.color }}
-                        >
-                          {chip.label}
-                        </span>
-                        {job.source !== "SELF" && (
-                          <span
-                            title="Von WerkPair für Sie angelegt"
-                            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
-                            style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" }}
-                          >
-                            <Bot className="w-3 h-3" />
-                            {job.source === "AI" ? "KI-angelegt" : "Von WerkPair angelegt"}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.55)" }}>
-                        {job.gewerk}
-                        {job.city && ` · ${job.city}`}
-                        {job.salaryMax != null &&
-                          job.salaryMax > 0 &&
-                          ` · ${(job.salaryMin ?? 0).toLocaleString("de-DE")}–${job.salaryMax.toLocaleString("de-DE")} €`}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span
-                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[12.5px] font-semibold tabular-nums"
-                        style={{ background: "rgba(26,26,46,0.05)", color: "rgba(26,26,46,0.65)" }}
-                        title="Eingegangene Bewerbungen"
-                      >
-                        <Users className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
-                        {job.applications ?? 0}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setEditing(job)}
-                        className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-bold transition-colors"
-                        style={{ background: "#1A1A2E", color: "white" }}
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                        Bearbeiten
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleArchive(job.id)}
-                        title="Inserat archivieren"
-                        aria-label="Inserat archivieren"
-                        className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-                        style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.5)" }}
-                      >
-                        <Archive className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Anforderungsprofil in Kurzform — der Kern des Inserats */}
-                  {(() => {
-                    // Ausschlüsse zuerst und farblich abgesetzt: sie bestimmen,
-                    // WER das Inserat überhaupt sieht.
-                    const harte: string[] = [];
-                    if (job.gewerke?.length) harte.push(`${job.gewerke.length} Gewerk${job.gewerke.length > 1 ? "e" : ""}`);
-                    if (job.abschlussMin) harte.push("Mindest-Abschluss");
-                    if (job.aufgabenMin > 0) harte.push(`${job.aufgabenMin} Pflicht-Aufgabenbereich${job.aufgabenMin > 1 ? "e" : ""}`);
-                    if (job.montageMin) harte.push("Montagebereitschaft");
-                    if (job.deutschMin) harte.push("Sprachniveau");
-
-                    const weiche: string[] = [];
-                    if (job.aufgaben?.length) weiche.push(`${job.aufgaben.length} Aufgabengewerke`);
-                    if (job.erfahrungMin || job.erfahrungMax) weiche.push("Erfahrung");
-                    if (job.berufe?.length) weiche.push("Ausbildungsberuf");
-                    if (job.gebotenes?.length) weiche.push(`${job.gebotenes.length} Angebote`);
-                    if (job.fuehrerscheinMin) weiche.push("Führerschein");
-
-                    if (harte.length === 0 && weiche.length === 0) {
-                      return (
-                        <p
-                          className="inline-flex items-center gap-1.5 text-[12.5px] mt-4"
-                          style={{ color: "rgba(26,26,46,0.45)" }}
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          Kein Anforderungsprofil — alle Handwerker sehen 100 %.
-                        </p>
-                      );
-                    }
-                    return (
-                      <div className="flex flex-wrap gap-2 mt-4">
-                        {harte.map((h) => (
-                          <span
-                            key={h}
-                            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                            style={{ background: "rgba(185,28,28,0.08)", color: "#B91C1C" }}
-                          >
-                            <AlertTriangle className="w-3 h-3" />
-                            {h}
-                          </span>
-                        ))}
-                        {weiche.map((w) => (
-                          <span
-                            key={w}
-                            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                            style={{ background: "rgba(232,168,56,0.1)", color: "#8A5B0F" }}
-                          >
-                            <Scale className="w-3 h-3" />
-                            {w}
-                          </span>
-                        ))}
-                      </div>
-                    );
-                  })()}
-                </motion.article>
-              );
-            })}
+            {jobs.map((job) => (
+              <InseratKarte
+                key={job.id}
+                job={job}
+                onEdit={() => setEditing(job)}
+                onArchive={() => handleArchive(job.id)}
+              />
+            ))}
           </AnimatePresence>
         </div>
       )}

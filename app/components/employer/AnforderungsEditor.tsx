@@ -12,7 +12,8 @@
 // Leer lassen heißt überall: ist uns egal. Genau so behandelt es das Matching.
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, Loader2, Scale } from "lucide-react";
+import { AlertTriangle, Check, Loader2, Scale } from "lucide-react";
+import Auswahl from "@/app/components/dashboard/Auswahl";
 import {
   getKatalog,
   type Katalog,
@@ -75,18 +76,31 @@ function Chip({
   selected: boolean;
   onClick: () => void;
 }) {
+  // Das Haekchen ist der Unterschied zwischen "Knopf" und "Auswahl": ohne es
+  // muss man aus der Farbe erraten, ob dunkel nun gewaehlt oder anklickbar
+  // heisst. Der Platz dafuer wird immer freigehalten, damit die Reihe beim
+  // Anklicken nicht umspringt.
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className="rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+      className="inline-flex items-center gap-1.5 rounded-full pl-2.5 pr-3.5 py-2 text-[12.5px] font-medium transition-[background,border-color,color,transform] duration-150 hover:-translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
       style={{
         background: selected ? "#1A1A2E" : "#FFFFFF",
         border: `1.5px solid ${selected ? "#1A1A2E" : "#E9E7E1"}`,
         color: selected ? "#FFFFFF" : "rgba(26,26,46,0.65)",
       }}
     >
+      <span
+        className="w-[15px] h-[15px] rounded-md flex items-center justify-center flex-shrink-0 transition-colors"
+        style={{
+          background: selected ? "#E8A838" : "transparent",
+          border: `1.5px solid ${selected ? "#E8A838" : "#DDD9D1"}`,
+        }}
+      >
+        {selected && <Check className="w-[9px] h-[9px]" strokeWidth={4} style={{ color: "#1A1A2E" }} />}
+      </span>
       {label}
     </button>
   );
@@ -103,14 +117,22 @@ function Feld({
   ausschluss?: boolean;
   children: React.ReactNode;
 }) {
+  // Ausschlussfelder tragen eine rote Kante links statt nur einer Marke in der
+  // Zeile: beim Ueberfliegen sieht man dadurch sofort, welche Angaben Bewerber
+  // aussperren — ohne dass rote Flaechen die Seite beherrschen.
   return (
-    <div className="mb-5">
-      <div className="flex items-center gap-2 mb-1">
-        <label className="text-[13px] font-semibold text-primary">{titel}</label>
+    <div
+      className="mb-6 pl-4"
+      style={{ borderLeft: `2px solid ${ausschluss ? "rgba(192,57,43,0.45)" : "#EDE8DC"}` }}
+    >
+      <div className="flex flex-wrap items-center gap-2 mb-1">
+        <label className="text-[14px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
+          {titel}
+        </label>
         {ausschluss && (
           <span
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.1em]"
-            style={{ background: "rgba(185,28,28,0.08)", color: "#B91C1C" }}
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em]"
+            style={{ background: "rgba(185,28,28,0.07)", color: "#9B2C2C" }}
           >
             <AlertTriangle className="w-3 h-3" />
             Ausschluss
@@ -118,7 +140,7 @@ function Feld({
         )}
       </div>
       {hinweis && (
-        <p className="text-[12px] mb-2" style={{ color: "rgba(26,26,46,0.5)" }}>
+        <p className="text-[12.5px] mb-2.5 max-w-2xl leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
           {hinweis}
         </p>
       )}
@@ -127,17 +149,14 @@ function Feld({
   );
 }
 
-const selectStyle: React.CSSProperties = {
-  border: "1.5px solid #E9E7E1",
-  borderRadius: 12,
-  padding: "8px 12px",
-  fontSize: 13.5,
-  background: "#fff",
-  color: "#1A1A2E",
-  minWidth: 200,
-};
-
-function Auswahl({
+/**
+ * Duennes Zwischenstueck auf das gemeinsame Auswahlfeld.
+ *
+ * Vorher standen hier native <select>. Deren Klappliste zeichnet das
+ * Betriebssystem — graue Systemschrift, eckige Raender, kein Bezug zum Rest
+ * der Seite. Mit CSS nicht zu gestalten, nur zu ersetzen.
+ */
+function KatalogAuswahl({
   wert,
   optionen,
   leerLabel,
@@ -149,18 +168,12 @@ function Auswahl({
   onChange: (v: string | null) => void;
 }) {
   return (
-    <select
-      value={wert ?? ""}
-      onChange={(e) => onChange(e.target.value || null)}
-      style={selectStyle}
-    >
-      <option value="">{leerLabel}</option>
-      {optionen.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
+    <Auswahl
+      wert={wert}
+      optionen={optionen.map((o) => ({ value: o.value, label: o.label }))}
+      leerLabel={leerLabel}
+      onChange={onChange}
+    />
   );
 }
 
@@ -235,7 +248,7 @@ export default function AnforderungsEditor({
         hinweis="Wer darunter liegt, sieht das Inserat nicht."
         ausschluss
       >
-        <Auswahl
+        <KatalogAuswahl
           wert={wert.abschlussMin}
           optionen={katalog.abschluss}
           leerLabel="Egal"
@@ -278,25 +291,22 @@ export default function AnforderungsEditor({
           </div>
           {wert.aufgaben.length > 0 && (
             <div
-              className="flex flex-wrap items-center gap-2 rounded-xl px-3 py-2.5"
-              style={{ background: "rgba(185,28,28,0.04)", border: "1px solid rgba(185,28,28,0.15)" }}
+              className="flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3.5"
+              style={{ background: "rgba(185,28,28,0.035)", border: "1px solid rgba(185,28,28,0.14)" }}
             >
-              <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B91C1C" }} />
-              <span className="text-[12.5px]" style={{ color: "rgba(26,26,46,0.7)" }}>
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#9B2C2C" }} />
+              <span className="text-[13px] font-semibold" style={{ color: "rgba(26,26,46,0.7)" }}>
                 Davon zwingend erforderlich:
               </span>
-              <select
-                value={wert.aufgabenMin}
-                onChange={(e) => set({ aufgabenMin: Number(e.target.value) })}
-                style={{ ...selectStyle, minWidth: 150, padding: "5px 10px" }}
-              >
-                <option value={0}>keiner (nur Punkte)</option>
-                {wert.aufgaben.map((_, i) => (
-                  <option key={i} value={i + 1}>
-                    mindestens {i + 1}
-                  </option>
-                ))}
-              </select>
+              <Auswahl
+                wert={wert.aufgabenMin > 0 ? String(wert.aufgabenMin) : null}
+                optionen={wert.aufgaben.map((_, i) => ({
+                  value: String(i + 1),
+                  label: `mindestens ${i + 1}`,
+                }))}
+                leerLabel="keine (nur Punkte)"
+                onChange={(v) => set({ aufgabenMin: v ? Number(v) : 0 })}
+              />
             </div>
           )}
         </Feld>
@@ -304,7 +314,7 @@ export default function AnforderungsEditor({
 
       <Feld titel="Berufserfahrung" hinweis="Weniger als gesucht kostet je Stufe die Hälfte; mehr kostet fast nichts.">
         <div className="flex flex-wrap items-center gap-2">
-          <Auswahl
+          <KatalogAuswahl
             wert={wert.erfahrungMin}
             optionen={katalog.erfahrung}
             leerLabel="ab — egal"
@@ -313,7 +323,7 @@ export default function AnforderungsEditor({
           <span className="text-[13px]" style={{ color: "rgba(26,26,46,0.4)" }}>
             bis
           </span>
-          <Auswahl
+          <KatalogAuswahl
             wert={wert.erfahrungMax}
             optionen={katalog.erfahrung}
             leerLabel="offen"
@@ -327,7 +337,7 @@ export default function AnforderungsEditor({
         hinweis="Wer weniger angegeben hat, sieht das Inserat nicht."
         ausschluss
       >
-        <Auswahl
+        <KatalogAuswahl
           wert={wert.montageMin}
           optionen={katalog.montage}
           leerLabel="Egal"
@@ -339,7 +349,7 @@ export default function AnforderungsEditor({
         titel="Führerschein"
         hinweis="Kein voller Ausschluss: Nur wer gar keinen hat, fällt raus — eine niedrigere Klasse kostet Punkte."
       >
-        <Auswahl
+        <KatalogAuswahl
           wert={wert.fuehrerscheinMin}
           optionen={katalog.fuehrerschein.filter((f) => f.rang >= 2)}
           leerLabel="Nicht nötig"
@@ -352,7 +362,7 @@ export default function AnforderungsEditor({
         hinweis="Wer darunter liegt, sieht das Inserat nicht."
         ausschluss
       >
-        <Auswahl
+        <KatalogAuswahl
           wert={wert.deutschMin}
           optionen={katalog.deutsch}
           leerLabel="Egal"
@@ -377,7 +387,7 @@ export default function AnforderungsEditor({
       </Feld>
 
       <Feld titel="Stelle soll besetzt sein" hinweis="Wer später kann, verliert Punkte — ausgeschlossen wird niemand.">
-        <Auswahl
+        <KatalogAuswahl
           wert={wert.startBis}
           optionen={katalog.start}
           leerLabel="Egal"
@@ -385,43 +395,85 @@ export default function AnforderungsEditor({
         />
       </Feld>
 
+      {/* ── Gewichtung ──
+          Vorher neun Schieberegler des Browsers: winzige Griffe, die man mit
+          der Maus treffen muss, und ein Aussehen, das je nach System anders
+          ist. Jetzt sechs Balken je Zeile zum Anklicken — der Wert ist mit
+          einem Klick gesetzt und auf einen Blick ablesbar. Gespeichert wird
+          weiterhin dieselbe Zahl 0–5. */}
       <div
-        className="rounded-2xl px-4 py-4 mt-6"
-        style={{ background: "var(--color-surface)" }}
+        className="rounded-3xl px-5 py-5 mt-7"
+        style={{
+          background: "linear-gradient(158deg, #FBF9F4 0%, #F6F1E6 100%)",
+          border: "1.5px solid #EDE8DC",
+        }}
       >
-        <p className="flex items-center gap-2 text-[13px] font-semibold text-primary mb-1">
+        <p
+          className="flex items-center gap-2 text-[15px] font-bold text-primary mb-1"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
           <Scale className="w-4 h-4" style={{ color: "#E8A838" }} />
           Gewichtung
         </p>
-        <p className="text-[12px] mb-4" style={{ color: "rgba(26,26,46,0.5)" }}>
+        <p className="text-[12.5px] mb-5 max-w-2xl leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
           Wie stark jedes Kriterium den Wert beeinflusst. 0 nimmt es ganz aus der
           Wertung — ausgeschlossen wird dadurch niemand.
         </p>
-        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3">
-          {GEWICHT_LABELS.map(({ key, label }) => (
-            <label key={key} className="flex items-center gap-3">
-              <span className="text-[13px] flex-1 text-primary">{label}</span>
-              <input
-                type="range"
-                min={0}
-                max={5}
-                step={1}
-                value={gewicht(key)}
-                onChange={(e) =>
-                  set({
-                    gewichte: { ...(wert.gewichte ?? {}), [key]: Number(e.target.value) },
-                  })
-                }
-                className="flex-1 accent-[#E8A838]"
-              />
-              <span
-                className="text-[13px] font-bold tabular-nums w-4 text-right"
-                style={{ color: gewicht(key) === 0 ? "rgba(26,26,46,0.35)" : "#8A5B0F" }}
-              >
-                {gewicht(key)}
-              </span>
-            </label>
-          ))}
+        <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
+          {GEWICHT_LABELS.map(({ key, label }) => {
+            const g = gewicht(key);
+            return (
+              <div key={key} className="flex items-center gap-3">
+                <span
+                  className="text-[13px] flex-1 min-w-0 truncate"
+                  style={{ color: g === 0 ? "rgba(26,26,46,0.4)" : "#1A1A2E" }}
+                >
+                  {label}
+                </span>
+                {/* Unten buendig, sonst wirkt die Reihe wie eine Raute statt
+                    wie eine ansteigende Treppe. */}
+                <div
+                  className="flex items-end gap-1 flex-shrink-0"
+                  style={{ height: 23 }}
+                  role="group"
+                  aria-label={`Gewichtung ${label}`}
+                >
+                  {[0, 1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      aria-label={`${label}: ${n}`}
+                      aria-pressed={g === n}
+                      onClick={() =>
+                        set({ gewichte: { ...(wert.gewichte ?? {}), [key]: n } })
+                      }
+                      className="rounded-full transition-[background,height] duration-150"
+                      style={{
+                        width: 9,
+                        // Die Balken wachsen mit dem Wert — die Zeile ist als
+                        // Treppe lesbar, auch ohne die Zahl daneben.
+                        height: 8 + n * 3,
+                        background:
+                          n === 0
+                            ? g === 0
+                              ? "rgba(26,26,46,0.35)"
+                              : "rgba(26,26,46,0.13)"
+                            : n <= g
+                              ? "#E8A838"
+                              : "rgba(26,26,46,0.1)",
+                      }}
+                    />
+                  ))}
+                </div>
+                <span
+                  className="text-[13px] font-bold tabular-nums w-3 text-right flex-shrink-0"
+                  style={{ color: g === 0 ? "rgba(26,26,46,0.3)" : "#8A5B0F" }}
+                >
+                  {g}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -20,17 +20,45 @@ import {
 import type { EmployerApplication, ApplicationStatus } from "@/lib/types";
 import ScoreExplainer from "@/app/components/ScoreExplainer";
 import Wartezustand from "@/app/components/dashboard/Wartezustand";
+import { gewerkBild } from "@/lib/gewerkBilder";
 import { useAuth } from "@/app/context/AuthContext";
 
+/**
+ * Jeder Zustand hat eine Farbe — und die traegt die Karte selbst.
+ *
+ * Zuvor stand neben dem Namen eine farbige Marke ("NEU", "IM GESPRÄCH"), und
+ * derselbe Zustand war unten nochmal am aktiven Knopf abzulesen. Doppelt
+ * gesagt, und die Marke drueckte sich neben den Namen, wo sie die
+ * Aufmerksamkeit weggenommen hat.
+ *
+ * `kante` ist die volle Farbe fuer den Streifen links, `schimmer` derselbe Ton
+ * in wenigen Prozent fuer die Fussleiste — mehr braucht es nicht, damit ein
+ * Stapel Karten auf einen Blick sortiert ist.
+ */
 const STATUS_META: Record<
   ApplicationStatus,
-  { label: string; bg: string; color: string }
+  { label: string; bg: string; color: string; kante: string; schimmer: string }
 > = {
-  gesendet: { label: "Neu", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F" },
-  gesehen: { label: "Gesehen", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.6)" },
-  im_gespraech: { label: "Im Gespräch", bg: "rgba(59,130,246,0.12)", color: "#1D4ED8" },
-  zusage: { label: "Zusage", bg: "rgba(22,163,74,0.14)", color: "#15803D" },
-  abgelehnt: { label: "Abgesagt", bg: "rgba(239,68,68,0.1)", color: "#B91C1C" },
+  gesendet: {
+    label: "Neu", bg: "rgba(232,168,56,0.16)", color: "#8A5B0F",
+    kante: "#E8A838", schimmer: "rgba(232,168,56,0.07)",
+  },
+  gesehen: {
+    label: "Gesehen", bg: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.6)",
+    kante: "rgba(26,26,46,0.22)", schimmer: "rgba(26,26,46,0.028)",
+  },
+  im_gespraech: {
+    label: "Im Gespräch", bg: "rgba(59,130,246,0.12)", color: "#1D4ED8",
+    kante: "#3B82F6", schimmer: "rgba(59,130,246,0.055)",
+  },
+  zusage: {
+    label: "Zusage", bg: "rgba(22,163,74,0.14)", color: "#15803D",
+    kante: "#16A34A", schimmer: "rgba(22,163,74,0.06)",
+  },
+  abgelehnt: {
+    label: "Abgesagt", bg: "rgba(239,68,68,0.1)", color: "#B91C1C",
+    kante: "rgba(192,57,43,0.55)", schimmer: "rgba(192,57,43,0.04)",
+  },
 };
 
 /** Statuswechsel-Aktionen — bewusst als klare Schritte statt Dropdown. */
@@ -101,6 +129,11 @@ function ApplicationCard({
   const meta = STATUS_META[app.status];
   const neu = app.status === "gesendet";
   const erledigt = app.status === "abgelehnt";
+  const bild = gewerkBild(c.bereich);
+  // Zwei Elektriker teilen sich dasselbe Gewerkfoto — nebeneinander sahen die
+  // Karten dann wieder gleich aus. Der Ausschnitt wandert deshalb je nach
+  // Kuerzel: gleiche Aufnahme, anderer Bildausschnitt, unterscheidbare Karte.
+  const versatz = 26 + (Array.from(c.handle).reduce((n, z) => n + z.charCodeAt(0), 0) % 4) * 16;
 
   const act = async (fn: () => Promise<void>, key: string) => {
     setBusy(key);
@@ -114,56 +147,86 @@ function ApplicationCard({
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative overflow-hidden rounded-3xl transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5"
+      className="group relative overflow-hidden rounded-3xl bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5"
       style={{
-        // Fast weiss statt goldstichigem Verlauf. Gold traegt jetzt nur noch
-        // die Kante links und die eine Aktion, die zaehlt — vorher lag es auf
-        // Flaeche, Oberkante, Zeichen, Score und Knopf gleichzeitig.
-        background: erledigt ? "#FBFAF8" : "#FFFFFF",
-        border: `1px solid ${neu ? "#E7DCC4" : "#EDEAE3"}`,
-        boxShadow: "0 12px 30px -26px rgba(26,26,46,0.5)",
-        opacity: erledigt ? 0.85 : 1,
+        border: "1px solid #EDEAE3",
+        boxShadow: "0 14px 34px -26px rgba(26,26,46,0.5)",
+        opacity: erledigt ? 0.88 : 1,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "#DDD6C6";
-        e.currentTarget.style.boxShadow = "0 18px 38px -24px rgba(26,26,46,0.45)";
+        e.currentTarget.style.borderColor = "#DFD9CC";
+        e.currentTarget.style.boxShadow = "0 20px 42px -24px rgba(26,26,46,0.45)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = neu ? "#E7DCC4" : "#EDEAE3";
-        e.currentTarget.style.boxShadow = "0 12px 30px -26px rgba(26,26,46,0.5)";
+        e.currentTarget.style.borderColor = "#EDEAE3";
+        e.currentTarget.style.boxShadow = "0 14px 34px -26px rgba(26,26,46,0.5)";
       }}
     >
-      {/* Senkrechte Kante links wie eine Aktenmarkierung — nur bei neuen
-          Bewerbungen. Eine leuchtende Oberkante an jeder Karte hatte den
-          gegenteiligen Effekt: wenn alles hervorgehoben ist, sticht nichts
-          mehr heraus. */}
+      {/* Der Zustand als Farbe der Karte, nicht als Marke neben dem Namen. */}
       <span
         aria-hidden
-        className="absolute left-0 top-0 bottom-0 w-[3px]"
-        style={{ background: neu ? "#E8A838" : "transparent" }}
+        className="absolute left-0 top-0 bottom-0 w-[3px] z-10"
+        style={{ background: meta.kante }}
       />
 
-      <div className="flex flex-col lg:flex-row">
-        {/* ── Hauptbereich ── */}
-        <div className="flex-1 min-w-0 p-5 sm:p-6 sm:pl-7">
-          <div className="flex flex-wrap items-center gap-2.5 mb-1">
-            <h2
-              className="text-primary font-bold text-[19px] leading-snug"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {c.handle}
-            </h2>
+      <div className="flex flex-col sm:flex-row">
+        {/* ── Merkanker ──
+            Kandidaten sind anonym, es gibt kein Foto und keinen Namen. Statt
+            dessen ein echtes Bild aus dem Gewerk mit dem Kuerzel darauf: eine
+            Elektrowerkstatt sieht anders aus als eine Heizungsmontage, und
+            genau daran erkennt man die Karte am naechsten Tag wieder.
+            Vorher unterschieden sich fuenf Karten nur durch die Zahlen. */}
+        <div className="relative w-full sm:w-[186px] h-36 sm:h-auto flex-shrink-0 overflow-hidden">
+          <Image
+            src={bild}
+            alt=""
+            fill
+            sizes="(max-width: 640px) 100vw, 186px"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            style={{
+              objectPosition: `center ${versatz}%`,
+              filter: erledigt ? "grayscale(0.75)" : "none",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(158deg, rgba(20,20,36,0.5) 0%, rgba(20,20,36,0.88) 100%)",
+            }}
+          />
+          <div className="absolute inset-0 p-4 flex flex-col justify-between">
             <span
-              className="rounded-full px-2.5 py-[3px] text-[10px] font-bold uppercase tracking-[0.13em]"
-              style={{ background: meta.bg, color: meta.color }}
+              className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em]"
+              style={{ background: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.88)" }}
             >
-              {meta.label}
+              <ShieldCheck className="w-3 h-3" />
+              Anonym
             </span>
+            <div>
+              <p
+                className="text-white font-bold text-[20px] leading-tight"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {c.handle.replace(/^.*?(#\S+)$/, "$1")}
+              </p>
+              <p className="text-[11.5px] mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>
+                {c.bereich}
+              </p>
+            </div>
           </div>
+        </div>
 
-          {/* Ohne Zeichen: Aktenkoffer und Uhr sagten nichts, was der Text
-              nicht schon sagt, und trugen zur Zeichenflut bei. */}
-          <p className="text-[13px] mb-5" style={{ color: "rgba(26,26,46,0.45)" }}>
+        {/* ── Hauptbereich ── */}
+        <div className="flex-1 min-w-0 p-5 sm:p-6">
+          <h2
+            className="text-primary font-bold text-[19px] leading-snug"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {c.handle}
+          </h2>
+          <p className="text-[13px] mt-1 mb-5" style={{ color: "rgba(26,26,46,0.45)" }}>
             auf „{app.jobPosting.title}“
             <span className="mx-2" style={{ color: "rgba(26,26,46,0.2)" }}>·</span>
             {app.createdAt}
@@ -177,15 +240,12 @@ function ApplicationCard({
             ]}
           />
 
-          {/* Aufgabenfelder als Fliesstext statt als Reihe grauer Pillen —
-              sie sind Beiwerk und sollen nicht wie Knoepfe aussehen. */}
           {c.aufgaben.length > 0 && !erledigt && (
             <p className="text-[12.5px] mt-4" style={{ color: "rgba(26,26,46,0.5)" }}>
               {c.aufgaben.slice(0, 4).join(" · ")}
             </p>
           )}
 
-          {/* Freigegebene Kontaktdaten: der Moment, auf den alles hinauslaeuft. */}
           {c.freigegeben && (
             <div
               className="flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-2xl px-4 py-3.5 mt-5"
@@ -218,9 +278,9 @@ function ApplicationCard({
           )}
         </div>
 
-        {/* ── Rechte Spalte: Passung und naechster Schritt ── */}
+        {/* ── Passung und naechster Schritt ── */}
         <div
-          className="flex flex-row lg:flex-col items-center lg:items-stretch justify-between lg:justify-start gap-5 lg:gap-6 px-5 pb-5 lg:p-6 lg:w-[220px] flex-shrink-0"
+          className="flex flex-row lg:flex-col items-center lg:items-stretch justify-between lg:justify-start gap-5 lg:gap-6 px-5 pb-5 lg:p-6 lg:w-[212px] flex-shrink-0"
           style={{ borderLeft: "1px solid #F2EFE9" }}
         >
           {c.matchScore > 0 && (
@@ -239,8 +299,6 @@ function ApplicationCard({
                   %
                 </span>
               </p>
-              {/* Ein Strich statt eines Sterns: er zeigt den Wert im
-                  Verhaeltnis zu 100 und ist die einzige Farbe im Block. */}
               <span
                 aria-hidden
                 className="block rounded-full mt-2.5 mb-2"
@@ -250,7 +308,7 @@ function ApplicationCard({
                   className="block h-full rounded-full"
                   style={{
                     width: `${c.matchScore}%`,
-                    background: erledigt ? "rgba(26,26,46,0.2)" : "#E8A838",
+                    background: erledigt ? "rgba(26,26,46,0.2)" : meta.kante,
                   }}
                 />
               </span>
@@ -283,14 +341,11 @@ function ApplicationCard({
               </p>
             ) : c.status === "verfuegbar" ? (
               <>
-                {/* Dunkel statt golden — wie "Bearbeiten" bei den Inseraten.
-                    Fuenf goldene Knoepfe untereinander waren der Hauptgrund
-                    fuer den Eindruck, dass alles leuchtet. */}
                 <button
                   type="button"
                   disabled={busy !== null}
                   onClick={() => void act(onRequestContact, "contact")}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
+                  className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[12.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
                   style={{ background: "#1A1A2E", color: "white" }}
                 >
                   {busy === "contact" ? (
@@ -312,17 +367,14 @@ function ApplicationCard({
         </div>
       </div>
 
-      {/* ── Fussleiste: Status setzen ── */}
+      {/* ── Fussleiste ──
+          Traegt den Farbton des Zustands in wenigen Prozent. Damit ist der
+          Status zweimal sichtbar — Kante und Flaeche — und braucht keine
+          Marke mehr neben dem Namen. */}
       <div
-        className="flex flex-wrap items-center gap-2 px-5 py-3 sm:px-7"
-        style={{ borderTop: "1px solid #F2EFE9" }}
+        className="flex flex-wrap items-center gap-2 px-5 py-3 sm:px-6"
+        style={{ background: meta.schimmer, borderTop: "1px solid #F2EFE9" }}
       >
-        <span
-          className="text-[10.5px] font-bold uppercase tracking-[0.14em] mr-1"
-          style={{ color: "rgba(26,26,46,0.3)" }}
-        >
-          Status
-        </span>
         {ACTIONS.map((a) => {
           const active = app.status === a.status;
           return (
@@ -331,16 +383,16 @@ function ApplicationCard({
               type="button"
               disabled={busy !== null || active}
               onClick={() => void act(() => onStatus(a.status), a.status)}
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-semibold transition-colors disabled:cursor-default"
+              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold transition-colors disabled:cursor-default"
               style={{
-                background: active ? STATUS_META[a.status].bg : "transparent",
+                background: active ? "white" : "transparent",
                 color: active ? STATUS_META[a.status].color : "rgba(26,26,46,0.5)",
-                border: "1px solid transparent",
+                border: `1px solid ${active ? STATUS_META[a.status].kante : "transparent"}`,
                 opacity: busy !== null && !active ? 0.5 : 1,
               }}
               onMouseEnter={(e) => {
                 if (active || busy !== null) return;
-                e.currentTarget.style.background = "rgba(26,26,46,0.04)";
+                e.currentTarget.style.background = "rgba(255,255,255,0.75)";
               }}
               onMouseLeave={(e) => {
                 if (active) return;
@@ -356,6 +408,14 @@ function ApplicationCard({
             </button>
           );
         })}
+        {neu && (
+          <span
+            className="ml-auto text-[11px] font-semibold uppercase tracking-[0.14em]"
+            style={{ color: "#B47B18" }}
+          >
+            Noch nicht bearbeitet
+          </span>
+        )}
       </div>
     </motion.article>
   );

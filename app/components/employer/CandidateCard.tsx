@@ -19,18 +19,7 @@ import {
 import type { Candidate } from "@/lib/types";
 import ScoreExplainer from "@/app/components/ScoreExplainer";
 
-/** Symbolbild je Gewerk — echtes Foto, aber niemals die Person. */
-const TRADE_IMAGE: Record<string, string> = {
-  "Elektriker / Elektroniker": "/images/elektriker-werkstatt.jpg",
-  "Installateur / Klempner (SHK)": "/images/shk-heizung.jpg",
-  "Heizungs- & Lüftungsbauer": "/images/shk-heizung.jpg",
-  "Maler & Lackierer": "/images/maler-leiter.jpg",
-  "Tischler / Schreiner": "/images/tischler-hobel.jpg",
-  "Maurer / Betonbauer": "/images/maurer-ziegel.jpg",
-  "Metallbauer / Schlosser": "/images/metallbau-schweisser.jpg",
-  "Dachdecker": "/images/hero-team-werkstatt.jpg",
-};
-const FALLBACK_IMAGE = "/images/hero-team-werkstatt.jpg";
+import { gewerkBild } from "@/lib/gewerkBilder";
 
 function Fact({
   icon: Icon,
@@ -90,7 +79,7 @@ function ProfileDialog({
   onRequest?: () => void;
 }) {
   const c = candidate;
-  const img = TRADE_IMAGE[c.bereich] ?? FALLBACK_IMAGE;
+  const img = gewerkBild(c.bereich);
 
   return (
     <motion.div
@@ -400,7 +389,7 @@ export default function CandidateCard({
   const [request, setRequest] = useState(false);
   const [busy, setBusy] = useState(false);
   const c = candidate;
-  const img = TRADE_IMAGE[c.bereich] ?? FALLBACK_IMAGE;
+  const img = gewerkBild(c.bereich);
 
   const confirm = async (position: string) => {
     if (!onRequest) return;

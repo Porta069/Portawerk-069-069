@@ -116,18 +116,27 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
           <span className="h-px flex-1" style={{ background: "rgba(232,168,56,0.28)" }} />
         </div>
 
-        <ol className="space-y-5 mb-9">
+        <ol className="space-y-6 mb-10">
           {[
-            { titel: "Link holen", text: "Nach der Anmeldung sofort da" },
-            { titel: "An Kollegen schicken", text: "WhatsApp, SMS, wie du willst" },
-            { titel: "100 € kassieren", text: "Sobald er über dich einen Job findet" },
+            {
+              titel: "Deinen Link erstellen",
+              text: "Du wählst selbst, wie er heißt — nach der Anmeldung ist er sofort da.",
+            },
+            {
+              titel: "Teilen, wo du willst",
+              text: "Kollegen, Familie, Freunde. Oder öffentlich: per WhatsApp, in der Story, unter einem Video.",
+            },
+            {
+              titel: "100 € pro Vermittlung",
+              text: "Findet jemand über deinen Link einen Job, gehört die Prämie dir.",
+            },
           ].map((s2, i) => (
-            <li key={s2.titel} className="flex gap-3.5">
+            <li key={s2.titel} className="flex gap-4">
               <span
-                className="flex-shrink-0 rounded-full flex items-center justify-center text-[11px] font-bold tabular-nums"
+                className="flex-shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold tabular-nums"
                 style={{
-                  width: 24,
-                  height: 24,
+                  width: 30,
+                  height: 30,
                   background: "rgba(232,168,56,0.18)",
                   color: "#E8A838",
                 }}
@@ -135,8 +144,8 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
                 {i + 1}
               </span>
               <div className="min-w-0">
-                <p className="text-[14.5px] font-bold leading-snug text-white">{s2.titel}</p>
-                <p className="text-[13px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <p className="text-[16.5px] font-bold leading-snug text-white">{s2.titel}</p>
+                <p className="text-[14px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.58)" }}>
                   {s2.text}
                 </p>
               </div>
@@ -144,18 +153,18 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
           ))}
         </ol>
 
-        <ul className="space-y-2.5">
+        <ul className="space-y-3">
           {[
-            "Kostenlos, keine Mindestanzahl",
-            "Auszahlung aufs eigene Konto",
-            "Läuft parallel zu deinen Bewerbungen",
+            "Auszahlung, sobald der Vermittelte eingearbeitet ist",
+            "Direkt auf dein eigenes Konto",
+            "Kostenlos — läuft parallel zu deinen Bewerbungen",
           ].map((t) => (
             <li
               key={t}
-              className="flex items-start gap-2.5 text-[13.5px]"
-              style={{ color: "rgba(255,255,255,0.62)" }}
+              className="flex items-start gap-3 text-[14.5px] leading-snug"
+              style={{ color: "rgba(255,255,255,0.68)" }}
             >
-              <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#E8A838" }} strokeWidth={3} />
+              <Check className="w-4 h-4 flex-shrink-0 mt-1" style={{ color: "#E8A838" }} strokeWidth={3} />
               {t}
             </li>
           ))}

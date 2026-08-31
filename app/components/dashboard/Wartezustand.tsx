@@ -39,6 +39,7 @@ export default function Wartezustand({
   titel,
   text,
   icon,
+  aktion,
   abstandUnten = "lg:mb-2",
 }: {
   /** Kleinschriftzeile über der Überschrift, z. B. "Noch nichts unterwegs". */
@@ -47,6 +48,12 @@ export default function Wartezustand({
   text: string;
   /** Zeichen vor der Marke — ein Punkt, ein Symbol, was passt. */
   icon: ReactNode;
+  /**
+   * Knopf unter dem Text, etwa "Filter lösen". Nur wo der Leerzustand eine
+   * Ursache hat, die man selbst beheben kann — beim reinen Warten auf
+   * Angebote gibt es nichts zu drücken.
+   */
+  aktion?: ReactNode;
   /**
    * Abstand nach unten, als Tailwind-Klasse.
    *
@@ -145,6 +152,7 @@ export default function Wartezustand({
         <p className="text-[14px] mt-1.5" style={{ color: "rgba(26,26,46,0.55)" }}>
           {text}
         </p>
+        {aktion && <div className="mt-5">{aktion}</div>}
       </motion.div>
     </div>
   );

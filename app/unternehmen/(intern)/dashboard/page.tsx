@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Loader2, Users, ShieldCheck, X, Route, MapPin, Target,
+  Users, ShieldCheck, X, Route, MapPin, Target,
   SlidersHorizontal, RotateCcw, ArrowUpDown, Award, Briefcase,
 } from "lucide-react";
 import Link from "next/link";
@@ -24,6 +24,7 @@ import {
 import type { Candidate } from "@/lib/types";
 import CandidateCard from "@/app/components/employer/CandidateCard";
 import SearchAreaMap, { type SearchArea } from "@/app/components/employer/SearchAreaMapDynamic";
+import Wartezustand from "@/app/components/dashboard/Wartezustand";
 
 const SORTS: { value: CandidateSort; label: string }[] = [
   { value: "match", label: "Beste Übereinstimmung" },
@@ -453,41 +454,51 @@ export default function EmployerSearchPage() {
           )}
 
           {!ready ? (
-            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-              <MapPin className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
-              <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
-                Standort festlegen
-              </p>
-              <p className="text-[14px] max-w-sm mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
-                Tippen Sie oben auf die Karte oder geben Sie Postleitzahl bzw. Ort ein.
-              </p>
-            </div>
+            // Dieselben wartenden Karten wie im Kandidatenbereich: sie zeigen,
+            // wo die Treffer erscheinen werden, statt eine leere Flaeche mit
+            // einem Zeichen in der Mitte zu sein.
+            <Wartezustand
+              marke="Noch kein Standort"
+              titel="Standort festlegen"
+              text="Tippen Sie oben auf die Karte oder geben Sie Postleitzahl bzw. Ort ein."
+              icon={<MapPin className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />}
+            />
           ) : loading ? (
-            <div className="flex items-center justify-center py-24">
-              <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
+            <div className="space-y-4">
+              {[0, 1].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse rounded-3xl bg-white"
+                  style={{ height: 170, border: "1.5px solid #EDEAE4" }}
+                />
+              ))}
             </div>
           ) : !results?.length ? (
-            <div className="rounded-3xl bg-white px-6 py-20 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-              <Users className="w-8 h-8 mx-auto mb-4" style={{ color: "#E8A838" }} />
-              <p className="text-[18px] font-bold text-primary mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
-                Keine Treffer im Umkreis von {radius} km
-              </p>
-              <p className="text-[14px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-                Erweitern Sie den Radius am Regler oder lösen Sie die Filter.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setRadius(150);
-                  resetFilters();
-                }}
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold"
-                style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-              >
-                <X className="w-4 h-4" />
-                Filter lösen, 150 km
-              </button>
-            </div>
+            <Wartezustand
+              marke="Keine Treffer"
+              titel={`Keine Treffer im Umkreis von ${radius} km`}
+              text="Erweitern Sie den Radius am Regler oder lösen Sie die Filter."
+              icon={<Users className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />}
+              aktion={
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRadius(150);
+                    resetFilters();
+                  }}
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+                  style={{
+                    background: "#E8A838",
+                    color: "#1A1A2E",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                  }}
+                >
+                  <X className="w-4 h-4" />
+                  Filter lösen, 150 km
+                </button>
+              }
+            />
           ) : (
             <motion.div
               initial={{ opacity: 0 }}

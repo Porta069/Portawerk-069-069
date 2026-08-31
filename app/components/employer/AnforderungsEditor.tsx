@@ -38,6 +38,14 @@ const STANDARD: Required<JobGewichte> = {
   start: 1,
 };
 
+/**
+ * Die Stufen als Wort.
+ *
+ * "3" allein sagt nichts — drei von wie viel, und was heisst das? Das Wort
+ * daneben beantwortet beides ohne eine Zeile Erklaerung darueber.
+ */
+const STUFEN = ["zählt nicht", "kaum", "etwas", "wichtig", "sehr wichtig", "entscheidend"];
+
 const GEWICHT_LABELS: { key: keyof JobGewichte; label: string }[] = [
   { key: "aufgaben", label: "Aufgabenbereiche" },
   { key: "erfahrung", label: "Berufserfahrung" },
@@ -450,32 +458,14 @@ export default function AnforderungsEditor({
           <Scale className="w-4 h-4" style={{ color: "#E8A838" }} />
           Was Ihnen am wichtigsten ist
         </p>
-        {/* Der alte Text ("wie stark jedes Kriterium den Wert beeinflusst")
-            beschrieb die Rechnung statt den Nutzen — niemand wusste, welchen
-            "Wert" er meint. Jetzt steht da, was der Betrieb davon hat. */}
-        <p className="text-[13px] mb-4 max-w-2xl leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
-          Jeder Handwerker bekommt eine Prozentzahl, wie gut er zu dieser Stelle
-          passt. Hier stellen Sie ein, was dabei schwerer wiegt.{" "}
-          <strong className="text-primary">5 zählt fünfmal so stark wie 1</strong>{" "}
-          — bei 0 zählt es überhaupt nicht mit.
-        </p>
+        {/* Ein Satz statt dreier Absaetze. Was die Stufen bedeuten, steht als
+            Wort neben jeder Zeile — das erklaert sich beim Klicken von selbst
+            und braucht keinen Text darueber. */}
         <p
-          className="text-[12.5px] mb-5 max-w-2xl leading-relaxed rounded-xl px-3.5 py-2.5"
-          style={{ background: "rgba(232,168,56,0.1)", color: "rgba(26,26,46,0.62)" }}
+          className="text-[13px] pb-3.5 mb-3.5 leading-relaxed"
+          style={{ color: "rgba(26,26,46,0.6)", borderBottom: "1px solid #EDE8DC" }}
         >
-          <strong className="text-primary">Beispiel:</strong> Erfahrung auf 5 und
-          Führerschein auf 1 — dann steht ein alter Hase mit kleiner Klasse trotzdem
-          weit oben in Ihrer Liste.
-        </p>
-        {/* Wie die Balken zu lesen sind. Zuvor stand hier "links / rechts" an
-            den Aussenkanten des Kastens — links steht dort aber der Name des
-            Kriteriums, nicht der erste Balken. */}
-        <p
-          className="text-[12.5px] pb-3 mb-3.5 leading-relaxed"
-          style={{ color: "rgba(26,26,46,0.45)", borderBottom: "1px solid #EDE8DC" }}
-        >
-          Je mehr Balken, desto stärker zählt es. Der kleine graue Balken ganz
-          vorn bedeutet: zählt gar nicht mit.
+          Bestimmt, in welcher Reihenfolge die Bewerber bei Ihnen stehen.
         </p>
         <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
           {GEWICHT_LABELS.map(({ key, label }) => {
@@ -524,10 +514,10 @@ export default function AnforderungsEditor({
                   ))}
                 </div>
                 <span
-                  className="text-[13px] font-bold tabular-nums w-3 text-right flex-shrink-0"
-                  style={{ color: g === 0 ? "rgba(26,26,46,0.3)" : "#8A5B0F" }}
+                  className="text-[12.5px] font-semibold text-right flex-shrink-0"
+                  style={{ width: 88, color: g === 0 ? "rgba(26,26,46,0.3)" : "#8A5B0F" }}
                 >
-                  {g}
+                  {STUFEN[g]}
                 </span>
               </div>
             );

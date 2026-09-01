@@ -1,0 +1,18 @@
+# ─── security.txt (RFC 9116) ─────────────────────────────────────────────────
+# Wohin sich jemand wendet, der eine Sicherheitslücke in WerkPair findet.
+#
+# Ohne diese Datei sucht ein wohlmeinender Finder eine Adresse, findet keine,
+# und schreibt im Zweifel gar nicht — oder öffentlich. Sie kostet nichts und
+# ist der übliche Weg, seit RFC 9116 (April 2022).
+
+Contact: mailto:kontakt@porta-werk.de
+Expires: 2027-09-01T00:00:00.000Z
+Preferred-Languages: de, en
+Canonical: https://www.werkpair.de/.well-known/security.txt
+
+# Wir betreiben kein Bug-Bounty-Programm und zahlen keine Prämien. Wir
+# antworten aber auf jede ernst gemeinte Meldung und nennen den Finder auf
+# Wunsch, sobald die Lücke geschlossen ist.
+#
+# Bitte keine Tests, die den Betrieb stören (Lasttests, Denial of Service) und
+# keine Zugriffe auf Daten Dritter. Für einen Test genügt ein eigenes Konto.

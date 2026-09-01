@@ -28,7 +28,22 @@ async function ping(url: string, ms: number): Promise<number | string> {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  // ── Zugang ──────────────────────────────────────────────────────────────
+  // Die Route war ohne jede Prüfung öffentlich: Ein Aufruf löst zwei
+  // ausgehende Anfragen aus, also konnte jeder darüber fremde Dienste
+  // anstossen und Vercel-Aufrufe verbrauchen — die kosten Geld.
+  //
+  // Geprüft wird NUR, wenn `CRON_SECRET` gesetzt ist. Ohne die Variable
+  // bleibt alles wie bisher, damit der tägliche Cron nicht in dem Moment
+  // stehenbleibt, in dem diese Zeilen ausgeliefert werden. Sobald das
+  // Geheimnis in Vercel hinterlegt ist (Vercel schickt es bei Cron-Läufen
+  // automatisch als `Authorization: Bearer …` mit), ist die Route dicht.
+  const geheim = process.env.CRON_SECRET;
+  if (geheim && req.headers.get("authorization") !== `Bearer ${geheim}`) {
+    return new Response("Not found", { status: 404 });
+  }
+
   const at = new Date().toISOString();
   // Primär: Supabase direkt (schnell). Das hält das Projekt aktiv.
   const supabase = await ping(`${SUPABASE}/auth/v1/health`, 8000);

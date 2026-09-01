@@ -78,8 +78,11 @@ export default function StepAusbildung() {
     !!p.meisterQualifikation ||
     p.meisterQualifikationFrei.trim().length > 0;
 
+  // `gewerk` statt `p.gewerk`: Der Wert kann aus der Adresszeile stammen
+  // (?bereich=…). Steht er nicht im Katalog, ist keine Kachel ausgewählt — dann
+  // darf es auch nicht weitergehen, sonst scheitert erst das Absenden am Ende.
   const weiter =
-    !!p.gewerk &&
+    !!gewerk &&
     !!p.abschluss &&
     (!studiumNoetig || p.studium.trim().length > 0) &&
     meisterOk;

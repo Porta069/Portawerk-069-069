@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 const jobs = [
   {
     title: "Elektriker / Elektroniker",
-    gewerk: "Elektriker / Elektroniker",
+    gewerk: "elektrotechnik",
     img: "/images/elektriker-werkstatt.jpg",
     category: "Elektro & Energietechnik",
     city: "München",
@@ -29,7 +29,7 @@ const jobs = [
   },
   {
     title: "Anlagenmechaniker SHK",
-    gewerk: "Installateur / Klempner (SHK)",
+    gewerk: "shk",
     img: "/images/shk-heizung.jpg",
     category: "Sanitär · Heizung · Klima",
     city: "Hamburg",
@@ -40,7 +40,7 @@ const jobs = [
   },
   {
     title: "Maler & Lackierer",
-    gewerk: "Maler & Lackierer",
+    gewerk: "maler_lackierer",
     img: "/images/maler-leiter.jpg",
     category: "Ausbau & Oberfläche",
     city: "Berlin",
@@ -52,41 +52,41 @@ const jobs = [
 ];
 
 // Beliebteste Gewerke — mit echtem Foto (kompakte Kachel), gewerk = exakter
-// GEWERKE-Wert aus lib/constants für die Vorbelegung im Funnel.
+// Katalogwert des Anmelde-Funnels für die Vorbelegung.
 const popularTrades = [
   {
     label: "Elektriker",
-    gewerk: "Elektriker / Elektroniker",
+    gewerk: "elektrotechnik",
     img: "/images/elektriker-werkstatt.jpg",
     alt: "Elektriker bei der Arbeit in der Werkstatt",
   },
   {
     label: "Heizung & Sanitär",
-    gewerk: "Installateur / Klempner (SHK)",
+    gewerk: "shk",
     img: "/images/shk-heizung.jpg",
     alt: "Monteur montiert einen Heizkörper",
   },
   {
     label: "Tischler",
-    gewerk: "Tischler / Schreiner",
+    gewerk: "innenausbau",
     img: "/images/tischler-hobel.jpg",
     alt: "Tischler bearbeitet Holz mit dem Handhobel",
   },
   {
     label: "Maler",
-    gewerk: "Maler & Lackierer",
+    gewerk: "maler_lackierer",
     img: "/images/maler-leiter.jpg",
     alt: "Maler streicht eine Wand von der Leiter",
   },
   {
     label: "Metallbauer",
-    gewerk: "Metallbauer / Schlosser",
+    gewerk: "metallbau",
     img: "/images/metallbau-schweisser.jpg",
     alt: "Metallbauer beim Schweißen",
   },
   {
     label: "Maurer",
-    gewerk: "Maurer / Betonbauer",
+    gewerk: "bauwerkserhaltung",
     img: "/images/maurer-ziegel.jpg",
     alt: "Maurer setzt einen Ziegel mit der Kelle",
   },
@@ -94,15 +94,23 @@ const popularTrades = [
 
 // Alle Gewerke — nach Fachbereich gruppiert (übersichtliche Spalten-Ansicht).
 //
-// WICHTIG: `gewerk` muss exakt einem Wert aus GEWERKE (lib/constants) entsprechen.
-// Der Funnel prüft beim Vorbelegen `GEWERKE.includes(param)` — ein Berufsname wie
-// "Maurer" oder "Anlagenmechaniker SHK" steht dort nicht und würde still ignoriert.
-// Deshalb trägt jede angezeigte Rolle ihr Ziel-Gewerk mit sich.
+// WICHTIG: `gewerk` muss exakt einem Katalogwert des Anmelde-Funnels entsprechen
+// (`elektrotechnik`, `shk`, …) — der Schritt „Ausbildung" gleicht den Wert gegen
+// den Katalog ab und ignoriert alles Unbekannte still.
+//
+// Hier standen bis zuletzt die Anzeigenamen der alten Liste ("Elektriker /
+// Elektroniker"). Die kennt der neue Funnel nicht, also ist jede Vorbelegung
+// von der Startseite ins Leere gelaufen — der Besucher landete auf Schritt 1
+// und musste sein Gewerk noch einmal suchen.
+//
+// `null` heisst bewusst „keine Vorbelegung": Fuer diese Berufe gibt es im
+// Katalog kein passendes Gewerk. Sie bleiben auffindbar, der Nutzer waehlt im
+// Funnel dann selbst.
 interface Role {
   /** Was der Nutzer liest. */
   label: string;
-  /** Exakter GEWERKE-Wert für die Vorbelegung im Funnel. */
-  gewerk: string;
+  /** Katalogwert für die Vorbelegung im Funnel — `null` = keine. */
+  gewerk: string | null;
   /** Weitere Suchbegriffe, unter denen dieser Beruf gefunden werden soll. */
   synonyms?: string[];
 }
@@ -111,53 +119,55 @@ const gewerkeGruppen: { category: string; roles: Role[] }[] = [
   {
     category: "Elektro & Energietechnik",
     roles: [
-      { label: "Elektriker / Elektroniker", gewerk: "Elektriker / Elektroniker", synonyms: ["elektro", "elektrik"] },
-      { label: "Elektroniker Energietechnik", gewerk: "Elektriker / Elektroniker", synonyms: ["energie"] },
+      { label: "Elektriker / Elektroniker", gewerk: "elektrotechnik", synonyms: ["elektro", "elektrik"] },
+      { label: "Elektroniker Energietechnik", gewerk: "elektrotechnik", synonyms: ["energie"] },
     ],
   },
   {
     category: "Sanitär · Heizung · Klima",
     roles: [
-      { label: "Anlagenmechaniker SHK", gewerk: "Installateur / Klempner (SHK)", synonyms: ["shk", "sanitär"] },
-      { label: "Installateur / Klempner", gewerk: "Installateur / Klempner (SHK)", synonyms: ["sanitär"] },
-      { label: "Heizungsbauer", gewerk: "Heizungs- & Lüftungsbauer", synonyms: ["heizung", "lüftung", "klima"] },
+      { label: "Anlagenmechaniker SHK", gewerk: "shk", synonyms: ["shk", "sanitär"] },
+      { label: "Installateur / Klempner", gewerk: "shk", synonyms: ["sanitär"] },
+      { label: "Heizungsbauer", gewerk: "shk", synonyms: ["heizung", "lüftung", "klima"] },
     ],
   },
   {
     category: "Holz & Ausbau",
     roles: [
-      { label: "Tischler / Schreiner", gewerk: "Tischler / Schreiner", synonyms: ["holz", "möbel"] },
-      { label: "Zimmerer", gewerk: "Zimmerer", synonyms: ["holzbau", "dachstuhl"] },
-      { label: "Trockenbauer", gewerk: "Trockenbauer", synonyms: ["rigips", "innenausbau"] },
-      { label: "Bodenleger", gewerk: "Anderes Gewerk", synonyms: ["parkett", "laminat", "boden"] },
+      { label: "Tischler / Schreiner", gewerk: "innenausbau", synonyms: ["holz", "möbel"] },
+      { label: "Zimmerer", gewerk: "zimmerei_holzbau", synonyms: ["holzbau", "dachstuhl"] },
+      { label: "Trockenbauer", gewerk: "trockenbau", synonyms: ["rigips", "innenausbau"] },
+      { label: "Bodenleger", gewerk: "boden_fliesen", synonyms: ["parkett", "laminat", "boden"] },
     ],
   },
   {
     category: "Maler & Oberfläche",
     roles: [
-      { label: "Maler & Lackierer", gewerk: "Maler & Lackierer", synonyms: ["maler", "lack", "streichen"] },
-      { label: "Stuckateur", gewerk: "Anderes Gewerk", synonyms: ["putz", "stuck"] },
-      { label: "Fliesenleger", gewerk: "Fliesenleger", synonyms: ["fliesen", "platten"] },
-      { label: "Estrichleger", gewerk: "Anderes Gewerk", synonyms: ["estrich"] },
+      { label: "Maler & Lackierer", gewerk: "maler_lackierer", synonyms: ["maler", "lack", "streichen"] },
+      { label: "Stuckateur", gewerk: "stuck_putz", synonyms: ["putz", "stuck"] },
+      { label: "Fassade & Dämmung", gewerk: "fassade_daemmung", synonyms: ["fassade", "dämmung", "wdvs"] },
+      { label: "Fliesenleger", gewerk: "boden_fliesen", synonyms: ["fliesen", "platten"] },
+      { label: "Estrichleger", gewerk: "boden_fliesen", synonyms: ["estrich"] },
     ],
   },
   {
     category: "Rohbau & Außen",
     roles: [
-      { label: "Maurer", gewerk: "Maurer / Betonbauer", synonyms: ["mauern", "rohbau"] },
-      { label: "Betonbauer", gewerk: "Maurer / Betonbauer", synonyms: ["beton", "stahlbeton"] },
-      { label: "Dachdecker", gewerk: "Dachdecker", synonyms: ["dach"] },
-      { label: "Gerüstbauer", gewerk: "Gerüstbauer", synonyms: ["gerüst"] },
-      { label: "Garten- & Landschaftsbau", gewerk: "Garten- & Landschaftsbau", synonyms: ["galabau", "garten", "landschaft"] },
-      { label: "Bauhelfer", gewerk: "Anderes Gewerk", synonyms: ["helfer", "bau"] },
+      { label: "Maurer", gewerk: "bauwerkserhaltung", synonyms: ["mauern", "rohbau"] },
+      { label: "Betonbauer", gewerk: "bauwerkserhaltung", synonyms: ["beton", "stahlbeton"] },
+      { label: "Dachdecker", gewerk: "dach_klempnerei", synonyms: ["dach"] },
+      { label: "Gerüstbauer", gewerk: "geruestbau", synonyms: ["gerüst"] },
+      { label: "Schadensanierung", gewerk: "schadensanierung", synonyms: ["wasserschaden", "brandschaden", "trocknung"] },
+      { label: "Garten- & Landschaftsbau", gewerk: null, synonyms: ["galabau", "garten", "landschaft"] },
+      { label: "Bauhelfer", gewerk: null, synonyms: ["helfer", "bau"] },
     ],
   },
   {
     category: "Metall & Mechanik",
     roles: [
-      { label: "Metallbauer / Schlosser", gewerk: "Metallbauer / Schlosser", synonyms: ["metall", "schweißen", "schlosser"] },
-      { label: "Feinwerkmechaniker", gewerk: "Metallbauer / Schlosser", synonyms: ["mechanik", "zerspanung"] },
-      { label: "KFZ-Mechatroniker", gewerk: "KFZ-Mechatroniker", synonyms: ["kfz", "auto", "mechatroniker"] },
+      { label: "Metallbauer / Schlosser", gewerk: "metallbau", synonyms: ["metall", "schweißen", "schlosser"] },
+      { label: "Feinwerkmechaniker", gewerk: "metallbau", synonyms: ["mechanik", "zerspanung"] },
+      { label: "KFZ-Mechatroniker", gewerk: null, synonyms: ["kfz", "auto", "mechatroniker"] },
     ],
   },
 ];
@@ -165,14 +175,19 @@ const gewerkeGruppen: { category: string; roles: Role[] }[] = [
 // Flache Gesamtliste (für die Suche) — abgeleitet, damit nichts auseinanderläuft.
 const allRoles: Role[] = gewerkeGruppen.flatMap((g) => g.roles);
 
-/** Registrier-Link mit vorbelegtem Gewerk. */
-const regHref = (gewerk?: string) =>
-  gewerk ? `/registrieren?gewerk=${encodeURIComponent(gewerk)}` : "/registrieren";
+/**
+ * Registrier-Link mit vorbelegtem Gewerk.
+ *
+ * Der Parameter heisst `bereich` — genau so liest ihn der Funnel. Vorher stand
+ * hier `gewerk`, und der Funnel hat den Link kommentarlos ignoriert.
+ */
+const regHref = (gewerk?: string | null) =>
+  gewerk ? `/registrieren?bereich=${encodeURIComponent(gewerk)}` : "/registrieren";
 
 /** Sucht in Anzeigename und Synonymen. */
 const roleMatches = (r: Role, q: string) =>
   r.label.toLowerCase().includes(q) ||
-  r.gewerk.toLowerCase().includes(q) ||
+  (r.gewerk ?? "").includes(q) ||
   (r.synonyms ?? []).some((s) => s.includes(q));
 
 export default function JobsPreview() {
@@ -508,7 +523,7 @@ export default function JobsPreview() {
                     {popularTrades.map((trade) => (
                       <Link
                         key={trade.gewerk}
-                        href={`/registrieren?gewerk=${encodeURIComponent(trade.gewerk)}`}
+                        href={regHref(trade.gewerk)}
                         aria-label={`Als ${trade.label} bewerben`}
                         className="group relative aspect-square overflow-hidden rounded-[1.75rem] bg-primary/5 shadow-sm hover:shadow-lg transition-shadow duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                       >

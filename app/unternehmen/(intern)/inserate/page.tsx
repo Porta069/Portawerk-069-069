@@ -39,7 +39,7 @@ import {
   listMyJobs, saveJob, setJobStatus,
   MONTAGE_OPTIONEN,
 } from "@/lib/employerService";
-import { GEWERKE } from "@/lib/constants";
+import { getKatalog, type Katalog } from "@/lib/catalogService";
 import { useAuth } from "@/app/context/AuthContext";
 import AnforderungsEditor, { LEERE_ANFORDERUNG } from "@/app/components/employer/AnforderungsEditor";
 import Auswahl from "@/app/components/dashboard/Auswahl";
@@ -281,9 +281,12 @@ function Segmented<T extends string | number>({
 
 // ── Kriterien-Editor ─────────────────────────────────────────────────────────
 
+// Das Gewerk startet leer statt auf dem ersten Listeneintrag: Eine Vorauswahl
+// wird beim Durchklicken uebersehen, und dann steht in jedem zweiten Inserat
+// „Elektrotechnik", weil niemand hingesehen hat.
 const EMPTY: EmployerJobInput = {
   title: "",
-  gewerk: GEWERKE[0],
+  gewerk: "",
   description: "",
   city: "",
   montage: MONTAGE_OPTIONEN[0],
@@ -349,22 +352,39 @@ function JobEditor({
   const set = <K extends keyof EmployerJobInput>(k: K, v: EmployerJobInput[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
-  // Ein gespeichertes Gewerk, das nicht mehr im Katalog steht (etwa von uns
-  // angelegte Inserate), bekommt einen eigenen Eintrag. Sonst stünde im Feld
-  // "Bitte wählen" und ein unbedachtes Speichern würde die Angabe überschreiben.
+  // Die Gewerke kommen aus demselben Katalog, den der Handwerker bei der
+  // Anmeldung durchlaeuft. Vorher stand hier eine zweite, aeltere Liste
+  // ("Elektriker / Elektroniker" statt "Elektrotechnik"): Der Betrieb waehlte
+  // sein Gewerk einmal hier und ein zweites Mal weiter unten bei den
+  // Kriterien — und nur die zweite Wahl hat beim Matching gezaehlt.
+  const [katalog, setKatalog] = useState<Katalog | null>(null);
+  useEffect(() => {
+    void getKatalog().then((res) => {
+      if (res.ok) setKatalog(res.data);
+    });
+  }, []);
+
+  const katalogGewerke = katalog?.gewerke ?? [];
+  const istKatalogGewerk = katalogGewerke.some((g) => g.value === form.gewerk);
+
+  // Ein gespeichertes Gewerk aus der alten Liste bekommt einen eigenen Eintrag.
+  // Sonst stuende im Feld "Bitte waehlen" und ein unbedachtes Speichern wuerde
+  // die Angabe eines bestehenden Inserats ueberschreiben.
   const gewerkOptionen = [
-    ...GEWERKE.map((g) => ({ value: g, label: g })),
-    ...(form.gewerk && !GEWERKE.includes(form.gewerk)
-      ? [{ value: form.gewerk, label: form.gewerk }]
+    ...katalogGewerke.map((g) => ({ value: g.value, label: g.label })),
+    ...(form.gewerk && katalog && !istKatalogGewerk
+      ? [{ value: form.gewerk, label: `${form.gewerk} (alte Bezeichnung)` }]
       : []),
   ];
 
   // Wie viele Muss-Kriterien gesetzt sind — die Zahl steht im Band, damit
   // niemand versehentlich den halben Markt aussperrt.
   const ausschluesse = [
-    anforderung.gewerke.length > 0,
+    anforderung.gewerke.length > 0 || istKatalogGewerk,
     !!anforderung.abschlussMin,
     anforderung.aufgabenMin > 0,
+    anforderung.fuehrungGefordert,
+    anforderung.budgetMonatCents != null && !!form.salaryMax,
     !!anforderung.montageMin,
     !!anforderung.deutschMin,
   ].filter(Boolean).length;
@@ -374,18 +394,43 @@ function JobEditor({
       setError("Bitte gib einen Titel mit mindestens 3 Zeichen an.");
       return;
     }
+    if (!form.gewerk.trim()) {
+      setError("Bitte wähle ein Gewerk — daran erkennt der Handwerker die Stelle.");
+      return;
+    }
     setBusy(true);
     setError(null);
     const res = await saveJob(
       {
         ...form,
-        gewerke: anforderung.gewerke,
+        // Leer gelassene Gewerke hiessen bisher „alle Gewerke" — dann bekaeme
+        // ein Fliesenleger die Elektriker-Stelle zu sehen. Das Gewerk aus den
+        // Eckdaten ist die verlaessliche Untergrenze.
+        //
+        // Nur wenn es im Katalog steht: Ein Inserat aus der alten Liste traegt
+        // dort „Elektriker / Elektroniker", und der Server weist unbekannte
+        // Gewerke mit einem Fehler ab — das Speichern wuerde scheitern.
+        gewerke: anforderung.gewerke.length
+          ? anforderung.gewerke
+          : istKatalogGewerk
+            ? [form.gewerk]
+            : [],
         berufe: anforderung.berufe,
         abschlussMin: anforderung.abschlussMin ?? undefined,
+        meisterErwuenscht: anforderung.meisterErwuenscht,
         aufgaben: anforderung.aufgaben,
         aufgabenMin: anforderung.aufgabenMin,
+        bezeichnungTags: anforderung.bezeichnungTags,
         erfahrungMin: anforderung.erfahrungMin ?? undefined,
         erfahrungMax: anforderung.erfahrungMax ?? undefined,
+        fuehrungGefordert: anforderung.fuehrungGefordert,
+        // Immer aus dem veroeffentlichten Rahmen neu gerechnet, nie aus dem
+        // Zustand uebernommen: Wer „Gehalt bis" nachtraeglich aendert, soll
+        // nicht mit einer alten Grenze weitersuchen.
+        budgetMonatCents:
+          anforderung.budgetMonatCents != null && form.salaryMax
+            ? Math.round(form.salaryMax * 100)
+            : undefined,
         montageMin: anforderung.montageMin ?? undefined,
         fuehrerscheinMin: anforderung.fuehrerscheinMin ?? undefined,
         deutschMin: anforderung.deutschMin ?? undefined,
@@ -493,12 +538,24 @@ function JobEditor({
               />
             </Field>
             <div className="flex flex-wrap gap-4">
-              <Field label="Gewerk *" grow>
+              <Field
+                label="Gewerk *"
+                hinweis="Dieselben Gewerke, aus denen der Handwerker bei der Anmeldung wählt."
+                grow
+              >
                 <Auswahl
-                  wert={form.gewerk ?? GEWERKE[0]}
+                  wert={form.gewerk || null}
                   optionen={gewerkOptionen}
-                  leerLabel="Bitte wählen"
-                  onChange={(v) => set("gewerk", v ?? GEWERKE[0])}
+                  leerLabel={katalog ? "Bitte wählen" : "Wird geladen …"}
+                  onChange={(v) => {
+                    set("gewerk", v ?? "");
+                    // Das gewählte Gewerk gleich als Kriterium übernehmen,
+                    // solange der Betrieb dort noch nichts eingegrenzt hat.
+                    // Sonst müsste er dieselbe Angabe zweimal machen.
+                    setAnforderung((a) =>
+                      a.gewerke.length === 0 && v ? { ...a, gewerke: [v] } : a
+                    );
+                  }}
                   breit
                 />
               </Field>
@@ -641,7 +698,11 @@ function JobEditor({
             </span>
           }
         >
-          <AnforderungsEditor wert={anforderung} onChange={setAnforderung} />
+          <AnforderungsEditor
+            wert={anforderung}
+            onChange={setAnforderung}
+            gehaltBis={form.salaryMax}
+          />
         </Schritt>
 
         {/* ── Aktionsleiste ──

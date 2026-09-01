@@ -162,7 +162,11 @@ export function RegistrationProvider({
     // Bereich. Ob der Wert im Katalog steht, prüft der Schritt selbst — hier
     // ist der Katalog noch nicht geladen.
     try {
-      const param = new URLSearchParams(window.location.search).get("bereich");
+      const suche = new URLSearchParams(window.location.search);
+      // `gewerk` ist die aeltere Schreibweise. Sie steht in Links, die schon
+      // geteilt wurden, deshalb bleibt sie gueltig — der Schritt prueft den
+      // Wert ohnehin gegen den Katalog und verwirft Unbekanntes.
+      const param = suche.get("bereich") ?? suche.get("gewerk");
       if (param && !base.profil.gewerk) {
         base = { ...base, profil: { ...base.profil, gewerk: param } };
       }

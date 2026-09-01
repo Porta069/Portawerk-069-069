@@ -79,6 +79,59 @@ export const LEERE_ANFORDERUNG: Anforderungsprofil = {
   gewichte: null,
 };
 
+/**
+ * Freitext-Stichworte für die Berufsbezeichnung.
+ *
+ * Braucht einen EIGENEN Textzustand: Würde das Feld direkt aus der Liste
+ * gespeist, normalisierte jeder Tastendruck den Inhalt — ein frisch getipptes
+ * „b" wäre zu kurz, flöge sofort aus der Liste und verschwände wieder aus dem
+ * Feld. Man könnte kein einziges Wort eintippen. Aufgeräumt wird deshalb erst
+ * beim Verlassen des Feldes; dieselben Grenzen wie im Backend (2–60 Zeichen,
+ * höchstens zehn), damit beim Speichern nichts kommentarlos wegfällt.
+ */
+function StichwortFeld({
+  werte,
+  onChange,
+}: {
+  werte: string[];
+  onChange: (tags: string[]) => void;
+}) {
+  const [text, setText] = useState(werte.join(", "));
+
+  // Von aussen geänderte Werte (anderes Inserat geöffnet) übernehmen, ohne
+  // dabei in die laufende Eingabe zu funken.
+  const [letzte, setLetzte] = useState(werte);
+  if (letzte !== werte) {
+    setLetzte(werte);
+    setText(werte.join(", "));
+  }
+
+  const aufraeumen = () => {
+    const tags = Array.from(
+      new Set(
+        text
+          .split(",")
+          .map((s) => s.trim().toLowerCase())
+          .filter((s) => s.length >= 2 && s.length <= 60),
+      ),
+    ).slice(0, 10);
+    onChange(tags);
+    setText(tags.join(", "));
+  };
+
+  return (
+    <input
+      type="text"
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      onBlur={aufraeumen}
+      placeholder="z. B. monteur, bauleiter"
+      className="w-full bg-white text-primary text-sm px-4 py-3 outline-none"
+      style={{ border: "1.5px solid #E9E7E1" }}
+    />
+  );
+}
+
 function Chip({
   label,
   selected,
@@ -192,9 +245,16 @@ function KatalogAuswahl({
 export default function AnforderungsEditor({
   wert,
   onChange,
+  gehaltBis,
 }: {
   wert: Anforderungsprofil;
   onChange: (a: Anforderungsprofil) => void;
+  /**
+   * „Gehalt bis" aus den Eckdaten, in Euro pro Monat. Nur zum Anzeigen und als
+   * Grundlage des Ausschluss-Schalters — der Editor besitzt den Wert nicht und
+   * aendert ihn nie, sonst haette der Betrieb zwei Stellen fuer dieselbe Zahl.
+   */
+  gehaltBis?: number | null;
 }) {
   const [katalog, setKatalog] = useState<Katalog | null>(null);
 
@@ -358,6 +418,92 @@ export default function AnforderungsEditor({
           )}
         </Feld>
       )}
+
+      {/* ── Berufsbezeichnung ──
+          Der Handwerker trägt sie als Freitext ein: „Obermonteur",
+          „Serviceleiter SHK", „Kolonnenführer". Eine Auswahlliste wäre hier
+          entweder unvollständig oder so lang, dass niemand seinen Titel findet
+          — also sucht der Betrieb mit Stichworten, und ein Treffer genügt. */}
+      <Feld
+        titel="Berufsbezeichnung"
+        hinweis="Stichworte, die in der Bezeichnung vorkommen sollen. Ein Treffer genügt: „monteur“ findet auch „Obermonteur SHK“. Leer lassen = egal."
+      >
+        <StichwortFeld
+          werte={wert.bezeichnungTags}
+          onChange={(tags) => set({ bezeichnungTags: tags })}
+        />
+      </Feld>
+
+      {/* ── Führungsverantwortung ──
+          Anders als die meisten Kriterien lässt sie sich nicht halb erfüllen:
+          Entweder die Stelle führt ein Team oder nicht. Deshalb Ausschluss. */}
+      <Feld
+        titel="Führungsverantwortung"
+        hinweis="Nur Handwerker, die bereits ein Team, eine Kolonne oder eine Baustelle führen."
+        ausschluss={wert.fuehrungGefordert}
+      >
+        <div className="flex flex-wrap gap-1.5">
+          <Chip
+            label="Wird vorausgesetzt"
+            selected={wert.fuehrungGefordert}
+            onClick={() => set({ fuehrungGefordert: !wert.fuehrungGefordert })}
+          />
+        </div>
+      </Feld>
+
+      {/* ── Meister oder Techniker ──
+          Bewusst KEIN Ausschluss: Sonst fiele jeder Geselle aus jeder Stelle,
+          die sich einen Meister wünscht. Ein Studium zählt als gleichwertig. */}
+      <Feld
+        titel="Meister oder Techniker"
+        hinweis="Zählt Punkte, schließt aber niemanden aus. Ein Studium gilt als gleichwertig."
+      >
+        <div className="flex flex-wrap gap-1.5">
+          <Chip
+            label="Erwünscht"
+            selected={wert.meisterErwuenscht}
+            onClick={() => set({ meisterErwuenscht: !wert.meisterErwuenscht })}
+          />
+        </div>
+      </Feld>
+
+      {/* ── Budget ──
+          Bewusst KEIN eigenes Eingabefeld: Der Gehaltsrahmen steht schon oben
+          in den Eckdaten. Ein dritter Betrag hier waere eine Zahl, die dem
+          veroeffentlichten Rahmen widersprechen kann — der Betrieb pflegt dann
+          zwei Wahrheiten. Deshalb nur ein Schalter auf den vorhandenen Wert.
+
+          Der Handwerker nennt einen MINDESTwunsch. Liegt der ueber dem Rahmen,
+          kostet die Vermittlung beide Seiten Zeit — der Ausschluss greift aber
+          erst ab 10 % Abstand: knapp darueber ist Verhandlungssache und darf
+          die Stelle nicht verstecken. */}
+      <Feld
+        titel="Gehaltsrahmen als Grenze"
+        hinweis={
+          gehaltBis
+            ? `Handwerker, die mindestens mehr als ${Math.round(gehaltBis * 1.11).toLocaleString("de-DE")} € verlangen, bekommen das Inserat dann nicht zu sehen.`
+            : "Tragen Sie oben unter „Gehalt bis“ einen Betrag ein, um diese Grenze nutzen zu können."
+        }
+        ausschluss={wert.budgetMonatCents != null}
+      >
+        {gehaltBis ? (
+          <div className="flex flex-wrap gap-1.5">
+            <Chip
+              label={`Über ${gehaltBis.toLocaleString("de-DE")} € ausschließen`}
+              selected={wert.budgetMonatCents != null}
+              onClick={() =>
+                set({
+                  budgetMonatCents: wert.budgetMonatCents == null ? gehaltBis * 100 : null,
+                })
+              }
+            />
+          </div>
+        ) : (
+          <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.35)" }}>
+            Kein Gehaltsrahmen angegeben — die Grenze bleibt aus.
+          </p>
+        )}
+      </Feld>
 
       <Feld titel="Berufserfahrung" hinweis="Weniger als gesucht kostet je Stufe die Hälfte; mehr kostet fast nichts.">
         <div className="flex flex-wrap items-center gap-2">

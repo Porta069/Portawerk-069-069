@@ -69,7 +69,9 @@ function Tag({ children, tone = "neutral" }: { children: React.ReactNode; tone?:
 }
 
 // ─── Volles Profil ───────────────────────────────────────────────────────────
-function ProfileDialog({
+// Wird auch von der Anfragen-Seite geoeffnet, die eine eigene, kompaktere
+// Karte hat — das Profil dahinter soll aber ueberall dasselbe sein.
+export function ProfileDialog({
   candidate,
   onClose,
   onRequest,

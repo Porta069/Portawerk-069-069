@@ -34,9 +34,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Loader2, Pencil, Archive, Scale, ChevronLeft, Wrench,
   AlertCircle, Check, Users, Sparkles, Bot, MapPin, Wallet, FileText,
-  Clock3, Eye, EyeOff, PenLine, AlertTriangle } from "lucide-react";
+  Clock3, Eye, EyeOff, PenLine, AlertTriangle, Trash2 } from "lucide-react";
 import {
-  listMyJobs, saveJob, setJobStatus,
+  listMyJobs, saveJob, setJobStatus, deleteJob,
   MONTAGE_OPTIONEN,
 } from "@/lib/employerService";
 import { getKatalog, type Katalog } from "@/lib/catalogService";
@@ -44,6 +44,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import AnforderungsEditor, { LEERE_ANFORDERUNG } from "@/app/components/employer/AnforderungsEditor";
 import Auswahl from "@/app/components/dashboard/Auswahl";
 import Wartezustand from "@/app/components/dashboard/Wartezustand";
+import LoeschDialog from "@/app/components/employer/LoeschDialog";
 import type {
   EmployerJob, EmployerJobInput, Anforderungsprofil,
   EmployerJobStatus,
@@ -863,11 +864,13 @@ function InseratKarte({
   busy,
   onEdit,
   onStatus,
+  onDelete,
 }: {
   job: EmployerJob;
   busy: boolean;
   onEdit: () => void;
   onStatus: (status: EmployerJobStatus) => void;
+  onDelete: () => void;
 }) {
   const chip = STATUS_CHIP[job.status] ?? STATUS_CHIP.DRAFT;
   const aktionen = AKTIONEN[job.status] ?? AKTIONEN.DRAFT;
@@ -1138,6 +1141,21 @@ function InseratKarte({
                 {n.label}
               </button>
             ))}
+            {/* Löschen steht bewusst ganz rechts und nur als Zeichen: Es ist
+                die einzige Aktion ohne Rückweg und soll nicht neben den
+                alltäglichen Knöpfen um Aufmerksamkeit werben. Nachgefragt
+                wird im Dialog, nicht hier. */}
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onDelete}
+              title="Endgültig löschen"
+              aria-label={`Inserat „${job.title}“ endgültig löschen`}
+              className="inline-flex items-center justify-center rounded-full w-10 h-10 flex-shrink-0 transition-colors disabled:opacity-50 hover:bg-[rgba(185,28,28,0.06)]"
+              style={{ border: "1.5px solid #E0DDD6", color: "rgba(185,28,28,0.75)", background: "white" }}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </div>
@@ -1185,6 +1203,37 @@ export default function InseratePage() {
       return;
     }
     setHinweis({ art: "ok", text: STATUS_MELDUNG[status] });
+    load();
+  };
+
+  // Löschen läuft absichtlich über einen eigenen Zustand statt über
+  // `statusBusy`: Es ist kein Statuswechsel, und die Karte soll währenddessen
+  // stehen bleiben — verschwindet sie schon beim Klick, weiss niemand, ob es
+  // geklappt hat oder die Ansicht nur gesprungen ist.
+  const [loeschen, setLoeschen] = useState<EmployerJob | null>(null);
+  const [loeschBusy, setLoeschBusy] = useState(false);
+
+  const handleDelete = async () => {
+    if (!loeschen) return;
+    setLoeschBusy(true);
+    setHinweis(null);
+    const res = await deleteJob(loeschen.id);
+    setLoeschBusy(false);
+    if (!res.ok) {
+      // Der Dialog bleibt offen: Wer eine Fehlermeldung liest, will es meist
+      // gleich noch einmal versuchen.
+      setHinweis({ art: "fehler", text: res.error });
+      return;
+    }
+    const g = res.data.geloescht;
+    const mit = g.bewerbungen + g.angebote + g.merkungen;
+    setLoeschen(null);
+    setHinweis({
+      art: "ok",
+      text: mit
+        ? `„${g.titel}" wurde gelöscht — mit ${g.bewerbungen} Bewerbung${g.bewerbungen === 1 ? "" : "en"}.`
+        : `„${g.titel}" wurde gelöscht.`,
+    });
     load();
   };
 
@@ -1398,6 +1447,7 @@ export default function InseratePage() {
                         busy={statusBusy === job.id}
                         onEdit={() => setEditing(job)}
                         onStatus={(s) => handleStatus(job.id, s)}
+                        onDelete={() => setLoeschen(job)}
                       />
                     ))}
                   </AnimatePresence>
@@ -1407,6 +1457,13 @@ export default function InseratePage() {
           })}
         </div>
       )}
+
+      <LoeschDialog
+        job={loeschen}
+        busy={loeschBusy}
+        onClose={() => setLoeschen(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

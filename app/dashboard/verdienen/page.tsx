@@ -239,6 +239,8 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
               <button
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
+                tabIndex={-1}
+                aria-pressed={showPw}
                 aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
                 style={{ color: "rgba(255,255,255,0.4)" }}

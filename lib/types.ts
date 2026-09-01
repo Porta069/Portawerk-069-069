@@ -477,6 +477,10 @@ export interface EmployerJob extends Anforderungsprofil {
   updatedAt: string;
   /** Anzahl eingegangener Bewerbungen. */
   applications?: number;
+  /** Angebote, die der Betrieb aus dieser Stelle heraus verschickt hat. */
+  angebote?: number;
+  /** Wie oft Handwerker die Stelle gemerkt haben. */
+  merkungen?: number;
 }
 
 /** Eingabedaten beim Anlegen/Bearbeiten eines Inserats. */

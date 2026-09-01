@@ -5,7 +5,8 @@
 //
 //   GET/PATCH /employer/profile              → getEmployerProfile()/saveEmployerProfile()
 //   GET/POST  /employer/jobs                 → listMyJobs()/saveJob()
-//   PATCH/DELETE /employer/jobs/:id          → saveJob(id)/archiveJob()
+//   PATCH  /employer/jobs/:id                → saveJob(id)
+//   DELETE /employer/jobs/:id                → deleteJob(id)  (endgültig)
 //   GET  /employer/candidates                → searchCandidates()
 //   POST /employer/candidates/:id/request    → requestContact()
 //   POST /employer/candidates/:id/offer      → sendOffer()
@@ -292,11 +293,29 @@ export async function setJobStatus(
   });
 }
 
-export async function archiveJob(id: string): Promise<ApiResult<void>> {
-  return apiRequest<void>(`/employer/jobs/${id}`, {
+/**
+ * Löscht ein Inserat endgültig.
+ *
+ * Diese Funktion hieß bis zuletzt `archiveJob` und wurde nirgends aufgerufen —
+ * die Route dahinter hat auch nur archiviert. Archiviert wird über
+ * `setJobStatus`; hier wird wirklich gelöscht, samt Bewerbungen und Angeboten
+ * zu dieser Stelle. Was verschwunden ist, steht in der Antwort.
+ */
+export async function deleteJob(
+  id: string,
+): Promise<ApiResult<{ geloescht: GeloeschtesInserat }>> {
+  return apiRequest<{ geloescht: GeloeschtesInserat }>(`/employer/jobs/${id}`, {
     method: "DELETE",
     token: token(),
   });
+}
+
+export interface GeloeschtesInserat {
+  id: string;
+  titel: string;
+  bewerbungen: number;
+  angebote: number;
+  merkungen: number;
 }
 
 /** Fragenkatalog fürs Matching — Grundlage des Kriterien-Editors. */
@@ -329,6 +348,54 @@ export async function setApplicationStatus(
 ): Promise<ApiResult<{ id: string; status: string }>> {
   return apiRequest(`/employer/applications/${id}/status`, {
     method: "POST",
+    token: token(),
+    body: { status },
+  });
+}
+
+// ── Kandidatenvorschläge ─────────────────────────────────────────────────────
+//   GET   /employer/suggestions        → listSuggestions()
+//   PATCH /employer/suggestions/:id    → setSuggestionStatus()
+//
+// Angelegt werden Vorschläge nicht hier, sondern serverseitig vom
+// Admin-Dashboard über `POST /employer/admin/suggestions` mit dem Admin-
+// Schlüssel. Der Betrieb kann also lesen und antworten, aber sich selbst
+// nichts vorschlagen.
+
+/** Der Vorschlag trägt denselben anonymen Steckbrief wie die Suche. */
+export interface Vorschlag {
+  id: string;
+  status: VorschlagStatus;
+  /** Von Hand angelegt oder aus einer Automatisierung. */
+  quelle: "ADMIN" | "AUTOMATION";
+  begruendung: string;
+  erstelltAm: string;
+  /** Stelle, zu der vorgeschlagen wurde — `null` = allgemeiner Vorschlag. */
+  stelle: { id: string; titel: string } | null;
+  kandidat: Candidate;
+}
+
+export type VorschlagStatus = "NEW" | "SEEN" | "INTERESTED" | "DECLINED";
+
+export async function listSuggestions(): Promise<ApiResult<Vorschlag[]>> {
+  const res = await apiRequest<Vorschlag[]>("/employer/suggestions", {
+    token: token(),
+  });
+  if (!res.ok) return res;
+  // Denselben Normalisierer wie die Suche benutzen, damit die Karten in
+  // beiden Ansichten identisch aussehen und nicht zwei Formen entstehen.
+  return {
+    ok: true,
+    data: res.data.map((v) => ({ ...v, kandidat: mapCandidate(v.kandidat) })),
+  };
+}
+
+export async function setSuggestionStatus(
+  id: string,
+  status: VorschlagStatus,
+): Promise<ApiResult<void>> {
+  return apiRequest<void>(`/employer/suggestions/${id}`, {
+    method: "PATCH",
     token: token(),
     body: { status },
   });

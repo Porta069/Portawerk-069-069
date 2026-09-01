@@ -110,6 +110,10 @@ export default function StepKonto() {
           <button
             type="button"
             onClick={() => setShowPw((s) => !s)}
+            // Beim Durchtabben soll es vom Passwortfeld zum Absenden gehen,
+            // nicht aufs Auge.
+            tabIndex={-1}
+            aria-pressed={showPw}
             aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
             className="absolute right-4 top-1/2 -translate-y-1/2"
             style={{ color: "rgba(26,26,46,0.35)" }}

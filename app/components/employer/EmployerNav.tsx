@@ -15,6 +15,7 @@ import Logo from "@/app/components/Logo";
 const AREAS: { href: string; label: string; icon?: LucideIcon }[] = [
   { href: "/unternehmen/dashboard", label: "Kandidaten suchen" },
   { href: "/unternehmen/inserate", label: "Inserate" },
+  { href: "/unternehmen/vorschlaege", label: "Vorschläge" },
   { href: "/unternehmen/bewerbungen", label: "Bewerbungen" },
   { href: "/unternehmen/anfragen", label: "Meine Anfragen" },
   // Zahnrad, damit erkennbar ist: hier werden Einstellungen gepflegt, es ist

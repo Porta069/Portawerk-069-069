@@ -6,11 +6,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Eye, EyeOff, Lock, Loader2 } from "lucide-react";
+import { ArrowRight, Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { api } from "@/lib/api";
 import { Field } from "@/app/components/ui";
 import Logo from "@/app/components/Logo";
+import PasswordField from "@/app/components/PasswordField";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,7 +19,6 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -129,37 +129,13 @@ export default function LoginPage() {
               required
             />
 
-            {/* Passwort mit Toggle */}
-            <div>
-              <label
-                className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
-                style={{ color: "rgba(26,26,46,0.45)" }}
-              >
-                Passwort<span className="text-accent ml-0.5">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  className="w-full bg-white text-primary text-sm px-4 py-3.5 pr-11 outline-none transition-all duration-200 placeholder:text-primary/20"
-                  style={{
-                    border: `1.5px solid ${password ? "#1A1A2E" : "#E5E7EB"}`,
-                    fontFamily: "var(--font-sans)",
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw((s) => !s)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
-                  aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
-                >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
+            <PasswordField
+              label="Passwort"
+              value={password}
+              onChange={setPassword}
+              autoComplete="current-password"
+              required
+            />
 
             <div className="flex items-center justify-between">
               <button

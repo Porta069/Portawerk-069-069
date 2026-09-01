@@ -446,7 +446,7 @@ function SecuritySection({ token, t, lang, onSession, onLogout }: {
             <input type={show ? "text" : "password"} value={next} onChange={(e) => setNext(e.target.value)}
               className="w-full bg-white text-primary text-sm px-4 py-3.5 pr-11 outline-none"
               style={{ border: `1.5px solid ${next ? (pw.valid ? "#22C55E" : "#1A1A2E") : "#E5E7EB"}`, fontFamily: "var(--font-sans)" }} />
-            <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted">{show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+            <button type="button" onClick={() => setShow((s) => !s)} tabIndex={-1} aria-pressed={show} aria-label={show ? "Passwort verbergen" : "Passwort anzeigen"} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted">{show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
           </div>
           <PasswordStrength password={next} />
         </div>

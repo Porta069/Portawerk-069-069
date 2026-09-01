@@ -103,9 +103,8 @@ const popularTrades = [
 // von der Startseite ins Leere gelaufen — der Besucher landete auf Schritt 1
 // und musste sein Gewerk noch einmal suchen.
 //
-// `null` heisst bewusst „keine Vorbelegung": Fuer diese Berufe gibt es im
-// Katalog kein passendes Gewerk. Sie bleiben auffindbar, der Nutzer waehlt im
-// Funnel dann selbst.
+// `null` heisst bewusst „keine Vorbelegung": Der Beruf ist auffindbar, aber
+// keinem einzelnen Gewerk zuzuordnen — der Nutzer waehlt im Funnel selbst.
 interface Role {
   /** Was der Nutzer liest. */
   label: string;
@@ -158,7 +157,7 @@ const gewerkeGruppen: { category: string; roles: Role[] }[] = [
       { label: "Dachdecker", gewerk: "dach_klempnerei", synonyms: ["dach"] },
       { label: "Gerüstbauer", gewerk: "geruestbau", synonyms: ["gerüst"] },
       { label: "Schadensanierung", gewerk: "schadensanierung", synonyms: ["wasserschaden", "brandschaden", "trocknung"] },
-      { label: "Garten- & Landschaftsbau", gewerk: null, synonyms: ["galabau", "garten", "landschaft"] },
+      { label: "Garten- & Landschaftsbau", gewerk: "garten_landschaftsbau", synonyms: ["galabau", "garten", "landschaft"] },
       { label: "Bauhelfer", gewerk: null, synonyms: ["helfer", "bau"] },
     ],
   },
@@ -167,7 +166,7 @@ const gewerkeGruppen: { category: string; roles: Role[] }[] = [
     roles: [
       { label: "Metallbauer / Schlosser", gewerk: "metallbau", synonyms: ["metall", "schweißen", "schlosser"] },
       { label: "Feinwerkmechaniker", gewerk: "metallbau", synonyms: ["mechanik", "zerspanung"] },
-      { label: "KFZ-Mechatroniker", gewerk: null, synonyms: ["kfz", "auto", "mechatroniker"] },
+      { label: "KFZ-Mechatroniker", gewerk: "kfz_technik", synonyms: ["kfz", "auto", "mechatroniker"] },
     ],
   },
 ];

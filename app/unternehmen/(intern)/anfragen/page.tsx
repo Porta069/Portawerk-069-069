@@ -11,6 +11,7 @@ import type { LucideIcon } from "lucide-react";
 import { listRequests } from "@/lib/employerService";
 import type { ContactRequest } from "@/lib/types";
 import CandidateCard from "@/app/components/employer/CandidateCard";
+import Wartezustand from "@/app/components/dashboard/Wartezustand";
 
 const GROUPS: {
   status: ContactRequest["status"];
@@ -79,22 +80,32 @@ export default function EmployerRequestsPage() {
           <Loader2 className="w-6 h-6 animate-spin" style={{ color: "#E8A838" }} />
         </div>
       ) : requests.length === 0 ? (
-        <div className="rounded-3xl bg-white px-6 py-16 text-center" style={{ border: "1.5px solid #E9E7E1" }}>
-          <Inbox className="w-7 h-7 mx-auto mb-4" style={{ color: "#E8A838" }} />
-          <p className="text-[16px] font-bold text-primary mb-1.5">Noch keine Anfrage gestellt</p>
-          <p className="text-[13.5px] mb-6" style={{ color: "rgba(26,26,46,0.5)" }}>
-            Such über deine Postleitzahl nach Handwerkern in der Umgebung.
-          </p>
-          <Link
-            href="/unternehmen/dashboard"
-            className="group inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-bold"
-            style={{ background: "#E8A838", color: "#1A1A2E", fontFamily: "var(--font-display)" }}
-          >
-            <Send className="w-4 h-4" />
-            Kandidaten suchen
-            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </Link>
-        </div>
+        // Derselbe wartende Stapel wie bei den Bewerbungen: die
+        // Platzhalterkarten tragen die Bildkachel, weil auch die
+        // Kandidatenkarten hier links ein Gewerkfoto haben.
+        <Wartezustand
+          mitBild
+          marke="Noch keine Anfrage"
+          titel="Hier stehen deine Anfragen"
+          text="Sobald du bei einem Handwerker Interesse anmeldest, siehst du hier, wie er entschieden hat."
+          icon={<Inbox className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />}
+          aktion={
+            <Link
+              href="/unternehmen/dashboard"
+              className="group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "#E8A838",
+                color: "#1A1A2E",
+                fontFamily: "var(--font-display)",
+                boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+              }}
+            >
+              <Send className="w-4 h-4" />
+              Kandidaten suchen
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+          }
+        />
       ) : (
         <div className="space-y-9">
           {grouped.map((g) => {

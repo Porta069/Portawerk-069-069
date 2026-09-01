@@ -57,7 +57,7 @@ const GROUPS: {
   {
     status: "angefragt",
     label: "Anfrage läuft",
-    note: "Er entscheidet noch",
+    note: "Kandidat entscheidet noch",
     color: "#B47B18",
     bg: "rgba(232,168,56,0.16)",
     hauch: "rgba(232,168,56,0.13)",
@@ -66,7 +66,7 @@ const GROUPS: {
   {
     status: "abgelehnt",
     label: "Abgelehnt",
-    note: "Diesmal kein Interesse",
+    note: "Kandidat hat kein Interesse",
     color: "rgba(26,26,46,0.5)",
     bg: "rgba(26,26,46,0.06)",
     hauch: "rgba(26,26,46,0.05)",

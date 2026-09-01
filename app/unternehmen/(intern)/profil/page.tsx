@@ -5,13 +5,25 @@
 // ankommt. Der Betrieb soll nicht raten müssen, wie er dasteht — deshalb ist
 // die Vorschau kein Extra, sondern steht gleichberechtigt daneben und
 // aktualisiert sich beim Tippen.
+//
+// ── Zur Gestaltung ──────────────────────────────────────────────────────────
+// Die Seite begann als einzige im Bereich mit einer nackten Überschrift auf
+// Papierton, führte sieben gleich aussehende weisse Kästen untereinander und
+// hatte den Speichern-Knopf ganz oben — also ausser Sicht, sobald man am
+// letzten Feld arbeitete.
+//
+// Jetzt: dunkles Band mit Foto wie nebenan, darin die Profilstärke als
+// Kennzahl der Seite. Die sieben Kästen sind fünf nummerierte Schritte
+// geworden (Logo gehört zum Betrieb, Leistungen zu den Arbeitsbedingungen),
+// die Felder tragen den Stil des Inserate-Editors mit goldenem Fokus, und die
+// Aktionsleiste klebt unten mit.
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Building2, MapPin, Phone, Mail, Globe, Users, CalendarDays, Loader2, Check,
-  Save, Eye, Sparkles, Home, Palmtree, ImagePlus, Trash2, AlertCircle, Settings,
+  Save, Eye, Sparkles, Home, Palmtree, ImagePlus, Trash2, AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import {
@@ -69,8 +81,145 @@ function fieldErrors(p: EmployerProfile): Partial<Record<keyof EmployerProfile, 
 }
 
 const inputCls =
-  "w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 outline-none transition-all placeholder:text-primary/25";
+  "wp-feld w-full rounded-2xl bg-white text-primary text-[15px] px-4 py-3.5 placeholder:text-primary/25";
 const inputStyle = { border: "1.5px solid #E9E7E1" } as const;
+
+/**
+ * Dunkles Band über die volle Fensterbreite — dieselbe Bauform wie in den
+ * Bewerbungen und Anfragen. `.vollbreite` bricht aus dem zentrierten
+ * Inhaltsbereich aus, `-mt-10` hebt den Abstand des Layouts auf.
+ */
+function Band({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="vollbreite relative overflow-hidden -mt-10 mb-8" style={{ background: "#1A1A2E" }}>
+      <Image
+        src="/images/tischler-hobel.jpg"
+        alt=""
+        fill
+        sizes="100vw"
+        priority
+        className="object-cover"
+        style={{ objectPosition: "center 46%" }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 44%, rgba(20,20,36,0.72) 100%)",
+        }}
+      />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Abschnitt mit vorangestellter Ordnungszahl — wie im Inserate-Editor.
+ *
+ * Die grosse blasse Ziffer gliedert ein langes Formular, ohne eine Zeile Text
+ * zu kosten. Vorher standen sieben gleich aussehende weisse Kästen
+ * untereinander; man wusste beim Scrollen nie, wo man ist.
+ */
+function Schritt({
+  nr,
+  titel,
+  hinweis,
+  children,
+}: {
+  nr: string;
+  titel: string;
+  hinweis?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      className="relative overflow-hidden rounded-3xl p-5 sm:p-7"
+      style={{
+        background: "linear-gradient(158deg, #FFFFFF 0%, #FDFCF8 62%, #F9F5EC 100%)",
+        border: "1.5px solid #EDE8DC",
+        boxShadow: "0 14px 36px -28px rgba(26,26,46,0.55)",
+      }}
+    >
+      <span
+        aria-hidden
+        className="absolute pointer-events-none select-none font-bold leading-none"
+        style={{
+          right: 18,
+          top: 4,
+          fontFamily: "var(--font-display)",
+          fontSize: 84,
+          color: "rgba(26,26,46,0.035)",
+        }}
+      >
+        {nr}
+      </span>
+      <div className="relative mb-5">
+        <p
+          className="inline-flex items-center gap-2.5 text-[10.5px] font-bold uppercase tracking-[0.18em] mb-1.5"
+          style={{ color: "#B47B18" }}
+        >
+          <span className="w-5 h-[2px] rounded-full" style={{ background: "#E8A838" }} />
+          Schritt {nr}
+        </p>
+        <h2
+          className="text-primary font-bold text-[19px] leading-snug"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          {titel}
+        </h2>
+        {hinweis && (
+          <p className="text-[13.5px] mt-1 max-w-xl leading-relaxed" style={{ color: "rgba(26,26,46,0.55)" }}>
+            {hinweis}
+          </p>
+        )}
+      </div>
+      <div className="relative">{children}</div>
+    </section>
+  );
+}
+
+/**
+ * Auswahlknopf für Montage und Leistungen.
+ *
+ * Mit Häkchen statt reiner Farbumkehr: ohne es muss man aus der Farbe erraten,
+ * ob dunkel nun gewählt oder anklickbar heisst. Derselbe Baustein wie im
+ * Anforderungsprofil der Inserate.
+ */
+function Wahlchip({
+  an,
+  onClick,
+  children,
+}: {
+  an: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={an}
+      className="inline-flex items-center gap-2 rounded-full pl-2.5 pr-4 py-2.5 text-[13.5px] font-medium transition-[background,border-color,color,transform] duration-150 hover:-translate-y-px"
+      style={{
+        background: an ? "#1A1A2E" : "#FFFFFF",
+        color: an ? "#FFFFFF" : "rgba(26,26,46,0.62)",
+        border: `1.5px solid ${an ? "#1A1A2E" : "#E9E7E1"}`,
+      }}
+    >
+      <span
+        className="w-[15px] h-[15px] rounded-md flex items-center justify-center flex-shrink-0 transition-colors"
+        style={{
+          background: an ? "#E8A838" : "transparent",
+          border: `1.5px solid ${an ? "#E8A838" : "#DDD9D1"}`,
+        }}
+      >
+        {an && <Check className="w-[9px] h-[9px]" strokeWidth={4} style={{ color: "#1A1A2E" }} />}
+      </span>
+      {children}
+    </button>
+  );
+}
 
 function Label({
   children,
@@ -86,8 +235,8 @@ function Label({
   return (
     <label className="block mb-2">
       <span
-        className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold"
-        style={{ color: "rgba(26,26,46,0.45)" }}
+        className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.13em] font-bold"
+        style={{ color: "rgba(26,26,46,0.42)" }}
       >
         {children}
         {required && <span style={{ color: "#EF4444" }}>*</span>}
@@ -103,36 +252,6 @@ function Label({
         </span>
       )}
     </label>
-  );
-}
-
-function Section({
-  title,
-  desc,
-  children,
-}: {
-  title: string;
-  desc?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section
-      className="rounded-3xl bg-white p-5 sm:p-6"
-      style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -26px rgba(26,26,46,0.5)" }}
-    >
-      <h2
-        className="text-primary font-bold text-[17px] mb-1"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
-        {title}
-      </h2>
-      {desc && (
-        <p className="text-[13px] mb-5" style={{ color: "rgba(26,26,46,0.5)" }}>
-          {desc}
-        </p>
-      )}
-      <div className={desc ? "" : "mt-5"}>{children}</div>
-    </section>
   );
 }
 
@@ -263,47 +382,85 @@ export default function EmployerProfilePage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
-        <div>
-          <h1
-            className="flex items-center gap-3 text-primary font-bold mb-1"
-            style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)" }}
-          >
+      {/* ══ Kopf ══ */}
+      <Band>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
             <span
-              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: "rgba(232,168,56,0.14)" }}
+              className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+              style={{ color: "#E8A838" }}
             >
-              <Settings className="w-[20px] h-[20px]" style={{ color: "#B47B18" }} strokeWidth={2.2} />
+              <span className="w-6 h-[2px] bg-accent" />
+              {p.firmenname || user?.companyName || "Ihr Betrieb"}
             </span>
-            Unternehmensprofil
-          </h1>
-          <p className="text-[15px]" style={{ color: "rgba(26,26,46,0.55)" }}>
-            Diese Angaben sehen Handwerker, wenn Sie ihnen ein Angebot schicken.
-          </p>
-        </div>
+            <h1
+              className="text-white font-bold leading-tight"
+              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3.4vw, 2.7rem)" }}
+            >
+              Unternehmensprofil
+            </h1>
+            <p className="text-[15px] mt-2 max-w-lg" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Diese Angaben sehen Handwerker, wenn Sie ihnen ein Angebot schicken.
+            </p>
+          </div>
 
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
-          style={{
-            background: saved ? "#16A34A" : "#E8A838",
-            color: saved ? "white" : "#1A1A2E",
-            fontFamily: "var(--font-display)",
-            boxShadow: "0 14px 28px -16px rgba(232,168,56,0.9)",
-          }}
-        >
-          {saving ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : saved ? (
-            <Check className="w-4 h-4" strokeWidth={3} />
-          ) : (
-            <Save className="w-4 h-4" />
-          )}
-          {saved ? "Gespeichert" : "Speichern"}
-        </button>
-      </div>
+          {/* Die Profilstaerke ist die Kennzahl dieser Seite — sie gehoert
+              nach oben, nicht in eine weisse Kachel neben die Vorschau. */}
+          <div
+            className="min-w-[252px] rounded-2xl px-5 py-4"
+            style={{
+              background: "rgba(20,20,36,0.55)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              backdropFilter: "blur(3px)",
+            }}
+          >
+            <div className="flex items-baseline justify-between gap-3 mb-2.5">
+              <p className="text-[10.5px] uppercase tracking-[0.16em]" style={{ color: "rgba(255,255,255,0.42)" }}>
+                Profilstärke
+              </p>
+              <p style={{ fontFamily: "var(--font-display)" }}>
+                <span
+                  className="text-[26px] font-bold tabular-nums leading-none"
+                  style={{ color: score >= 80 ? "#6EE7A0" : "#E8A838" }}
+                >
+                  {score}
+                </span>
+                <span className="text-[14px] font-bold ml-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
+                  %
+                </span>
+              </p>
+            </div>
+            <span
+              aria-hidden
+              className="block overflow-hidden rounded-full"
+              style={{ height: 4, background: "rgba(255,255,255,0.12)" }}
+            >
+              <motion.span
+                initial={{ width: 0 }}
+                animate={{ width: `${score}%` }}
+                transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="block h-full rounded-full"
+                style={{
+                  background:
+                    score >= 80
+                      ? "linear-gradient(90deg, #15803D 0%, #22C55E 100%)"
+                      : "linear-gradient(90deg, #B47B18 0%, #E8A838 60%, #F6D08A 100%)",
+                }}
+              />
+            </span>
+            {gaps.length === 0 ? (
+              <p className="inline-flex items-center gap-1.5 text-[12px] mt-3" style={{ color: "#6EE7A0" }}>
+                <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                Vollständig
+              </p>
+            ) : (
+              <p className="text-[12px] mt-3" style={{ color: "rgba(255,255,255,0.6)" }}>
+                <span className="font-semibold text-white">Als Nächstes:</span> {gaps[0].label}
+              </p>
+            )}
+          </div>
+        </div>
+      </Band>
 
       {error && (
         <div
@@ -318,7 +475,11 @@ export default function EmployerProfilePage() {
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] gap-6 items-start">
         {/* ══ Bearbeiten ══ */}
         <div className="space-y-5">
-          <Section title="Grunddaten" desc="Name und Kurzbeschreibung stehen im Angebot ganz oben. Mit * markierte Felder sind Pflicht.">
+          <Schritt
+            nr="01"
+            titel="Ihr Betrieb"
+            hinweis="Name und Kurzbeschreibung stehen im Angebot ganz oben — das liest der Handwerker zuerst."
+          >
             <div className="space-y-4">
               <div>
                 <Label required>Firmenname</Label>
@@ -379,9 +540,13 @@ export default function EmployerProfilePage() {
                 />
               </div>
             </div>
-          </Section>
+          </Schritt>
 
-          <Section title="Standort" desc="Pflichtangabe — bestimmt, welche Kandidaten Ihnen vorgeschlagen werden.">
+          <Schritt
+            nr="02"
+            titel="Standort"
+            hinweis="Pflichtangabe — sie bestimmt, welche Kandidaten Ihnen vorgeschlagen werden."
+          >
             <div className="space-y-4">
               <div>
                 <Label optional>Straße & Hausnummer</Label>
@@ -422,10 +587,17 @@ export default function EmployerProfilePage() {
                 </p>
               )}
             </div>
-          </Section>
+          </Schritt>
 
-          <Section title="Logo" desc="Optional — erscheint im Angebot neben Ihrem Namen.">
-            <div className="flex items-center gap-4">
+          <Schritt
+            nr="03"
+            titel="Logo und Ansprechpartner"
+            hinweis="Handwerker bewerben sich bei Menschen, nicht bei einer GmbH. Beides ist freiwillig und wirkt trotzdem."
+          >
+            <div
+              className="flex items-center gap-4 pb-6 mb-6"
+              style={{ borderBottom: "1px solid #EDE8DC" }}
+            >
               <div
                 className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden"
                 style={{ background: "rgba(26,26,46,0.05)" }}
@@ -474,9 +646,6 @@ export default function EmployerProfilePage() {
                 </p>
               </div>
             </div>
-          </Section>
-
-          <Section title="Ansprechpartner" desc="Optional, aber wirksam — Handwerker bewerben sich bei Menschen, nicht bei einer GmbH.">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <Label>Name</Label>
@@ -519,79 +688,69 @@ export default function EmployerProfilePage() {
                 />
               </div>
             </div>
-          </Section>
+          </Schritt>
 
-          <Section
-            title="Arbeitsbedingungen"
-            desc="Die Punkte, nach denen Handwerker zuerst filtern."
+          <Schritt
+            nr="04"
+            titel="Arbeitsbedingungen"
+            hinweis="Die Punkte, nach denen Handwerker zuerst filtern — oft wichtiger als hundert Euro mehr."
           >
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div>
                 <Label>Montageaufkommen</Label>
                 <div className="flex flex-wrap gap-2">
-                  {MONTAGE_OPTIONEN.map((m) => {
-                    const on = p.montage === m;
-                    return (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => set("montage", on ? "" : m)}
-                        className="rounded-full px-4 py-2.5 text-[13.5px] font-medium transition-all duration-200"
-                        style={{
-                          background: on ? "#1A1A2E" : "white",
-                          color: on ? "white" : "rgba(26,26,46,0.6)",
-                          border: `1.5px solid ${on ? "#1A1A2E" : "#E9E7E1"}`,
-                        }}
-                      >
-                        {m}
-                      </button>
-                    );
-                  })}
+                  {MONTAGE_OPTIONEN.map((m) => (
+                    <Wahlchip
+                      key={m}
+                      an={p.montage === m}
+                      onClick={() => set("montage", p.montage === m ? "" : m)}
+                    >
+                      {m}
+                    </Wahlchip>
+                  ))}
                 </div>
               </div>
 
               <div className="sm:max-w-[220px]">
                 <Label optional>Urlaubstage pro Jahr</Label>
-                <input
-                  className={`${inputCls} tabular-nums`}
-                  style={inputStyle}
-                  inputMode="numeric"
-                  maxLength={2}
-                  value={p.urlaubstage}
-                  onChange={(e) => set("urlaubstage", e.target.value.replace(/\D/g, "").slice(0, 2))}
-                  placeholder="30"
-                />
+                <span className="relative block">
+                  <input
+                    className={`${inputCls} pr-16 tabular-nums`}
+                    style={inputStyle}
+                    inputMode="numeric"
+                    maxLength={2}
+                    value={p.urlaubstage}
+                    onChange={(e) => set("urlaubstage", e.target.value.replace(/\D/g, "").slice(0, 2))}
+                    placeholder="30"
+                  />
+                  <span
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] font-semibold pointer-events-none"
+                    style={{ color: "rgba(26,26,46,0.35)" }}
+                  >
+                    Tage
+                  </span>
+                </span>
               </div>
 
+              <div className="pt-6" style={{ borderTop: "1px solid #EDE8DC" }}>
+                <Label optional hint="Erscheinen als Marken im Angebot — drei oder mehr wirken am besten">
+                  Was Sie bieten
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {BENEFIT_OPTIONEN.map((b) => (
+                    <Wahlchip key={b} an={p.benefits.includes(b)} onClick={() => toggleBenefit(b)}>
+                      {b}
+                    </Wahlchip>
+                  ))}
+                </div>
+              </div>
             </div>
-          </Section>
+          </Schritt>
 
-          <Section title="Leistungen" desc="Optional — erscheinen als Chips im Angebot, mindestens drei empfohlen.">
-            <div className="flex flex-wrap gap-2">
-              {BENEFIT_OPTIONEN.map((b) => {
-                const on = p.benefits.includes(b);
-                return (
-                  <button
-                    key={b}
-                    type="button"
-                    onClick={() => toggleBenefit(b)}
-                    className="rounded-full px-4 py-2.5 text-[13.5px] font-medium transition-all duration-200"
-                    style={{
-                      background: on ? "rgba(232,168,56,0.16)" : "white",
-                      color: on ? "#8A5B0F" : "rgba(26,26,46,0.6)",
-                      border: `1.5px solid ${on ? "#E8A838" : "#E9E7E1"}`,
-                    }}
-                  >
-                    {b}
-                  </button>
-                );
-              })}
-            </div>
-          </Section>
-
-          <Section
-            title="Über uns"
-            desc="Ihre Unternehmensbeschreibung — gerne ausführlich: Geschichte, Projekte, Team, Arbeitsweise. Handwerker lesen das, bevor sie zusagen."
+          <Schritt
+            nr="05"
+            titel="Über uns"
+            hinweis="Gerne ausführlich: Geschichte, Projekte, Team, Arbeitsweise. Handwerker lesen das, bevor sie zusagen."
           >
             <textarea
               rows={10}
@@ -603,58 +762,99 @@ export default function EmployerProfilePage() {
                 "Wir sind ein Familienbetrieb mit 25 Mitarbeitern und arbeiten überwiegend im Raum München …\n\nMehrere Absätze sind ausdrücklich erwünscht."
               }
             />
-          </Section>
+          </Schritt>
+
+          {/* ── Aktionsleiste ──
+              Klebt am unteren Rand. Der Speichern-Knopf stand zuvor ganz oben
+              und war ausser Sicht, sobald man am letzten Feld arbeitete. */}
+          <div className="sticky bottom-4 z-30 pt-1">
+            <div
+              className="flex flex-wrap items-center justify-between gap-4 rounded-3xl px-5 py-4 sm:px-6"
+              style={{
+                background: "rgba(255,255,255,0.92)",
+                backdropFilter: "blur(10px)",
+                border: "1.5px solid #EDE8DC",
+                boxShadow: "0 22px 44px -26px rgba(26,26,46,0.6)",
+              }}
+            >
+              <p className="text-[13px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+                Die Vorschau ändert sich beim Tippen — gespeichert wird erst hier.
+              </p>
+              <button
+                type="button"
+                onClick={save}
+                disabled={saving}
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60"
+                style={{
+                  background: saved ? "#16A34A" : "#E8A838",
+                  color: saved ? "white" : "#1A1A2E",
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 16px 32px -16px rgba(232,168,56,0.85)",
+                }}
+              >
+                {saving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : saved ? (
+                  <Check className="w-4 h-4" strokeWidth={3} />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {saved ? "Gespeichert" : "Speichern"}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* ══ Vorschau ══ */}
         <div className="space-y-5 lg:sticky lg:top-[92px]">
-          {/* Profilstärke */}
-          <div
-            className="rounded-3xl bg-white p-5"
-            style={{ border: "1.5px solid #E9E7E1", boxShadow: "0 10px 30px -26px rgba(26,26,46,0.5)" }}
-          >
-            <div className="flex items-center justify-between gap-3 mb-3">
-              <p className="text-[15px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
-                Profilstärke
-              </p>
-              <span
-                className="text-[19px] font-bold tabular-nums"
-                style={{ fontFamily: "var(--font-display)", color: score >= 80 ? "#15803D" : "#B47B18" }}
+          {/* ── Was noch fehlt ──
+              Die Prozentzahl steht oben im Band; hier stehen die konkreten
+              Schritte dorthin. Zuvor war beides in derselben weissen Kachel,
+              und die Zahl nahm der Liste die Aufmerksamkeit. */}
+          {gaps.length > 0 && (
+            <div
+              className="rounded-3xl p-5"
+              style={{
+                background: "linear-gradient(158deg, #FFFFFF 0%, #FDFBF6 60%, #F9F4E8 100%)",
+                border: "1.5px solid #EDE8DC",
+                boxShadow: "0 12px 30px -26px rgba(26,26,46,0.5)",
+              }}
+            >
+              <p
+                className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3.5"
+                style={{ color: "#B47B18" }}
               >
-                {score} %
-              </span>
-            </div>
-            <div className="h-2 rounded-full overflow-hidden mb-4" style={{ background: "#F1EEE8" }}>
-              <motion.div
-                className="h-full rounded-full"
-                style={{ background: score >= 80 ? "#16A34A" : "#E8A838" }}
-                initial={{ width: 0 }}
-                animate={{ width: `${score}%` }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              />
-            </div>
-
-            {gaps.length === 0 ? (
-              <p className="inline-flex items-center gap-2 text-[13.5px] font-semibold" style={{ color: "#15803D" }}>
-                <Check className="w-4 h-4" strokeWidth={3} />
-                Vollständig — so wirken Sie am überzeugendsten.
+                <span className="w-5 h-[2px] rounded-full" style={{ background: "#E8A838" }} />
+                Das fehlt noch
               </p>
-            ) : (
-              <ul className="space-y-2">
-                {gaps.slice(0, 3).map((g) => (
-                  <li key={g.label} className="flex items-start gap-2.5">
-                    <Sparkles className="w-3.5 h-3.5 flex-shrink-0 mt-1" style={{ color: "#E8A838" }} />
+              <ul className="space-y-3">
+                {gaps.slice(0, 3).map((g, i) => (
+                  <li key={g.label} className="flex items-start gap-3">
+                    <span
+                      className="flex items-center justify-center flex-shrink-0 rounded-full text-[10.5px] font-bold tabular-nums"
+                      style={{
+                        width: 20,
+                        height: 20,
+                        marginTop: 1,
+                        background: "rgba(232,168,56,0.16)",
+                        color: "#B47B18",
+                      }}
+                    >
+                      {i + 1}
+                    </span>
                     <span className="min-w-0">
-                      <span className="block text-[13.5px] font-semibold text-primary">{g.label}</span>
-                      <span className="block text-[12px]" style={{ color: "rgba(26,26,46,0.5)" }}>
+                      <span className="block text-[14px] font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
+                        {g.label}
+                      </span>
+                      <span className="block text-[12.5px] mt-0.5 leading-relaxed" style={{ color: "rgba(26,26,46,0.5)" }}>
                         {g.hint}
                       </span>
                     </span>
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* So sehen Handwerker Sie */}
           <div>
@@ -801,8 +1001,7 @@ export default function EmployerProfilePage() {
             </div>
 
             <p className="text-[12px] mt-3 leading-relaxed" style={{ color: "rgba(26,26,46,0.45)" }}>
-              Die Vorschau aktualisiert sich beim Tippen. Gespeichert wird erst mit dem
-              Knopf oben.
+              So sieht Ihr Betrieb im Angebot aus — die Vorschau ändert sich beim Tippen.
             </p>
           </div>
         </div>

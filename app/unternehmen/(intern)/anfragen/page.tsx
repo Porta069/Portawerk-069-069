@@ -433,45 +433,77 @@ export default function EmployerRequestsPage() {
           }
         />
       ) : (
-        <div className="space-y-8">
-          {grouped.map((g) => {
+        <div>
+          {grouped.map((g, gi) => {
             const Icon = g.icon;
             return (
-              <section key={g.status}>
-                {/* Leise Zeile statt farbigem Balken: der Zustand steht am
-                    Punkt jeder Anfrage, hier genuegt die Ueberschrift. */}
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
-                  <h2
-                    className="inline-flex items-center gap-2 text-[16px] font-bold"
-                    style={{ color: g.color, fontFamily: "var(--font-display)" }}
-                  >
-                    <Icon className="w-4 h-4" strokeWidth={2.8} />
-                    {g.label} · {g.items.length}
-                  </h2>
-                  <span className="text-[14px]" style={{ color: "rgba(26,26,46,0.42)" }}>
-                    {g.note}
-                  </span>
-                </div>
-
-                {/* ── Verlaufsleiste ──
-                    Jede Anfrage haengt als Punkt an einer senkrechten Linie.
-                    Das ist die Form, die zum Inhalt passt: ein Vorgang, der
-                    laeuft und irgendwann eine Antwort bekommt. */}
+              <section
+                key={g.status}
+                // Deutlich mehr Luft zwischen den Bereichen als innerhalb, und
+                // eine Haarlinie als Schnitt. Vorher lagen sie im selben
+                // Abstand wie die Karten untereinander und liefen ineinander.
+                className={gi > 0 ? "mt-12 pt-11" : ""}
+                style={gi > 0 ? { borderTop: "1px solid #EAE5DA" } : undefined}
+              >
+                {/* ── Ein Strang je Bereich ──
+                    Die Leiste beginnt am Kopf des Bereichs und laeuft durch
+                    seine Karten. Ueberschrift und Anfragen haengen damit
+                    sichtbar zusammen, und zwischen zwei Straengen ist eine
+                    echte Luecke statt nur etwas Abstand. */}
                 <div className="relative pl-7 sm:pl-9">
-                  {/* Die Leiste waechst von oben nach unten mit, waehrend die
-                      Karten erscheinen — der Vorgang baut sich auf, statt
-                      fertig dazuliegen. */}
                   <motion.span
                     aria-hidden
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: 1 }}
                     transition={{ duration: 0.55 + g.items.length * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute top-3 bottom-3 w-[2px] origin-top"
+                    className="absolute w-[2px] origin-top"
                     style={{
                       left: 7,
-                      background: `linear-gradient(180deg, ${g.color}55 0%, #E6E1D6 34%, rgba(230,225,214,0) 100%)`,
+                      top: 22,
+                      bottom: 14,
+                      background: `linear-gradient(180deg, ${g.color} 0%, ${g.color}55 12%, #E6E1D6 40%, rgba(230,225,214,0) 100%)`,
                     }}
                   />
+
+                  {/* Kopf des Strangs */}
+                  <span
+                    aria-hidden
+                    className="absolute rounded-full"
+                    style={{
+                      left: 1,
+                      top: 8,
+                      width: 14,
+                      height: 14,
+                      background: g.color,
+                      border: "3px solid #F8F7F4",
+                    }}
+                  />
+
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-5">
+                    <h2
+                      className="inline-flex items-center gap-2 text-[19px] font-bold"
+                      style={{ color: g.color, fontFamily: "var(--font-display)" }}
+                    >
+                      <Icon className="w-[18px] h-[18px]" strokeWidth={2.8} />
+                      {g.label}
+                      <span
+                        className="inline-flex items-center justify-center rounded-full text-[12.5px] font-bold tabular-nums"
+                        style={{
+                          minWidth: 24,
+                          height: 24,
+                          padding: "0 7px",
+                          background: g.bg,
+                          color: g.color,
+                        }}
+                      >
+                        {g.items.length}
+                      </span>
+                    </h2>
+                    <span className="text-[14px]" style={{ color: "rgba(26,26,46,0.42)" }}>
+                      {g.note}
+                    </span>
+                  </div>
+
                   <div className="space-y-4">
                     {g.items.map((r, i) => {
                       const laeuft = r.status === "angefragt";
@@ -492,10 +524,10 @@ export default function EmployerRequestsPage() {
                             className={`absolute rounded-full ${laeuft ? "vorgang-puls" : ""}`}
                             style={
                               {
-                                left: -30,
+                                left: -29,
                                 top: 34,
-                                width: 14,
-                                height: 14,
+                                width: 12,
+                                height: 12,
                                 background: g.color,
                                 border: "3px solid #F8F7F4",
                                 "--puls-nah": `${g.color}88`,

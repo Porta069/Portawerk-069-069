@@ -18,7 +18,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: GESCHUETZTE_PFADE.map((p) => `${p}/`),
+        // OHNE Schrägstrich am Ende. Regeln greifen als Präfix: „/dashboard/"
+        // sperrt zwar „/dashboard/merkliste", aber nicht „/dashboard" selbst —
+        // und genau diese Übersichtsseite wäre dann als einzige indexierbar
+        // gewesen. „/dashboard" deckt beides ab.
+        //
+        // Keiner der gesperrten Pfade ist Präfix einer öffentlichen Seite:
+        // „/unternehmen/login" bleibt erreichbar, weil keine Regel darauf passt.
+        disallow: GESCHUETZTE_PFADE,
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

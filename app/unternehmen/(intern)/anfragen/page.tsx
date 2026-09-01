@@ -25,8 +25,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Send, Clock3, Check, X, ArrowRight, Inbox, ShieldCheck, Phone, Mail,
-  ChevronRight,
+  Send, Clock3, Check, X, ArrowRight, Inbox, Phone, Mail, ChevronRight,
 } from "lucide-react";
 import { listRequests } from "@/lib/employerService";
 import type { ContactRequest } from "@/lib/types";
@@ -46,7 +45,7 @@ const GROUPS: {
   {
     status: "freigegeben",
     label: "Profil freigegeben",
-    note: "Der Kandidat hat zugestimmt — Sie dürfen Kontakt aufnehmen.",
+    note: "Sie dürfen Kontakt aufnehmen",
     color: "#15803D",
     bg: "rgba(22,163,74,0.12)",
     icon: Check,
@@ -54,7 +53,7 @@ const GROUPS: {
   {
     status: "angefragt",
     label: "Anfrage läuft",
-    note: "Der Kandidat entscheidet noch. Bis dahin bleibt das Profil anonym.",
+    note: "Er entscheidet noch",
     color: "#B47B18",
     bg: "rgba(232,168,56,0.16)",
     icon: Clock3,
@@ -62,7 +61,7 @@ const GROUPS: {
   {
     status: "abgelehnt",
     label: "Abgelehnt",
-    note: "Diesmal kein Interesse — der Grund wird uns anonym übermittelt.",
+    note: "Diesmal kein Interesse",
     color: "rgba(26,26,46,0.5)",
     bg: "rgba(26,26,46,0.06)",
     icon: X,
@@ -85,7 +84,6 @@ function AnfrageKarte({
 }) {
   const [profil, setProfil] = useState(false);
   const c = anfrage.candidate;
-  const offen = anfrage.status === "angefragt";
   const abgelehnt = anfrage.status === "abgelehnt";
   // Gleiche Aufnahme fuer ein Gewerk — der Ausschnitt wandert mit dem Kuerzel,
   // damit zwei Anfragen im selben Gewerk unterscheidbar bleiben.
@@ -145,15 +143,19 @@ function AnfrageKarte({
             <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
               <div className="min-w-0">
                 <h3
-                  className="text-primary font-bold text-[17px] leading-snug"
+                  className="text-primary font-bold text-[20px] leading-snug"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {c.handle}
                 </h3>
-                <p className="text-[12.5px] mt-0.5" style={{ color: "rgba(26,26,46,0.45)" }}>
-                  {c.bereich}
+                {/* Eine Zeile statt dreier: Stelle, Entfernung, Zeitpunkt.
+                    Der Bereich stand vorher nochmal daneben, obwohl er schon
+                    im Bild und im Kuerzel steht. */}
+                <p className="text-[14px] mt-1" style={{ color: "rgba(26,26,46,0.5)" }}>
+                  für „{anfrage.position}“
                   {c.region && ` · ${c.region}`}
-                  {c.distanceKm != null && ` · ${c.distanceKm} km`}
+                  <span className="mx-1.5" style={{ color: "rgba(26,26,46,0.22)" }}>·</span>
+                  {anfrage.sentAt}
                 </p>
               </div>
               {c.matchScore > 0 && (
@@ -162,12 +164,12 @@ function AnfrageKarte({
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   <span
-                    className="text-[22px] font-bold tabular-nums leading-none"
+                    className="text-[26px] font-bold tabular-nums leading-none"
                     style={{ color: abgelehnt ? "rgba(26,26,46,0.35)" : "#1A1A2E" }}
                   >
                     {c.matchScore}
                   </span>
-                  <span className="text-[12px] font-bold" style={{ color: "rgba(26,26,46,0.3)" }}>
+                  <span className="text-[14px] font-bold" style={{ color: "rgba(26,26,46,0.3)" }}>
                     %
                   </span>
                 </p>
@@ -182,7 +184,7 @@ function AnfrageKarte({
                 style={{ borderTop: "1px solid #F2EFE9" }}
               >
                 <span
-                  className="inline-flex items-center gap-1.5 text-[14px] font-bold"
+                  className="inline-flex items-center gap-1.5 text-[16px] font-bold"
                   style={{ color: "#15803D", fontFamily: "var(--font-display)" }}
                 >
                   <Check className="w-3.5 h-3.5" strokeWidth={3} />
@@ -191,30 +193,29 @@ function AnfrageKarte({
                 <a
                   href={`tel:${c.freigegeben.telefon.replace(/\s/g, "")}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1.5 text-[13px]"
-                  style={{ color: "rgba(26,26,46,0.65)" }}
+                  className="inline-flex items-center gap-1.5 text-[14.5px]"
+                  style={{ color: "rgba(26,26,46,0.7)" }}
                 >
-                  <Phone className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
+                  <Phone className="w-4 h-4" style={{ color: "#15803D" }} />
                   {c.freigegeben.telefon || "—"}
                 </a>
                 <a
                   href={`mailto:${c.freigegeben.email}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1.5 text-[13px]"
-                  style={{ color: "rgba(26,26,46,0.65)" }}
+                  className="inline-flex items-center gap-1.5 text-[14.5px]"
+                  style={{ color: "rgba(26,26,46,0.7)" }}
                 >
-                  <Mail className="w-3.5 h-3.5" style={{ color: "#15803D" }} />
+                  <Mail className="w-4 h-4" style={{ color: "#15803D" }} />
                   {c.freigegeben.email}
                 </a>
               </div>
             ) : (
               <p
-                className="inline-flex items-center gap-1.5 text-[12.5px] mt-3"
-                style={{ color: offen ? "#8A5B0F" : "rgba(26,26,46,0.45)" }}
+                className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold mt-3"
+                style={{ color: "rgba(26,26,46,0.45)" }}
               >
-                {offen ? <ShieldCheck className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                {offen ? "Profil bleibt anonym, bis er zustimmt" : "Hat abgelehnt"}
-                <ChevronRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                Profil ansehen
+                <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
               </p>
             )}
           </div>
@@ -265,19 +266,22 @@ export default function EmployerRequestsPage() {
           Bewerbungen nebenan tragen eins, und zwei Fotobaender hintereinander
           waeren derselbe Auftritt zweimal. */}
       <div className="vollbreite relative overflow-hidden -mt-10 mb-8" style={{ background: "#1A1A2E" }}>
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)," +
-              "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 34px)",
-          }}
+        <Image
+          src="/images/maurer-ziegel.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
+          style={{ objectPosition: "center 52%" }}
         />
         <div
           aria-hidden
-          className="absolute -bottom-40 -left-20 w-[460px] h-[460px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.16) 0%, transparent 68%)" }}
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(96deg, rgba(20,20,36,0.96) 0%, rgba(20,20,36,0.9) 44%, rgba(20,20,36,0.7) 100%)",
+          }}
         />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">
           <div className="flex flex-wrap items-end justify-between gap-6">
@@ -302,7 +306,14 @@ export default function EmployerRequestsPage() {
             </div>
 
             {requests.length > 0 && (
-              <div className="min-w-[236px] rounded-2xl px-5 py-4" style={{ background: "rgba(255,255,255,0.07)" }}>
+              <div
+                className="min-w-[236px] rounded-2xl px-5 py-4"
+                style={{
+                  background: "rgba(20,20,36,0.55)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  backdropFilter: "blur(3px)",
+                }}
+              >
                 <p className="text-[10.5px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(255,255,255,0.42)" }}>
                   Antwortquote
                 </p>
@@ -373,13 +384,13 @@ export default function EmployerRequestsPage() {
                     Punkt jeder Anfrage, hier genuegt die Ueberschrift. */}
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
                   <h2
-                    className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em]"
-                    style={{ color: g.color }}
+                    className="inline-flex items-center gap-2 text-[16px] font-bold"
+                    style={{ color: g.color, fontFamily: "var(--font-display)" }}
                   >
-                    <Icon className="w-3.5 h-3.5" strokeWidth={2.6} />
+                    <Icon className="w-4 h-4" strokeWidth={2.8} />
                     {g.label} · {g.items.length}
                   </h2>
-                  <span className="text-[12.5px]" style={{ color: "rgba(26,26,46,0.42)" }}>
+                  <span className="text-[14px]" style={{ color: "rgba(26,26,46,0.42)" }}>
                     {g.note}
                   </span>
                 </div>
@@ -406,7 +417,7 @@ export default function EmployerRequestsPage() {
                           className="absolute rounded-full"
                           style={{
                             left: -30,
-                            top: 26,
+                            top: 34,
                             width: 14,
                             height: 14,
                             background: g.color,
@@ -414,15 +425,6 @@ export default function EmployerRequestsPage() {
                             boxShadow: `0 0 0 1px ${g.color}33`,
                           }}
                         />
-                        <p
-                          className="text-[12px] mb-2"
-                          style={{ color: "rgba(26,26,46,0.42)" }}
-                        >
-                          <strong className="font-semibold" style={{ color: "rgba(26,26,46,0.6)" }}>
-                            {r.sentAt}
-                          </strong>{" "}
-                          angefragt für „{r.position}“
-                        </p>
                         <AnfrageKarte anfrage={r} farbe={g.color} />
                       </div>
                     ))}

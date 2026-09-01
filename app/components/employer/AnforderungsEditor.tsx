@@ -234,6 +234,10 @@ export default function AnforderungsEditor({
     new Map(gewaehlteGewerke.flatMap((b) => b.aufgaben).map((a) => [a.value, a])).values(),
   );
 
+  // `gewichte === null` heisst „Standard". Ein leeres Objekt zaehlt bewusst
+  // NICHT als eigene Gewichtung — sonst landete man beim Umschalten in einem
+  // Zustand, der aussieht wie Standard, die Vorgabe aber eingefroren haette.
+  const eigeneGewichte = !!wert.gewichte && Object.keys(wert.gewichte).length > 0;
   const gewicht = (k: keyof JobGewichte) => wert.gewichte?.[k] ?? STANDARD[k];
 
   return (
@@ -461,13 +465,59 @@ export default function AnforderungsEditor({
         {/* Ein Satz statt dreier Absaetze. Was die Stufen bedeuten, steht als
             Wort neben jeder Zeile — das erklaert sich beim Klicken von selbst
             und braucht keinen Text darueber. */}
-        <p
-          className="text-[13px] pb-3.5 mb-3.5 leading-relaxed"
-          style={{ color: "rgba(26,26,46,0.6)", borderBottom: "1px solid #EDE8DC" }}
-        >
+        <p className="text-[13px] leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
           Bestimmt, in welcher Reihenfolge die Bewerber bei Ihnen stehen.
         </p>
-        <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
+
+        {/* ── Standard oder eigene Gewichtung ──
+            Vorher standen hier neun Regler, sobald man das Inserat öffnete —
+            neun Entscheidungen, die kaum jemand treffen will und die man auch
+            schwer treffen KANN, ohne die Formel dahinter zu kennen. Die Vorgabe
+            passt für fast jede Stelle; wer sie ändern möchte, sagt es
+            ausdrücklich.
+
+            Im Standardfall wird `gewichte: null` gespeichert, nicht eine Kopie
+            der Vorgabewerte. Das ist der Unterschied zwischen „nimm die
+            Vorgabe" und „nimm zufällig dieselben Zahlen": Ändert sich die
+            Vorgabe später, wirkt sie auch für dieses Inserat. */}
+        <div
+          className="flex flex-wrap gap-2 mt-4 pt-3.5"
+          style={{ borderTop: "1px solid #EDE8DC" }}
+        >
+          {[
+            { eigen: false, label: "Standard" },
+            { eigen: true, label: "Selbst gewichten" },
+          ].map((m) => {
+            const aktiv = eigeneGewichte === m.eigen;
+            return (
+              <button
+                key={String(m.eigen)}
+                type="button"
+                aria-pressed={aktiv}
+                onClick={() => set({ gewichte: m.eigen ? { ...STANDARD } : null })}
+                className="px-4 py-2 text-[13px] font-medium rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                style={{
+                  background: aktiv ? "#1A1A2E" : "white",
+                  color: aktiv ? "white" : "rgba(26,26,46,0.65)",
+                  border: `1.5px solid ${aktiv ? "#1A1A2E" : "#EDE8DC"}`,
+                }}
+              >
+                {m.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {!eigeneGewichte && (
+          <p className="text-[12.5px] mt-3" style={{ color: "rgba(26,26,46,0.5)" }}>
+            Es gilt die Standardgewichtung: Aufgabenbereiche und Berufserfahrung
+            zählen am meisten, danach Ausbildungsberuf, Berufsbezeichnung und
+            Gehalt.
+          </p>
+        )}
+
+        {eigeneGewichte && (
+        <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3.5 mt-4">
           {GEWICHT_LABELS.map(({ key, label }) => {
             const g = gewicht(key);
             return (
@@ -523,6 +573,7 @@ export default function AnforderungsEditor({
             );
           })}
         </div>
+        )}
       </div>
     </div>
   );

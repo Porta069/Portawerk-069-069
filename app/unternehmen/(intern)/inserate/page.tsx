@@ -34,10 +34,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Loader2, Pencil, Archive, Scale, ChevronLeft, Wrench,
   AlertCircle, Check, Users, Sparkles, Bot, MapPin, Wallet, FileText,
-  Clock3, Eye, EyeOff, PenLine,
-} from "lucide-react";
+  Clock3, Eye, EyeOff, PenLine, AlertTriangle } from "lucide-react";
 import {
-  listMyJobs, saveJob, archiveJob,
+  listMyJobs, saveJob, setJobStatus,
   MONTAGE_OPTIONEN,
 } from "@/lib/employerService";
 import { GEWERKE } from "@/lib/constants";
@@ -47,6 +46,7 @@ import Auswahl from "@/app/components/dashboard/Auswahl";
 import Wartezustand from "@/app/components/dashboard/Wartezustand";
 import type {
   EmployerJob, EmployerJobInput, Anforderungsprofil,
+  EmployerJobStatus,
 } from "@/lib/types";
 
 // ── Kleine Bausteine im Stil des Bereichs ────────────────────────────────────
@@ -720,6 +720,63 @@ function JobEditor({
 
 // ── Übersicht ────────────────────────────────────────────────────────────────
 
+/**
+ * Die vier Abschnitte der Übersicht, in der Reihenfolge, in der sie jemanden
+ * interessieren: Was läuft, was liegt halbfertig herum, was ruht, was ist weg.
+ */
+const ABSCHNITTE: {
+  status: EmployerJobStatus;
+  titel: string;
+  hinweis: string;
+}[] = [
+  { status: "ACTIVE", titel: "Aktiv", hinweis: "für Handwerker sichtbar" },
+  { status: "DRAFT", titel: "Entwürfe", hinweis: "noch nicht veröffentlicht" },
+  { status: "PAUSED", titel: "Pausiert", hinweis: "vorübergehend ausgeblendet" },
+  { status: "ARCHIVED", titel: "Archiv", hinweis: "eingelagert, jederzeit wiederherstellbar" },
+];
+
+const STATUS_MELDUNG: Record<EmployerJobStatus, string> = {
+  ACTIVE: "Inserat ist veröffentlicht und für Handwerker sichtbar.",
+  DRAFT: "Inserat liegt wieder in den Entwürfen.",
+  PAUSED: "Inserat ist pausiert und vorübergehend nicht sichtbar.",
+  ARCHIVED: "Inserat eingelagert. Sie finden es im Archiv wieder.",
+};
+
+/**
+ * Was man mit einem Inserat im jeweiligen Zustand tun kann.
+ *
+ * Der frühere Zustand kannte genau eine Aktion — archivieren, ohne Rückweg.
+ * Wichtig ist die Trennung von `haupt` und `neben`: Die Hauptaktion ist die,
+ * die man in diesem Zustand fast immer will, und steht als gefüllter Knopf da.
+ */
+const AKTIONEN: Record<
+  EmployerJobStatus,
+  { haupt?: { status: EmployerJobStatus; label: string }; neben: { status: EmployerJobStatus; label: string; frage?: string }[] }
+> = {
+  DRAFT: {
+    haupt: { status: "ACTIVE", label: "Veröffentlichen" },
+    neben: [{ status: "ARCHIVED", label: "Einlagern" }],
+  },
+  ACTIVE: {
+    neben: [
+      { status: "PAUSED", label: "Pausieren" },
+      {
+        status: "ARCHIVED",
+        label: "Einlagern",
+        frage: "Inserat einlagern? Es ist danach nicht mehr sichtbar, bleibt aber im Archiv erhalten.",
+      },
+    ],
+  },
+  PAUSED: {
+    haupt: { status: "ACTIVE", label: "Wieder aktivieren" },
+    neben: [{ status: "ARCHIVED", label: "Einlagern" }],
+  },
+  ARCHIVED: {
+    haupt: { status: "DRAFT", label: "Wiederherstellen" },
+    neben: [],
+  },
+};
+
 const STATUS_CHIP: Record<
   string,
   { label: string; bg: string; color: string; punkt: string; icon: typeof Eye }
@@ -742,14 +799,17 @@ function seit(iso: string): string {
 
 function InseratKarte({
   job,
+  busy,
   onEdit,
-  onArchive,
+  onStatus,
 }: {
   job: EmployerJob;
+  busy: boolean;
   onEdit: () => void;
-  onArchive: () => void;
+  onStatus: (status: EmployerJobStatus) => void;
 }) {
   const chip = STATUS_CHIP[job.status] ?? STATUS_CHIP.DRAFT;
+  const aktionen = AKTIONEN[job.status] ?? AKTIONEN.DRAFT;
   const StatusIcon = chip.icon;
   const aktiv = job.status === "ACTIVE";
   const bewerbungen = job.applications ?? 0;
@@ -975,24 +1035,48 @@ function InseratKarte({
               <Pencil className="w-3.5 h-3.5" />
               Bearbeiten
             </button>
-            <button
-              type="button"
-              onClick={onArchive}
-              title="Inserat archivieren"
-              aria-label="Inserat archivieren"
-              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
-              style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.45)", background: "white" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#E8A838";
-                e.currentTarget.style.color = "#B47B18";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#E0DDD6";
-                e.currentTarget.style.color = "rgba(26,26,46,0.45)";
-              }}
-            >
-              <Archive className="w-4 h-4" />
-            </button>
+            {/* Die Hauptaktion hängt am Zustand: ein Entwurf will
+                veröffentlicht, ein Archiviertes wiederhergestellt werden. */}
+            {aktionen.haupt && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => onStatus(aktionen.haupt!.status)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-[13.5px] font-bold transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
+                style={{ background: "#E8A838", color: "#1A1A2E" }}
+              >
+                {busy ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                )}
+                {aktionen.haupt.label}
+              </button>
+            )}
+            {aktionen.neben.map((n) => (
+              <button
+                key={n.status}
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  // Einlagern fragt nach. Es ist die einzige Aktion, die eine
+                  // laufende Stelle aus der Sicht der Handwerker nimmt.
+                  if (n.frage && !window.confirm(n.frage)) return;
+                  onStatus(n.status);
+                }}
+                title={n.label}
+                aria-label={n.label}
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 h-10 flex-shrink-0 text-[13px] font-medium transition-colors disabled:opacity-50"
+                style={{ border: "1.5px solid #E0DDD6", color: "rgba(26,26,46,0.55)", background: "white" }}
+              >
+                {n.status === "ARCHIVED" ? (
+                  <Archive className="w-3.5 h-3.5" />
+                ) : (
+                  <EyeOff className="w-3.5 h-3.5" />
+                )}
+                {n.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -1012,6 +1096,8 @@ export default function InseratePage() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<EmployerJob[] | null>(null);
   const [editing, setEditing] = useState<EmployerJob | null | "new">(null);
+  const [statusBusy, setStatusBusy] = useState<string | null>(null);
+  const [hinweis, setHinweis] = useState<{ art: "ok" | "fehler"; text: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = () => {
@@ -1025,9 +1111,20 @@ export default function InseratePage() {
     load();
   }, []);
 
-  const handleArchive = async (id: string) => {
-    const res = await archiveJob(id);
-    if (res.ok) load();
+  // Vorher: `if (res.ok) load()` — schlug der Aufruf fehl, passierte sichtbar
+  // gar nichts. Der Nutzer klickte, die Karte blieb stehen, und er hatte keine
+  // Ahnung, ob es geklappt hat. Jetzt trägt jeder Ausgang eine Antwort.
+  const handleStatus = async (id: string, status: EmployerJobStatus) => {
+    setStatusBusy(id);
+    setHinweis(null);
+    const res = await setJobStatus(id, status);
+    setStatusBusy(null);
+    if (!res.ok) {
+      setHinweis({ art: "fehler", text: res.error });
+      return;
+    }
+    setHinweis({ art: "ok", text: STATUS_MELDUNG[status] });
+    load();
   };
 
   const zahlen = useMemo(() => {
@@ -1169,17 +1266,84 @@ export default function InseratePage() {
           }
         />
       ) : (
-        <div className="space-y-4">
-          <AnimatePresence initial={false}>
-            {jobs.map((job) => (
-              <InseratKarte
-                key={job.id}
-                job={job}
-                onEdit={() => setEditing(job)}
-                onArchive={() => handleArchive(job.id)}
-              />
-            ))}
-          </AnimatePresence>
+        <div className="space-y-10">
+          {/* Rückmeldung zur letzten Statusänderung. Ohne sie klickt man und
+              weiß nicht, ob etwas passiert ist — das war der eigentliche
+              Grund, warum der Archivieren-Knopf als kaputt galt. */}
+          {hinweis && (
+            <div
+              className="flex items-start gap-2.5 rounded-2xl px-4 py-3.5"
+              role="status"
+              style={
+                hinweis.art === "ok"
+                  ? { background: "rgba(22,163,74,0.06)", border: "1px solid rgba(22,163,74,0.25)" }
+                  : { background: "rgba(185,28,28,0.06)", border: "1px solid rgba(185,28,28,0.2)" }
+              }
+            >
+              {hinweis.art === "ok" ? (
+                <Check className="w-4 h-4 mt-0.5 flex-shrink-0" strokeWidth={3} style={{ color: "#16A34A" }} />
+              ) : (
+                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#B91C1C" }} />
+              )}
+              <p className="text-[13px]" style={{ color: hinweis.art === "ok" ? "#15803D" : "#B91C1C" }}>
+                {hinweis.text}
+              </p>
+              <button
+                type="button"
+                onClick={() => setHinweis(null)}
+                aria-label="Hinweis schließen"
+                className="ml-auto text-[12px] flex-shrink-0"
+                style={{ color: "rgba(26,26,46,0.4)" }}
+              >
+                schließen
+              </button>
+            </div>
+          )}
+
+          {/* Nach Status gruppiert statt einer langen Liste. Vorher standen
+              aktive Stellen, Entwürfe und Pausiertes durcheinander, und
+              Archiviertes war überhaupt nicht mehr auffindbar. */}
+          {ABSCHNITTE.map((a) => {
+            const teil = jobs.filter((j) => j.status === a.status);
+            if (teil.length === 0) return null;
+            return (
+              <section key={a.status}>
+                <div className="flex items-baseline gap-2.5 mb-3.5">
+                  <h2
+                    className="text-[15px] font-bold text-primary"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {a.titel}
+                  </h2>
+                  <span
+                    className="text-[12.5px] tabular-nums"
+                    style={{ color: "rgba(26,26,46,0.4)" }}
+                  >
+                    {teil.length}
+                  </span>
+                  <span
+                    className="text-[12.5px] flex-1 min-w-0 truncate"
+                    style={{ color: "rgba(26,26,46,0.45)" }}
+                  >
+                    {a.hinweis}
+                  </span>
+                </div>
+                <div className="space-y-4">
+                  <AnimatePresence initial={false}>
+                    {teil.map((job) => (
+                      <InseratKarte
+                        key={job.id}
+                        job={job}
+                        busy={statusBusy === job.id}
+                        onEdit={() => setEditing(job)}
+                        onStatus={(s) => handleStatus(job.id, s)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </section>
+            );
+          })}
         </div>
       )}
     </div>

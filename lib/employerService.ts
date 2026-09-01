@@ -22,6 +22,7 @@ import type {
   ContactRequest,
   EmployerApplication,
   EmployerJob,
+  EmployerJobStatus,
   EmployerJobInput,
   EmployerProfile,
 } from "./types";
@@ -269,6 +270,25 @@ export async function saveJob(
     method: id ? "PATCH" : "POST",
     token: token(),
     body: input,
+  });
+}
+
+/**
+ * Ändert nur den Status — veröffentlichen, pausieren, zurück in die Entwürfe,
+ * einlagern, wiederherstellen.
+ *
+ * Bewusst NICHT über `saveJob`: Das verlangt das vollständige Inserat samt
+ * Anforderungsprofil. Die Übersicht kennt das gar nicht vollständig, und ein
+ * fehlendes Feld würde beim Speichern stillschweigend überschrieben.
+ */
+export async function setJobStatus(
+  id: string,
+  status: EmployerJobStatus,
+): Promise<ApiResult<EmployerJob>> {
+  return apiRequest<EmployerJob>(`/employer/jobs/${id}/status`, {
+    method: "PATCH",
+    token: token(),
+    body: { status },
   });
 }
 

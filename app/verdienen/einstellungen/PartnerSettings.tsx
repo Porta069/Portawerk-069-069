@@ -15,6 +15,7 @@ import { ArrowLeft, ChevronDown, User as UserIcon, Wallet, ShieldCheck,
 } from "lucide-react";
 import { api, partnerSession, type PublicPartner } from "@/lib/api";
 import PasswordStrength from "@/app/components/PasswordStrength";
+import PasswordField, { MINDESTLAENGE } from "@/app/components/PasswordField";
 import { evaluatePassword } from "@/lib/password";
 import Logo from "@/app/components/Logo";
 
@@ -361,13 +362,20 @@ export default function PartnerSettings() {
         {/* ══ Sicherheit ══ */}
         <SectionCard icon={ShieldCheck} title="Sicherheit" subtitle="Passwort ändern und Sitzungen verwalten">
           <form onSubmit={changePw} className="flex flex-col gap-5 mt-4">
+            <PasswordField
+              label="Aktuelles Passwort"
+              value={pwCurrent}
+              onChange={setPwCurrent}
+              autoComplete="current-password"
+            />
             <div>
-              <label className={labelCls} htmlFor="ps-pw-cur">Aktuelles Passwort</label>
-              <input id="ps-pw-cur" type="password" className={inputCls} value={pwCurrent} onChange={(e) => setPwCurrent(e.target.value)} autoComplete="current-password" />
-            </div>
-            <div>
-              <label className={labelCls} htmlFor="ps-pw-new">Neues Passwort</label>
-              <input id="ps-pw-new" type="password" className={inputCls} value={pwNew} onChange={(e) => setPwNew(e.target.value)} autoComplete="new-password" placeholder="Mind. 10 Zeichen" />
+              <PasswordField
+                label="Neues Passwort"
+                value={pwNew}
+                onChange={setPwNew}
+                autoComplete="new-password"
+                placeholder={`Mindestens ${MINDESTLAENGE} Zeichen`}
+              />
               <PasswordStrength password={pwNew} />
             </div>
             {pwMsg && <Msg text={pwMsg} kind="err" />}
@@ -464,13 +472,12 @@ export default function PartnerSettings() {
               <p className="text-muted text-sm mb-5 text-center">
                 Das kann nicht rückgängig gemacht werden. Bestätige mit deinem Passwort.
               </p>
-              <input
-                type="password"
+              <PasswordField
+                label="Passwort"
                 value={delPw}
-                onChange={(e) => setDelPw(e.target.value)}
+                onChange={setDelPw}
                 placeholder="Dein Passwort"
                 autoComplete="current-password"
-                className={inputCls}
               />
               {delMsg && <Msg text={delMsg} kind="err" />}
               <div className="flex gap-3 mt-5">

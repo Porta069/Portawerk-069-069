@@ -10,11 +10,11 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Loader2, Check, Copy, Share2,
-  Sparkles, Lock, Phone, User, Mail, RefreshCw, LayoutDashboard,
-} from "lucide-react";
+  Sparkles, Lock, Phone, User, Mail, RefreshCw, LayoutDashboard, Eye, EyeOff } from "lucide-react";
 import { ProgressBar, StepIndicators, type StepDef } from "./ProgressBar";
 import OtpInput from "./OtpInput";
 import PasswordStrength from "./PasswordStrength";
+import { MINDESTLAENGE } from "./PasswordField";
 import { evaluatePassword } from "@/lib/password";
 import { api, partnerSession } from "@/lib/api";
 import Logo from "@/app/components/Logo";
@@ -48,6 +48,7 @@ export default function PartnerFunnel() {
   const [telefon, setTelefon] = useState("");
   const [email, setEmail] = useState("");
   const [passwort, setPasswort] = useState("");
+  const [pwSichtbar, setPwSichtbar] = useState(false);
   const [consent, setConsent] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -271,7 +272,10 @@ export default function PartnerFunnel() {
                   <label className={label} htmlFor="p-pw">Passwort</label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-                    <input id="p-pw" type="password" className={input + " pl-10"} value={passwort} onChange={(e) => setPasswort(e.target.value)} placeholder="Mind. 10 Zeichen" />
+                    <input id="p-pw" type={pwSichtbar ? "text" : "password"} className={input + " pl-10 pr-10"} value={passwort} onChange={(e) => setPasswort(e.target.value)} placeholder={`Mindestens ${MINDESTLAENGE} Zeichen`} />
+                    <button type="button" tabIndex={-1} onClick={() => setPwSichtbar((s) => !s)} aria-label={pwSichtbar ? "Passwort verbergen" : "Passwort anzeigen"} aria-pressed={pwSichtbar} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors">
+                      {pwSichtbar ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                   <PasswordStrength password={passwort} />
                 </div>

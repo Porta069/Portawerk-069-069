@@ -28,6 +28,7 @@ import {
 import { evaluatePassword } from "@/lib/password";
 import { matchingSections, type SettingsSectionId } from "@/lib/settingsSearch";
 import PasswordStrength from "@/app/components/PasswordStrength";
+import PasswordField from "@/app/components/PasswordField";
 import { Field, PrimaryButton } from "@/app/components/ui";
 import Logo from "@/app/components/Logo";
 
@@ -129,7 +130,7 @@ function AccountSection({ token, t, user, setUser }: { token: string; t: T; user
         <p className="text-sm mb-3" style={{ color: "#6B7280" }}>{user.email}</p>
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label={t("btn.changeEmail")} type="email" value={newEmail} onChange={setNewEmail} placeholder="neu@beispiel.de" />
-          <Field label={t("field.password")} type="password" value={emailPw} onChange={setEmailPw} />
+          <PasswordField label={t("field.password")} value={emailPw} onChange={setEmailPw} autoComplete="current-password" />
         </div>
         <div className="flex items-center gap-3 mt-3">
           <button onClick={changeEmail} disabled={!newEmail || !emailPw || emailBusy}
@@ -438,7 +439,7 @@ function SecuritySection({ token, t, lang, onSession, onLogout }: {
   return (
     <div className="pt-3 space-y-8">
       <div className="space-y-4">
-        <Field label={t("field.currentPassword")} type="password" value={cur} onChange={setCur} />
+        <PasswordField label={t("field.currentPassword")} value={cur} onChange={setCur} autoComplete="current-password" />
         <div>
           <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>{t("field.newPassword")}</label>
           <div className="relative">
@@ -556,8 +557,7 @@ function DataSection({ token, t, onDeleted }: { token: string; t: T; onDeleted: 
         ) : (
           <div className="space-y-3 p-4" style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.25)" }}>
             <p className="text-sm font-medium" style={{ color: "#B91C1C" }}>{t("danger.deleteConfirm")}</p>
-            <input type="password" value={delPw} onChange={(e) => setDelPw(e.target.value)} placeholder={t("field.password")}
-              className="w-full bg-white text-sm px-4 py-3 outline-none" style={{ border: "1.5px solid #E5E7EB" }} />
+            <PasswordField label={t("field.password")} value={delPw} onChange={setDelPw} autoComplete="current-password" />
             {delErr && <p className="text-sm" style={{ color: "#EF4444" }}>{delErr}</p>}
             <div className="flex items-center gap-3">
               <button onClick={doDelete} disabled={!delPw || delBusy} className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold disabled:opacity-40" style={{ background: "#DC2626", color: "white" }}>

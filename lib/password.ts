@@ -1,69 +1,89 @@
 // ─── Passwort-Richtlinie (geteilt) ────────────────────────────────────────────
-// EINE Quelle der Wahrheit für die Passwort-Kriterien im ganzen Frontend.
-// Muss zur Backend-Regel passen (CompleteRegistrationDto):
-//   min. 10 Zeichen + Groß- + Kleinbuchstabe + Zahl + Sonderzeichen.
+// EINE Quelle der Wahrheit für das ganze Frontend. Muss zur Backend-Regel
+// passen (`PASSWORT_MIN` in den DTOs): mindestens acht Zeichen, sonst nichts.
+//
+// Vorher wurden zehn Zeichen plus Groß- und Kleinbuchstabe, Ziffer und
+// Sonderzeichen VERLANGT. Diese Zusammensetzungsregeln erzeugen nicht die
+// Passwörter, die sie versprechen — sie erzeugen „Sommer2024!“, weil Menschen
+// die Regel auf dem kürzesten Weg erfüllen. Das NIST hat sie 2017 aus
+// SP 800-63B gestrichen und empfiehlt seither Länge statt Zusammensetzung.
+//
+// Die Kriterien sind deshalb nicht verschwunden, sondern vom Tor zum Ratschlag
+// geworden: Der Balken zeigt weiter an, wie stark ein Passwort ist, aber er
+// hält niemanden mehr auf. Wer sein gewohntes Passwort benutzen will, kann das.
+
+/** Muss mit `PASSWORT_MIN` im Backend übereinstimmen. */
+export const PASSWORT_MIN = 8;
 
 export interface PasswordChecks {
-  length: boolean; // ≥ 10 Zeichen
-  upper: boolean; // Großbuchstabe
-  lower: boolean; // Kleinbuchstabe
-  number: boolean; // Zahl
-  special: boolean; // Sonderzeichen
+  /** Das EINZIGE Pflichtkriterium. */
+  length: boolean;
+  // Ab hier nur noch Empfehlungen — sie beeinflussen den Balken, nicht `valid`.
+  long: boolean;
+  upper: boolean;
+  lower: boolean;
+  number: boolean;
+  special: boolean;
 }
 
 export interface PasswordResult {
   checks: PasswordChecks;
-  /** Alle Pflichtkriterien erfüllt (Formular darf abgesendet werden). */
+  /** Darf das Formular abgeschickt werden? Hängt allein an der Länge. */
   valid: boolean;
-  /** Stärke 0–4 (nur visuell). */
+  /** Stärke 0–4 — rein visuell, blockiert nichts. */
   score: 0 | 1 | 2 | 3 | 4;
   label: string;
   color: string;
-  /** Balkenfüllung in %. */
   percent: number;
 }
 
-/** Die menschenlesbaren Kriterien (für eine Checkliste). */
-export const PASSWORD_CRITERIA: { key: keyof PasswordChecks; label: string }[] = [
-  { key: "length", label: "Mindestens 10 Zeichen" },
-  { key: "upper", label: "Ein Großbuchstabe (A–Z)" },
-  { key: "lower", label: "Ein Kleinbuchstabe (a–z)" },
-  { key: "number", label: "Eine Zahl (0–9)" },
-  { key: "special", label: "Ein Sonderzeichen (!?@#…)" },
+/**
+ * Was den Balken hebt. Bewusst als „Tipps" formuliert und nicht als Liste von
+ * Pflichten: Eine Checkliste mit roten Kreuzen liest sich wie eine Sperre,
+ * auch wenn nichts gesperrt ist.
+ */
+export const PASSWORD_TIPPS: { key: keyof PasswordChecks; label: string }[] = [
+  { key: "long", label: "12 Zeichen oder mehr" },
+  { key: "upper", label: "Großbuchstabe" },
+  { key: "lower", label: "Kleinbuchstabe" },
+  { key: "number", label: "Ziffer" },
+  { key: "special", label: "Sonderzeichen" },
 ];
 
 export function evaluatePassword(pw: string): PasswordResult {
   const checks: PasswordChecks = {
-    length: pw.length >= 10,
+    length: pw.length >= PASSWORT_MIN,
+    long: pw.length >= 12,
     upper: /[A-Z]/.test(pw),
     lower: /[a-z]/.test(pw),
     number: /\d/.test(pw),
     special: /[^A-Za-z0-9]/.test(pw),
   };
-  const valid = Object.values(checks).every(Boolean);
+  const valid = checks.length;
 
   if (!pw) {
     return { checks, valid, score: 0, label: "", color: "#E5E7EB", percent: 0 };
   }
 
-  const classes =
+  // Zu kurz schlägt alles andere — das ist die einzige echte Hürde.
+  if (!checks.length) {
+    return { checks, valid, score: 1, label: "Zu kurz", color: "#EF4444", percent: 25 };
+  }
+
+  // Länge zählt am meisten. Ein langes Passwort aus lauter Kleinbuchstaben ist
+  // schwerer zu raten als ein kurzes mit allen vier Zeichenarten — genau das
+  // hat die alte Bewertung falsch herum gewichtet.
+  const arten =
     (checks.upper ? 1 : 0) +
     (checks.lower ? 1 : 0) +
     (checks.number ? 1 : 0) +
     (checks.special ? 1 : 0);
 
-  // Zu kurz überschreibt alles.
-  if (!checks.length) {
-    return { checks, valid, score: 1, label: "Zu kurz", color: "#EF4444", percent: 25 };
-  }
-
   let score: PasswordResult["score"];
-  if (classes <= 1) score = 1;
-  else if (classes === 2) score = 2;
-  else if (classes === 3) score = 3;
-  else score = 4;
-  // Länge-Bonus: sehr lange, vollständige Passwörter bleiben oben.
-  if (score === 4 && pw.length >= 14) score = 4;
+  if (pw.length >= 16) score = 4;
+  else if (pw.length >= 12) score = arten >= 2 ? 4 : 3;
+  else if (pw.length >= 10) score = arten >= 3 ? 3 : 2;
+  else score = arten >= 3 ? 2 : 1;
 
   const meta: Record<number, { label: string; color: string; percent: number }> = {
     1: { label: "Schwach", color: "#EF4444", percent: 30 },

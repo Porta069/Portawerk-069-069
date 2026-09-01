@@ -368,3 +368,32 @@ body {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* ─── Pulsierender Vorgangspunkt ────────────────────────────────────────────
+   Wie .punkt-glut, aber die Farbe kommt von aussen: an der Verlaufsleiste der
+   Anfragen traegt jeder Punkt die Farbe seines Zustands. Nur laufende
+   Vorgaenge pulsen — ein Punkt, an dem nichts mehr passiert, soll auch nicht
+   zappeln. */
+@keyframes vorgangspuls {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 var(--puls-weit),
+      0 0 8px 1px var(--puls-nah);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px transparent,
+      0 0 15px 3px var(--puls-nah);
+  }
+}
+
+.vorgang-puls {
+  animation: vorgangspuls 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vorgang-puls {
+    animation: none;
+  }
+}

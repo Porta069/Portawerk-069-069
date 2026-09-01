@@ -21,6 +21,7 @@
 // Bewerbungen. Drei Seiten, ein Aussehen.
 
 import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +41,8 @@ const GROUPS: {
   note: string;
   color: string;
   bg: string;
+  /** Sehr blasser Ton derselben Farbe — traegt den Verlauf der Karte. */
+  hauch: string;
   icon: typeof Check;
 }[] = [
   {
@@ -48,6 +51,7 @@ const GROUPS: {
     note: "Sie dürfen Kontakt aufnehmen",
     color: "#15803D",
     bg: "rgba(22,163,74,0.12)",
+    hauch: "rgba(22,163,74,0.09)",
     icon: Check,
   },
   {
@@ -56,6 +60,7 @@ const GROUPS: {
     note: "Er entscheidet noch",
     color: "#B47B18",
     bg: "rgba(232,168,56,0.16)",
+    hauch: "rgba(232,168,56,0.13)",
     icon: Clock3,
   },
   {
@@ -64,9 +69,41 @@ const GROUPS: {
     note: "Diesmal kein Interesse",
     color: "rgba(26,26,46,0.5)",
     bg: "rgba(26,26,46,0.06)",
+    hauch: "rgba(26,26,46,0.05)",
     icon: X,
   },
 ];
+
+/**
+ * Zahl, die von 0 hochlaeuft.
+ *
+ * Die Antwortquote ist der Kennwert dieser Seite. Als fertige Zahl war sie
+ * eine Angabe unter vielen; waehrend sie hochlaeuft, schaut man hin.
+ */
+function Hochzaehler({ wert }: { wert: number }) {
+  const [zahl, setZahl] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setZahl(wert);
+      return;
+    }
+    let raf = 0;
+    let start: number | null = null;
+    const dauer = 900;
+    const schritt = (t: number) => {
+      if (start === null) start = t;
+      const p = Math.min((t - start) / dauer, 1);
+      // Weich auslaufend, damit die Zahl nicht abrupt stehenbleibt.
+      setZahl(Math.round(wert * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) raf = requestAnimationFrame(schritt);
+    };
+    raf = requestAnimationFrame(schritt);
+    return () => cancelAnimationFrame(raf);
+  }, [wert]);
+
+  return <>{zahl}</>;
+}
 
 /**
  * Eine gestellte Anfrage.
@@ -78,9 +115,14 @@ const GROUPS: {
 function AnfrageKarte({
   anfrage,
   farbe,
+  hauch,
+  verzug,
 }: {
   anfrage: ContactRequest;
   farbe: string;
+  hauch: string;
+  /** Gestaffeltes Erscheinen — die Liste baut sich von oben auf. */
+  verzug: number;
 }) {
   const [profil, setProfil] = useState(false);
   const c = anfrage.candidate;
@@ -92,19 +134,22 @@ function AnfrageKarte({
   return (
     <>
       <motion.article
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, x: -14 }}
+        animate={{ opacity: abgelehnt ? 0.85 : 1, x: 0 }}
+        transition={{ duration: 0.5, delay: verzug, ease: [0.22, 1, 0.36, 1] }}
         onClick={() => setProfil(true)}
-        className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5"
+        className="group relative cursor-pointer overflow-hidden rounded-2xl transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1"
         style={{
+          // Der Zustand faerbt die Flaeche: voller Ton am Bild, nach rechts
+          // ins Weisse. Vorher war die Karte reinweiss und der Zustand nur
+          // ein 2-px-Strich unten — richtig, aber leblos.
+          background: `linear-gradient(100deg, ${hauch} 0%, rgba(255,255,255,0.65) 38%, #FFFFFF 72%)`,
           border: "1px solid #EDEAE3",
           boxShadow: "0 12px 28px -24px rgba(26,26,46,0.5)",
-          opacity: abgelehnt ? 0.8 : 1,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.borderColor = "#DFD9CC";
-          e.currentTarget.style.boxShadow = "0 18px 36px -22px rgba(26,26,46,0.45)";
+          e.currentTarget.style.boxShadow = `0 22px 42px -22px ${farbe}55`;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.borderColor = "#EDEAE3";
@@ -128,8 +173,12 @@ function AnfrageKarte({
             />
             <div
               aria-hidden
-              className="absolute inset-0"
-              style={{ background: "linear-gradient(160deg, rgba(20,20,36,0.42) 0%, rgba(20,20,36,0.82) 100%)" }}
+              className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-80"
+              style={{
+                background:
+                  `linear-gradient(160deg, rgba(20,20,36,0.34) 0%, rgba(20,20,36,0.86) 100%), ` +
+                  `linear-gradient(200deg, ${farbe}44 0%, transparent 62%)`,
+              }}
             />
             <span
               className="absolute left-3 bottom-3 text-white font-bold text-[15px]"
@@ -224,8 +273,12 @@ function AnfrageKarte({
         {/* Feiner Farbstreifen am unteren Rand statt einer weiteren Marke. */}
         <span
           aria-hidden
-          className="absolute left-0 right-0 bottom-0 h-[2px]"
-          style={{ background: farbe, opacity: abgelehnt ? 0.35 : 0.75 }}
+          className="absolute left-0 bottom-0 h-[2px] transition-[width,opacity] duration-500 ease-out group-hover:w-full"
+          style={{
+            width: "42%",
+            background: `linear-gradient(90deg, ${farbe} 0%, ${farbe}00 100%)`,
+            opacity: abgelehnt ? 0.4 : 0.9,
+          }}
         />
       </motion.article>
 
@@ -318,17 +371,22 @@ export default function EmployerRequestsPage() {
                   Antwortquote
                 </p>
                 <p className="flex items-baseline gap-1.5" style={{ fontFamily: "var(--font-display)" }}>
-                  <span className="text-[30px] font-bold tabular-nums text-white leading-none">{quote}</span>
+                  <span className="text-[30px] font-bold tabular-nums text-white leading-none">
+                    <Hochzaehler wert={quote} />
+                  </span>
                   <span className="text-[15px] font-bold" style={{ color: "rgba(255,255,255,0.4)" }}>%</span>
                 </p>
                 <span
                   aria-hidden
-                  className="block rounded-full mt-3 mb-2"
+                  className="block overflow-hidden rounded-full mt-3 mb-2"
                   style={{ height: 4, background: "rgba(255,255,255,0.12)" }}
                 >
-                  <span
-                    className="block h-full rounded-full transition-[width] duration-700"
-                    style={{ width: `${quote}%`, background: "#E8A838" }}
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: `${quote}%` }}
+                    transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="block h-full rounded-full"
+                    style={{ background: "linear-gradient(90deg, #B47B18 0%, #E8A838 60%, #F6D08A 100%)" }}
                   />
                 </span>
                 <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.45)" }}>
@@ -400,34 +458,60 @@ export default function EmployerRequestsPage() {
                     Das ist die Form, die zum Inhalt passt: ein Vorgang, der
                     laeuft und irgendwann eine Antwort bekommt. */}
                 <div className="relative pl-7 sm:pl-9">
-                  <span
+                  {/* Die Leiste waechst von oben nach unten mit, waehrend die
+                      Karten erscheinen — der Vorgang baut sich auf, statt
+                      fertig dazuliegen. */}
+                  <motion.span
                     aria-hidden
-                    className="absolute top-3 bottom-3 w-[2px]"
+                    initial={{ scaleY: 0 }}
+                    animate={{ scaleY: 1 }}
+                    transition={{ duration: 0.55 + g.items.length * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute top-3 bottom-3 w-[2px] origin-top"
                     style={{
                       left: 7,
-                      background:
-                        "linear-gradient(180deg, #E6E1D6 0%, #E6E1D6 82%, rgba(230,225,214,0) 100%)",
+                      background: `linear-gradient(180deg, ${g.color}55 0%, #E6E1D6 34%, rgba(230,225,214,0) 100%)`,
                     }}
                   />
                   <div className="space-y-4">
-                    {g.items.map((r) => (
-                      <div key={r.id} className="relative">
-                        <span
-                          aria-hidden
-                          className="absolute rounded-full"
-                          style={{
-                            left: -30,
-                            top: 34,
-                            width: 14,
-                            height: 14,
-                            background: g.color,
-                            border: "3px solid #F8F7F4",
-                            boxShadow: `0 0 0 1px ${g.color}33`,
-                          }}
-                        />
-                        <AnfrageKarte anfrage={r} farbe={g.color} />
-                      </div>
-                    ))}
+                    {g.items.map((r, i) => {
+                      const laeuft = r.status === "angefragt";
+                      return (
+                        <div key={r.id} className="relative">
+                          <motion.span
+                            aria-hidden
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{
+                              delay: 0.18 + i * 0.09,
+                              type: "spring",
+                              stiffness: 420,
+                              damping: 24,
+                            }}
+                            // Nur laufende Anfragen pulsen: dort passiert
+                            // gerade etwas, bei entschiedenen nicht mehr.
+                            className={`absolute rounded-full ${laeuft ? "vorgang-puls" : ""}`}
+                            style={
+                              {
+                                left: -30,
+                                top: 34,
+                                width: 14,
+                                height: 14,
+                                background: g.color,
+                                border: "3px solid #F8F7F4",
+                                "--puls-nah": `${g.color}88`,
+                                "--puls-weit": `${g.color}55`,
+                              } as CSSProperties
+                            }
+                          />
+                          <AnfrageKarte
+                            anfrage={r}
+                            farbe={g.color}
+                            hauch={g.hauch}
+                            verzug={i * 0.09}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </section>

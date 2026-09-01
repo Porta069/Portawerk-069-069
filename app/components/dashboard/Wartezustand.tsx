@@ -41,6 +41,7 @@ export default function Wartezustand({
   icon,
   aktion,
   abstandUnten = "lg:mb-2",
+  mitBild = false,
 }: {
   /** Kleinschriftzeile über der Überschrift, z. B. "Noch nichts unterwegs". */
   marke: string;
@@ -63,6 +64,14 @@ export default function Wartezustand({
    * ändert die Kartenhöhen — nicht den Rand.
    */
   abstandUnten?: string;
+  /**
+   * Fuer Listen, deren echte Eintraege links eine Bildkachel tragen — etwa
+   * die Bewerbungen mit ihrem Gewerkfoto.
+   *
+   * Der Sinn des Blocks ist, die Form der kommenden Eintraege zu zeigen. Ein
+   * kleines Quadrat neben drei Zeilen waere dort die falsche Form gewesen.
+   */
+  mitBild?: boolean;
 }) {
   return (
     <div className={`relative mb-8 ${abstandUnten}`}>
@@ -86,26 +95,65 @@ export default function Wartezustand({
               } as CSSProperties
             }
           >
-            <div className="flex gap-4 p-4">
-              <span
-                className="rounded-2xl flex-shrink-0"
-                style={{ width: 56, height: 56, background: "#F0EBE0" }}
-              />
-              <span className="flex-1 min-w-0 space-y-2.5 pt-1">
+            {mitBild ? (
+              <div className="flex h-full">
+                {/* Statusstreifen und Bildkachel wie in der echten Karte. */}
+                <span className="flex-shrink-0" style={{ width: 3, background: "#EBE4D6" }} />
                 <span
-                  className="block rounded-full"
-                  style={{ width: "42%", height: 13, background: "#EBE4D6" }}
+                  className="flex-shrink-0"
+                  style={{ width: 96, background: "linear-gradient(158deg, #F2EDE2 0%, #E9E2D3 100%)" }}
                 />
+                <span className="flex-1 min-w-0 space-y-2.5 p-4">
+                  <span
+                    className="block rounded-full"
+                    style={{ width: "34%", height: 13, background: "#EBE4D6" }}
+                  />
+                  <span
+                    className="block rounded-full"
+                    style={{ width: "52%", height: 10, background: "#F0EBE0" }}
+                  />
+                  <span
+                    className="block rounded-full"
+                    style={{ width: "44%", height: 10, background: "#F0EBE0" }}
+                  />
+                </span>
                 <span
-                  className="block rounded-full"
-                  style={{ width: "26%", height: 10, background: "#F0EBE0" }}
+                  className="flex-shrink-0 hidden sm:block"
+                  style={{ width: 1, background: "#F2EDE3" }}
                 />
+                <span className="flex-shrink-0 hidden sm:block w-[168px] p-4">
+                  <span
+                    className="block rounded-full"
+                    style={{ width: 54, height: 18, background: "#EBE4D6" }}
+                  />
+                  <span
+                    className="block rounded-full mt-2.5"
+                    style={{ width: "100%", height: 3, background: "#F0EBE0" }}
+                  />
+                </span>
+              </div>
+            ) : (
+              <div className="flex gap-4 p-4">
                 <span
-                  className="block rounded-full"
-                  style={{ width: "58%", height: 10, background: "#F0EBE0" }}
+                  className="rounded-2xl flex-shrink-0"
+                  style={{ width: 56, height: 56, background: "#F0EBE0" }}
                 />
-              </span>
-            </div>
+                <span className="flex-1 min-w-0 space-y-2.5 pt-1">
+                  <span
+                    className="block rounded-full"
+                    style={{ width: "42%", height: 13, background: "#EBE4D6" }}
+                  />
+                  <span
+                    className="block rounded-full"
+                    style={{ width: "26%", height: 10, background: "#F0EBE0" }}
+                  />
+                  <span
+                    className="block rounded-full"
+                    style={{ width: "58%", height: 10, background: "#F0EBE0" }}
+                  />
+                </span>
+              </div>
+            )}
             <span
               className="warte-glanz absolute inset-y-0 w-1/3 pointer-events-none"
               style={

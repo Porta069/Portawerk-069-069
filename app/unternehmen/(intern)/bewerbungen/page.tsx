@@ -577,9 +577,10 @@ export default function EmployerBewerbungenPage() {
         // Kandidatensuche — nicht wieder ein Symbol im Kreis ueber zwei
         // Zeilen Text.
         <Wartezustand
+          mitBild
           marke="Noch keine Bewerbung"
           titel="Hier landen Ihre Bewerber"
-          text="Sobald sich jemand auf ein Inserat bewirbt, steht er hier — anonym, mit Match-Score."
+          text="Sobald sich jemand auf eines Ihrer Inserate bewirbt, steht er hier — anonym, mit Match-Score."
           icon={<Inbox className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#B47B18" }} />}
         />
       ) : (

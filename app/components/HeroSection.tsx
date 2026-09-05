@@ -29,14 +29,14 @@ export default function HeroSection() {
               "radial-gradient(120% 90% at 0% 0%, rgba(232,168,56,0.10) 0%, transparent 55%)",
           }}
         />
-        <div className="relative z-10 w-full max-w-xl mx-auto lg:mx-0 lg:ml-auto px-6 lg:px-14 py-16 lg:py-24">
+        <div className="relative z-10 w-full max-w-xl mx-auto px-6 lg:px-14 py-12 lg:py-24">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center gap-3 mb-7"
+            className="flex items-center gap-3 mb-7 max-lg:items-start"
           >
-            <span className="w-9 h-[2px] bg-accent" />
+            <span className="w-9 h-[2px] bg-accent max-lg:mt-[7px] shrink-0" />
             <span className="text-accent text-xs font-semibold tracking-[0.2em] uppercase">
               Kostenlose Jobvermittlung fürs Handwerk
             </span>
@@ -49,7 +49,7 @@ export default function HeroSection() {
             className="text-primary font-bold leading-[1.06] mb-6"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(2.4rem, 5.2vw, 4rem)",
+              fontSize: "clamp(1.95rem, 5.2vw, 4rem)",
             }}
           >
             {/* Der Slogan aus der Wortmarke. Hervorgehoben sind dieselben zwei
@@ -118,15 +118,14 @@ export default function HeroSection() {
       </div>
 
       {/* ── Rechte Spalte: freundliches, echtes Foto ── */}
-      <div className="relative order-1 lg:order-2 h-64 sm:h-80 lg:h-auto lg:min-h-screen overflow-hidden">
+      <div className="relative order-1 lg:order-2 max-lg:mt-20 h-[38vh] min-h-[280px] sm:h-[42vh] lg:mt-0 lg:h-auto lg:min-h-screen overflow-hidden">
         <Image
-          src="/images/hero-team-werkstatt.jpg"
-          alt="Zwei Handwerker besprechen sich in einer hellen Werkstatt"
+          src="/images/hero-werkpair.jpg"
+          alt="Zwei Handwerker prüfen gemeinsam ein Werkstück in der Werkstatt"
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-cover"
-          style={{ objectPosition: "center 32%" }}
+          className="object-cover object-[center_20%] lg:object-[center_26%]"
         />
         {/* sanfter Übergang zur Textspalte (nur Desktop) */}
         <div

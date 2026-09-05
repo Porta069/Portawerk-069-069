@@ -185,7 +185,7 @@ export default function Wartezustand({
         <span className="inline-flex items-center gap-2.5 mb-3">
           {icon}
           <span
-            className="text-[9.5px] font-semibold uppercase"
+            className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase"
             style={{ color: "#B47B18", letterSpacing: "0.2em" }}
           >
             {marke}

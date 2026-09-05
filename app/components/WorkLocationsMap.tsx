@@ -490,7 +490,7 @@ export default function WorkLocationsMap({
               Überschrift — sonst stünde "Deine Arbeitsorte" zweimal. */}
           {!kompakt && !breit && (
             <p
-              className="text-[10px] font-semibold uppercase tracking-[0.16em]"
+              className="text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.16em]"
               style={{ color: "rgba(26,26,46,0.4)" }}
             >
               Deine Arbeitsorte ({value.length})
@@ -568,7 +568,7 @@ export default function WorkLocationsMap({
               />
               {!kompakt && (
                 <div
-                  className="flex justify-between mt-1.5 text-[10px] tabular-nums"
+                  className="flex justify-between mt-1.5 text-[10px] max-lg:text-[11px] tabular-nums"
                   style={{ color: dunkel ? "rgba(255,255,255,0.35)" : "rgba(26,26,46,0.35)" }}
                 >
                   <span>5 km</span>
@@ -599,7 +599,7 @@ export default function WorkLocationsMap({
         >
           <div className="lg:sticky lg:top-4">
             <p
-              className="text-[9.5px] font-semibold uppercase mb-1"
+              className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-1"
               style={{
                 color: dunkel ? "rgba(255,255,255,0.45)" : "rgba(26,26,46,0.42)",
                 letterSpacing: "0.19em",

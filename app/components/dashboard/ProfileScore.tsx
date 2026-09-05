@@ -53,7 +53,7 @@ export default function ProfileScore({ score }: { score: Score }) {
             >
               {score.percent}%
             </span>
-            <span className="text-[10px] mt-1" style={{ color: "rgba(26,26,46,0.4)" }}>
+            <span className="text-[10px] max-lg:text-[11px] mt-1" style={{ color: "rgba(26,26,46,0.4)" }}>
               vollständig
             </span>
           </div>

@@ -101,7 +101,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── So funktioniert's ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24 max-lg:py-14 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -159,7 +159,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── Rechner ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }} id="rechner">
+      <section className="py-24 max-lg:py-14" style={{ background: "var(--color-surface)" }} id="rechner">
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -187,7 +187,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── Für wen ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+      <section className="py-24 max-lg:py-14" style={{ background: "var(--color-surface)" }}>
         <div className="max-w-5xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}
@@ -229,7 +229,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24 max-lg:py-14 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}
@@ -271,7 +271,7 @@ export default function VerdienenContent() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20 bg-primary relative overflow-hidden">
+      <section className="py-20 max-lg:py-12 bg-primary relative overflow-hidden">
         <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.10) 0%, transparent 65%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <h2 className="text-white font-bold text-3xl md:text-4xl leading-tight mb-5" style={{ fontFamily: "var(--font-display)" }}>

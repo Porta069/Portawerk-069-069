@@ -104,7 +104,7 @@ export default function LoginPage() {
           className="w-full max-w-sm"
         >
           {/* Mobile Logo */}
-          <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10">
+          <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10 py-2">
             <Logo height={22} />
           </Link>
 
@@ -141,7 +141,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setRemember((r) => !r)}
-                className="flex items-center gap-2 text-sm"
+                className="flex items-center gap-2 text-sm max-lg:py-2"
                 style={{ color: "rgba(26,26,46,0.7)" }}
               >
                 <span
@@ -161,7 +161,7 @@ export default function LoginPage() {
               </button>
               <button
                 type="button"
-                className="text-sm transition-colors"
+                className="text-sm transition-colors max-lg:py-2"
                 style={{ color: "#E8A838" }}
                 onClick={handleForgot}
               >
@@ -214,7 +214,7 @@ export default function LoginPage() {
 
           <p className="mt-8 text-sm text-center" style={{ color: "#6B7280" }}>
             Noch kein Konto?{" "}
-            <Link href="/registrieren" className="font-semibold" style={{ color: "#E8A838" }}>
+            <Link href="/registrieren" className="font-semibold max-lg:inline-block max-lg:py-1.5" style={{ color: "#E8A838" }}>
               Jetzt registrieren
             </Link>
           </p>

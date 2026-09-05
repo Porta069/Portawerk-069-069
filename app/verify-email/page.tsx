@@ -21,7 +21,7 @@ export default function VerifyEmailPage() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md text-center"
       >
-        <Link href="/" className="inline-flex items-center gap-2.5 mb-12">
+        <Link href="/" className="inline-flex items-center gap-2.5 mb-12 max-lg:py-2">
           <Logo height={24} priority />
         </Link>
 

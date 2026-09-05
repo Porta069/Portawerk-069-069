@@ -104,7 +104,7 @@ export function AffiliateTile({
             Prämie daneben, sobald die Spalte ein paar Pixel breiter war — auf
             dem Handy stand "VERDIENEN 100 €" in einer Zeile. */}
         <span
-          className="flex w-fit items-center gap-2.5 text-[9.5px] font-semibold uppercase mb-6"
+          className="flex w-fit items-center gap-2.5 text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-6"
           style={{ color: "#E8A838", letterSpacing: "0.22em" }}
         >
           <span className="w-5 h-px" style={{ background: "#E8A838" }} />

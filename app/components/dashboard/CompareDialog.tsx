@@ -197,7 +197,7 @@ export default function CompareDialog({
               style={{ borderBottom: "1px solid #F1EEE8" }}
             >
               <div>
-                <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#B47B18" }}>
+                <p className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#B47B18" }}>
                   <GitCompareArrows className="w-3.5 h-3.5" />
                   Vergleich · {jobs.length} {jobs.length === 1 ? "Betrieb" : "Betriebe"}
                 </p>
@@ -225,7 +225,7 @@ export default function CompareDialog({
                 <thead>
                   <tr>
                     <th
-                      className="sticky left-0 z-10 bg-white text-left py-3 pr-4 align-bottom text-[10.5px] font-bold uppercase tracking-[0.14em]"
+                      className="sticky left-0 z-10 bg-white text-left py-3 pr-4 align-bottom text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.14em]"
                       style={{ color: "rgba(26,26,46,0.4)", minWidth: 180 }}
                     >
                       Kriterium

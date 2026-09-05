@@ -47,7 +47,7 @@ const testimonials: Stimme[] = [
 
 export default function Testimonials() {
   return (
-    <section className="py-24 bg-white" id="stimmen">
+    <section className="py-24 max-lg:py-14 bg-white" id="stimmen">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ y: 24, opacity: 0 }}

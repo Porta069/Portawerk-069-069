@@ -47,7 +47,7 @@ export function StepRail({
                 <Check className="w-3 h-3 flex-shrink-0" strokeWidth={3} style={{ color: "#E8A838" }} />
               ) : (
                 <span
-                  className="text-[10px] font-bold tabular-nums flex-shrink-0"
+                  className="text-[10px] max-lg:text-[11px] font-bold tabular-nums flex-shrink-0"
                   style={{
                     fontFamily: "var(--font-display)",
                     color: isActive ? "#E8A838" : "rgba(255,255,255,0.25)",

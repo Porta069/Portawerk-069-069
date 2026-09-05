@@ -220,7 +220,7 @@ export default function JobsPreview() {
   };
 
   return (
-    <section className="py-28 bg-surface" id="stellen">
+    <section className="py-28 max-lg:py-16 bg-surface" id="stellen">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <motion.div
@@ -287,7 +287,7 @@ export default function JobsPreview() {
               <div className="p-6 flex flex-col gap-4 flex-1">
                 {/* Titel + Kategorie */}
                 <div>
-                  <p className="text-[10px] text-muted uppercase tracking-wider mb-1.5">
+                  <p className="text-[10px] max-lg:text-[11px] text-muted uppercase tracking-wider mb-1.5">
                     {job.category}
                   </p>
                   <h3
@@ -312,7 +312,7 @@ export default function JobsPreview() {
 
                 {/* Gehalt — sichtbar als Hook */}
                 <div className="rounded-xl p-4" style={{ background: "var(--color-surface)" }}>
-                  <p className="text-[10px] text-muted uppercase tracking-wider mb-1">
+                  <p className="text-[10px] max-lg:text-[11px] text-muted uppercase tracking-wider mb-1">
                     Monatsgehalt (Brutto)
                   </p>
                   <p className="text-2xl font-bold text-primary" style={{ fontFamily: "var(--font-display)" }}>
@@ -505,7 +505,7 @@ export default function JobsPreview() {
                     <button
                       type="button"
                       onClick={() => setShowAll(false)}
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors max-lg:py-2"
                     >
                       Weniger anzeigen
                       <ChevronDown className="w-4 h-4 rotate-180" />
@@ -553,7 +553,7 @@ export default function JobsPreview() {
                     <button
                       type="button"
                       onClick={() => setShowAll(true)}
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors max-lg:py-2"
                     >
                       Alle 40+ Gewerke anzeigen
                       <ChevronDown className="w-4 h-4" />
@@ -578,7 +578,7 @@ export default function JobsPreview() {
           </p>
           <Link
             href="/registrieren"
-            className="group inline-flex items-center gap-2 text-accent text-sm font-semibold hover:gap-3 transition-all duration-200"
+            className="group inline-flex items-center gap-2 text-accent text-sm font-semibold hover:gap-3 transition-all duration-200 max-lg:py-2"
           >
             Alle Stellen ansehen
             <ArrowRight className="w-3.5 h-3.5" />

@@ -21,12 +21,12 @@ export default function RechtlichesPage() {
       {/* ── Navbar ── */}
       <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-4xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5 max-lg:py-2">
             <Logo height={24} variant="hell" priority />
           </Link>
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-sm transition-colors"
+            className="flex items-center gap-1.5 text-sm transition-colors max-lg:py-2"
             style={{ color: "rgba(255,255,255,0.5)" }}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -36,7 +36,7 @@ export default function RechtlichesPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 lg:px-10 py-14">
-        <span className="flex items-center gap-3 text-accent text-[10px] font-semibold tracking-[0.22em] uppercase mb-5">
+        <span className="flex items-center gap-3 text-accent text-[10px] max-lg:text-[11px] font-semibold tracking-[0.22em] uppercase mb-5">
           <span className="w-8 h-[2px] bg-accent" />
           Rechtliches
         </span>
@@ -115,7 +115,7 @@ export default function RechtlichesPage() {
         <div className="mt-16 pt-8" style={{ borderTop: "1px solid #E5E7EB" }}>
           <Link
             href="/registrieren"
-            className="inline-flex items-center gap-2 text-sm font-semibold"
+            className="inline-flex items-center gap-2 text-sm font-semibold max-lg:py-2"
             style={{ color: "#E8A838" }}
           >
             <ArrowLeft className="w-4 h-4" />

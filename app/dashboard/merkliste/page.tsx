@@ -151,7 +151,7 @@ export default function MerklistePage() {
                   strokeWidth={0}
                 />
                 <span
-                  className="text-[10px] font-semibold uppercase"
+                  className="text-[10px] max-lg:text-[11px] font-semibold uppercase"
                   style={{ color: "#E8A838", letterSpacing: "0.22em" }}
                 >
                   Merkliste
@@ -219,7 +219,7 @@ export default function MerklistePage() {
                   {liste.length}
                 </span>
                 <span
-                  className="text-[9.5px] font-semibold uppercase mt-2"
+                  className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase mt-2"
                   style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.2em" }}
                 >
                   gemerkt
@@ -291,7 +291,7 @@ export default function MerklistePage() {
                   strokeWidth={1.1}
                 />
                 <p
-                  className="relative text-[9.5px] font-semibold uppercase mb-2"
+                  className="relative text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-2"
                   style={{ color: "rgba(26,26,46,0.45)", letterSpacing: "0.19em" }}
                 >
                   {k.label}
@@ -337,7 +337,7 @@ export default function MerklistePage() {
 
           <div className="flex items-center gap-4 mb-6">
             <span
-              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase flex-shrink-0"
               style={{ color: "#B47B18", letterSpacing: "0.2em" }}
             >
               So geht&rsquo;s
@@ -384,7 +384,7 @@ export default function MerklistePage() {
         <>
           <div className="flex items-center gap-4 mb-5">
             <span
-              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase flex-shrink-0"
               style={{ color: "#B47B18", letterSpacing: "0.2em" }}
             >
               Deine gemerkten Stellen

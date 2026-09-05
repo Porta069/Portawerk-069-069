@@ -301,12 +301,12 @@ export default function ArbeitgeberForm({
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 w-4 h-4 accent-[#E8A838] flex-shrink-0"
+          className="mt-0.5 w-4 h-4 max-lg:w-5 max-lg:h-5 accent-[#E8A838] flex-shrink-0"
         />
         <span className="text-muted text-xs leading-relaxed">
           Ich bin einverstanden, dass meine Daten zur Bearbeitung meiner Anfrage genutzt
           werden. Details in der{" "}
-          <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2">Datenschutzerklärung</a>.
+          <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2 max-lg:inline-block max-lg:py-1">Datenschutzerklärung</a>.
         </span>
       </label>
 

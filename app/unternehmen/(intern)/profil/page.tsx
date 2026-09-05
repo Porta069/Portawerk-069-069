@@ -31,6 +31,7 @@ import {
   BENEFIT_OPTIONEN, MONTAGE_OPTIONEN,
 } from "@/lib/employerService";
 import type { EmployerProfile } from "@/lib/types";
+import { DEMO_PROFIL, DEMO_PROFIL_LEER, demoAktiv, demoLeer } from "@/lib/demoProfil";
 
 /**
  * Verkleinert das Logo auf max. 320 px Kantenlaenge. Transparenz bleibt
@@ -156,7 +157,7 @@ function Schritt({
       </span>
       <div className="relative mb-5">
         <p
-          className="inline-flex items-center gap-2.5 text-[10.5px] font-bold uppercase tracking-[0.18em] mb-1.5"
+          className="inline-flex items-center gap-2.5 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.18em] mb-1.5"
           style={{ color: "#B47B18" }}
         >
           <span className="w-5 h-[2px] rounded-full" style={{ background: "#E8A838" }} />
@@ -281,6 +282,13 @@ export default function EmployerProfilePage() {
   const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
+    // Gestaltungsvorschau: ohne Anmeldung antwortet das Backend mit 401 und
+    // die Seite dreht endlos den Ladekringel. Nur im Entwicklungsmodus.
+    if (demoAktiv()) {
+      setP(demoLeer() ? DEMO_PROFIL_LEER : DEMO_PROFIL);
+      setLoading(false);
+      return;
+    }
     getEmployerProfile().then((res) => {
       if (res.ok) {
         // Firmenname aus dem Konto vorbelegen, wenn noch nichts hinterlegt ist.
@@ -387,7 +395,7 @@ export default function EmployerProfilePage() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <span
-              className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+              className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
               style={{ color: "#E8A838" }}
             >
               <span className="w-6 h-[2px] bg-accent" />
@@ -415,7 +423,7 @@ export default function EmployerProfilePage() {
             }}
           >
             <div className="flex items-baseline justify-between gap-3 mb-2.5">
-              <p className="text-[10.5px] uppercase tracking-[0.16em]" style={{ color: "rgba(255,255,255,0.42)" }}>
+              <p className="text-[10.5px] max-lg:text-[11.5px] uppercase tracking-[0.16em]" style={{ color: "rgba(255,255,255,0.42)" }}>
                 Profilstärke
               </p>
               <p style={{ fontFamily: "var(--font-display)" }}>
@@ -821,7 +829,7 @@ export default function EmployerProfilePage() {
               }}
             >
               <p
-                className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3.5"
+                className="inline-flex items-center gap-2 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.16em] mb-3.5"
                 style={{ color: "#B47B18" }}
               >
                 <span className="w-5 h-[2px] rounded-full" style={{ background: "#E8A838" }} />
@@ -831,7 +839,7 @@ export default function EmployerProfilePage() {
                 {gaps.slice(0, 3).map((g, i) => (
                   <li key={g.label} className="flex items-start gap-3">
                     <span
-                      className="flex items-center justify-center flex-shrink-0 rounded-full text-[10.5px] font-bold tabular-nums"
+                      className="flex items-center justify-center flex-shrink-0 rounded-full text-[10.5px] max-lg:text-[11.5px] font-bold tabular-nums"
                       style={{
                         width: 20,
                         height: 20,
@@ -859,7 +867,7 @@ export default function EmployerProfilePage() {
           {/* So sehen Handwerker Sie */}
           <div>
             <p
-              className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
+              className="inline-flex items-center gap-2 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.16em] mb-3"
               style={{ color: "rgba(26,26,46,0.45)" }}
             >
               <Eye className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
@@ -959,7 +967,7 @@ export default function EmployerProfilePage() {
 
                 {/* Ansprechpartner */}
                 <div className="pt-4" style={{ borderTop: "1px solid #F1EEE8" }}>
-                  <p className="text-[10px] uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,26,46,0.4)" }}>
+                  <p className="text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,26,46,0.4)" }}>
                     Ansprechpartner
                   </p>
                   {p.kontaktName ? (

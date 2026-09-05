@@ -176,7 +176,7 @@ export default function Verlauf({
       >
         <div className="flex items-center gap-2.5 mb-6">
           <span
-            className="text-[9.5px] font-semibold uppercase"
+            className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase"
             style={{ color: "#B47B18", letterSpacing: "0.2em" }}
           >
             So läuft&rsquo;s
@@ -243,7 +243,7 @@ export default function Verlauf({
             <Punkt ungelesen={e.ungelesen} />
             <Link href={e.href} className="group block">
               <span
-                className="block text-[9.5px] font-semibold uppercase tabular-nums mb-1.5"
+                className="block text-[9.5px] max-lg:text-[11px] font-semibold uppercase tabular-nums mb-1.5"
                 style={{ color: "rgba(26,26,46,0.38)", letterSpacing: "0.17em" }}
               >
                 {e.zeit}

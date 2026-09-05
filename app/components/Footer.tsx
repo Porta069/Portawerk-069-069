@@ -54,14 +54,14 @@ const RECHTLICHES = [
   { href: "/rechtliches#barrierefreiheit", label: "Barrierefreiheit" },
 ];
 
-const ueberschrift = "text-white font-semibold text-[15px] mb-7";
-const zeile = "text-white/85 text-[15px] hover:text-white transition-colors duration-200";
+const ueberschrift = "text-white font-semibold text-[15px] mb-4 sm:mb-7";
+const zeile = "text-white/85 text-[15px] hover:text-white transition-colors duration-200 max-lg:inline-block max-lg:py-1";
 
 export default function Footer() {
   return (
     <footer style={{ background: "#124A47" }}>
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-20 pb-12">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-14">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-14 pb-10 sm:pt-20 sm:pb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-9 sm:gap-y-14">
           {/* Anschrift — dieselbe Quelle wie das Impressum */}
           <div>
             <p className={ueberschrift}>Unternehmen</p>
@@ -83,7 +83,7 @@ export default function Footer() {
           {SPALTEN.map((spalte) => (
             <div key={spalte.titel}>
               <p className={ueberschrift}>{spalte.titel}</p>
-              <ul className="space-y-3.5">
+              <ul className="space-y-3.5 max-lg:space-y-2">
                 {spalte.eintraege.map((e) => (
                   <li key={e.href + e.label}>
                     {e.href.startsWith("mailto:") ? (
@@ -107,14 +107,16 @@ export default function Footer() {
             nicht unter ihre Inhaltsbreite, dadurch schob „Allgemeine
             Geschäftsbedingungen" auf dem Telefon die ganze Seite breiter.
             Inline-Elemente brechen an den Leerzeichen ganz von selbst um. */}
-        <div className="mt-14 text-white/85 text-[15px] leading-loose">
-          Copyright {new Date().getFullYear()} © {ANBIETER.name}
+        <div className="mt-10 sm:mt-14 text-white/85 text-[15px] leading-loose max-lg:flex max-lg:flex-wrap max-lg:gap-x-5 max-lg:gap-y-0 max-lg:leading-relaxed">
+          <span className="max-lg:w-full max-lg:mb-1.5">
+            Copyright {new Date().getFullYear()} © {ANBIETER.name}
+          </span>
           {RECHTLICHES.map((r) => (
             <span key={r.href}>
-              <span aria-hidden className="text-white/40 mx-2.5">
+              <span aria-hidden className="text-white/40 mx-2.5 max-lg:hidden">
                 |
               </span>
-              <Link href={r.href} className="hover:text-white transition-colors duration-200">
+              <Link href={r.href} className="hover:text-white transition-colors duration-200 max-lg:inline-block max-lg:py-1.5">
                 {r.label}
               </Link>
             </span>

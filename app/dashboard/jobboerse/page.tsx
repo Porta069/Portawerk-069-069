@@ -476,7 +476,7 @@ export default function JobboersePage() {
             >
               <div className="px-5 pt-5 pb-3 flex items-baseline justify-between gap-3">
                 <p
-                  className="text-[9.5px] font-semibold uppercase"
+                  className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase"
                   style={{ color: "#B47B18", letterSpacing: "0.2em" }}
                 >
                   Dein Suchgebiet
@@ -579,7 +579,7 @@ export default function JobboersePage() {
               <div className="flex items-center justify-between gap-4 px-6 py-4" style={{ borderBottom: "1px solid #F0EDE6" }}>
                 <div>
                   <p
-                    className="text-[9.5px] font-semibold uppercase"
+                    className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase"
                     style={{ color: "#B47B18", letterSpacing: "0.2em" }}
                   >
                     Dein Suchgebiet

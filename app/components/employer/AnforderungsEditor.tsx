@@ -196,7 +196,7 @@ function Feld({
         </label>
         {ausschluss && (
           <span
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em]"
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] max-lg:text-[11px] font-bold uppercase tracking-[0.1em]"
             style={{ background: "rgba(185,28,28,0.07)", color: "#9B2C2C" }}
           >
             <AlertTriangle className="w-3 h-3" />

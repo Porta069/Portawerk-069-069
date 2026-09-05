@@ -126,7 +126,7 @@ function Schritt({
       <div className="relative flex flex-wrap items-start justify-between gap-3 mb-5">
         <div>
           <p
-            className="inline-flex items-center gap-2.5 text-[10.5px] font-bold uppercase tracking-[0.18em] mb-1.5"
+            className="inline-flex items-center gap-2.5 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.18em] mb-1.5"
             style={{ color: "#B47B18" }}
           >
             <span className="w-5 h-[2px] rounded-full" style={{ background: "#E8A838" }} />
@@ -476,7 +476,7 @@ function JobEditor({
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <span
-              className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+              className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
               style={{ color: "#E8A838" }}
             >
               <span className="w-6 h-[2px] bg-accent" />
@@ -512,7 +512,7 @@ function JobEditor({
             <p className="text-[11px] mt-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
               {ausschluesse === 1 ? "Muss-Kriterium" : "Muss-Kriterien"}
             </p>
-            <p className="text-[10.5px] mt-2 max-w-[150px] leading-snug" style={{ color: "rgba(255,255,255,0.32)" }}>
+            <p className="text-[10.5px] max-lg:text-[11.5px] mt-2 max-w-[150px] leading-snug" style={{ color: "rgba(255,255,255,0.32)" }}>
               {ausschluesse === 0
                 ? "Alle Handwerker sehen die Stelle."
                 : "Wer die nicht erfüllt, sieht die Stelle nicht."}
@@ -691,7 +691,7 @@ function JobEditor({
           hinweis="Dieselben Angaben, die Handwerker bei der Anmeldung machen. Leer gelassen heisst überall: ist uns egal."
           rechts={
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.12em] flex-shrink-0"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.12em] flex-shrink-0"
               style={{ background: "#FBF0DC", border: "1px solid rgba(232,168,56,0.35)", color: "#B47B18" }}
             >
               <Scale className="w-3 h-3" />
@@ -956,7 +956,7 @@ function InseratKarte({
               {job.title}
             </h2>
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.12em]"
               style={{ background: chip.bg, color: chip.color }}
             >
               {/* Der Punkt pulst nur bei aktiven Inseraten — er zeigt, dass
@@ -970,7 +970,7 @@ function InseratKarte({
             {job.source !== "SELF" && (
               <span
                 title="Von WerkPair für Sie angelegt"
-                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.12em]"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.12em]"
                 style={{ background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" }}
               >
                 <Bot className="w-3 h-3" />
@@ -1266,7 +1266,7 @@ export default function InseratePage() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <span
-              className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+              className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
               style={{ color: "#E8A838" }}
             >
               <span className="w-6 h-[2px] bg-accent" />
@@ -1320,7 +1320,7 @@ export default function InseratePage() {
                     >
                       {s.v}
                     </p>
-                    <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
+                    <p className="text-[10.5px] max-lg:text-[11.5px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
                       {s.l}
                     </p>
                   </div>

@@ -221,7 +221,7 @@ export default function PartnerFunnel() {
 
             <div className="flex items-center gap-3 mb-5">
               <span className="w-8 flex-shrink-0" style={{ display: "block", height: "2px", background: "#E8A838" }} />
-              <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent">
+              <span className="text-[10px] max-lg:text-[11px] font-semibold tracking-[0.22em] uppercase text-accent">
                 Schritt {step + 1} von {CONTENT_STEPS}
               </span>
             </div>
@@ -273,17 +273,17 @@ export default function PartnerFunnel() {
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                     <input id="p-pw" type={pwSichtbar ? "text" : "password"} className={input + " pl-10 pr-10"} value={passwort} onChange={(e) => setPasswort(e.target.value)} placeholder={`Mindestens ${MINDESTLAENGE} Zeichen`} />
-                    <button type="button" tabIndex={-1} onClick={() => setPwSichtbar((s) => !s)} aria-label={pwSichtbar ? "Passwort verbergen" : "Passwort anzeigen"} aria-pressed={pwSichtbar} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors">
+                    <button type="button" tabIndex={-1} onClick={() => setPwSichtbar((s) => !s)} aria-label={pwSichtbar ? "Passwort verbergen" : "Passwort anzeigen"} aria-pressed={pwSichtbar} className="absolute right-3 top-1/2 -translate-y-1/2 max-lg:-m-3 max-lg:p-3 text-muted hover:text-primary transition-colors">
                       {pwSichtbar ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   <PasswordStrength password={passwort} />
                 </div>
                 <label className="flex items-start gap-3 mt-1 cursor-pointer">
-                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#E8A838] flex-shrink-0" />
+                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 max-lg:w-5 max-lg:h-5 accent-[#E8A838] flex-shrink-0" />
                   <span className="text-muted text-xs leading-relaxed">
                     Ich stimme zu, dass meine Daten zur Registrierung und Auszahlung genutzt werden. Details in der{" "}
-                    <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2">Datenschutzerklärung</a>.
+                    <a href="/rechtliches#datenschutz" className="text-accent underline underline-offset-2 max-lg:inline-block max-lg:py-1">Datenschutzerklärung</a>.
                   </span>
                 </label>
 

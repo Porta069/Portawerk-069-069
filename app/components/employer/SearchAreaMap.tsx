@@ -338,7 +338,7 @@ export default function SearchAreaMap({
       {area && (
         <div className="mt-4 space-y-2.5">
           <p
-            className="text-[10px] font-semibold uppercase tracking-[0.16em]"
+            className="text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.16em]"
             style={{ color: "rgba(255,255,255,0.4)" }}
           >
             Dein Suchgebiet
@@ -399,7 +399,7 @@ export default function SearchAreaMap({
               }}
             />
             <div
-              className="flex justify-between mt-1.5 text-[10px] tabular-nums"
+              className="flex justify-between mt-1.5 text-[10px] max-lg:text-[11px] tabular-nums"
               style={{ color: "rgba(26,26,46,0.35)" }}
             >
               <span>5 km</span>

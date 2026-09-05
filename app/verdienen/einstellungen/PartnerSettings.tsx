@@ -270,7 +270,7 @@ export default function PartnerSettings() {
       <div className="bg-primary pb-14">
         <div className="max-w-3xl mx-auto px-6">
           <div className="h-[68px] flex items-center justify-between">
-            <Link href="/verdienen" className="flex items-center gap-2.5 group">
+            <Link href="/verdienen" className="flex items-center gap-2.5 max-lg:py-2 group">
               <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
               <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>

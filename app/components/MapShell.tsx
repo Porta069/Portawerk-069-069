@@ -234,7 +234,7 @@ export function MapAttribution() {
       href={OSM_COPYRIGHT_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="absolute z-[10] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] transition-colors"
+      className="absolute z-[10] bottom-2 left-3 rounded-full px-2.5 py-1 text-[10px] max-lg:text-[11px] transition-colors"
       style={{ background: "rgba(255,255,255,0.85)", color: "rgba(26,26,46,0.5)" }}
     >
       © OpenStreetMap

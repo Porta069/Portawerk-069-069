@@ -62,7 +62,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
             dreimal — aber in einer Grösse, die den Punkt macht. */}
         <div className="flex items-center gap-4 mb-6">
           <span
-            className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+            className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase flex-shrink-0"
             style={{ color: "#E8A838", letterSpacing: "0.2em" }}
           >
             Was drin ist
@@ -87,7 +87,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
                 border: `1px solid ${i === 2 ? "rgba(232,168,56,0.4)" : "rgba(255,255,255,0.1)"}`,
               }}
             >
-              <p className="text-[10.5px] sm:text-[11px] mb-1.5 sm:mb-2 whitespace-nowrap" style={{ color: "rgba(255,255,255,0.45)" }}>
+              <p className="text-[10.5px] max-lg:text-[11.5px] sm:text-[11px] mb-1.5 sm:mb-2 whitespace-nowrap" style={{ color: "rgba(255,255,255,0.45)" }}>
                 {s2.anzahl} {s2.anzahl === "1" ? "Kollege" : "Kollegen"}
               </p>
               <p
@@ -108,7 +108,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
 
         <div className="flex items-center gap-4 mb-6">
           <span
-            className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+            className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase flex-shrink-0"
             style={{ color: "#E8A838", letterSpacing: "0.2em" }}
           >
             So funktioniert&rsquo;s
@@ -211,7 +211,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
 
         <form onSubmit={submit} className="relative space-y-3.5">
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>
+            <label className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>
               Telefonnummer oder Link-Name
             </label>
             <input
@@ -224,7 +224,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
             />
           </div>
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>
+            <label className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>
               Passwort
             </label>
             <div className="relative">
@@ -242,7 +242,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
                 tabIndex={-1}
                 aria-pressed={showPw}
                 aria-label={showPw ? "Passwort verbergen" : "Passwort anzeigen"}
-                className="absolute right-4 top-1/2 -translate-y-1/2"
+                className="absolute right-4 top-1/2 -translate-y-1/2 max-lg:-m-3 max-lg:p-3"
                 style={{ color: "rgba(255,255,255,0.4)" }}
               >
                 {showPw ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -272,7 +272,7 @@ function PartnerLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
           style={{ borderTop: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)" }}
         >
           Noch kein Partner?{" "}
-          <Link href="/verdienen/partner" className="font-bold" style={{ color: "#E8A838" }}>
+          <Link href="/verdienen/partner" className="font-bold max-lg:inline-block max-lg:py-1.5" style={{ color: "#E8A838" }}>
             Kostenlos registrieren
           </Link>
         </p>
@@ -357,7 +357,7 @@ function PartnerOverview({
         />
         <div className="relative">
           <p
-            className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3"
+            className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.2em] mb-3"
             style={{ color: "#E8A838" }}
           >
             <Share2 className="w-3.5 h-3.5" />
@@ -519,7 +519,7 @@ export default function DashboardVerdienenPage() {
         <div className="relative max-w-[1440px] mx-auto px-6 lg:px-12 py-10 sm:py-14">
           <div className="max-w-[36rem]">
             <span
-              className="inline-flex items-center gap-2.5 text-[10px] font-semibold uppercase mb-5"
+              className="inline-flex items-center gap-2.5 text-[10px] max-lg:text-[11px] font-semibold uppercase mb-5"
               style={{ color: "#E8A838", letterSpacing: "0.22em" }}
             >
               <span className="w-5 h-px" style={{ background: "#E8A838" }} />

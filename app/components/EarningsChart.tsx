@@ -143,7 +143,7 @@ export default function EarningsChart({ data }: { data: Pt[] }) {
         style={{ left: pts[showBubble].x, top: pts[showBubble].y - 14 }}
       >
         {hover !== null && (
-          <span className="block text-[10px] uppercase tracking-wide text-white/50 leading-none mb-0.5">{pts[showBubble].m}</span>
+          <span className="block text-[10px] max-lg:text-[11px] uppercase tracking-wide text-white/50 leading-none mb-0.5">{pts[showBubble].m}</span>
         )}
         <span className="block text-sm font-bold leading-none">{fmt(pts[showBubble].v)} €</span>
       </div>

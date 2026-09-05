@@ -73,7 +73,7 @@ export default function DashboardNav({
               Bereichen steht statt am Rand zu kleben. Margin statt Padding: der
               Klickbereich bleibt auf dem Logo. Erst ab xl — darunter reicht der
               Platz nicht, die Bereiche sitzen dort schon fast am Logo. */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 xl:ml-8 2xl:ml-28">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 max-lg:py-2.5 xl:ml-8 2xl:ml-28">
             <Logo
               height={26}
               variant="hell"
@@ -123,7 +123,7 @@ export default function DashboardNav({
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-white p-1"
+            className="lg:hidden text-white p-2.5 -mr-2.5"
             aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -164,7 +164,7 @@ export default function DashboardNav({
                 <Link
                   href="/einstellungen"
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center gap-2 text-white/60 text-base"
+                  className="inline-flex items-center gap-2 py-3 text-white/60 text-base"
                 >
                   <Settings className="w-4 h-4" />
                   Einstellungen

@@ -102,7 +102,7 @@ export default function Kennzahlen({
 
               <div className="relative">
                 <p
-                  className="text-[9.5px] font-semibold uppercase mb-2"
+                  className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-2"
                   style={{ color: "rgba(26,26,46,0.45)", letterSpacing: "0.19em" }}
                 >
                   {z.label}

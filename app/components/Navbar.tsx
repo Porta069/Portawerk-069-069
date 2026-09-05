@@ -76,7 +76,7 @@ export default function Navbar() {
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
           {/* Einzug wie in der Dashboard-Leiste — siehe Begründung dort. */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 xl:ml-8 2xl:ml-28">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 max-lg:py-2.5 xl:ml-8 2xl:ml-28">
             {/* Reine Wortmarke ohne Slogan — der steht jetzt als Überschrift
                 im Hero, wo er die Größe bekommt, die er braucht. */}
             <Logo
@@ -136,8 +136,9 @@ export default function Navbar() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-white p-1"
-            aria-label="Menü öffnen"
+            className="lg:hidden text-white p-2.5 -mr-2.5"
+            aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -161,7 +162,7 @@ export default function Navbar() {
                     key={a.href}
                     href={a.href}
                     onClick={() => setMobileOpen(false)}
-                    className={`py-2.5 text-base transition-colors ${
+                    className={`py-3 text-base transition-colors ${
                       active ? "text-accent font-semibold" : "text-white/75 hover:text-white"
                     }`}
                   >
@@ -174,7 +175,7 @@ export default function Navbar() {
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center gap-2 py-2 text-base text-white/75 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 py-3 text-base text-white/75 hover:text-white transition-colors"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Meine Bewerbungen
@@ -183,7 +184,7 @@ export default function Navbar() {
                 <Link
                   href={cta.login}
                   onClick={() => setMobileOpen(false)}
-                  className="py-2 text-base text-white/75 hover:text-white transition-colors"
+                  className="py-3 text-base text-white/75 hover:text-white transition-colors"
                 >
                   {cta.loginLabel}
                 </Link>
@@ -191,7 +192,7 @@ export default function Navbar() {
               <Link
                 href={cta.href}
                 onClick={() => setMobileOpen(false)}
-                className="bg-accent text-primary font-semibold px-5 py-3 text-center mt-1 hover:bg-amber-400 transition-colors"
+                className="bg-accent text-primary font-semibold px-5 py-3.5 text-center mt-2 hover:bg-amber-400 transition-colors"
               >
                 {cta.label}
               </Link>

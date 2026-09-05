@@ -91,7 +91,7 @@ export default function ScoreExplainer({
               >
                 <div className="min-w-0">
                   <span
-                    className="inline-flex items-center gap-1.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.14em] mb-2 px-2.5 py-1"
+                    className="inline-flex items-center gap-1.5 rounded-full text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.14em] mb-2 px-2.5 py-1"
                     style={{ background: "rgba(232,168,56,0.14)", color: "#B47B18" }}
                   >
                     <FlaskConical className="w-3 h-3" />
@@ -126,7 +126,7 @@ export default function ScoreExplainer({
                   <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
                     <thead>
                       <tr
-                        className="text-left text-[10.5px] font-bold uppercase tracking-[0.12em]"
+                        className="text-left text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.12em]"
                         style={{ color: "rgba(26,26,46,0.45)" }}
                       >
                         <th className="py-2 pr-3 font-bold">Kriterium</th>

@@ -155,7 +155,7 @@ export default function PartnerDashboard() {
         <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
           {/* Topbar */}
           <div className="h-[68px] flex items-center justify-between">
-            <Link href="/verdienen" className="flex items-center gap-2.5 group">
+            <Link href="/verdienen" className="flex items-center gap-2.5 group max-lg:py-2">
               <Logo height={24} variant="hell" className="transition-transform group-hover:scale-95" />
               <span className="text-white/40 text-sm hidden sm:inline ml-1">· Partner</span>
             </Link>

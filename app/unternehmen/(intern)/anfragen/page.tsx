@@ -340,7 +340,7 @@ export default function EmployerRequestsPage() {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <span
-                className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+                className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
                 style={{ color: "#E8A838" }}
               >
                 <span className="w-6 h-[2px] bg-accent" />
@@ -367,7 +367,7 @@ export default function EmployerRequestsPage() {
                   backdropFilter: "blur(3px)",
                 }}
               >
-                <p className="text-[10.5px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(255,255,255,0.42)" }}>
+                <p className="text-[10.5px] max-lg:text-[11.5px] uppercase tracking-[0.16em] mb-2.5" style={{ color: "rgba(255,255,255,0.42)" }}>
                   Antwortquote
                 </p>
                 <p className="flex items-baseline gap-1.5" style={{ fontFamily: "var(--font-display)" }}>

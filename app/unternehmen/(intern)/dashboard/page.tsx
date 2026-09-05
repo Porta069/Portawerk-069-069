@@ -40,7 +40,7 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
   return (
     <div className="py-5" style={{ borderTop: "1px solid #F1EEE8" }}>
       <p
-        className="text-[10.5px] font-bold uppercase tracking-[0.16em] mb-3"
+        className="text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.16em] mb-3"
         style={{ color: "rgba(26,26,46,0.45)" }}
       >
         {title}
@@ -315,7 +315,7 @@ export default function EmployerSearchPage() {
           <div className="flex flex-wrap items-end justify-between gap-5 mb-6">
             <div>
               <span
-                className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+                className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
                 style={{ color: "#E8A838" }}
               >
                 <span className="w-6 h-[2px] bg-accent" />
@@ -354,7 +354,7 @@ export default function EmployerSearchPage() {
                       >
                         {s.v}
                       </p>
-                      <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
+                      <p className="text-[10.5px] max-lg:text-[11.5px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>
                         {s.l}
                       </p>
                     </div>

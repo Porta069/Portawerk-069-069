@@ -12,7 +12,7 @@ const punkte = [
 
 export default function BonusSection() {
   return (
-    <section className="py-28 overflow-hidden" style={{ background: "var(--color-accent-soft)" }} id="praemie">
+    <section className="py-28 max-lg:py-16 overflow-hidden" style={{ background: "var(--color-accent-soft)" }} id="praemie">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Links — große Zahl */}

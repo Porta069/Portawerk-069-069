@@ -62,7 +62,7 @@ export default function StepEmail() {
       </StepHeading>
 
       <label
-        className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold mb-2.5"
+        className="flex items-center gap-1.5 text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2.5"
         style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
       >
         E-Mail-Adresse <span style={{ color: "#E8A838" }}>*</span>
@@ -138,7 +138,7 @@ export default function StepEmail() {
       {/* ── Handynummer (optional) — für die WhatsApp-Ansprache ── */}
       <div className="mt-8">
         <label
-          className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold mb-2.5"
+          className="flex items-center gap-1.5 text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2.5"
           style={{ color: phoneFocused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
         >
           Handynummer

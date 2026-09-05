@@ -156,7 +156,7 @@ export default function VorschlaegePage() {
           style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, transparent 68%)" }}
         />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-10">
-          <p className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: "#E8A838" }}>
+          <p className="inline-flex items-center gap-2 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: "#E8A838" }}>
             <Sparkles className="w-3.5 h-3.5" />
             Vorschläge
           </p>
@@ -326,7 +326,7 @@ function VorschlagKarte({
               {frei ? frei.name : k.handle}
             </h3>
             <span
-              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.09em]"
+              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] max-lg:text-[11.5px] font-bold uppercase tracking-[0.09em]"
               style={
                 v.quelle === "AUTOMATION"
                   ? { background: "rgba(26,26,46,0.06)", color: "rgba(26,26,46,0.55)" }
@@ -363,7 +363,7 @@ function VorschlagKarte({
           <p className="text-[26px] font-bold leading-none tabular-nums" style={{ fontFamily: "var(--font-display)", color: "#1A1A2E" }}>
             {k.matchScore}
           </p>
-          <p className="text-[10px] uppercase tracking-[0.12em] font-bold mt-0.5" style={{ color: "rgba(26,26,46,0.35)" }}>
+          <p className="text-[10px] max-lg:text-[11px] uppercase tracking-[0.12em] font-bold mt-0.5" style={{ color: "rgba(26,26,46,0.35)" }}>
             Passung
           </p>
           <ScoreExplainer breakdown={k.matchBreakdown} subject={k.handle} />

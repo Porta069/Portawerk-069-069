@@ -89,7 +89,7 @@ export default function PartnerLoginPage() {
           className="w-full max-w-sm"
         >
           {/* Mobile Logo */}
-          <Link href="/verdienen" className="lg:hidden flex items-center gap-2.5 mb-10">
+          <Link href="/verdienen" className="lg:hidden flex items-center gap-2.5 mb-10 py-2">
             <Logo height={22} />
             <span className="text-muted text-sm">· Partner</span>
           </Link>
@@ -109,7 +109,7 @@ export default function PartnerLoginPage() {
           </h2>
           <p className="text-sm mb-8" style={{ color: "#6B7280" }}>
             Für dein Empfehlungs-Dashboard. Nicht dein Handwerker-Konto?{" "}
-            <Link href="/login" className="font-semibold" style={{ color: "#E8A838" }}>
+            <Link href="/login" className="font-semibold max-lg:inline-block max-lg:py-1.5" style={{ color: "#E8A838" }}>
               Zum Haupt-Login
             </Link>
           </p>
@@ -117,7 +117,7 @@ export default function PartnerLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label
-                className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
+                className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2"
                 style={{ color: "rgba(26,26,46,0.45)" }}
               >
                 Telefonnummer oder Link-Name<span className="text-accent ml-0.5">*</span>
@@ -181,7 +181,7 @@ export default function PartnerLoginPage() {
 
           <p className="mt-8 text-sm text-center" style={{ color: "#6B7280" }}>
             Noch kein Partner?{" "}
-            <Link href="/verdienen/partner" className="font-semibold" style={{ color: "#E8A838" }}>
+            <Link href="/verdienen/partner" className="font-semibold max-lg:inline-block max-lg:py-1.5" style={{ color: "#E8A838" }}>
               Jetzt Link erstellen
             </Link>
           </p>

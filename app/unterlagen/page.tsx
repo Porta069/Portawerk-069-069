@@ -59,7 +59,7 @@ function FilePicker({
   const ref = useRef<HTMLInputElement>(null);
   return (
     <div>
-      <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
+      <p className="text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>
         {label}{required && <span className="text-accent ml-0.5">*</span>}
       </p>
       <div
@@ -183,17 +183,17 @@ export default function UnterlagenPage() {
     <div className="min-h-screen" style={{ background: "#F8F7F4", fontFamily: "var(--font-sans)" }}>
       <div className="sticky top-0 z-50 bg-primary">
         <div className="max-w-3xl mx-auto px-6 h-[68px] flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5 max-lg:py-2">
             <Logo height={24} variant="hell" />
           </Link>
-          <Link href="/dashboard" className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <Link href="/dashboard" className="flex items-center gap-1.5 max-lg:py-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
             <ArrowLeft className="w-3.5 h-3.5" />Dashboard
           </Link>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-12">
-        <span className="flex items-center gap-3 text-accent text-[10px] font-semibold tracking-[0.22em] uppercase mb-4">
+        <span className="flex items-center gap-3 text-accent text-[10px] max-lg:text-[11px] font-semibold tracking-[0.22em] uppercase mb-4">
           <span className="w-8 h-[2px] bg-accent" />Unterlagen einreichen
         </span>
         <h1 className="text-primary font-bold mb-6" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem,4vw,2.5rem)" }}>

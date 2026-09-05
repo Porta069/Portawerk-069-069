@@ -7,7 +7,7 @@ import { ArrowRight, Compass } from "lucide-react";
 export default function NotFound() {
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-6"
+      className="min-h-screen flex items-center justify-center px-6 max-lg:overflow-hidden"
       style={{ background: "#1A1A2E", fontFamily: "var(--font-sans)" }}
     >
       <div className="relative max-w-lg w-full text-center py-16">

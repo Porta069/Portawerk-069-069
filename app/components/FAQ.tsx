@@ -34,7 +34,7 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="py-28 bg-white" id="faq">
+    <section className="py-28 max-lg:py-16 bg-white" id="faq">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ y: 30, opacity: 0 }}

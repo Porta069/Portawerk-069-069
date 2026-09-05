@@ -101,7 +101,7 @@ export default function ArbeitgeberContent() {
   return (
     <>
       {/* ── Hero mit Lead-Formular ── */}
-      <section className="relative bg-primary pt-28 pb-20 lg:pt-36 lg:pb-24 overflow-hidden">
+      <section className="relative bg-primary pt-28 pb-20 max-lg:pt-32 max-lg:pb-14 lg:pt-36 lg:pb-24 overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -124,9 +124,9 @@ export default function ArbeitgeberContent() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center gap-3 mb-6"
+              className="flex items-center gap-3 mb-6 max-lg:items-start"
             >
-              <span className="w-9 h-[2px] bg-accent" />
+              <span className="w-9 h-[2px] bg-accent max-lg:mt-[7px] shrink-0" />
               <span className="text-accent text-xs font-semibold tracking-[0.2em] uppercase">
                 Für Handwerksbetriebe
               </span>
@@ -136,7 +136,7 @@ export default function ArbeitgeberContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
               className="text-white font-bold leading-[1.05] mb-6"
-              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.3rem, 4.6vw, 3.8rem)" }}
+              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.9rem, 4.6vw, 3.8rem)" }}
             >
               Finden Sie die besten
               <br />
@@ -235,7 +235,7 @@ export default function ArbeitgeberContent() {
       </section>
 
       {/* ── Kein Risiko ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24 max-lg:py-14 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-14 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -270,7 +270,7 @@ export default function ArbeitgeberContent() {
               Tritt er nicht an oder verlässt Ihren Betrieb während der Probezeit,
               erhalten Sie eine <span className="text-primary font-semibold">Rückerstattung</span>.
             </p>
-            <a href="#anfrage" className="group inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all">
+            <a href="#anfrage" className="group inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all max-lg:py-2">
               Jetzt Fachkräfte anfragen
               <ArrowRight className="w-4 h-4" />
             </a>
@@ -279,7 +279,7 @@ export default function ArbeitgeberContent() {
       </section>
 
       {/* ── Welche Fachkräfte — im Stil der Handwerker-Suche ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+      <section className="py-24 max-lg:py-14" style={{ background: "var(--color-surface)" }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -383,7 +383,7 @@ export default function ArbeitgeberContent() {
                       <button
                         type="button"
                         onClick={() => setShowAll(false)}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors max-lg:py-2"
                       >
                         Weniger anzeigen
                         <ChevronDown className="w-4 h-4 rotate-180" />
@@ -425,7 +425,7 @@ export default function ArbeitgeberContent() {
                       <button
                         type="button"
                         onClick={() => setShowAll(true)}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-amber-600 transition-colors max-lg:py-2"
                       >
                         Alle Fachkräfte anzeigen
                         <ChevronDown className="w-4 h-4" />
@@ -440,7 +440,7 @@ export default function ArbeitgeberContent() {
       </section>
 
       {/* ── So läuft's ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24 max-lg:py-14 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -487,7 +487,7 @@ export default function ArbeitgeberContent() {
       </section>
 
       {/* ── Ihre Vorteile ── */}
-      <section className="py-24" style={{ background: "var(--color-surface)" }}>
+      <section className="py-24 max-lg:py-14" style={{ background: "var(--color-surface)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -537,7 +537,7 @@ export default function ArbeitgeberContent() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24 bg-white">
+      <section className="py-24 max-lg:py-14 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-12">
           <motion.h2
             initial={{ y: 24, opacity: 0 }}
@@ -579,7 +579,7 @@ export default function ArbeitgeberContent() {
       </section>
 
       {/* ── Abschluss-CTA ── */}
-      <section className="py-20 bg-primary relative overflow-hidden">
+      <section className="py-20 max-lg:py-12 bg-primary relative overflow-hidden">
         <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(232,168,56,0.10) 0%, transparent 65%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <h2 className="text-white font-bold text-3xl md:text-4xl leading-tight mb-5" style={{ fontFamily: "var(--font-display)" }}>

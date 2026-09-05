@@ -103,7 +103,7 @@ export default function UnternehmenLoginPage() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-sm"
         >
-          <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10">
+          <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10 py-2">
             <Logo height={22} />
             <span className="text-primary text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>
               Business
@@ -167,7 +167,7 @@ export default function UnternehmenLoginPage() {
               Noch kein Firmenzugang? Kontaktiere uns unter{" "}
               <a
                 href="mailto:kontakt@porta-werk.de"
-                className="font-semibold whitespace-nowrap"
+                className="font-semibold whitespace-nowrap max-lg:inline-block max-lg:py-1"
                 style={{ color: "#E8A838" }}
               >
                 kontakt@porta-werk.de
@@ -178,7 +178,7 @@ export default function UnternehmenLoginPage() {
 
           <p className="mt-6 text-sm text-center" style={{ color: "#6B7280" }}>
             Du bist Handwerker:in?{" "}
-            <Link href="/login" className="font-semibold" style={{ color: "#E8A838" }}>
+            <Link href="/login" className="font-semibold max-lg:inline-block max-lg:py-1.5" style={{ color: "#E8A838" }}>
               Zum normalen Login
             </Link>
           </p>

@@ -13,7 +13,7 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-6">
       <span
-        className="text-[10px] font-semibold uppercase tracking-[0.2em] whitespace-nowrap"
+        className="text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.2em] whitespace-nowrap"
         style={{ color: "rgba(26,26,46,0.35)" }}
       >
         {children}
@@ -92,7 +92,7 @@ export function Field({
   return (
     <div>
       <label
-        className="flex items-center text-[10px] uppercase tracking-[0.16em] font-semibold mb-2 transition-colors duration-200"
+        className="flex items-center text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2 transition-colors duration-200"
         style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
       >
         {label}
@@ -172,7 +172,7 @@ export function SelectField({
   return (
     <div>
       <label
-        className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2 transition-colors duration-200"
+        className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2 transition-colors duration-200"
         style={{ color: focused ? "#E8A838" : "rgba(26,26,46,0.45)" }}
       >
         {label}
@@ -239,7 +239,7 @@ export function PillSelect({
     <div>
       {label && (
         <label
-          className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-3"
+          className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-3"
           style={{ color: "rgba(26,26,46,0.45)" }}
         >
           {label}
@@ -356,7 +356,7 @@ export function Slider({
           background: `linear-gradient(to right, #E8A838 ${pct}%, #E5E7EB ${pct}%)`,
         }}
       />
-      <div className="flex justify-between mt-2 text-[10px] text-muted tabular-nums">
+      <div className="flex justify-between mt-2 text-[10px] max-lg:text-[11px] text-muted tabular-nums">
         <span>{min}</span>
         <span>
           {max}

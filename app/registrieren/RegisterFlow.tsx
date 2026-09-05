@@ -206,7 +206,7 @@ export default function RegisterFlow() {
         />
 
         <div className="relative flex flex-col h-full px-6 lg:px-12 py-8 lg:py-12">
-          <Link href="/" className="group inline-flex items-center gap-2.5 w-fit">
+          <Link href="/" className="group inline-flex items-center gap-2.5 w-fit max-lg:py-2">
             <Logo height={24} variant="hell" priority />
           </Link>
 
@@ -303,7 +303,7 @@ export default function RegisterFlow() {
                 </span>
                 <div>
                   <p
-                    className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-1"
+                    className="text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.16em] mb-1"
                     style={{ color: "rgba(232,168,56,0.9)" }}
                   >
                     Tipp von WerkPair

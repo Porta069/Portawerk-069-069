@@ -122,7 +122,7 @@ export function ProfileDialog({
           </button>
           <div className="absolute inset-x-0 bottom-0 p-6">
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] mb-2.5"
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] max-lg:text-[11px] font-bold uppercase tracking-[0.16em] mb-2.5"
               style={{ background: "rgba(232,168,56,0.22)", color: "#F6D08A" }}
             >
               <ShieldCheck className="w-3 h-3" />
@@ -335,7 +335,7 @@ function RequestDialog({
 
         <div className="px-6 pb-5">
           <label
-            className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
+            className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2"
             style={{ color: "rgba(26,26,46,0.45)" }}
           >
             Für welche Stelle?
@@ -439,7 +439,7 @@ export default function CandidateCard({
             />
             <div className="absolute inset-0 p-4 flex flex-col justify-between">
               <span
-                className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em]"
+                className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[9.5px] max-lg:text-[11px] font-bold uppercase tracking-[0.14em]"
                 style={{ background: "rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.9)" }}
               >
                 <ShieldCheck className="w-3 h-3" />

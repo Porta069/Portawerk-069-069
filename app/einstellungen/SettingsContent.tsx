@@ -126,7 +126,7 @@ function AccountSection({ token, t, user, setUser }: { token: string; t: T; user
       </div>
 
       <div className="pt-5 mt-2" style={{ borderTop: "1px solid #F3F4F6" }}>
-        <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-1" style={{ color: "rgba(26,26,46,0.45)" }}>{t("field.email")}</p>
+        <p className="text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-1" style={{ color: "rgba(26,26,46,0.45)" }}>{t("field.email")}</p>
         <p className="text-sm mb-3" style={{ color: "#6B7280" }}>{user.email}</p>
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label={t("btn.changeEmail")} type="email" value={newEmail} onChange={setNewEmail} placeholder="neu@beispiel.de" />
@@ -144,7 +144,7 @@ function AccountSection({ token, t, user, setUser }: { token: string; t: T; user
 
       {/* Verifizierungs-Status */}
       <div className="pt-5 mt-2" style={{ borderTop: "1px solid #F3F4F6" }}>
-        <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-3" style={{ color: "rgba(26,26,46,0.45)" }}>Verifizierung</p>
+        <p className="text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-3" style={{ color: "rgba(26,26,46,0.45)" }}>Verifizierung</p>
         <div className="grid sm:grid-cols-2 gap-3">
           {([["E-Mail", user.emailVerified], ["Telefon", user.phoneVerified]] as const).map(([lbl, ok]) => (
             <div key={lbl} className="flex items-center gap-2 px-3 py-2.5 text-sm" style={{ border: "1px solid #E5E7EB", color: ok ? "#16A34A" : "rgba(26,26,46,0.6)" }}>
@@ -441,7 +441,7 @@ function SecuritySection({ token, t, lang, onSession, onLogout }: {
       <div className="space-y-4">
         <PasswordField label={t("field.currentPassword")} value={cur} onChange={setCur} autoComplete="current-password" />
         <div>
-          <label className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>{t("field.newPassword")}</label>
+          <label className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2" style={{ color: "rgba(26,26,46,0.45)" }}>{t("field.newPassword")}</label>
           <div className="relative">
             <input type={show ? "text" : "password"} value={next} onChange={(e) => setNext(e.target.value)}
               className="w-full bg-white text-primary text-sm px-4 py-3.5 pr-11 outline-none"
@@ -457,7 +457,7 @@ function SecuritySection({ token, t, lang, onSession, onLogout }: {
       </div>
 
       <div className="pt-6" style={{ borderTop: "1px solid #F3F4F6" }}>
-        <p className="text-[10px] uppercase tracking-[0.16em] font-semibold mb-3 flex items-center gap-2" style={{ color: "rgba(26,26,46,0.45)" }}>
+        <p className="text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-3 flex items-center gap-2" style={{ color: "rgba(26,26,46,0.45)" }}>
           <Monitor className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />{t("security.activity")}
         </p>
         {activity === null ? (
@@ -619,7 +619,7 @@ export default function SettingsContent() {
           <Link href="/dashboard" className="flex items-center gap-2.5">
             <Logo height={24} variant="hell" />
           </Link>
-          <button onClick={doLogout} className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <button onClick={doLogout} className="flex items-center gap-1.5 max-lg:py-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
             <LogOut className="w-4 h-4" />{t("btn.logout")}
           </button>
         </div>

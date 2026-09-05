@@ -335,7 +335,7 @@ export default function JobCard({
                   {job.matchScore} %
                   <ScoreExplainer breakdown={job.matchBreakdown} subject={job.title} />
                 </span>
-                <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.45)" }}>
+                <span className="text-[10px] max-lg:text-[11px]" style={{ color: "rgba(26,26,46,0.45)" }}>
                   Match
                 </span>
               </span>
@@ -356,7 +356,7 @@ export default function JobCard({
                   <Car className="w-4 h-4" style={{ color: "rgba(232,168,56,0.5)" }} />
                   — Min.
                 </span>
-                <span className="text-[10px]" style={{ color: "rgba(26,26,46,0.35)" }}>
+                <span className="text-[10px] max-lg:text-[11px]" style={{ color: "rgba(26,26,46,0.35)" }}>
                   Orte fehlen
                 </span>
               </span>
@@ -379,7 +379,7 @@ export default function JobCard({
                 {exactTravel ? `${exactTravel.minutes} Min.` : `~${job.travelMinutes} Min.`}
               </span>
               <span
-                className="inline-flex items-center gap-1 text-[10px] tabular-nums"
+                className="inline-flex items-center gap-1 text-[10px] max-lg:text-[11px] tabular-nums"
                 style={{ color: exactTravel ? "#15803D" : "rgba(26,26,46,0.45)" }}
               >
                 {exactTravel ? "genau" : `${job.distanceKm.toLocaleString("de-DE")} km`}

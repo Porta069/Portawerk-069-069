@@ -46,7 +46,7 @@ export default function PasswordField({
     <div>
       <label
         htmlFor={id}
-        className="block text-[10px] uppercase tracking-[0.16em] font-semibold mb-2"
+        className="block text-[10px] max-lg:text-[11px] uppercase tracking-[0.16em] font-semibold mb-2"
         style={{ color: "rgba(26,26,46,0.45)" }}
       >
         {label}
@@ -80,7 +80,7 @@ export default function PasswordField({
           tabIndex={-1}
           aria-label={sichtbar ? "Passwort verbergen" : "Passwort anzeigen"}
           aria-pressed={sichtbar}
-          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+          className="absolute right-3.5 top-1/2 -translate-y-1/2 max-lg:-m-3 max-lg:p-3 text-muted hover:text-primary transition-colors"
         >
           {sichtbar ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         </button>

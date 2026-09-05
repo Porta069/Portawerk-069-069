@@ -20,7 +20,7 @@ export function StepHeading({
     <div className="mb-8">
       {eyebrow && (
         <p
-          className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-2.5"
+          className="text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.2em] mb-2.5"
           style={{ color: "rgba(26,26,46,0.35)" }}
         >
           {eyebrow}

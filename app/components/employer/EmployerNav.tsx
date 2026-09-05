@@ -43,7 +43,7 @@ export default function EmployerNav({
       <div className="max-w-[1680px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 gap-4 xl:gap-8">
           {/* Einzug wie in der Dashboard-Leiste — siehe Begründung dort. */}
-          <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0 xl:ml-8 2xl:ml-28">
+          <Link href="/arbeitgeber" className="flex items-center gap-3 group flex-shrink-0 max-lg:py-2.5 xl:ml-8 2xl:ml-28">
             <Logo
               height={26}
               variant="hell"
@@ -108,7 +108,7 @@ export default function EmployerNav({
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-white p-1"
+            className="lg:hidden text-white p-2.5 -mr-2.5"
             aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

@@ -177,7 +177,7 @@ export default function AngebotePage() {
                   style={{ width: 8, height: 8, background: "#E8A838" }}
                 />
                 <span
-                  className="text-[10px] font-semibold uppercase"
+                  className="text-[10px] max-lg:text-[11px] font-semibold uppercase"
                   style={{ color: "#E8A838", letterSpacing: "0.22em" }}
                 >
                   {offen.length > 0 ? `${offen.length} neu` : "Profil läuft mit"}
@@ -235,7 +235,7 @@ export default function AngebotePage() {
                   {offen.length}
                 </span>
                 <span
-                  className="text-[9.5px] font-semibold uppercase mt-2"
+                  className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase mt-2"
                   style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.2em" }}
                 >
                   offen
@@ -295,7 +295,7 @@ export default function AngebotePage() {
 
           <div className="flex items-center gap-4 mb-6">
             <span
-              className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+              className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase flex-shrink-0"
               style={{ color: "#B47B18", letterSpacing: "0.2em" }}
             >
               So kommt ein Angebot

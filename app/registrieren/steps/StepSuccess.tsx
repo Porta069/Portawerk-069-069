@@ -53,7 +53,7 @@ export default function StepSuccess() {
         style={{ border: "1px solid #E5E7EB" }}
       >
         <div className="px-6 py-4" style={{ borderBottom: "1px solid #E5E7EB" }}>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
+          <p className="text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,46,0.4)" }}>
             Was passiert als nächstes?
           </p>
         </div>

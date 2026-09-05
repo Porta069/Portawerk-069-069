@@ -198,7 +198,7 @@ function ApplicationCard({
           />
           <div className="absolute inset-0 p-4 flex flex-col justify-between">
             <span
-              className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em]"
+              className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[9.5px] max-lg:text-[11px] font-bold uppercase tracking-[0.14em]"
               style={{ background: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.88)" }}
             >
               <ShieldCheck className="w-3 h-3" />
@@ -496,7 +496,7 @@ export default function EmployerBewerbungenPage() {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <span
-                className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] mb-3"
+                className="inline-flex items-center gap-2 text-[10px] max-lg:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
                 style={{ color: "#E8A838" }}
               >
                 <span className="w-6 h-[2px] bg-accent" />
@@ -539,7 +539,7 @@ export default function EmployerBewerbungenPage() {
                       >
                         {s2.v}
                       </p>
-                      <p className="text-[10.5px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
+                      <p className="text-[10.5px] max-lg:text-[11.5px] mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
                         {s2.l}
                       </p>
                     </div>

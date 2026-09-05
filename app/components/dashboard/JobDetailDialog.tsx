@@ -75,7 +75,7 @@ function Abschnitt({ titel }: { titel: string }) {
   return (
     <div className="flex items-center gap-3.5 mb-3">
       <span
-        className="text-[9.5px] font-semibold uppercase flex-shrink-0"
+        className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase flex-shrink-0"
         style={{ color: "#B47B18", letterSpacing: "0.2em" }}
       >
         {titel}
@@ -208,7 +208,7 @@ export default function JobDetailDialog({
                   }}
                 >
                   <p
-                    className="inline-flex items-center gap-2 text-[9.5px] font-semibold uppercase mb-2"
+                    className="inline-flex items-center gap-2 text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-2"
                     style={{ color: "rgba(26,26,46,0.45)", letterSpacing: "0.19em" }}
                   >
                     <Euro className="w-3.5 h-3.5" style={{ color: "#E8A838" }} />
@@ -233,7 +233,7 @@ export default function JobDetailDialog({
                   }}
                 >
                   <p
-                    className="inline-flex items-center gap-2 text-[9.5px] font-semibold uppercase mb-2"
+                    className="inline-flex items-center gap-2 text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-2"
                     style={{ color: "#8A5B0F", letterSpacing: "0.19em" }}
                   >
                     <Sparkles className="w-3.5 h-3.5" style={{ color: "#B47B18" }} />
@@ -343,7 +343,7 @@ export default function JobDetailDialog({
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
                     <p
-                      className="text-[9.5px] font-semibold uppercase mb-1.5"
+                      className="text-[9.5px] max-lg:text-[11px] font-semibold uppercase mb-1.5"
                       style={{ color: "#B47B18", letterSpacing: "0.2em" }}
                     >
                       Über das Unternehmen
